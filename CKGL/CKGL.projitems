@@ -17,14 +17,13 @@
     <Compile Include="$(MSBuildThisFileDirectory)src\Input\Input.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Input\KeyCode.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Input\ScanCode.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)src\Material.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\Colour.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\MathEXT.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\Point2.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\RectangleI.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)src\Shader.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)src\Window.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)src\SDL.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\Shader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Platform\Window.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Platform\SDL.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Core.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\Math.cs" />
   </ItemGroup>
@@ -34,6 +33,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="$(MSBuildThisFileDirectory)src\Rise\" />
+    <Folder Include="$(MSBuildThisFileDirectory)src\Graphics\" />
+    <Folder Include="$(MSBuildThisFileDirectory)src\Platform\" />
   </ItemGroup>
 </Project>
