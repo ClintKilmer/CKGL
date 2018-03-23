@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>10088b01-2708-44ca-b276-6c72c37eb2da</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>CKGL</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)lib\Rise.OpenGL\OpenGL.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)lib\SDL2-CS\SDL2.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)lib\SDL2-CS\SDL2_image.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)lib\SDL2-CS\SDL2_mixer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)lib\SDL2-CS\SDL2_ttf.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Input\Input.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Input\KeyCode.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Input\ScanCode.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Material.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Math\Colour.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Math\MathEXT.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Math\Point2.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Math\RectangleI.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Shader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Window.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\SDL.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Core.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Math\Math.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)CKGLTest.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)src\Rise\" />
+  </ItemGroup>
+</Project>
