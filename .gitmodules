@@ -1,0 +1,6 @@
+[submodule "CKGL/lib/SDL2-CS"]
+	path = CKGL/lib/SDL2-CS
+	url = https://github.com/flibitijibibo/SDL2-CS
+[submodule "CKGL/lib/OpenAL-CS"]
+	path = CKGL/lib/OpenAL-CS
+	url = https://github.com/flibitijibibo/OpenAL-CS

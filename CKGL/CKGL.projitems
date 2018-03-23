@@ -9,11 +9,17 @@
     <Import_RootNamespace>CKGL</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)lib\OpenAL-CS\src\AL10.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)lib\OpenAL-CS\src\AL11.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)lib\OpenAL-CS\src\ALC10.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)lib\OpenAL-CS\src\ALC11.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)lib\OpenAL-CS\src\ALEXT.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)lib\OpenAL-CS\src\EFX.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)lib\Rise.OpenGL\OpenGL.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)lib\SDL2-CS\SDL2.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)lib\SDL2-CS\SDL2_image.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)lib\SDL2-CS\SDL2_mixer.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)lib\SDL2-CS\SDL2_ttf.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)lib\SDL2-CS\src\SDL2.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)lib\SDL2-CS\src\SDL2_image.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)lib\SDL2-CS\src\SDL2_mixer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)lib\SDL2-CS\src\SDL2_ttf.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Input\Input.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Input\KeyCode.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Input\ScanCode.cs" />
