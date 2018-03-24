@@ -65,13 +65,14 @@ namespace CKGLTest
 
 				// Clear the screen
 				if (Input.Keyboard.Down(KeyCode.Space))
-					GL.ClearColour(Colour.Grey);
+					GL.ClearColour(Colour.Grey * 0.25f);
 				else
 					GL.ClearColour(Colour.Black);
 				GL.Clear(BufferBit.Color | BufferBit.Depth);
 
 				// Set Shader uniforms
 				//GL.Uniform2F(offset, Window.X * 0.0007f, -Window.Y * 0.0007f);
+				GL.Uniform3F(offset, SDL2.SDL.SDL_GetTicks() * 0.0016f, SDL2.SDL.SDL_GetTicks() * 0.002f, SDL2.SDL.SDL_GetTicks() * 0.0023f);
 
 				//GL.DrawArrays(DrawMode.Triangles, 0, 3);
 				GL.DrawElements(DrawMode.Triangles, indices.Length, IndexType.UnsignedInt, 0);
