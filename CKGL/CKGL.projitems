@@ -20,6 +20,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)lib\SDL2-CS\src\SDL2_image.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)lib\SDL2-CS\src\SDL2_mixer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)lib\SDL2-CS\src\SDL2_ttf.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Audio\Audio.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Input\Input.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Input\KeyCode.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Input\ScanCode.cs" />

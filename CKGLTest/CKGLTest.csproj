@@ -50,6 +50,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="snd\sndPop1.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="snd\sndPop2.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="build\CopyLibs.targets" />
     <Content Include="Shaders\test.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

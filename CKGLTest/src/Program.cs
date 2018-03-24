@@ -15,6 +15,7 @@ namespace CKGLTest
 		static void Main(string[] args)
 		{
 			SDL.Init(Title, WindowWidth, WindowHeight, true, false);
+			Audio.Init();
 
 			// Create Vertex Array Object
 			GLuint vao = GL.GenVertexArray();
@@ -83,6 +84,7 @@ namespace CKGLTest
 				//SDL.Delay(1);
 			}
 
+			Audio.Destroy();
 			SDL.Exit();
 		}
 	}
