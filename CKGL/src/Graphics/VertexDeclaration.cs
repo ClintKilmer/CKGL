@@ -5,32 +5,25 @@ namespace CKGL
 	#region VertexDeclaration
 	public class VertexDeclaration
 	{
-		public int Stride { get; private set; }
+		public int Stride { get; private set; } = 0;
 		private VertexElement[] elements;
 
-		public VertexDeclaration(int vertexStride, params VertexElement[] elements)
+		public VertexDeclaration(params VertexElement[] elements)
 		{
 			if ((elements == null) || (elements.Length == 0))
 				throw new ArgumentNullException("elements", "Elements cannot be empty");
 
 			this.elements = (VertexElement[])elements.Clone();
-			Stride = GetVertexStride(this.elements);
-		}
 
-		private static int GetVertexStride(VertexElement[] elements)
-		{
-			int max = 0;
-
+			int totalOffset = 0;
 			for (int i = 0; i < elements.Length; i += 1)
 			{
-				int start = elements[i].Offset + GetTypeSize(elements[i].VertexElementFormat);
-				if (max < start)
-				{
-					max = start;
-				}
+				// Set VertexElement size
+				elements[i].Offset = totalOffset;
+				
+				// Set Vertex Stride
+				Stride.Max(totalOffset += GetTypeSize(elements[i].VertexElementFormat));
 			}
-
-			return max;
 		}
 
 		private static int GetTypeSize(VertexElementFormat elementFormat)
@@ -76,9 +69,8 @@ namespace CKGL
 		public VertexElementUsage VertexElementUsage { get; set; }
 		public int UsageIndex { get; set; }
 
-		public VertexElement(int offset, VertexElementFormat elementFormat, VertexElementUsage elementUsage, int usageIndex) : this()
+		public VertexElement(VertexElementFormat elementFormat, VertexElementUsage elementUsage, int usageIndex) : this()
 		{
-			Offset = offset;
 			UsageIndex = usageIndex;
 			VertexElementFormat = elementFormat;
 			VertexElementUsage = elementUsage;
