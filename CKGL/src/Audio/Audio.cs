@@ -13,6 +13,8 @@ namespace CKGL
 
 		private static List<uint> buffers = new List<uint>();
 
+		private static uint[] source1 = new uint[1];
+
 		public static void Init()
 		{
 			// Create Device
@@ -47,18 +49,20 @@ namespace CKGL
 				throw new InvalidOperationException("Could not make OpenAL Listener");
 			}
 
-			//uint[] source = new uint[1];
-			//AL10.alGenSources(1, source);
-			//AL10.alSource3f(source[0], AL10.AL_POSITION, 0, 0, 0);
-			//AL10.alSource3f(source[0], AL10.AL_VELOCITY, 0, 0, 0);
-			//AL10.alSourcef(source[0], AL10.AL_GAIN, 1f);
-			//AL10.alSourcef(source[0], AL10.AL_PITCH, 1f);
-			//AL10.alSourcei(source[0], AL10.AL_LOOPING, 0);
-			//if (CheckALError())
-			//{
-			//	Close();
-			//	throw new InvalidOperationException("Could not make OpenAL Listener");
-			//}
+			uint[] source = new uint[1];
+			AL10.alGenSources(1, source);
+			AL10.alSource3f(source[0], AL10.AL_POSITION, 0, 0, 0);
+			AL10.alSource3f(source[0], AL10.AL_VELOCITY, 0, 0, 0);
+			AL10.alSourcef(source[0], AL10.AL_GAIN, 1f);
+			AL10.alSourcef(source[0], AL10.AL_PITCH, 1f);
+			AL10.alSourcei(source[0], AL10.AL_LOOPING, 0);
+			if (CheckALError())
+			{
+				Destroy();
+				throw new InvalidOperationException("Could not make OpenAL Source");
+			}
+
+			source1 = source;
 		}
 
 		public static void Destroy()
@@ -107,10 +111,16 @@ namespace CKGL
 			SDL_FreeWAV(audioBuffer);
 
 			if (CheckALError())
-			{
-				Destroy();
 				throw new InvalidOperationException($"OpenAL could not load \"{file}\"");
-			}
+
+			AL10.alSource3f(source1[0], (int)audioBuffer, 0f, 0f, 0f);
+
+			AL10.alSourcePlay(source1[0]);
+		}
+
+		public static void Play()
+		{
+
 		}
 
 		public static bool CheckALCError()
