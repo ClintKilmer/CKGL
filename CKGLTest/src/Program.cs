@@ -17,6 +17,9 @@ namespace CKGLTest
 			SDL.Init(Title, WindowWidth, WindowHeight, true, false);
 			Audio.Init();
 
+			// Load audio
+			Audio.LoadAudio("snd/sndPop1.wav");
+
 			// Create Vertex Array Object
 			GLuint vao = GL.GenVertexArray();
 			GL.BindVertexArray(vao);

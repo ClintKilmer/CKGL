@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using OpenAL;
+using static SDL2.SDL;
 
 namespace CKGL
 {
@@ -20,7 +21,6 @@ namespace CKGL
 			{
 				throw new InvalidOperationException("Could not open OpenAL audio device");
 			}
-
 
 			int[] contextAttributes = new int[0];
 			Context = ALC10.alcCreateContext(Device, contextAttributes);
@@ -75,18 +75,41 @@ namespace CKGL
 			Device = IntPtr.Zero;
 		}
 
-		public static void LoadAudio(string filename)
+		public static void LoadAudio(string file)
 		{
+			SDL_AudioSpec wavspec = new SDL2.SDL.SDL_AudioSpec();
+			SDL_LoadWAV(file, ref wavspec, out IntPtr audioBuffer, out uint audioLength);
+
+			// map wav header to openal format
+			int format;
+			switch (wavspec.format)
+			{
+				case AUDIO_U8:
+				case AUDIO_S8:
+					format = wavspec.channels == 2 ? AL10.AL_FORMAT_STEREO8 : AL10.AL_FORMAT_MONO8;
+					break;
+				case AUDIO_U16:
+				case AUDIO_S16:
+					format = wavspec.channels == 2 ? AL10.AL_FORMAT_STEREO16 : AL10.AL_FORMAT_MONO16;
+					break;
+				default:
+					SDL_FreeWAV(audioBuffer);
+					//return false;
+					throw new InvalidOperationException($"SDL failed parsing wav: {file}");
+			}
+
 			uint[] buffer = new uint[1];
 			AL10.alGenBuffers(1, buffer);
 			buffers.Add(buffer[0]);
 
-			AL10.alBufferData(buffer, AL10.AL_FORMAT_STEREO16, readWav(filename, ), 0, 0);
+			AL10.alBufferData(buffer[0], AL10.AL_FORMAT_STEREO16, audioBuffer, (int)audioLength, wavspec.freq);
+
+			SDL_FreeWAV(audioBuffer);
 
 			if (CheckALError())
 			{
 				Destroy();
-				throw new InvalidOperationException($"OpenAL could not load \"{filename}\"");
+				throw new InvalidOperationException($"OpenAL could not load \"{file}\"");
 			}
 		}
 
@@ -146,103 +169,103 @@ namespace CKGL
 			return false;
 		}
 
-		private static float[] readWav(string filename)
-		{
-			float[] L = null;
+		//private static float[] readWav(string filename)
+		//{
+		//	float[] L = null;
 
-			try
-			{
-				using (FileStream fs = File.Open(filename, FileMode.Open))
-				{
-					BinaryReader reader = new BinaryReader(fs);
+		//	try
+		//	{
+		//		using (FileStream fs = File.Open(filename, FileMode.Open))
+		//		{
+		//			BinaryReader reader = new BinaryReader(fs);
 
-					// chunk 0
-					int chunkID = reader.ReadInt32();
-					int fileSize = reader.ReadInt32();
-					int riffType = reader.ReadInt32();
-
-
-					// chunk 1
-					int fmtID = reader.ReadInt32();
-					int fmtSize = reader.ReadInt32(); // bytes for this chunk
-					int fmtCode = reader.ReadInt16();
-					int channels = reader.ReadInt16();
-					int sampleRate = reader.ReadInt32();
-					int byteRate = reader.ReadInt32();
-					int fmtBlockAlign = reader.ReadInt16();
-					int bitDepth = reader.ReadInt16();
-
-					if (fmtSize == 18)
-					{
-						// Read any extra values
-						int fmtExtraSize = reader.ReadInt16();
-						reader.ReadBytes(fmtExtraSize);
-					}
-
-					// chunk 2
-					int dataID = reader.ReadInt32();
-					int bytes = reader.ReadInt32();
-
-					// DATA!
-					byte[] byteArray = reader.ReadBytes(bytes);
-
-					int bytesForSamp = bitDepth / 8;
-					int samps = bytes / bytesForSamp;
+		//			// chunk 0
+		//			int chunkID = reader.ReadInt32();
+		//			int fileSize = reader.ReadInt32();
+		//			int riffType = reader.ReadInt32();
 
 
-					float[] asFloat = null;
-					switch (bitDepth)
-					{
-						case 64:
-							double[]
-							asDouble = new double[samps];
-							Buffer.BlockCopy(byteArray, 0, asDouble, 0, bytes);
-							asFloat = Array.ConvertAll(asDouble, e => (float)e);
-							break;
-						case 32:
-							asFloat = new float[samps];
-							Buffer.BlockCopy(byteArray, 0, asFloat, 0, bytes);
-							break;
-						case 16:
-							Int16[]
-							asInt16 = new Int16[samps];
-							Buffer.BlockCopy(byteArray, 0, asInt16, 0, bytes);
-							asFloat = Array.ConvertAll(asInt16, e => e / (float)Int16.MaxValue);
-							break;
-							//default:
-							//return false;
-					}
+		//			// chunk 1
+		//			int fmtID = reader.ReadInt32();
+		//			int fmtSize = reader.ReadInt32(); // bytes for this chunk
+		//			int fmtCode = reader.ReadInt16();
+		//			int channels = reader.ReadInt16();
+		//			int sampleRate = reader.ReadInt32();
+		//			int byteRate = reader.ReadInt32();
+		//			int fmtBlockAlign = reader.ReadInt16();
+		//			int bitDepth = reader.ReadInt16();
 
-					L = asFloat;
+		//			if (fmtSize == 18)
+		//			{
+		//				// Read any extra values
+		//				int fmtExtraSize = reader.ReadInt16();
+		//				reader.ReadBytes(fmtExtraSize);
+		//			}
 
-					//switch (channels)
-					//{
-					//	case 1:
-					//		L = asFloat;
-					//		R = null;
-					//		return true;
-					//	case 2:
-					//		L = new float[samps];
-					//		R = new float[samps];
-					//		for (int i = 0, s = 0; i < samps; i++)
-					//		{
-					//			L[i] = asFloat[s++];
-					//			R[i] = asFloat[s++];
-					//		}
-					//		return true;
-					//	default:
-					//		return false;
-					//}
-				}
-			}
-			catch
-			{
-				Console.WriteLine("...Failed to load note: " + filename);
-				//return false;
-				//left = new float[ 1 ]{ 0f };
-			}
+		//			// chunk 2
+		//			int dataID = reader.ReadInt32();
+		//			int bytes = reader.ReadInt32();
 
-			//return false;
-		}
+		//			// DATA!
+		//			byte[] byteArray = reader.ReadBytes(bytes);
+
+		//			int bytesForSamp = bitDepth / 8;
+		//			int samps = bytes / bytesForSamp;
+
+
+		//			float[] asFloat = null;
+		//			switch (bitDepth)
+		//			{
+		//				case 64:
+		//					double[]
+		//					asDouble = new double[samps];
+		//					Buffer.BlockCopy(byteArray, 0, asDouble, 0, bytes);
+		//					asFloat = Array.ConvertAll(asDouble, e => (float)e);
+		//					break;
+		//				case 32:
+		//					asFloat = new float[samps];
+		//					Buffer.BlockCopy(byteArray, 0, asFloat, 0, bytes);
+		//					break;
+		//				case 16:
+		//					Int16[]
+		//					asInt16 = new Int16[samps];
+		//					Buffer.BlockCopy(byteArray, 0, asInt16, 0, bytes);
+		//					asFloat = Array.ConvertAll(asInt16, e => e / (float)Int16.MaxValue);
+		//					break;
+		//					//default:
+		//					//return false;
+		//			}
+
+		//			L = asFloat;
+
+		//			//switch (channels)
+		//			//{
+		//			//	case 1:
+		//			//		L = asFloat;
+		//			//		R = null;
+		//			//		return true;
+		//			//	case 2:
+		//			//		L = new float[samps];
+		//			//		R = new float[samps];
+		//			//		for (int i = 0, s = 0; i < samps; i++)
+		//			//		{
+		//			//			L[i] = asFloat[s++];
+		//			//			R[i] = asFloat[s++];
+		//			//		}
+		//			//		return true;
+		//			//	default:
+		//			//		return false;
+		//			//}
+		//		}
+		//	}
+		//	catch
+		//	{
+		//		Console.WriteLine("...Failed to load note: " + filename);
+		//		//return false;
+		//		//left = new float[ 1 ]{ 0f };
+		//	}
+
+		//	//return false;
+		//}
 	}
 }
