@@ -6,14 +6,37 @@ using static SDL2.SDL;
 
 namespace CKGL
 {
+	public class Sound
+	{
+		//public uint source { get; private set; }
+
+		public Sound(string file)
+		{
+		}
+
+		public void Play()
+		{
+			AL10.alGenSources(1, out uint source);
+			AL10.alSource3f(source, AL10.AL_POSITION, 0, 0, 0);
+			AL10.alSource3f(source, AL10.AL_VELOCITY, 0, 0, 0);
+			AL10.alSourcef(source, AL10.AL_GAIN, 1f);
+			AL10.alSourcef(source, AL10.AL_PITCH, 1f);
+			AL10.alSourcei(source, AL10.AL_LOOPING, 0);
+			if (Audio.CheckALError())
+				throw new InvalidOperationException("Could not make OpenAL Source");
+			
+			//AL10.alSourcei(source, AL10.AL_BUFFER, (int)buffer[0]);
+
+			AL10.alSourcePlay(source);
+		}
+	}
+
 	public static class Audio
 	{
-		public static IntPtr Device = IntPtr.Zero;
-		public static IntPtr Context = IntPtr.Zero;
+		private static IntPtr Device = IntPtr.Zero;
+		private static IntPtr Context = IntPtr.Zero;
 
 		private static List<uint> buffers = new List<uint>();
-
-		private static uint[] source1 = new uint[1];
 
 		public static void Init()
 		{
@@ -48,21 +71,6 @@ namespace CKGL
 				Destroy();
 				throw new InvalidOperationException("Could not make OpenAL Listener");
 			}
-
-			uint[] source = new uint[1];
-			AL10.alGenSources(1, source);
-			AL10.alSource3f(source[0], AL10.AL_POSITION, 0, 0, 0);
-			AL10.alSource3f(source[0], AL10.AL_VELOCITY, 0, 0, 0);
-			AL10.alSourcef(source[0], AL10.AL_GAIN, 1f);
-			AL10.alSourcef(source[0], AL10.AL_PITCH, 1f);
-			AL10.alSourcei(source[0], AL10.AL_LOOPING, 0);
-			if (CheckALError())
-			{
-				Destroy();
-				throw new InvalidOperationException("Could not make OpenAL Source");
-			}
-
-			source1 = source;
 		}
 
 		public static void Destroy()
@@ -112,10 +120,6 @@ namespace CKGL
 
 			if (CheckALError())
 				throw new InvalidOperationException($"OpenAL could not load \"{file}\"");
-
-			AL10.alSourcei(source1[0], AL10.AL_BUFFER, (int)buffer[0]);
-
-			AL10.alSourcePlay(source1[0]);
 		}
 
 		public static void Play()
