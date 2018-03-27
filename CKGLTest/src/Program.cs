@@ -23,7 +23,6 @@ namespace CKGLTest
 			// Load Audio
 			Audio.Buffer sndPop1 = new Audio.Buffer("snd/sndPop1.wav");
 			Audio.Buffer sndPop2 = new Audio.Buffer("snd/sndPop2.wav");
-			Audio.Source source1 = new Audio.Source();
 
 			// Create Vertex Array Object
 			GLuint vao = GL.GenVertexArray();
@@ -58,26 +57,22 @@ namespace CKGLTest
 
 			while (SDL.Running)
 			{
+				Audio.Update();
+
 				if (Input.Keyboard.Down(KeyCode.Backspace))
 					SDL.Running = false;
 
 				if (Input.Keyboard.Pressed(KeyCode.Space))
-				{
-					source1.BindBuffer(sndPop1);
-					source1.Play();
-				}
+					sndPop1.Play();
 				if (Input.Keyboard.Released(KeyCode.Space))
-				{
-					source1.BindBuffer(sndPop2);
-					source1.Play();
-				}
+					sndPop2.Play();
 
 				//--------------------
 
 				//give windows some time as well as capture SDL events
 				SDL.PollEvents();
 
-				Window.Title = $"{Title} - Info: {Window.Platform} - Position: [{Window.X}, {Window.Y}] - Size: [{Window.Width}, {Window.Height}]";
+				Window.Title = $"{Title} - Info: {Window.Platform} - Buffers: {Audio.BufferCount} - Sources: {Audio.SourceCount} - Position: [{Window.X}, {Window.Y}] - Size: [{Window.Width}, {Window.Height}]";
 
 				GL.Viewport(0, 0, Window.Width, Window.Height);
 

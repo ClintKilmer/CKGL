@@ -11,6 +11,10 @@ namespace CKGL
 		private static IntPtr Context = IntPtr.Zero;
 
 		private static List<Buffer> buffers = new List<Buffer>();
+		private static List<Source> sources = new List<Source>();
+
+		public static int BufferCount { get { return buffers.Count; } }
+		public static int SourceCount { get { return sources.Count; } }
 
 		public static void Init()
 		{
@@ -49,6 +53,12 @@ namespace CKGL
 
 		public static void Destroy()
 		{
+			for (int i = 0; i < sources.Count; i++)
+				sources[i].Destroy();
+
+			for (int i = 0; i < buffers.Count; i++)
+				buffers[i].Destroy();
+
 			ALC10.alcMakeContextCurrent(IntPtr.Zero);
 
 			if (Context != IntPtr.Zero)
@@ -61,7 +71,27 @@ namespace CKGL
 			Device = IntPtr.Zero;
 		}
 
-		public static bool CheckALCError()
+		public static void Update()
+		{
+			for (int i = 0; i < sources.Count; i++)
+			{
+				if (sources[i].IsStopped())
+					sources[i].Destroy();
+			}
+		}
+
+		private static void PlayBuffer(Buffer buffer)
+		{
+			try
+			{
+				Source source = new Source();
+				source.BindBuffer(buffer);
+				source.Play();
+			}
+			catch { }
+		}
+
+		private static bool CheckALCError()
 		{
 			int error = ALC10.alcGetError(Device);
 			if (error != ALC10.ALC_NO_ERROR)
@@ -89,7 +119,7 @@ namespace CKGL
 			return false;
 		}
 
-		public static bool CheckALError()
+		private static bool CheckALError()
 		{
 			int error = AL10.alGetError();
 			if (error != AL10.AL_NO_ERROR)
@@ -154,15 +184,23 @@ namespace CKGL
 
 				if (CheckALError())
 					throw new InvalidOperationException($"OpenAL could not load \"{file}\"");
+
+				buffers.Add(this);
 			}
 
 			public void Destroy()
 			{
 				AL10.alDeleteBuffers(1, ref id);
+				buffers.Remove(this);
+			}
+
+			public void Play()
+			{
+				PlayBuffer(this);
 			}
 		}
 
-		public class Source
+		private class Source
 		{
 			public uint id;
 
@@ -179,11 +217,14 @@ namespace CKGL
 				AL10.alSourcei(id, AL10.AL_LOOPING, 0);
 				if (CheckALError())
 					throw new InvalidOperationException("Could set OpenAL Source properties");
+
+				sources.Add(this);
 			}
 
 			public void Destroy()
 			{
 				AL10.alDeleteSources(1, ref id);
+				sources.Remove(this);
 			}
 
 			public void BindBuffer(Buffer buffer)
@@ -228,13 +269,6 @@ namespace CKGL
 			{
 				return GetState() == AL10.AL_STOPPED;
 			}
-		}
-
-		private class SourcePool
-		{
-			private static List<uint> sources = new List<uint>();
-
-
 		}
 
 		#region Custom WAV parser - not used, SDL provides this functionality
