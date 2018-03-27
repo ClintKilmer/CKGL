@@ -1,42 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using OpenAL;
 using static SDL2.SDL;
 
 namespace CKGL
 {
-	public class Sound
-	{
-		//public uint source { get; private set; }
-
-		public Sound(string file)
-		{
-		}
-
-		public void Play()
-		{
-			AL10.alGenSources(1, out uint source);
-			AL10.alSource3f(source, AL10.AL_POSITION, 0, 0, 0);
-			AL10.alSource3f(source, AL10.AL_VELOCITY, 0, 0, 0);
-			AL10.alSourcef(source, AL10.AL_GAIN, 1f);
-			AL10.alSourcef(source, AL10.AL_PITCH, 1f);
-			AL10.alSourcei(source, AL10.AL_LOOPING, 0);
-			if (Audio.CheckALError())
-				throw new InvalidOperationException("Could not make OpenAL Source");
-			
-			//AL10.alSourcei(source, AL10.AL_BUFFER, (int)buffer[0]);
-
-			AL10.alSourcePlay(source);
-		}
-	}
-
 	public static class Audio
 	{
 		private static IntPtr Device = IntPtr.Zero;
 		private static IntPtr Context = IntPtr.Zero;
 
-		private static List<uint> buffers = new List<uint>();
+		private static List<Buffer> buffers = new List<Buffer>();
 
 		public static void Init()
 		{
@@ -85,46 +59,6 @@ namespace CKGL
 
 			Context = IntPtr.Zero;
 			Device = IntPtr.Zero;
-		}
-
-		public static void LoadAudio(string file)
-		{
-			SDL_AudioSpec wavspec = new SDL2.SDL.SDL_AudioSpec();
-			SDL_LoadWAV(file, ref wavspec, out IntPtr audioBuffer, out uint audioLength);
-
-			// map wav header to openal format
-			int format;
-			switch (wavspec.format)
-			{
-				case AUDIO_U8:
-				case AUDIO_S8:
-					format = wavspec.channels == 2 ? AL10.AL_FORMAT_STEREO8 : AL10.AL_FORMAT_MONO8;
-					break;
-				case AUDIO_U16:
-				case AUDIO_S16:
-					format = wavspec.channels == 2 ? AL10.AL_FORMAT_STEREO16 : AL10.AL_FORMAT_MONO16;
-					break;
-				default:
-					SDL_FreeWAV(audioBuffer);
-					//return false;
-					throw new InvalidOperationException($"SDL failed parsing wav: {file}");
-			}
-
-			uint[] buffer = new uint[1];
-			AL10.alGenBuffers(1, buffer);
-			buffers.Add(buffer[0]);
-
-			AL10.alBufferData(buffer[0], AL10.AL_FORMAT_STEREO16, audioBuffer, (int)audioLength, wavspec.freq);
-
-			SDL_FreeWAV(audioBuffer);
-
-			if (CheckALError())
-				throw new InvalidOperationException($"OpenAL could not load \"{file}\"");
-		}
-
-		public static void Play()
-		{
-
 		}
 
 		public static bool CheckALCError()
@@ -183,6 +117,127 @@ namespace CKGL
 			return false;
 		}
 
+		public class Buffer
+		{
+			public uint id;
+
+			public Buffer(string file)
+			{
+				AL10.alGenBuffers(1, out id);
+				if (CheckALError())
+					throw new InvalidOperationException("Could not make OpenAL Buffer");
+
+				SDL_AudioSpec wavspec = new SDL_AudioSpec();
+				SDL_LoadWAV(file, ref wavspec, out IntPtr audioBuffer, out uint audioLength);
+
+				// map wav header to openal format
+				int format;
+				switch (wavspec.format)
+				{
+					case AUDIO_U8:
+					case AUDIO_S8:
+						format = wavspec.channels == 2 ? AL10.AL_FORMAT_STEREO8 : AL10.AL_FORMAT_MONO8;
+						break;
+					case AUDIO_U16:
+					case AUDIO_S16:
+						format = wavspec.channels == 2 ? AL10.AL_FORMAT_STEREO16 : AL10.AL_FORMAT_MONO16;
+						break;
+					default:
+						SDL_FreeWAV(audioBuffer);
+						//return false;
+						throw new InvalidOperationException($"SDL failed parsing wav: {file}");
+				}
+
+				AL10.alBufferData(id, AL10.AL_FORMAT_STEREO16, audioBuffer, (int)audioLength, wavspec.freq);
+
+				SDL_FreeWAV(audioBuffer);
+
+				if (CheckALError())
+					throw new InvalidOperationException($"OpenAL could not load \"{file}\"");
+			}
+
+			public void Destroy()
+			{
+				AL10.alDeleteBuffers(1, ref id);
+			}
+		}
+
+		public class Source
+		{
+			public uint id;
+
+			public Source()
+			{
+				AL10.alGenSources(1, out id);
+				if (CheckALError())
+					throw new InvalidOperationException("Could not make OpenAL Source");
+
+				AL10.alSource3f(id, AL10.AL_POSITION, 0, 0, 0);
+				AL10.alSource3f(id, AL10.AL_VELOCITY, 0, 0, 0);
+				AL10.alSourcef(id, AL10.AL_GAIN, 1f);
+				AL10.alSourcef(id, AL10.AL_PITCH, 1f);
+				AL10.alSourcei(id, AL10.AL_LOOPING, 0);
+				if (CheckALError())
+					throw new InvalidOperationException("Could set OpenAL Source properties");
+			}
+
+			public void Destroy()
+			{
+				AL10.alDeleteSources(1, ref id);
+			}
+
+			public void BindBuffer(Buffer buffer)
+			{
+				AL10.alSourcei(id, AL10.AL_BUFFER, (int)buffer.id);
+			}
+
+			public void Play()
+			{
+				AL10.alSourcePlay(id);
+			}
+
+			public void Pause()
+			{
+				AL10.alSourcePause(id);
+			}
+
+			public void Stop()
+			{
+				AL10.alSourceStop(id);
+			}
+
+			private int GetState()
+			{
+				AL10.alGetSourcei(id, AL10.AL_SOURCE_STATE, out int state);
+				if (CheckALError())
+					throw new InvalidOperationException("Could set OpenAL Source properties");
+				return state;
+			}
+
+			public bool IsPlaying()
+			{
+				return GetState() == AL10.AL_PLAYING;
+			}
+
+			public bool IsPaused()
+			{
+				return GetState() == AL10.AL_PAUSED;
+			}
+
+			public bool IsStopped()
+			{
+				return GetState() == AL10.AL_STOPPED;
+			}
+		}
+
+		private class SourcePool
+		{
+			private static List<uint> sources = new List<uint>();
+
+
+		}
+
+		#region Custom WAV parser - not used, SDL provides this functionality
 		//private static float[] readWav(string filename)
 		//{
 		//	float[] L = null;
@@ -280,6 +335,7 @@ namespace CKGL
 		//	}
 
 		//	//return false;
-		//}
+		//} 
+		#endregion
 	}
 }

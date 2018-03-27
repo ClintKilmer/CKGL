@@ -21,7 +21,9 @@ namespace CKGLTest
 			Shader shader = Shader.FromFile("Shaders/test.glsl");
 
 			// Load Audio
-			Audio.LoadAudio("snd/sndPop1.wav");
+			Audio.Buffer sndPop1 = new Audio.Buffer("snd/sndPop1.wav");
+			Audio.Buffer sndPop2 = new Audio.Buffer("snd/sndPop2.wav");
+			Audio.Source source1 = new Audio.Source();
 
 			// Create Vertex Array Object
 			GLuint vao = GL.GenVertexArray();
@@ -58,6 +60,17 @@ namespace CKGLTest
 			{
 				if (Input.Keyboard.Down(KeyCode.Backspace))
 					SDL.Running = false;
+
+				if (Input.Keyboard.Pressed(KeyCode.Space))
+				{
+					source1.BindBuffer(sndPop1);
+					source1.Play();
+				}
+				if (Input.Keyboard.Released(KeyCode.Space))
+				{
+					source1.BindBuffer(sndPop2);
+					source1.Play();
+				}
 
 				//--------------------
 
