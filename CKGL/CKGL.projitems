@@ -21,6 +21,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)lib\SDL2-CS\src\SDL2_mixer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)lib\SDL2-CS\src\SDL2_ttf.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Audio\Audio.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\VertexDeclaration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Input\Input.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Input\KeyCode.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Input\ScanCode.cs" />
@@ -40,7 +41,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="$(MSBuildThisFileDirectory)src\Graphics\" />
     <Folder Include="$(MSBuildThisFileDirectory)src\Platform\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)ToDo.txt" />
   </ItemGroup>
 </Project>

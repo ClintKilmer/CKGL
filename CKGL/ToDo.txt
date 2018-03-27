@@ -1,0 +1,3 @@
+﻿CKGL ToDo:
+
+- Add Vector2/3/4, Mat3x2/4x4, Texture2dSampler, and CubeMap to Shader Uniform Set

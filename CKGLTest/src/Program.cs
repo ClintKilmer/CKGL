@@ -17,7 +17,10 @@ namespace CKGLTest
 			SDL.Init(Title, WindowWidth, WindowHeight, true, false);
 			Audio.Init();
 
-			// Load audio
+			// Load Shaders
+			Shader shader = Shader.FromFile("Shaders/test.glsl");
+
+			// Load Audio
 			Audio.LoadAudio("snd/sndPop1.wav");
 
 			// Create Vertex Array Object
@@ -43,9 +46,7 @@ namespace CKGLTest
 			GL.BufferData(BufferTarget.ElementArray, sizeof(GLuint) * indices.Length, indices, BufferUsage.StaticDraw);
 
 			// Shader - create/compile/link/set program
-			Shader shader = Shader.FromFile("Shaders/test.glsl");
-			GL.UseProgram(shader.id);
-			GLint offset = GL.GetUniformLocation(shader.id, "offset");
+			shader.Use();
 
 			// Specify the layout of the vertex data
 			GL.EnableVertexAttribArray(0);
@@ -75,8 +76,7 @@ namespace CKGLTest
 				GL.Clear(BufferBit.Color | BufferBit.Depth);
 
 				// Set Shader uniforms
-				//GL.Uniform2F(offset, Window.X * 0.0007f, -Window.Y * 0.0007f);
-				GL.Uniform3F(offset, SDL2.SDL.SDL_GetTicks() * 0.0016f, SDL2.SDL.SDL_GetTicks() * 0.002f, SDL2.SDL.SDL_GetTicks() * 0.0023f);
+				shader.SetUniform("offset", SDL2.SDL.SDL_GetTicks() * 0.0016f, SDL2.SDL.SDL_GetTicks() * 0.002f, SDL2.SDL.SDL_GetTicks() * 0.0023f);
 
 				//GL.DrawArrays(DrawMode.Triangles, 0, 3);
 				GL.DrawElements(DrawMode.Triangles, indices.Length, IndexType.UnsignedInt, 0);
