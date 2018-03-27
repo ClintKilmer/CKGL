@@ -113,7 +113,7 @@ namespace CKGL
 			if (CheckALError())
 				throw new InvalidOperationException($"OpenAL could not load \"{file}\"");
 
-			AL10.alSource3f(source1[0], (int)audioBuffer, 0f, 0f, 0f);
+			AL10.alSourcei(source1[0], AL10.AL_BUFFER, (int)buffer[0]);
 
 			AL10.alSourcePlay(source1[0]);
 		}
