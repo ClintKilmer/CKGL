@@ -70,13 +70,11 @@ namespace CKGL
 		{
 			Compile(ref vertSource, ref fragSource);
 		}
-
 		public static Shader FromFile(string file)
 		{
 			if (!File.Exists(file))
 				throw new FileNotFoundException("Shader file not found.", file);
-			string source = File.ReadAllText(file);
-			return new Shader(ref source);
+			return new Shader(File.ReadAllText(file));
 		}
 
 		public void Destroy()
