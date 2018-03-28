@@ -47,34 +47,26 @@ namespace CKGL
 		public static OtherEvent OnOtherEvent;
 		#endregion
 
-		public static bool Running = false;
-		public static string OSVersion { get; private set; }
-		public static IntPtr GL_Context;
+		public static bool Running { get; private set; } = false;
 
+		private static IntPtr GL_Context;
 		private static SDL_Event Event;
+
+		public static string OSVersion
+		{
+			get { return SDL_GetPlatform(); }
+		}
 
 		public static bool ShowCursor
 		{
-			get
-			{
-				return SDL_ShowCursor(SDL_QUERY) == 1;
-			}
-			set
-			{
-				SDL_ShowCursor(value ? SDL_ENABLE : SDL_DISABLE);
-			}
+			get { return SDL_ShowCursor(SDL_QUERY) == 1; }
+			set { SDL_ShowCursor(value ? SDL_ENABLE : SDL_DISABLE); }
 		}
 
 		public static string Clipboard
 		{
-			get
-			{
-				return SDL_GetClipboardText();
-			}
-			set
-			{
-				SDL_SetClipboardText(value);
-			}
+			get { return SDL_GetClipboardText(); }
+			set { SDL_SetClipboardText(value); }
 		}
 
 		#region Windows - Set Dll Directory - x64 | x86 - https://github.com/FNA-XNA/FNA/wiki/4:-FNA-and-Windows-API#64-bit-support
@@ -91,13 +83,12 @@ namespace CKGL
 		#region Init/Exit Methods
 		public static void Init(string windowTitle, int windowWidth, int windowHeight, bool windowFullscreen, bool windowResizeable, bool windowBorderless)
 		{
-			#region Flibit - shims
 			SetDllDirectory();
 
+			#region Flibit - shims
 			// Missing libs?
 			try
 			{
-				OSVersion = SDL_GetPlatform();
 				Console.WriteLine($"Platform: {OSVersion}");
 			}
 			catch (Exception e)
@@ -146,11 +137,10 @@ namespace CKGL
 			//		mappingsDB
 			//	);
 			//}
-
-			// This _should_ be the first real SDL call we make...
+			
 			if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER | SDL_INIT_HAPTIC) < 0)
 			{
-				SDL_Quit();
+				Destroy();
 				throw new Exception(SDL_GetError());
 			}
 
@@ -185,7 +175,7 @@ namespace CKGL
 			// Create OpenGL Context
 			if ((GL_Context = SDL_GL_CreateContext(Window.IntPtr)) == IntPtr.Zero)
 			{
-				SDL_Quit();
+				Destroy();
 				throw new Exception(SDL_GetError());
 			}
 			SDL_GL_MakeCurrent(Window.IntPtr, GL_Context);
@@ -194,20 +184,11 @@ namespace CKGL
 			Running = true;
 		}
 
-		public static void SwapBuffers()
+		public static void Destroy()
 		{
-			SDL_GL_SwapWindow(Window.IntPtr);
-		}
+			if (GL_Context != IntPtr.Zero)
+				SDL_GL_DeleteContext(GL_Context);
 
-		public static void Delay(uint ms)
-		{
-			SDL_Delay(ms); //release the thread
-		}
-
-		public static void Exit()
-		{
-			SDL_GL_DeleteContext(GL_Context);
-			// This _should_ be the last SDL call we make...
 			SDL_Quit();
 		}
 		#endregion
@@ -220,7 +201,8 @@ namespace CKGL
 				switch (Event.type)
 				{
 					case SDL_EventType.SDL_QUIT:
-						Running = false;
+						OnQuit?.Invoke();
+						Quit();
 						break;
 					case SDL_EventType.SDL_KEYDOWN:
 						OnKeyDown?.Invoke((KeyCode)Event.key.keysym.sym, (ScanCode)Event.key.keysym.scancode, Event.key.repeat != 0);
@@ -316,6 +298,11 @@ namespace CKGL
 			}
 		}
 
+		public static void Quit()
+		{
+			Running = false;
+		}
+
 		public static void GetGlobalMousePosition(out int x, out int y)
 		{
 			SDL_GetGlobalMouseState(out x, out y);
@@ -326,27 +313,26 @@ namespace CKGL
 			return SDL_GL_GetProcAddress(proc);
 		}
 
-		public class VSyncMode // TODO
+		public class VSyncMode
 		{
 			public static int LateSwapTearing { get; } = -1; // TODO
 			public static int Off { get; } = 0;
 			public static int On { get; } = 1;
 		}
-		private static bool vSync = false;
 		public static bool VSync
 		{
-			get
-			{
-				return vSync;
-			}
-			set
-			{
-				if (vSync != value)
-				{
-					if (SDL_GL_SetSwapInterval(value ? VSyncMode.On : VSyncMode.Off) == 0)
-						vSync = value;
-				}
-			}
+			get { return SDL_GL_GetSwapInterval() == VSyncMode.On; }
+			set { SDL_GL_SetSwapInterval(value ? VSyncMode.On : VSyncMode.Off); }
+		}
+
+		public static void SwapBuffers()
+		{
+			SDL_GL_SwapWindow(Window.IntPtr);
+		}
+
+		public static void Delay(uint ms)
+		{
+			SDL_Delay(ms); //release the thread
 		}
 
 		// TODO

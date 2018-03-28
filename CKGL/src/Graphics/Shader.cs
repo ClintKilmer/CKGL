@@ -89,7 +89,7 @@ namespace CKGL
 		//	Destroy();
 		//}
 
-		public void Use()
+		public void Set()
 		{
 			GL.UseProgram(id);
 		}

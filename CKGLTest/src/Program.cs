@@ -17,7 +17,7 @@ namespace CKGLTest
 			Graphics.Init();
 			Audio.Init();
 			Input.Init();
-			
+
 			//SDLPlatform.ShowCursor = false;
 
 			// Load Shaders
@@ -50,7 +50,7 @@ namespace CKGLTest
 			GL.BufferData(BufferTarget.ElementArray, sizeof(GLuint) * indices.Length, indices, BufferUsage.StaticDraw);
 
 			// Shader - create/compile/link/set program
-			shader.Use();
+			shader.Set();
 
 			// Specify the layout of the vertex data
 			GL.EnableVertexAttribArray(0);
@@ -72,7 +72,7 @@ namespace CKGLTest
 				Audio.Update();
 
 				if (Input.Keyboard.Down(KeyCode.Backspace))
-					Platform.Running = false;
+					Platform.Quit();
 
 				if (Input.Keyboard.Pressed(KeyCode.F11))
 					Window.Fullscreen = !Window.Fullscreen;
@@ -99,11 +99,10 @@ namespace CKGLTest
 
 				Window.Title = $"{Title} - Info: {Window.Platform} - Buffers: {Audio.BufferCount} - Sources: {Audio.SourceCount} - Position: [{Window.X}, {Window.Y}] - Size: [{Window.Width}, {Window.Height}] - Mouse: [{Input.Mouse.Position.X}, {Input.Mouse.Position.Y}]";
 
-				GL.Viewport(0, 0, Window.Width, Window.Height);
-
 				// Clear the screen
 				if (Input.Keyboard.Down(KeyCode.Space))
-					Graphics.Clear(Colour.Grey * 0.25f);
+				{ }
+					//Graphics.Clear(Colour.Grey * 0.25f);
 				else
 					Graphics.Clear(Colour.Black);
 
@@ -120,7 +119,7 @@ namespace CKGLTest
 			}
 
 			Audio.Destroy();
-			Platform.Exit();
+			Platform.Destroy();
 		}
 	}
 }
