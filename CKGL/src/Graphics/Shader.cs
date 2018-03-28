@@ -44,13 +44,13 @@ namespace CKGL
 			in float fragMult;
 			in float fragWash;
 			in float fragVeto;
-			layout(location = 0) out vec4 outColor;
+			layout(location = 0) out vec4 outColour;
 			void main(void)
 			{
-				vec4 color = texture(Texture, fragUV);
-				outColor = 
-					fragMult * color * fragCol + 
-					fragWash * color.a * fragCol + 
+				vec4 colour = texture(Texture, fragUV);
+				outColour = 
+					fragMult * colour * fragCol + 
+					fragWash * colour.a * fragCol + 
 					fragVeto * fragCol;
 			}
 		";

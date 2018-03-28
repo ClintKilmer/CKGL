@@ -42,7 +42,7 @@ namespace CKGL
 					return 12;
 				case VertexElementFormat.Vector4:
 					return 16;
-				case VertexElementFormat.Color:
+				case VertexElementFormat.Colour:
 					return 4;
 				case VertexElementFormat.Byte4:
 					return 4;
@@ -104,7 +104,7 @@ namespace CKGL
 		/// <summary>
 		/// Four component, packed unsigned byte, mapped to 0 to 1 range.
 		/// </summary>
-		Color,
+		Colour,
 		/// <summary>
 		/// Four component unsigned byte.
 		/// </summary>
@@ -144,9 +144,9 @@ namespace CKGL
 		/// </summary>
 		Position,
 		/// <summary>
-		/// Color data.
+		/// Colour data.
 		/// </summary>
-		Color,
+		Colour,
 		/// <summary>
 		/// Texture coordinate data or can be used for user-defined data.
 		/// </summary>

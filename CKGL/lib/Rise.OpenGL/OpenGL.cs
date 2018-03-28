@@ -71,7 +71,7 @@ namespace OpenGL
 	{
 		static int majorVersion = 0x821B;
 		static int minorVersion = 0x821C;
-		static int maxColorAttachments = 0x8CDF;
+		static int maxColourAttachments = 0x8CDF;
 		static int maxCubeMapTextureSize = 0x851C;
 		static int maxDrawBuffers = 0x8824;
 		static int maxElementIndices = 0x80E9;
@@ -83,7 +83,7 @@ namespace OpenGL
 
 		public static int MajorVersion { get { return majorVersion; } }
 		public static int MinorVersion { get { return minorVersion; } }
-		public static int MaxColorAttachments { get { return maxColorAttachments; } }
+		public static int MaxColourAttachments { get { return maxColourAttachments; } }
 		public static int MaxCubeMapTextureSize { get { return maxCubeMapTextureSize; } }
 		public static int MaxDrawBuffers { get { return maxDrawBuffers; } }
 		public static int MaxElementIndices { get { return maxElementIndices; } }
@@ -110,7 +110,7 @@ namespace OpenGL
 
 			GetIntegerV((GLEnum)majorVersion, out majorVersion);
 			GetIntegerV((GLEnum)minorVersion, out minorVersion);
-			GetIntegerV((GLEnum)maxColorAttachments, out maxColorAttachments);
+			GetIntegerV((GLEnum)maxColourAttachments, out maxColourAttachments);
 			GetIntegerV((GLEnum)maxCubeMapTextureSize, out maxCubeMapTextureSize);
 			GetIntegerV((GLEnum)maxDrawBuffers, out maxDrawBuffers);
 			GetIntegerV((GLEnum)maxElementIndices, out maxElementIndices);
@@ -659,9 +659,9 @@ namespace OpenGL
 		{
 			if (attachment != TextureAttachment.Depth)
 			{
-				uint texn = (uint)attachment - (uint)TextureAttachment.Color0;
-				if (texn >= maxColorAttachments)
-					throw new Exception("Exceeding max color attachments: " + maxColorAttachments);
+				uint texn = (uint)attachment - (uint)TextureAttachment.Colour0;
+				if (texn >= maxColourAttachments)
+					throw new Exception("Exceeding max colour attachments: " + maxColourAttachments);
 			}
 			glFramebufferTexture2D(target, attachment, textarget, texture, level);
 			CheckError();
@@ -1230,43 +1230,43 @@ namespace OpenGL
 	{
 		None = 0,
 		Back = 0x0405,
-		Color0 = 0x8CE0,
-		Color1,
-		Color2,
-		Color3,
-		Color4,
-		Color5,
-		Color6,
-		Color7,
-		Color8,
-		Color9,
-		Color10,
-		Color11,
-		Color12,
-		Color13,
-		Color14,
-		Color15,
+		Colour0 = 0x8CE0,
+		Colour1,
+		Colour2,
+		Colour3,
+		Colour4,
+		Colour5,
+		Colour6,
+		Colour7,
+		Colour8,
+		Colour9,
+		Colour10,
+		Colour11,
+		Colour12,
+		Colour13,
+		Colour14,
+		Colour15,
 	}
 
 	public enum ReadBuffer : GLEnum
 	{
 		Depth = 0x8D00,
-		Color0 = 0x8CE0,
-		Color1,
-		Color2,
-		Color3,
-		Color4,
-		Color5,
-		Color6,
-		Color7,
-		Color8,
-		Color9,
-		Color10,
-		Color11,
-		Color12,
-		Color13,
-		Color14,
-		Color15,
+		Colour0 = 0x8CE0,
+		Colour1,
+		Colour2,
+		Colour3,
+		Colour4,
+		Colour5,
+		Colour6,
+		Colour7,
+		Colour8,
+		Colour9,
+		Colour10,
+		Colour11,
+		Colour12,
+		Colour13,
+		Colour14,
+		Colour15,
 	}
 
 	public enum TextureAttachment : GLEnum
@@ -1274,22 +1274,22 @@ namespace OpenGL
 		//Depth = 0x8D00,
 		Depth = 0x8D00,
 		DepthStencil = 0x821A,
-		Color0 = 0x8CE0,
-		Color1,
-		Color2,
-		Color3,
-		Color4,
-		Color5,
-		Color6,
-		Color7,
-		Color8,
-		Color9,
-		Color10,
-		Color11,
-		Color12,
-		Color13,
-		Color14,
-		Color15,
+		Colour0 = 0x8CE0,
+		Colour1,
+		Colour2,
+		Colour3,
+		Colour4,
+		Colour5,
+		Colour6,
+		Colour7,
+		Colour8,
+		Colour9,
+		Colour10,
+		Colour11,
+		Colour12,
+		Colour13,
+		Colour14,
+		Colour15,
 	}
 }
 
@@ -1358,17 +1358,17 @@ namespace CKGL
 	{
 		Zero = 0,
 		One = 1,
-		SrcColor = 0x0300,
-		OneMinusSrcColor,
+		SrcColour = 0x0300,
+		OneMinusSrcColour,
 		SrcAlpha,
 		OneMinusSrcAlpha,
 		DstAlpha,
 		OneMinusDstAlpha,
-		DstColor,
-		OneMinusDstcolor,
+		DstColour,
+		OneMinusDstcolour,
 		SrcAlphaSaturate,
-		ConstantColor = 0x8001,
-		OneMinusConstantColor,
+		ConstantColour = 0x8001,
+		OneMinusConstantColour,
 		ConstantAlpha,
 		OneMinusConstantAlpha
 	}
