@@ -95,7 +95,7 @@ namespace CKGL
 			}
 		}
 
-		public static class FullscreenMode // TODO
+		public static class FullscreenMode
 		{
 			public static uint Off { get; } = 0;
 			public static uint On { get; } = (uint)SDL_WindowFlags.SDL_WINDOW_FULLSCREEN;
@@ -105,7 +105,7 @@ namespace CKGL
 		{
 			get
 			{
-				return ((SDL_WindowFlags)SDL_GetWindowFlags(IntPtr) & SDL_WindowFlags.SDL_WINDOW_FULLSCREEN_DESKTOP) == SDL_WindowFlags.SDL_WINDOW_FULLSCREEN_DESKTOP;
+				return ((SDL_WindowFlags)SDL_GetWindowFlags(IntPtr) & (SDL_WindowFlags)FullscreenMode.Desktop) == (SDL_WindowFlags)FullscreenMode.Desktop;
 			}
 			set
 			{

@@ -1,8 +1,7 @@
-﻿using CKGL;
+﻿using OpenGL;
+using CKGL;
 
-//using GLint = System.Int32;
 using GLuint = System.UInt32;
-//using GLfloat = System.Float;
 
 namespace CKGLTest
 {
@@ -15,10 +14,11 @@ namespace CKGLTest
 		static void Main(string[] args)
 		{
 			SDLPlatform.Init(Title, WindowWidth, WindowHeight, false, true, false);
+			Graphics.Init();
 			Audio.Init();
 			Input.Init();
 			
-			SDLPlatform.ShowCursor = false;
+			//SDLPlatform.ShowCursor = false;
 
 			// Load Shaders
 			Shader shader = Shader.FromFile("Shaders/test.glsl");
@@ -103,10 +103,9 @@ namespace CKGLTest
 
 				// Clear the screen
 				if (Input.Keyboard.Down(KeyCode.Space))
-					GL.ClearColour(Colour.Grey * 0.25f);
+					Graphics.Clear(Colour.Grey * 0.25f);
 				else
-					GL.ClearColour(Colour.Black);
-				GL.Clear(BufferBit.Color | BufferBit.Depth);
+					Graphics.Clear(Colour.Black);
 
 				// Set Shader uniforms
 				shader.SetUniform("offset", SDL2.SDL.SDL_GetTicks() * 0.0016f, SDL2.SDL.SDL_GetTicks() * 0.002f, SDL2.SDL.SDL_GetTicks() * 0.0023f);

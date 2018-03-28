@@ -1,14 +1,16 @@
-﻿using System;
-using System.Linq;
+﻿using CKGL;
+
+using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 
-using GLSizei = System.Int32;
 using GLEnum = System.UInt32;
+using GLSizei = System.Int32;
 
-namespace CKGL
+namespace OpenGL
 {
 	//[StructLayout(LayoutKind.Sequential, Pack = 4)]
 	//public struct GLint
@@ -1099,7 +1101,7 @@ namespace CKGL
 	public enum BufferBit : GLEnum
 	{
 		Depth = 0x00000100,
-		Color = 0x00004000
+		Colour = 0x00004000
 	}
 
 	public enum TextureTarget : GLEnum
@@ -1289,10 +1291,10 @@ namespace CKGL
 		Color14,
 		Color15,
 	}
-	//}
+}
 
-	//namespace CKGL
-	//{
+namespace CKGL
+{
 	public enum DrawMode : GLEnum
 	{
 		Points = 0x0000,

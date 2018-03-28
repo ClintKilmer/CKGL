@@ -3,6 +3,10 @@
 namespace CKGL
 {
 	#region VertexDeclaration
+	public interface IVertexType
+	{
+		VertexDeclaration VertexDeclaration { get; }
+	}
 	public class VertexDeclaration
 	{
 		public int Stride { get; private set; } = 0;
@@ -20,7 +24,7 @@ namespace CKGL
 			{
 				// Set VertexElement size
 				elements[i].Offset = totalOffset;
-				
+
 				// Set Vertex Stride
 				Stride.Max(totalOffset += GetTypeSize(elements[i].VertexElementFormat));
 			}
