@@ -33,7 +33,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\Shader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Platform\Window.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Platform\Platform.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)src\Core.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\Math.cs" />
   </ItemGroup>
   <ItemGroup>
