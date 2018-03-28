@@ -13,7 +13,7 @@ namespace CKGLTest
 
 		static void Main(string[] args)
 		{
-			SDLPlatform.Init(Title, WindowWidth, WindowHeight, false, true, false);
+			Platform.Init(Title, WindowWidth, WindowHeight, false, true, false);
 			Graphics.Init();
 			Audio.Init();
 			Input.Init();
@@ -61,18 +61,18 @@ namespace CKGLTest
 			// Variable for moving window on mouse click and drag
 			Point2 windowDraggingPosition = Point2.Zero;
 
-			while (SDLPlatform.Running)
+			while (Platform.Running)
 			{
 				Input.Clear();
 
-				SDLPlatform.PollEvents();
+				Platform.PollEvents();
 
 				Input.Update();
 
 				Audio.Update();
 
 				if (Input.Keyboard.Down(KeyCode.Backspace))
-					SDLPlatform.Running = false;
+					Platform.Running = false;
 
 				if (Input.Keyboard.Pressed(KeyCode.F11))
 					Window.Fullscreen = !Window.Fullscreen;
@@ -114,13 +114,13 @@ namespace CKGLTest
 				GL.DrawElements(DrawMode.Triangles, indices.Length, IndexType.UnsignedInt, 0);
 
 				// Swap buffers
-				SDLPlatform.SwapBuffers();
+				Platform.SwapBuffers();
 
 				//SDL.Delay(1);
 			}
 
 			Audio.Destroy();
-			SDLPlatform.Exit();
+			Platform.Exit();
 		}
 	}
 }

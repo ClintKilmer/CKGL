@@ -38,7 +38,7 @@ namespace CKGL
 
 			internal static void Init()
 			{
-				SDLPlatform.OnKeyDown += (keycode, scancode, repeated) =>
+				Platform.OnKeyDown += (keycode, scancode, repeated) =>
 				{
 					downKeyCode.Add(keycode);
 					downScanCode.Add(scancode);
@@ -59,7 +59,7 @@ namespace CKGL
 					}
 				};
 
-				SDLPlatform.OnKeyUp += (keycode, scancode, repeated) =>
+				Platform.OnKeyUp += (keycode, scancode, repeated) =>
 				{
 					downKeyCode.Remove(keycode);
 					releasedKeyCode.Add(keycode);
@@ -146,19 +146,19 @@ namespace CKGL
 
 			internal static void Init()
 			{
-				SDLPlatform.OnMouseButtonDown += id =>
+				Platform.OnMouseButtonDown += id =>
 				{
 					down[id] = true;
 					pressed[id] = true;
 				};
 
-				SDLPlatform.OnMouseButtonUp += id =>
+				Platform.OnMouseButtonUp += id =>
 				{
 					down[id] = false;
 					released[id] = true;
 				};
 
-				SDLPlatform.OnMouseScroll += (x, y) =>
+				Platform.OnMouseScroll += (x, y) =>
 				{
 					Scroll = new Point2(x, y);
 				};
@@ -180,7 +180,7 @@ namespace CKGL
 				LastPosition = Position;
 				LastPositionDisplay = PositionDisplay;
 
-				SDLPlatform.GetGlobalMousePosition(out int mx, out int my);
+				Platform.GetGlobalMousePosition(out int mx, out int my);
 				Position = new Point2((int)((mx - Window.X)/* / Window.PixelW*/),
 									  (int)((my - Window.Y)/* / Window.PixelH*/));
 				PositionDisplay = new Point2(mx, my);

@@ -5,7 +5,7 @@ using static SDL2.SDL;
 
 namespace CKGL
 {
-	public class SDLPlatform
+	public static class Platform
 	{
 		#region Events
 		public delegate void KeyEvent(KeyCode keyCode, ScanCode scanCode, bool repeat);

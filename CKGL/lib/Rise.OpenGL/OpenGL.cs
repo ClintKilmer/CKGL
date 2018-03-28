@@ -99,7 +99,7 @@ namespace OpenGL
 			{
 				if (field.Name.StartsWith("gl", StringComparison.Ordinal))
 				{
-					var addr = CKGL.SDLPlatform.GetProcAddress(field.Name);
+					var addr = CKGL.Platform.GetProcAddress(field.Name);
 					if (addr == IntPtr.Zero)
 						throw new Exception("OpenGL function not available: " + field.Name);
 

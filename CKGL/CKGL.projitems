@@ -31,9 +31,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\Point2.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\RectangleI.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\Shader.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)src\Platform\Platform.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Platform\Window.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)src\Platform\SDLPlatform.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Platform\Platform.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Core.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\Math.cs" />
   </ItemGroup>
