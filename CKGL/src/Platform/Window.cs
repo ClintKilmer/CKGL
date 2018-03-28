@@ -86,6 +86,7 @@ namespace CKGL
 				SDL_SetWindowSize(IntPtr, value.X, value.Y);
 			}
 		}
+
 		public static string Platform
 		{
 			get
@@ -100,48 +101,39 @@ namespace CKGL
 			public static uint On { get; } = (uint)SDL_WindowFlags.SDL_WINDOW_FULLSCREEN;
 			public static uint Desktop { get; } = (uint)SDL_WindowFlags.SDL_WINDOW_FULLSCREEN_DESKTOP;
 		}
-		private static bool fullscreen = false;
 		public static bool Fullscreen
 		{
 			get
 			{
-				return fullscreen;
+				return ((SDL_WindowFlags)SDL_GetWindowFlags(IntPtr) & SDL_WindowFlags.SDL_WINDOW_FULLSCREEN_DESKTOP) == SDL_WindowFlags.SDL_WINDOW_FULLSCREEN_DESKTOP;
 			}
 			set
 			{
-				if (fullscreen != value)
-				{
-					if (SDL_SetWindowFullscreen(IntPtr, value ? FullscreenMode.Desktop : FullscreenMode.Off) == 0)
-						fullscreen = value;
-				}
+				SDL_SetWindowFullscreen(IntPtr, value ? FullscreenMode.Desktop : FullscreenMode.Off);
 			}
 		}
 
-		private static bool resizeable = false;
 		public static bool Resizeable
 		{
 			get
 			{
-				return resizeable;
+				return ((SDL_WindowFlags)SDL_GetWindowFlags(IntPtr) & SDL_WindowFlags.SDL_WINDOW_RESIZABLE) == SDL_WindowFlags.SDL_WINDOW_RESIZABLE;
 			}
 			set
 			{
 				SDL_SetWindowResizable(IntPtr, value ? SDL_bool.SDL_TRUE : SDL_bool.SDL_FALSE);
-				resizeable = value;
 			}
 		}
 
-		private static bool borderless = false;
 		public static bool Borderless
 		{
 			get
 			{
-				return borderless;
+				return ((SDL_WindowFlags)SDL_GetWindowFlags(IntPtr) & SDL_WindowFlags.SDL_WINDOW_BORDERLESS) == SDL_WindowFlags.SDL_WINDOW_BORDERLESS;
 			}
 			set
 			{
 				SDL_SetWindowBordered(IntPtr, value ? SDL_bool.SDL_FALSE : SDL_bool.SDL_TRUE);
-				borderless = value;
 			}
 		}
 
@@ -150,11 +142,14 @@ namespace CKGL
 			SDL_SetWindowPosition(IntPtr, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
 		}
 
-		public static void Create(string title, int width, int height, bool resizeable, bool borderless)
+		public static void Create(string title, int width, int height, bool fullscreen, bool resizeable, bool borderless)
 		{
 			SDL_WindowFlags flags = SDL_WindowFlags.SDL_WINDOW_SHOWN |
 									SDL_WindowFlags.SDL_WINDOW_OPENGL |
 									SDL_WindowFlags.SDL_WINDOW_ALLOW_HIGHDPI;
+
+			if (fullscreen)
+				flags |= SDL_WindowFlags.SDL_WINDOW_FULLSCREEN_DESKTOP;
 
 			if (resizeable)
 				flags |= SDL_WindowFlags.SDL_WINDOW_RESIZABLE;

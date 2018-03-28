@@ -1,6 +1,6 @@
 ﻿using CKGL;
 
-using GLint = System.Int32;
+//using GLint = System.Int32;
 using GLuint = System.UInt32;
 //using GLfloat = System.Float;
 
@@ -14,8 +14,11 @@ namespace CKGLTest
 
 		static void Main(string[] args)
 		{
-			SDL.Init(Title, WindowWidth, WindowHeight, true, false);
+			SDLPlatform.Init(Title, WindowWidth, WindowHeight, false, true, false);
 			Audio.Init();
+			Input.Init();
+			
+			SDLPlatform.ShowCursor = false;
 
 			// Load Shaders
 			Shader shader = Shader.FromFile("Shaders/test.glsl");
@@ -55,24 +58,46 @@ namespace CKGLTest
 			GL.VertexAttribPointer(0, 3, VertexType.Float, false, 7 * sizeof(float), 0);
 			GL.VertexAttribPointer(1, 4, VertexType.Float, false, 7 * sizeof(float), 3 * sizeof(float));
 
-			while (SDL.Running)
+			// Variable for moving window on mouse click and drag
+			Point2 windowDraggingPosition = Point2.Zero;
+
+			while (SDLPlatform.Running)
 			{
+				Input.Clear();
+
+				SDLPlatform.PollEvents();
+
+				Input.Update();
+
 				Audio.Update();
 
 				if (Input.Keyboard.Down(KeyCode.Backspace))
-					SDL.Running = false;
+					SDLPlatform.Running = false;
 
-				if (Input.Keyboard.Pressed(KeyCode.Space))
+				if (Input.Keyboard.Pressed(KeyCode.F11))
+					Window.Fullscreen = !Window.Fullscreen;
+
+				if (Input.Keyboard.Pressed(KeyCode.F10))
+					Window.Borderless = !Window.Borderless;
+
+				if (Input.Keyboard.Pressed(KeyCode.F9))
+					Window.Resizeable = !Window.Resizeable;
+
+				if (Input.Mouse.LeftPressed)
+					windowDraggingPosition = Input.Mouse.Position;
+				else if (Input.Mouse.LeftDown)
+					Window.Position = Input.Mouse.PositionDisplay - windowDraggingPosition;
+
+				Window.Position -= Input.Mouse.Scroll;
+
+				if (Input.Keyboard.Pressed(KeyCode.Space) || Input.Mouse.LeftPressed)
 					sndPop1.Play();
-				if (Input.Keyboard.Released(KeyCode.Space))
+				if (Input.Keyboard.Released(KeyCode.Space) || Input.Mouse.LeftReleased)
 					sndPop2.Play();
 
 				//--------------------
 
-				//give windows some time as well as capture SDL events
-				SDL.PollEvents();
-
-				Window.Title = $"{Title} - Info: {Window.Platform} - Buffers: {Audio.BufferCount} - Sources: {Audio.SourceCount} - Position: [{Window.X}, {Window.Y}] - Size: [{Window.Width}, {Window.Height}]";
+				Window.Title = $"{Title} - Info: {Window.Platform} - Buffers: {Audio.BufferCount} - Sources: {Audio.SourceCount} - Position: [{Window.X}, {Window.Y}] - Size: [{Window.Width}, {Window.Height}] - Mouse: [{Input.Mouse.Position.X}, {Input.Mouse.Position.Y}]";
 
 				GL.Viewport(0, 0, Window.Width, Window.Height);
 
@@ -90,13 +115,13 @@ namespace CKGLTest
 				GL.DrawElements(DrawMode.Triangles, indices.Length, IndexType.UnsignedInt, 0);
 
 				// Swap buffers
-				SDL.SwapBuffers();
+				SDLPlatform.SwapBuffers();
 
 				//SDL.Delay(1);
 			}
 
 			Audio.Destroy();
-			SDL.Exit();
+			SDLPlatform.Exit();
 		}
 	}
 }

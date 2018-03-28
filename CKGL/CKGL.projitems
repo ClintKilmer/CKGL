@@ -30,8 +30,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\Point2.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\RectangleI.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\Shader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Platform\Platform.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Platform\Window.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)src\Platform\SDL.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Platform\SDLPlatform.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Core.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\Math.cs" />
   </ItemGroup>
@@ -39,9 +40,6 @@
     <None Include="$(MSBuildThisFileDirectory)CKGLTest.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="$(MSBuildThisFileDirectory)src\Platform\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="$(MSBuildThisFileDirectory)ToDo.txt" />

@@ -5,13 +5,37 @@ using static SDL2.SDL;
 
 namespace CKGL
 {
-	public static class SDL
+	public class SDLPlatform : Platform
 	{
 		public static bool Running = false;
 		public static string OSVersion { get; private set; }
 		public static IntPtr GL_Context;
 
 		private static SDL_Event Event;
+
+		public static bool ShowCursor
+		{
+			get
+			{
+				return SDL_ShowCursor(SDL_QUERY) == 1;
+			}
+			set
+			{
+				SDL_ShowCursor(value ? SDL_ENABLE : SDL_DISABLE);
+			}
+		}
+
+		public static string Clipboard
+		{
+			get
+			{
+				return SDL_GetClipboardText();
+			}
+			set
+			{
+				SDL_SetClipboardText(value);
+			}
+		}
 
 		#region Windows - Set Dll Directory - x64 | x86 - https://github.com/FNA-XNA/FNA/wiki/4:-FNA-and-Windows-API#64-bit-support
 		[DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
@@ -25,7 +49,7 @@ namespace CKGL
 		#endregion
 
 		#region Init/Exit Methods
-		public static void Init(string windowTitle, int windowWidth, int windowHeight, bool windowResizeable, bool windowBorderless)
+		public static void Init(string windowTitle, int windowWidth, int windowHeight, bool windowFullscreen, bool windowResizeable, bool windowBorderless)
 		{
 			#region Flibit - shims
 			SetDllDirectory();
@@ -105,7 +129,7 @@ namespace CKGL
 			//}
 
 			// Create Window
-			Window.Create(windowTitle, windowWidth, windowHeight, windowResizeable, windowBorderless);
+			Window.Create(windowTitle, windowWidth, windowHeight, windowFullscreen, windowResizeable, windowBorderless);
 
 			//OpenGL attributes
 			SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_MAJOR_VERSION, 3);
@@ -151,8 +175,6 @@ namespace CKGL
 
 		public static void PollEvents()
 		{
-			Input.Clear();
-
 			while (SDL_PollEvent(out Event) != 0)
 			{
 				//Console.WriteLine(Event.type.ToString());
@@ -162,43 +184,43 @@ namespace CKGL
 						Running = false;
 						break;
 					case SDL_EventType.SDL_KEYDOWN:
-						Input.Keyboard.OnKeyDown((KeyCode)Event.key.keysym.sym, (ScanCode)Event.key.keysym.scancode, Event.key.repeat);
+						OnKeyDown?.Invoke((KeyCode)Event.key.keysym.sym, (ScanCode)Event.key.keysym.scancode, Event.key.repeat != 0);
 						break;
 					case SDL_EventType.SDL_KEYUP:
-						Input.Keyboard.OnKeyUp((KeyCode)Event.key.keysym.sym, (ScanCode)Event.key.keysym.scancode);
+						OnKeyUp?.Invoke((KeyCode)Event.key.keysym.sym, (ScanCode)Event.key.keysym.scancode, Event.key.repeat != 0);
 						break;
-					//case SDL_EventType.SDL_MOUSEMOTION:
-					//	OnMouseMove?.Invoke(ev.Motion.X, ev.Motion.Y);
-					//	break;
-					//case SDL_EventType.SDL_MOUSEBUTTONDOWN:
-					//	OnMouseButtonDown?.Invoke(ev.Button.Button);
-					//	break;
-					//case SDL_EventType.SDL_MOUSEBUTTONUP:
-					//	OnMouseButtonUp?.Invoke(ev.Button.Button);
-					//	break;
-					//case SDL_EventType.SDL_MOUSEWHEEL:
-					//	OnMouseScroll?.Invoke(ev.Wheel.X, ev.Wheel.Y);
-					//	break;
+					case SDL_EventType.SDL_MOUSEMOTION:
+						OnMouseMove?.Invoke(Event.motion.x, Event.motion.y);
+						break;
+					case SDL_EventType.SDL_MOUSEBUTTONDOWN:
+						OnMouseButtonDown?.Invoke(Event.button.button);
+						break;
+					case SDL_EventType.SDL_MOUSEBUTTONUP:
+						OnMouseButtonUp?.Invoke(Event.button.button);
+						break;
+					case SDL_EventType.SDL_MOUSEWHEEL:
+						OnMouseScroll?.Invoke(Event.wheel.x, Event.wheel.y);
+						break;
 					//case SDL_EventType.SDL_JOYDEVICEADDED:
-					//	OnJoyDeviceAdd?.Invoke(ev.JDevice.Which);
+					//	OnJoyDeviceAdd?.Invoke(Event.JDevice.Which);
 					//	break;
 					//case SDL_EventType.SDL_JOYDEVICEREMOVED:
-					//	OnJoyDeviceRemove?.Invoke(ev.JDevice.Which);
+					//	OnJoyDeviceRemove?.Invoke(Event.JDevice.Which);
 					//	break;
 					//case SDL_EventType.SDL_JOYBUTTONDOWN:
-					//	OnJoyButtonDown?.Invoke(ev.JButton.Which, ev.JButton.Button);
+					//	OnJoyButtonDown?.Invoke(Event.JButton.Which, Event.JButton.Button);
 					//	break;
 					//case SDL_EventType.SDL_JOYBUTTONUP:
-					//	OnJoyButtonDown?.Invoke(ev.JButton.Which, ev.JButton.Button);
+					//	OnJoyButtonDown?.Invoke(Event.JButton.Which, Event.JButton.Button);
 					//	break;
 					//case SDL_EventType.SDL_JOYAXISMOTION:
-					//	OnJoyAxisMove?.Invoke(ev.JAxis.Which, ev.JAxis.Axis, ev.JAxis.Value / (float)short.MaxValue);
+					//	OnJoyAxisMove?.Invoke(Event.JAxis.Which, Event.JAxis.Axis, Event.JAxis.Value / (float)short.MaxValue);
 					//	break;
 					//case SDL_EventType.SDL_JOYHATMOTION:
-					//	OnJoyAxisMove?.Invoke(ev.JAxis.Which, ev.JAxis.Axis, ev.JAxis.Value / (float)short.MaxValue);
+					//	OnJoyAxisMove?.Invoke(Event.JAxis.Which, Event.JAxis.Axis, Event.JAxis.Value / (float)short.MaxValue);
 					//	break;
 					//case SDL_EventType.SDL_JOYBALLMOTION:
-					//	OnJoyAxisMove?.Invoke(ev.JAxis.Which, ev.JAxis.Axis, ev.JAxis.Value / (float)short.MaxValue);
+					//	OnJoyAxisMove?.Invoke(Event.JAxis.Which, Event.JAxis.Axis, Event.JAxis.Value / (float)short.MaxValue);
 					//	break;
 					case SDL_EventType.SDL_WINDOWEVENT:
 						if (Event.window.windowID == Window.ID)
@@ -206,11 +228,47 @@ namespace CKGL
 							//Console.WriteLine(Event.window.windowEvent.ToString());
 							switch (Event.window.windowEvent)
 							{
+								case SDL_WindowEventID.SDL_WINDOWEVENT_CLOSE:
+									OnWinClose?.Invoke();
+									break;
+								case SDL_WindowEventID.SDL_WINDOWEVENT_SHOWN:
+									OnWinShown?.Invoke();
+									break;
+								case SDL_WindowEventID.SDL_WINDOWEVENT_HIDDEN:
+									OnWinHidden?.Invoke();
+									break;
+								case SDL_WindowEventID.SDL_WINDOWEVENT_EXPOSED:
+									OnWinExposed?.Invoke();
+									break;
+								case SDL_WindowEventID.SDL_WINDOWEVENT_MOVED:
+									OnWinMoved?.Invoke();
+									break;
+								case SDL_WindowEventID.SDL_WINDOWEVENT_RESIZED:
+									OnWinResized?.Invoke();
+									break;
+								case SDL_WindowEventID.SDL_WINDOWEVENT_MINIMIZED:
+									OnWinMinimized?.Invoke();
+									break;
+								case SDL_WindowEventID.SDL_WINDOWEVENT_MAXIMIZED:
+									OnWinMaximized?.Invoke();
+									break;
+								case SDL_WindowEventID.SDL_WINDOWEVENT_RESTORED:
+									OnWinRestored?.Invoke();
+									break;
+								case SDL_WindowEventID.SDL_WINDOWEVENT_ENTER:
+									OnWinEnter?.Invoke();
+									break;
+								case SDL_WindowEventID.SDL_WINDOWEVENT_LEAVE:
+									OnWinLeave?.Invoke();
+									break;
 								case SDL_WindowEventID.SDL_WINDOWEVENT_FOCUS_GAINED:
-									Console.WriteLine("SDL_WINDOWEVENT_FOCUS_GAINED");
+									OnWinFocusGained?.Invoke();
 									break;
 								case SDL_WindowEventID.SDL_WINDOWEVENT_FOCUS_LOST:
-									Console.WriteLine("SDL_WINDOWEVENT_FOCUS_LOST");
+									OnWinFocusLost?.Invoke();
+									break;
+								default:
+									OnWinOtherEvent?.Invoke((int)Event.window.windowEvent);
 									break;
 							}
 						}
@@ -219,14 +277,9 @@ namespace CKGL
 			}
 		}
 
-		public static string GetClipboard()
+		public static void GetGlobalMousePosition(out int x, out int y)
 		{
-			return SDL_GetClipboardText();
-		}
-
-		public static void SetClipboard(string text)
-		{
-			SDL_SetClipboardText(text);
+			SDL_GetGlobalMouseState(out x, out y);
 		}
 
 		public static IntPtr GetProcAddress(string proc)
@@ -262,16 +315,16 @@ namespace CKGL
 		private static SDL_EventFilter win32OnPaint = Win32OnPaint;
 		private static unsafe int Win32OnPaint(IntPtr func, IntPtr evtPtr)
 		{
-			//SDL.SDL_Event* evt = (SDL.SDL_Event*)evtPtr;
-			//if (evt->type == SDL.SDL_EventType.SDL_WINDOWEVENT &&
-			//	evt->window.windowEvent == SDL.SDL_WindowEventID.SDL_WINDOWEVENT_EXPOSED)
-			//{
-			//	if (evt->window.windowID == SDL.SDL_GetWindowID(Window.IntPtr))
-			//	{
-			//		game.RedrawWindow();
-			//		return 0;
-			//	}
-			//}
+			SDL_Event* evt = (SDL_Event*)evtPtr;
+			if (evt->type == SDL_EventType.SDL_WINDOWEVENT &&
+				evt->window.windowEvent == SDL_WindowEventID.SDL_WINDOWEVENT_EXPOSED)
+			{
+				if (evt->window.windowID == SDL_GetWindowID(Window.IntPtr))
+				{
+					//game.RedrawWindow();
+					return 0;
+				}
+			}
 			return 1;
 		}
 		#endregion

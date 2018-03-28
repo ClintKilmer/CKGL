@@ -4,9 +4,22 @@ namespace CKGL
 {
 	public class Input
 	{
+		internal static void Init()
+		{
+			Keyboard.Init();
+			Mouse.Init();
+		}
+
 		internal static void Clear()
 		{
 			Keyboard.Clear();
+			Mouse.Clear();
+		}
+
+		internal static void Update()
+		{
+			//Keyboard.Update();
+			Mouse.Update();
 		}
 
 		public static class Keyboard
@@ -23,9 +36,46 @@ namespace CKGL
 			private static HashSet<ScanCode> releasedScanCode = new HashSet<ScanCode>();
 			private static HashSet<ScanCode> repeatedScanCode = new HashSet<ScanCode>();
 
+			internal static void Init()
+			{
+				SDLPlatform.OnKeyDown += (keycode, scancode, repeated) =>
+				{
+					downKeyCode.Add(keycode);
+					downScanCode.Add(scancode);
+
+					if (repeated)
+					{
+						repeatedKeyCode.Add(keycode);
+						repeatedScanCode.Add(scancode);
+
+						System.Console.WriteLine("repeated: " + keycode);
+					}
+					else
+					{
+						pressedKeyCode.Add(keycode);
+						pressedScanCode.Add(scancode);
+
+						System.Console.WriteLine("pressed:  " + keycode);
+					}
+				};
+
+				SDLPlatform.OnKeyUp += (keycode, scancode, repeated) =>
+				{
+					downKeyCode.Remove(keycode);
+					releasedKeyCode.Add(keycode);
+					repeatedKeyCode.Add(keycode);
+
+					downScanCode.Remove(scancode);
+					releasedScanCode.Add(scancode);
+					repeatedScanCode.Add(scancode);
+
+					System.Console.WriteLine("released: " + keycode);
+				};
+			}
+
 			internal static void Clear()
 			{
-				System.Console.WriteLine("down:     " + string.Join(", ", downKeyCode));
+				//System.Console.WriteLine("down:     " + string.Join(", ", downKeyCode));
 
 				pressedKeyCode.Clear();
 				releasedKeyCode.Clear();
@@ -34,40 +84,6 @@ namespace CKGL
 				pressedScanCode.Clear();
 				releasedScanCode.Clear();
 				repeatedScanCode.Clear();
-			}
-
-			internal static void OnKeyDown(KeyCode keycode, ScanCode scancode, byte repeated)
-			{
-				downKeyCode.Add(keycode);
-				downScanCode.Add(scancode);
-
-				if(repeated == 0)
-				{
-					pressedKeyCode.Add(keycode);
-					pressedScanCode.Add(scancode);
-
-					//System.Console.WriteLine("pressed:  " + keycode);
-				}
-				else
-				{
-					repeatedKeyCode.Add(keycode);
-					repeatedScanCode.Add(scancode);
-
-					//System.Console.WriteLine("repeated: " + keycode);
-				}
-			}
-
-			internal static void OnKeyUp(KeyCode keycode, ScanCode scancode)
-			{
-				downKeyCode.Remove(keycode);
-				releasedKeyCode.Add(keycode);
-				repeatedKeyCode.Add(keycode);
-
-				downScanCode.Remove(scancode);
-				releasedScanCode.Add(scancode);
-				repeatedScanCode.Add(scancode);
-
-				//System.Console.WriteLine("released: " + keycode);
 			}
 
 			public static bool Down(KeyCode key)
@@ -115,8 +131,143 @@ namespace CKGL
 				return Pressed(key) || Repeated(key);
 			}
 		}
+
+		public static class Mouse
+		{
+			public static Point2 LastPosition { get; set; }
+			public static Point2 Position { get; private set; }
+			public static Point2 LastPositionDisplay { get; private set; }
+			public static Point2 PositionDisplay { get; private set; }
+			public static Point2 Scroll { get; private set; }
+
+			static bool[] down = new bool[16];
+			static bool[] pressed = new bool[16];
+			static bool[] released = new bool[16];
+
+			internal static void Init()
+			{
+				SDLPlatform.OnMouseButtonDown += id =>
+				{
+					down[id] = true;
+					pressed[id] = true;
+				};
+
+				SDLPlatform.OnMouseButtonUp += id =>
+				{
+					down[id] = false;
+					released[id] = true;
+				};
+
+				SDLPlatform.OnMouseScroll += (x, y) =>
+				{
+					Scroll = new Point2(x, y);
+				};
+			}
+
+			internal static void Clear()
+			{
+				Scroll = Point2.Zero;
+
+				for (int i = 0; i < 16; i++)
+				{
+					pressed[i] = false;
+					released[i] = false;
+				}
+			}
+
+			internal static void Update()
+			{
+				LastPosition = Position;
+				LastPositionDisplay = PositionDisplay;
+
+				SDLPlatform.GetGlobalMousePosition(out int mx, out int my);
+				Position = new Point2((int)((mx - Window.X)/* / Window.PixelW*/),
+									  (int)((my - Window.Y)/* / Window.PixelH*/));
+				PositionDisplay = new Point2(mx, my);
+			}
+
+			public static bool Down(MouseButton button)
+			{
+				return down[(int)button];
+			}
+
+			public static bool Pressed(MouseButton button)
+			{
+				return pressed[(int)button];
+			}
+
+			public static bool Released(MouseButton button)
+			{
+				return released[(int)button];
+			}
+
+			public static bool LeftDown
+			{
+				get { return Down(MouseButton.Left); }
+			}
+
+			public static bool LeftPressed
+			{
+				get { return Pressed(MouseButton.Left); }
+			}
+
+			public static bool LeftReleased
+			{
+				get { return Released(MouseButton.Left); }
+			}
+
+			public static bool RightDown
+			{
+				get { return Down(MouseButton.Right); }
+			}
+
+			public static bool RightPressed
+			{
+				get { return Pressed(MouseButton.Right); }
+			}
+
+			public static bool RightReleased
+			{
+				get { return Released(MouseButton.Right); }
+			}
+
+			public static bool MiddleDown
+			{
+				get { return Down(MouseButton.Middle); }
+			}
+
+			public static bool MiddlePressed
+			{
+				get { return Pressed(MouseButton.Middle); }
+			}
+
+			public static bool MiddleReleased
+			{
+				get { return Released(MouseButton.Middle); }
+			}
+
+			public static int X
+			{
+				get { return Position.X; }
+			}
+
+			public static int Y
+			{
+				get { return Position.Y; }
+			}
+
+			public static int ScrollX
+			{
+				get { return Scroll.X; }
+			}
+
+			public static int ScrollY
+			{
+				get { return Scroll.Y; }
+			}
+		}
 	}
-	
+
 	public enum MouseButton
 	{
 		Left = 1,
