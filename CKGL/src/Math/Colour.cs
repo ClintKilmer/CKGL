@@ -15,7 +15,7 @@ namespace CKGL
 		public float R { get { return r / 255f; } set { r = (byte)(value * 255); } }
 		public float G { get { return g / 255f; } set { g = (byte)(value * 255); } }
 		public float B { get { return b / 255f; } set { b = (byte)(value * 255); } }
-		public float A { get { return a / 255f; } set { a = (byte)(value * 255); } } 
+		public float A { get { return a / 255f; } set { a = (byte)(value * 255); } }
 		#endregion
 
 		#region Constructors
@@ -32,6 +32,13 @@ namespace CKGL
 			g = (byte)((val >> 16) & 0xff);
 			b = (byte)((val >> 8) & 0xff);
 			a = (byte)(val & 0xff);
+		}
+		public Colour(float r, float g, float b, float a)
+		{
+			this.r = (byte)(r * 255);
+			this.g = (byte)(g * 255);
+			this.b = (byte)(b * 255);
+			this.a = (byte)(a * 255);
 		}
 		#endregion
 

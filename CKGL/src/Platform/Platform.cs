@@ -49,12 +49,26 @@ namespace CKGL
 
 		public static bool Running { get; private set; } = false;
 
-		private static IntPtr GL_Context;
 		private static SDL_Event Event;
 
-		public static string OSVersion
+		public static string OS
 		{
 			get { return SDL_GetPlatform(); }
+		}
+
+		public static uint TotalMilliseconds
+		{
+			get { return SDL_GetTicks(); }
+		}
+
+		public static ulong PerformanceCounter
+		{
+			get { return SDL_GetPerformanceCounter(); }
+		}
+
+		public static ulong PerformanceFrequency
+		{
+			get { return SDL_GetPerformanceFrequency(); }
 		}
 
 		public static bool ShowCursor
@@ -81,7 +95,7 @@ namespace CKGL
 		#endregion
 
 		#region Init/Exit Methods
-		public static void Init(string windowTitle, int windowWidth, int windowHeight, bool windowFullscreen, bool windowResizeable, bool windowBorderless)
+		public static void Init(string windowTitle, int windowWidth, int windowHeight, bool windowVSync, bool windowFullscreen, bool windowResizable, bool windowBorderless)
 		{
 			SetDllDirectory();
 
@@ -89,7 +103,7 @@ namespace CKGL
 			// Missing libs?
 			try
 			{
-				Console.WriteLine($"Platform: {OSVersion}");
+				Console.WriteLine($"Platform: {OS}");
 			}
 			catch (Exception e)
 			{
@@ -106,7 +120,7 @@ namespace CKGL
 			SDL_SetMainReady();
 
 			// Also, Windows is an idiot. -flibit
-			if (OSVersion.Equals("Windows") || OSVersion.Equals("WinRT"))
+			if (OS.Equals("Windows") || OS.Equals("WinRT"))
 			{
 				// Visual Studio is an idiot.
 				if (System.Diagnostics.Debugger.IsAttached)
@@ -137,7 +151,7 @@ namespace CKGL
 			//		mappingsDB
 			//	);
 			//}
-			
+
 			if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER | SDL_INIT_HAPTIC) < 0)
 			{
 				Destroy();
@@ -158,9 +172,6 @@ namespace CKGL
 			//	INTERNAL_AddInstance(evt[0].cdevice.which);
 			//}
 
-			// Create Window
-			Window.Create(windowTitle, windowWidth, windowHeight, windowFullscreen, windowResizeable, windowBorderless);
-
 			//OpenGL attributes
 			SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 			SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_MINOR_VERSION, 1);
@@ -172,23 +183,15 @@ namespace CKGL
 			//SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_MULTISAMPLEBUFFERS, 1);
 			//SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_MULTISAMPLESAMPLES, 3);
 
-			// Create OpenGL Context
-			if ((GL_Context = SDL_GL_CreateContext(Window.IntPtr)) == IntPtr.Zero)
-			{
-				Destroy();
-				throw new Exception(SDL_GetError());
-			}
-			SDL_GL_MakeCurrent(Window.IntPtr, GL_Context);
-			VSync = true;
+			// Create Window
+			Window.Create(windowTitle, windowWidth, windowHeight, windowVSync, windowFullscreen, windowResizable, windowBorderless);
 
 			Running = true;
 		}
 
 		public static void Destroy()
 		{
-			if (GL_Context != IntPtr.Zero)
-				SDL_GL_DeleteContext(GL_Context);
-
+			Window.Destroy();
 			SDL_Quit();
 		}
 		#endregion
@@ -311,23 +314,6 @@ namespace CKGL
 		public static IntPtr GetProcAddress(string proc)
 		{
 			return SDL_GL_GetProcAddress(proc);
-		}
-
-		public class VSyncMode
-		{
-			public static int LateSwapTearing { get; } = -1; // TODO
-			public static int Off { get; } = 0;
-			public static int On { get; } = 1;
-		}
-		public static bool VSync
-		{
-			get { return SDL_GL_GetSwapInterval() == VSyncMode.On; }
-			set { SDL_GL_SetSwapInterval(value ? VSyncMode.On : VSyncMode.Off); }
-		}
-
-		public static void SwapBuffers()
-		{
-			SDL_GL_SwapWindow(Window.IntPtr);
 		}
 
 		public static void Delay(uint ms)

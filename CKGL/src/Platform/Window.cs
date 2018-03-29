@@ -3,13 +3,10 @@ using static SDL2.SDL;
 
 namespace CKGL
 {
-	public class Window
+	public static class Window
 	{
-		public static IntPtr IntPtr = IntPtr.Zero;
-		public static explicit operator IntPtr(Window Window)
-		{
-			return IntPtr;
-		}
+		private static IntPtr IntPtr = IntPtr.Zero;
+		private static IntPtr GL_Context;
 
 		public static uint ID
 		{
@@ -87,12 +84,16 @@ namespace CKGL
 			}
 		}
 
-		public static string Platform
+		public class VSyncMode
 		{
-			get
-			{
-				return $"{SDL_GetPlatform()} | {(SDL_GetTicks() * 0.001f).ToString("n0")}";
-			}
+			public static int LateSwapTearing { get; } = -1; // TODO
+			public static int Off { get; } = 0;
+			public static int On { get; } = 1;
+		}
+		public static bool VSync
+		{
+			get { return SDL_GL_GetSwapInterval() == VSyncMode.On; }
+			set { SDL_GL_SetSwapInterval(value ? VSyncMode.On : VSyncMode.Off); }
 		}
 
 		public static class FullscreenMode
@@ -113,7 +114,7 @@ namespace CKGL
 			}
 		}
 
-		public static bool Resizeable
+		public static bool Resizable
 		{
 			get
 			{
@@ -142,7 +143,12 @@ namespace CKGL
 			SDL_SetWindowPosition(IntPtr, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
 		}
 
-		public static void Create(string title, int width, int height, bool fullscreen, bool resizeable, bool borderless)
+		public static void SwapBuffers()
+		{
+			SDL_GL_SwapWindow(IntPtr);
+		}
+
+		public static void Create(string title, int width, int height, bool vsync, bool fullscreen, bool resizable, bool borderless)
 		{
 			SDL_WindowFlags flags = SDL_WindowFlags.SDL_WINDOW_SHOWN |
 									SDL_WindowFlags.SDL_WINDOW_OPENGL |
@@ -151,7 +157,7 @@ namespace CKGL
 			if (fullscreen)
 				flags |= SDL_WindowFlags.SDL_WINDOW_FULLSCREEN_DESKTOP;
 
-			if (resizeable)
+			if (resizable)
 				flags |= SDL_WindowFlags.SDL_WINDOW_RESIZABLE;
 
 			if (borderless)
@@ -162,6 +168,20 @@ namespace CKGL
 				SDL_Quit();
 				throw new Exception(SDL_GetError());
 			}
+			// Create OpenGL Context
+			if ((GL_Context = SDL_GL_CreateContext(IntPtr)) == IntPtr.Zero)
+			{
+				Destroy();
+				throw new Exception(SDL_GetError());
+			}
+			SDL_GL_MakeCurrent(IntPtr, GL_Context);
+			VSync = vsync;
+		}
+
+		public static void Destroy()
+		{
+			if (GL_Context != IntPtr.Zero)
+				SDL_GL_DeleteContext(GL_Context);
 		}
 	}
 }
