@@ -390,8 +390,7 @@ namespace OpenGL
 		static _glGetShaderInfoLog glGetShaderInfoLog;
 		public static string GetShaderInfoLog(uint shader)
 		{
-			int len;
-			GetShader(shader, ShaderParam.InfoLogLength, out len);
+			GetShader(shader, ShaderParam.InfoLogLength, out int len);
 			var bytes = new byte[len];
 			glGetShaderInfoLog(shader, len, out len, bytes);
 			CheckError();
@@ -435,8 +434,7 @@ namespace OpenGL
 		static _glGetProgramInfoLog glGetProgramInfoLog;
 		public static string GetProgramInfoLog(uint program)
 		{
-			int len;
-			GetProgram(program, ProgramParam.InfoLogLength, out len);
+			GetProgram(program, ProgramParam.InfoLogLength, out int len);
 			var bytes = new byte[len];
 			glGetProgramInfoLog(program, len, out len, bytes);
 			CheckError();
@@ -452,10 +450,9 @@ namespace OpenGL
 		{
 			if (validUniformTypes == null)
 				validUniformTypes = (UniformType[])Enum.GetValues(typeof(UniformType));
-			GLSizei length;
 			fixed (byte* ptr = uniformName)
 			{
-				glGetActiveUniform(program, index, uniformName.Length, out length, out size, out type, ptr);
+				glGetActiveUniform(program, index, uniformName.Length, out GLSizei length, out size, out type, ptr);
 				name = length > 0 ? Encoding.UTF8.GetString(ptr, length) : null;
 				if (!validUniformTypes.Contains(type))
 					size = 0;
@@ -615,6 +612,14 @@ namespace OpenGL
 		{
 			var dataPtr = Marshal.UnsafeAddrOfPinnedArrayElement(data, 0);
 			BufferData(target, size, dataPtr, usage);
+		}
+
+		delegate void _glBufferSubData(BufferTarget target, IntPtr offset, IntPtr size, IntPtr data);
+		static _glBufferSubData glBufferSubData;
+		public static void BufferSubData(BufferTarget target, int offset, int size, IntPtr data)
+		{
+			glBufferSubData(target, new IntPtr(offset), new IntPtr(size), data);
+			CheckError();
 		}
 
 		unsafe delegate void _glGenFramebuffers(GLSizei n, uint* framebuffers);
@@ -1614,12 +1619,12 @@ namespace CKGL
 	public enum VertexType : GLEnum
 	{
 		Byte = 0x1400,
-		UnsignedByte,
-		Short,
-		UnsignedShort,
-		Int,
-		UnsignedInt,
-		Float
+		UnsignedByte = 0x1401,
+		Short = 0x1402,
+		UnsignedShort = 0x1403,
+		Int = 0x1404,
+		UnsignedInt = 0x1405,
+		Float = 0x1406
 	}
 
 	public enum CullFace : GLEnum
