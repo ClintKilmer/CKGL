@@ -217,14 +217,14 @@ namespace CKGL
 			{
 				GL.Uniform4F(Location, x, y, z, w);
 			}
-			//public void SetUniform(Vector2 value)
-			//{
-			//	GL.Uniform2F(Location, value.X, value.Y);
-			//}
-			//public void SetUniform(Vector3 value)
-			//{
-			//	GL.Uniform3F(Location, value.X, value.Y, value.Z);
-			//}
+			public void SetUniform(Vector2 value)
+			{
+				GL.Uniform2F(Location, value.X, value.Y);
+			}
+			public void SetUniform(Vector3 value)
+			{
+				GL.Uniform3F(Location, value.X, value.Y, value.Z);
+			}
 			//public void SetUniform(Vector4 value)
 			//{
 			//	GL.Uniform4F(Location, value.X, value.Y, value.Z, value.W);

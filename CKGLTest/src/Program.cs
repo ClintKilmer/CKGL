@@ -125,7 +125,7 @@ namespace CKGLTest
 					Graphics.Clear(Colour.Black);
 
 				// Set Shader uniforms
-				//shader.SetUniform("offset", SDL2.SDL.SDL_GetTicks() * 0.0016f, SDL2.SDL.SDL_GetTicks() * 0.002f, SDL2.SDL.SDL_GetTicks() * 0.0023f);
+				//shader.SetUniform("offset", Time.TotalMilliseconds * 0.0016f, Time.TotalMilliseconds * 0.002f, Time.TotalMilliseconds * 0.0023f);
 
 				int num = 3 * 5;
 				Vertex[] vertices = new Vertex[num];
