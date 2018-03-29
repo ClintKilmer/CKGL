@@ -18,6 +18,8 @@ namespace CKGLTest
 			Audio.Init();
 			Input.Init();
 
+			SDL2.SDL.SDL_CreateWindowAndRenderer(400, 800, SDL2.SDL.SDL_WindowFlags.SDL_WINDOW_SHOWN, out System.IntPtr debugWindow, out System.IntPtr debugRenderer);
+
 			//SDLPlatform.ShowCursor = false;
 
 			// Load Shaders
@@ -34,12 +36,12 @@ namespace CKGLTest
 			// Create a Vertex Buffer Object and copy the vertex data to it
 			GLuint vbo = GL.GenBuffer();
 			GL.BindBuffer(BufferTarget.Array, vbo);
-			float[] verticies = {
+			float[] interlacedBuffer = {
 				-0.5f,  -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, // Top-left
 				 0.5f,  -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // Top-right
 				 0.0f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f
 			};
-			GL.BufferData(BufferTarget.Array, sizeof(float) * verticies.Length, verticies, BufferUsage.StaticDraw);
+			GL.BufferData(BufferTarget.Array, sizeof(float) * interlacedBuffer.Length, interlacedBuffer, BufferUsage.StaticDraw);
 
 			// Create an Index Buffer
 			GLuint ibo = GL.GenBuffer();
@@ -84,7 +86,7 @@ namespace CKGLTest
 					Window.Resizeable = !Window.Resizeable;
 
 				if (Input.Mouse.LeftPressed)
-					windowDraggingPosition = Input.Mouse.Position;
+					windowDraggingPosition = Input.Mouse.LastPosition;
 				else if (Input.Mouse.LeftDown)
 					Window.Position = Input.Mouse.PositionDisplay - windowDraggingPosition;
 
@@ -102,7 +104,7 @@ namespace CKGLTest
 				// Clear the screen
 				if (Input.Keyboard.Down(KeyCode.Space))
 				{ }
-					//Graphics.Clear(Colour.Grey * 0.25f);
+				//Graphics.Clear(Colour.Grey * 0.25f);
 				else
 					Graphics.Clear(Colour.Black);
 
