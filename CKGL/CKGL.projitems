@@ -30,7 +30,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)src\Input\ScanCode.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\Colour.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\Math.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)src\Math\MathEXT.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Math\Extensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Math\Vector3.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\Vector2.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\Point2.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\RectangleI.cs" />

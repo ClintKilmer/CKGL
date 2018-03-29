@@ -5,25 +5,12 @@ namespace CKGL
 	[StructLayout(LayoutKind.Sequential, Pack = 4)]
 	public struct RectangleI
 	{
-		public static readonly RectangleI Empty = new RectangleI();
-
 		public int X;
 		public int Y;
 		public int W;
 		public int H;
 
-		public RectangleI(int x, int y, int w, int h)
-		{
-			X = x;
-			Y = y;
-			W = w;
-			H = h;
-		}
-		public RectangleI(int w, int h) : this(0, 0, w, h)
-		{
-
-		}
-
+		#region Properties
 		public int Right
 		{
 			get { return X + W; }
@@ -152,7 +139,34 @@ namespace CKGL
 		{
 			get { return new Point2(X + W, CenterY); }
 		}
+		#endregion
 
+		#region Constructors
+		public RectangleI(int x, int y, int w, int h)
+		{
+			X = x;
+			Y = y;
+			W = w;
+			H = h;
+		}
+		public RectangleI(int w, int h) : this(0, 0, w, h)
+		{
+
+		}
+		#endregion
+
+		#region Static Constructors
+		public static readonly RectangleI Empty = new RectangleI();
+		#endregion
+
+		#region Overrides
+		public override string ToString()
+		{
+			return $"{X}, {Y}, {W}, {H}";
+		}
+		#endregion
+
+		#region Operators
 		public static bool operator ==(RectangleI a, RectangleI b)
 		{
 			return a.X == b.X && a.Y == b.Y && a.W == b.W && a.H == b.H;
@@ -171,15 +185,14 @@ namespace CKGL
 		{
 			return new RectangleI(a.X / b, a.Y / b, a.W / b, a.H / b);
 		}
+		#endregion
 
+		// TODO
+		#region Implicit Convertion Operators
 		//public static implicit operator Rectangle(RectangleI r)
 		//{
 		//	return new Rectangle(r.X, r.Y, r.W, r.H);
-		//}
-
-		public override string ToString()
-		{
-			return string.Format("{0}, {1}, {2}, {3}", X, Y, W, H);
-		}
+		//} 
+		#endregion
 	}
 }

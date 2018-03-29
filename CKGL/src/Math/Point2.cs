@@ -5,22 +5,26 @@ namespace CKGL
 	[StructLayout(LayoutKind.Sequential, Pack = 4)]
 	public struct Point2
 	{
-		public static readonly Point2 Zero = new Point2(0, 0);
-		public static readonly Point2 One = new Point2(1, 1);
-
 		public int X;
 		public int Y;
 
+		#region Constructors
 		public Point2(int x, int y)
 		{
 			X = x;
 			Y = y;
 		}
+		#endregion
+
+		#region Static Constructors
+		public static readonly Point2 Zero = new Point2(0, 0);
+		public static readonly Point2 One = new Point2(1, 1);
+		#endregion
 
 		#region Overrides
 		public override string ToString()
 		{
-			return string.Format("{0}, {1}", X, Y);
+			return $"{X}, {Y}";
 		}
 		#endregion
 
