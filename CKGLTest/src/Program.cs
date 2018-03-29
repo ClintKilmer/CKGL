@@ -152,11 +152,12 @@ namespace CKGLTest
 
 				GL.BindBuffer(BufferTarget.Array, vbo);
 				GL.BufferData(BufferTarget.Array, sizeof(float) * vertices.Length * Vertex.FloatStride, Vertex.GetVBO(vertices), BufferUsage.DynamicDraw);
-				//GL.BufferData(BufferTarget.Array, sizeof(float) * vertices.Length * Vertex.FloatStride, rawvertices, BufferUsage.DynamicDraw);
+				//GL.BufferData(BufferTarget.Array, sizeof(float) * num * Vertex.FloatStride, rawvertices, BufferUsage.DynamicDraw);
 
 				GL.DrawArrays(DrawMode.Triangles, 0, num);
-				//for (int i = 0; i < 20; i++)
-				//	GL.DrawArrays(DrawMode.Triangles, i * vertices.Length / 20, vertices.Length / 20);
+				//int numDrawCalls = 1;
+				//for (int i = 0; i < numDrawCalls; i++)
+				//	GL.DrawArrays(DrawMode.Triangles, i * vertices.Length / numDrawCalls, vertices.Length / numDrawCalls);
 
 				//GL.DrawElements(DrawMode.Triangles, indices.Length, IndexType.UnsignedInt, 0);
 
