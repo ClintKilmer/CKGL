@@ -10,14 +10,14 @@ namespace CKGL
 	public class VertexDeclaration
 	{
 		public int Stride { get; private set; } = 0;
-		private VertexElement[] elements;
+		public VertexElement[] Elements;
 
 		public VertexDeclaration(params VertexElement[] elements)
 		{
 			if ((elements == null) || (elements.Length == 0))
 				throw new ArgumentNullException("elements", "Elements cannot be empty");
 
-			this.elements = (VertexElement[])elements.Clone();
+			Elements = (VertexElement[])elements.Clone();
 
 			int totalOffset = 0;
 			for (int i = 0; i < elements.Length; i += 1)
