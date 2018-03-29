@@ -1,6 +1,6 @@
 ﻿namespace CKGL
 {
-	public static class MathEXT
+	public static partial class MathEXT
 	{
 		internal static int Min(this int a, int b)
 		{

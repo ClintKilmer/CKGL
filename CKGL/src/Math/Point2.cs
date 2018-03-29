@@ -17,6 +17,14 @@ namespace CKGL
 			Y = y;
 		}
 
+		#region Overrides
+		public override string ToString()
+		{
+			return string.Format("{0}, {1}", X, Y);
+		}
+		#endregion
+
+		#region Operators
 		public static bool operator ==(Point2 a, Point2 b)
 		{
 			return a.X == b.X && a.Y == b.Y;
@@ -77,20 +85,13 @@ namespace CKGL
 			p.Y /= n;
 			return p;
 		}
+		#endregion
 
-		//public static implicit operator Vector2(Point2 p)
-		//{
-		//	return new Vector2(p.X, p.Y);
-		//}
-
-		//public static explicit operator Point2(Vector2 p)
-		//{
-		//	return new Point2((int)p.X, (int)p.Y);
-		//}
-
-		public override string ToString()
+		#region Implicit Convertion Operators
+		public static implicit operator Point2(Vector2 p)
 		{
-			return string.Format("{0}, {1}", X, Y);
+			return new Vector2(p.X, p.Y);
 		}
+		#endregion
 	}
 }

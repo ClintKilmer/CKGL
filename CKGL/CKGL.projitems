@@ -23,6 +23,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)src\Audio\Audio.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\Graphics.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\Shader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\Vertex.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\VertexDeclaration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Input\Input.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Input\KeyCode.cs" />
@@ -30,6 +31,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\Colour.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\Math.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\MathEXT.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Math\Vector2.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\Point2.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\RectangleI.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Platform\Platform.cs" />
