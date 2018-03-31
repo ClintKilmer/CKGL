@@ -1,6 +1,7 @@
 ﻿using OpenGL;
 using CKGL;
 
+using GLint = System.Int32;
 using GLuint = System.UInt32;
 
 namespace CKGLTest
@@ -57,16 +58,14 @@ namespace CKGLTest
 			//GL.BindBuffer(BufferTarget.Array, vbo);
 			//GL.BufferData(BufferTarget.Array, sizeof(float) * vertices.Length * Vertex.FloatStride, Vertex.GetVBO(vertices), BufferUsage.StaticDraw);
 
-			GLuint vbo = GL.GenBuffer();
-			GL.BindBuffer(BufferTarget.Array, vbo);
+			VertexBuffer vbo = new VertexBuffer();
 
 			// Create an Index Buffer
-			//GLuint ibo = GL.GenBuffer();
-			//GL.BindBuffer(BufferTarget.ElementArray, ibo);
-			//GLuint[] indices = {
-			//	0, 1, 2
-			//};
-			//GL.BufferData(BufferTarget.ElementArray, sizeof(GLuint) * indices.Length, indices, BufferUsage.StaticDraw);
+			IndexBuffer ibo = new IndexBuffer();
+			GLint[] indices = {
+				0, 1, 2
+			};
+			ibo.LoadData(indices, BufferUsage.StaticDraw);
 
 			// Shader - create/compile/link/set program
 			shader.Set();
@@ -150,20 +149,22 @@ namespace CKGLTest
 				//vertices[2].Position = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0.0f);
 				//vertices[2].Colour = Colour.Blue;
 
-				GL.BindBuffer(BufferTarget.Array, vbo);
-				GL.BufferData(BufferTarget.Array, sizeof(float) * vertices.Length * Vertex.FloatStride, Vertex.GetVBO(vertices), BufferUsage.DynamicDraw);
-				//GL.BufferData(BufferTarget.Array, sizeof(float) * num * Vertex.FloatStride, rawvertices, BufferUsage.DynamicDraw);
+				vbo.Bind();
+				vbo.LoadData(Vertex.GetVBO(vertices), BufferUsage.DynamicDraw);
+				//vbo.Load(rawvertices, BufferUsage.DynamicDraw);
 
-				GL.DrawArrays(DrawMode.Triangles, 0, num);
+				//GL.DrawArrays(DrawMode.Triangles, 0, num);
 				//int numDrawCalls = 1;
 				//for (int i = 0; i < numDrawCalls; i++)
 				//	GL.DrawArrays(DrawMode.Triangles, i * vertices.Length / numDrawCalls, vertices.Length / numDrawCalls);
 
-				//GL.DrawElements(DrawMode.Triangles, indices.Length, IndexType.UnsignedInt, 0);
+				GL.DrawElements(DrawMode.Triangles, ibo.Count, ibo.IndexType, 0);
 
 				// Swap buffers
 				Window.SwapBuffers();
 			}
+
+			vbo.Destroy();
 
 			Audio.Destroy();
 			Platform.Destroy();

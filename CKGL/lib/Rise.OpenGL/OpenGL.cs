@@ -10,6 +10,9 @@ using System.Text;
 using GLEnum = System.UInt32;
 using GLSizei = System.Int32;
 
+using GLint = System.Int32;
+using GLuint = System.UInt32;
+
 namespace OpenGL
 {
 	//[StructLayout(LayoutKind.Sequential, Pack = 4)]
@@ -752,16 +755,16 @@ namespace OpenGL
 			CheckError();
 		}
 
-		delegate void _glDrawElements(DrawMode mode, GLSizei count, IndexType type, IntPtr indices);
+		delegate void _glDrawElements(DrawMode mode, GLSizei count, IndexType type, IntPtr offset);
 		static _glDrawElements glDrawElements;
-		public static void DrawElements(DrawMode mode, GLSizei count, IndexType type, IntPtr indices)
+		public static void DrawElements(DrawMode mode, GLSizei count, IndexType type, IntPtr offset)
 		{
-			glDrawElements(mode, count, type, indices);
+			glDrawElements(mode, count, type, offset);
 			CheckError();
 		}
-		public static void DrawElements(DrawMode mode, GLSizei count, IndexType type, GLSizei indices)
+		public static void DrawElements(DrawMode mode, GLSizei count, IndexType type, GLuint offset)
 		{
-			DrawElements(mode, count, type, new IntPtr(indices));
+			DrawElements(mode, count, type, new IntPtr(offset));
 		}
 
 		delegate void _glBlitFramebuffer(int srcX0, int srcY0, int srcX1, int srcY1, int dstX0, int dstY0, int dstX1, int dstY1, BufferBit mask, BlitFilter filter);

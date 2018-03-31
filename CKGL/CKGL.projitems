@@ -24,6 +24,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\Graphics.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\Shader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\MeshBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\IndexBuffer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\VertexBuffer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\Vertex.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\VertexDeclaration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Input\Input.cs" />
