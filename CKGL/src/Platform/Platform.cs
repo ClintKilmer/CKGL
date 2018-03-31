@@ -71,7 +71,7 @@ namespace CKGL
 			get { return SDL_GetPerformanceFrequency(); }
 		}
 
-		public static bool ShowCursor
+		public static bool ShowCursor // Default true
 		{
 			get { return SDL_ShowCursor(SDL_QUERY) == 1; }
 			set { SDL_ShowCursor(value ? SDL_ENABLE : SDL_DISABLE); }
@@ -81,6 +81,12 @@ namespace CKGL
 		{
 			get { return SDL_GetClipboardText(); }
 			set { SDL_SetClipboardText(value); }
+		}
+
+		public static bool ScreensaverAllowed // Default false
+		{
+			get { return SDL_IsScreenSaverEnabled() == SDL_bool.SDL_TRUE; }
+			set { if (value) SDL_EnableScreenSaver(); else SDL_DisableScreenSaver(); }
 		}
 
 		#region Windows - Set Dll Directory - x64 | x86 - https://github.com/FNA-XNA/FNA/wiki/4:-FNA-and-Windows-API#64-bit-support

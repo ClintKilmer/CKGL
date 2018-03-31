@@ -23,7 +23,8 @@ namespace CKGLTest
 			Audio.Init();
 			Input.Init();
 
-			//SDLPlatform.ShowCursor = false;
+			//Platform.ShowCursor = false; // Default true
+			//Platform.ScreensaverAllowed = true; // Default false
 
 			// Load Shaders
 			Shader shader = Shader.FromFile("Shaders/test.glsl");
