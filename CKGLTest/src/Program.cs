@@ -61,11 +61,11 @@ namespace CKGLTest
 			VertexBuffer vbo = new VertexBuffer();
 
 			// Create an Index Buffer
-			IndexBuffer ibo = new IndexBuffer();
-			GLint[] indices = {
-				0, 1, 2
-			};
-			ibo.LoadData(indices, BufferUsage.StaticDraw);
+			//IndexBuffer ibo = new IndexBuffer();
+			//GLint[] indices = {
+			//	0, 1, 2
+			//};
+			//ibo.LoadData(indices, BufferUsage.StaticDraw);
 
 			// Shader - create/compile/link/set program
 			shader.Set();
@@ -153,12 +153,12 @@ namespace CKGLTest
 				vbo.LoadData(Vertex.GetVBO(vertices), BufferUsage.DynamicDraw);
 				//vbo.Load(rawvertices, BufferUsage.DynamicDraw);
 
-				//GL.DrawArrays(DrawMode.Triangles, 0, num);
+				GL.DrawArrays(DrawMode.Triangles, 0, num);
 				//int numDrawCalls = 1;
 				//for (int i = 0; i < numDrawCalls; i++)
 				//	GL.DrawArrays(DrawMode.Triangles, i * vertices.Length / numDrawCalls, vertices.Length / numDrawCalls);
 
-				GL.DrawElements(DrawMode.Triangles, ibo.Count, ibo.IndexType, 0);
+				//GL.DrawElements(DrawMode.Triangles, ibo.Count, ibo.IndexType, 0);
 
 				// Swap buffers
 				Window.SwapBuffers();
