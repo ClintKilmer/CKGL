@@ -132,7 +132,7 @@ namespace CKGLTest
 				// Set Shader uniforms
 				//shader.SetUniform("offset", Time.TotalMilliseconds * 0.0016f, Time.TotalMilliseconds * 0.002f, Time.TotalMilliseconds * 0.0023f);
 
-				int num = 3 * 5;
+				int num = 3 * 1;
 				Vertex[] vertices = new Vertex[num];
 				//float[] rawvertices = new float[num * Vertex.FloatStride];
 				for (int i = 0; i < num; i++)

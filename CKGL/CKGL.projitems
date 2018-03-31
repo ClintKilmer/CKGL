@@ -29,7 +29,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\VertexBufferLayout.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\VertexBuffer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\Vertex.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\VertexDeclaration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Input\Input.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Input\KeyCode.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Input\ScanCode.cs" />
