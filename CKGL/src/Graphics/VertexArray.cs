@@ -47,5 +47,11 @@ namespace CKGL
 		//	GL.BindVertexArray(0);
 		//	currentlyBoundVertexArray = 0;
 		//}
+
+		public void AddBuffer(VertexBuffer vertexBuffer, VertexBufferLayout vertexBufferLayout)
+		{
+			Bind();
+			vertexBufferLayout.SetLayout(vertexBuffer);
+		}
 	}
 }

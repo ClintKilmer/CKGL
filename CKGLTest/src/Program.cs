@@ -34,8 +34,14 @@ namespace CKGLTest
 			Audio.Buffer sndPop2 = new Audio.Buffer("snd/sndPop2.wav");
 
 			// Create Vertex Array Object
-			GLuint vao = GL.GenVertexArray();
-			GL.BindVertexArray(vao);
+			VertexArray vao = new VertexArray();
+			VertexBuffer vbo = new VertexBuffer();
+			VertexBufferLayout vboLayout = new VertexBufferLayout();
+			vboLayout.Push<float>(3); // position
+			vboLayout.Push<float>(4); // colour
+			vboLayout.Push<float>(2); // uvs
+			vboLayout.Push<float>(1); // textured
+			vao.AddBuffer(vbo, vboLayout);
 
 			// Create a Vertex Buffer Object and copy the vertex data to it
 			//GLuint vbo = GL.GenBuffer();
@@ -59,8 +65,6 @@ namespace CKGLTest
 			//GL.BindBuffer(BufferTarget.Array, vbo);
 			//GL.BufferData(BufferTarget.Array, sizeof(float) * vertices.Length * Vertex.FloatStride, Vertex.GetVBO(vertices), BufferUsage.StaticDraw);
 
-			VertexBuffer vbo = new VertexBuffer();
-
 			// Create an Index Buffer
 			//IndexBuffer ibo = new IndexBuffer();
 			//GLint[] indices = {
@@ -72,7 +76,8 @@ namespace CKGLTest
 			shader.Set();
 
 			// Specify the layout of the vertex data
-			Vertex.SetAttributes();
+			//Vertex.SetAttributes();
+
 
 			// Variable for moving window on mouse click and drag
 			Point2 windowDraggingPosition = Point2.Zero;
