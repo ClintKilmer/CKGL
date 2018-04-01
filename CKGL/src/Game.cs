@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace CKGL
+﻿namespace CKGL
 {
 	public abstract class Game
 	{
