@@ -81,60 +81,15 @@ namespace CKGL
 		#endregion
 
 		#region Draw
-		//public void DrawIndexedPrimitives(
-		//	DrawMode drawMode,
-		//	int baseVertex,
-		//	int minVertexIndex,
-		//	int numVertices,
-		//	int startIndex,
-		//	int primitiveCount
-		//)
-		//{
-		//	ApplyState();
+		public static void DrawVertexArrays(DrawMode drawMode, GLint offset, GLint count)
+		{
+			GL.DrawArrays(drawMode, offset, count);
+		}
 
-		//	// Set up the vertex buffers
-		//	GLDevice.ApplyVertexAttributes(
-		//		vertexBufferBindings,
-		//		vertexBufferCount,
-		//		vertexBuffersUpdated,
-		//		baseVertex
-		//	);
-		//	vertexBuffersUpdated = false;
-
-		//	GLDevice.DrawIndexedPrimitives(
-		//		drawMode,
-		//		baseVertex,
-		//		minVertexIndex,
-		//		numVertices,
-		//		startIndex,
-		//		primitiveCount,
-		//		Indices
-		//	);
-		//}
-
-		//public void DrawPrimitives(
-		//	DrawMode drawMode,
-		//	int vertexStart,
-		//	int primitiveCount
-		//)
-		//{
-		//	ApplyState();
-
-		//	// Set up the vertex buffers
-		//	GLDevice.ApplyVertexAttributes(
-		//		vertexBufferBindings,
-		//		vertexBufferCount,
-		//		vertexBuffersUpdated,
-		//		0
-		//	);
-		//	vertexBuffersUpdated = false;
-
-		//	GLDevice.DrawPrimitives(
-		//		drawMode,
-		//		vertexStart,
-		//		primitiveCount
-		//	);
-		//} 
+		public static void DrawIndexedVertexArrays(DrawMode drawMode, GLint offset, GLint count)
+		{
+			GL.DrawElements(drawMode, count, IndexType.UnsignedInt, offset);
+		}
 		#endregion
 	}
 }

@@ -762,7 +762,7 @@ namespace OpenGL
 			glDrawElements(mode, count, type, offset);
 			CheckError();
 		}
-		public static void DrawElements(DrawMode mode, GLSizei count, IndexType type, GLuint offset)
+		public static void DrawElements(DrawMode mode, GLSizei count, IndexType type, GLSizei offset)
 		{
 			DrawElements(mode, count, type, new IntPtr(offset));
 		}
@@ -1200,19 +1200,6 @@ namespace OpenGL
 		Uniform = 0x8A11
 	}
 
-	public enum BufferUsage : GLEnum
-	{
-		StreamDraw = 0x88E0,
-		StreamRead = 0x88E1,
-		StreamCopy = 0x88E2,
-		StaticDraw = 0x88E4,
-		StaticRead = 0x88E5,
-		StaticCopy = 0x88E6,
-		DynamicDraw = 0x88E8,
-		DynamicRead = 0x88E9,
-		DynamicCopy = 0x88EA
-	}
-
 	public enum FramebufferTarget : GLEnum
 	{
 		Framebuffer = 0x8D40,
@@ -1303,6 +1290,19 @@ namespace OpenGL
 
 namespace CKGL
 {
+	public enum BufferUsage : GLEnum
+	{
+		StreamDraw = 0x88E0,
+		StreamRead = 0x88E1,
+		StreamCopy = 0x88E2,
+		StaticDraw = 0x88E4,
+		StaticRead = 0x88E5,
+		StaticCopy = 0x88E6,
+		DynamicDraw = 0x88E8,
+		DynamicRead = 0x88E9,
+		DynamicCopy = 0x88EA
+	}
+
 	public enum DrawMode : GLEnum
 	{
 		PointList = 0x0000,

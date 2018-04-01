@@ -320,5 +320,14 @@ namespace CKGL
 		//	GetUniform(name).SetUniform(value);
 		//}
 		#endregion
+
+		public static bool operator ==(Shader a, Shader b)
+		{
+			return a.id == b.id;
+		}
+		public static bool operator !=(Shader a, Shader b)
+		{
+			return a.id != b.id;
+		}
 	}
 }

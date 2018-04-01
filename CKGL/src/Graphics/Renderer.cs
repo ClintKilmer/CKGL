@@ -102,7 +102,6 @@ namespace CKGL
 		private static DrawMode currentDrawMode = DrawMode.TriangleList;
 		private static Shader currentShader;
 		private const int bufferSize = 32000;
-		private static DynamicVertexBuffer vertexBuffer = new DynamicVertexBuffer(Engine.GraphicsDevice, typeof(Vertex), bufferSize, BufferUsage.WriteOnly);
 		private static Vertex[] vertices = new Vertex[bufferSize];
 		private static int vertexCount = 0;
 
@@ -111,64 +110,64 @@ namespace CKGL
 		private static Vector2 uvFull3 = new Vector2(0f, 1f);
 		private static Vector2 uvFull4 = new Vector2(1f, 1f);
 
-		private static float toRadians = MathHelper.ToRadians(360);
+		private static Shader DefaultShader { get; } = new Shader(Shader.Basic2D);
 
-		private static Shader DefaultShader { get; } = Engine.InternalShaders.Renderer;
+		// TODO
+//		private static RasterizerState DefaultRasterizerState { get; } = new RasterizerState
+//		{
+//			CullMode = CullMode.None,
+//			FillMode = FillMode.Solid,
+//			DepthBias = 0,
+//			MultiSampleAntiAlias = false,
+//			ScissorTestEnable = false,
+//			SlopeScaleDepthBias = 0,
+//#if LINUX && !FNA
+//			DepthClipEnable = false
+//#elif WINDOWS
+//			DepthClipEnable = true
+//#endif
+//		};
 
-		private static RasterizerState DefaultRasterizerState { get; } = new RasterizerState
+//		private static SamplerState DefaultSamplerState { get; } = SamplerState.PointClamp;
+
+//		private static BlendState DefaultBlendState { get; } = _BlendState.NonPremultiplied;
+
+//		public static void ResetRenderTarget()
+//		{
+//			SetRenderTarget(null);
+//		}
+
+		// TODO
+		//public static void SetRenderTarget(RenderTarget2D renderTarget2D)
+		//{
+		//	if ((
+		//			renderTarget2D != null &&
+		//			Engine.GraphicsDevice.GetRenderTargets().Length == 0
+		//		)
+		//		||
+		//		(
+		//			Engine.GraphicsDevice.GetRenderTargets().Length > 0 &&
+		//			Engine.GraphicsDevice.GetRenderTargets()[0].RenderTarget != renderTarget2D)
+		//		)
+		//	{
+		//		Flush();
+		//		Engine.GraphicsDevice.SetRenderTarget(renderTarget2D);
+		//	}
+		//}
+
+		// TODO
+		// Do I really need these here since they're in Graphics._
+		public static void Clear(Colour colour, float depth)
 		{
-			CullMode = CullMode.None,
-			FillMode = FillMode.Solid,
-			DepthBias = 0,
-			MultiSampleAntiAlias = false,
-			ScissorTestEnable = false,
-			SlopeScaleDepthBias = 0,
-#if LINUX && !FNA
-			DepthClipEnable = false
-#elif WINDOWS
-			DepthClipEnable = true
-#endif
-		};
-
-		private static SamplerState DefaultSamplerState { get; } = SamplerState.PointClamp;
-
-		private static BlendState DefaultBlendState { get; } = _BlendState.NonPremultiplied;
-
-		public static void ResetRenderTarget()
-		{
-			SetRenderTarget(null);
+			Graphics.Clear(colour, depth);
 		}
-
-		public static void SetRenderTarget(RenderTarget2D renderTarget2D)
-		{
-			if ((
-					renderTarget2D != null &&
-					Engine.GraphicsDevice.GetRenderTargets().Length == 0
-				)
-				||
-				(
-					Engine.GraphicsDevice.GetRenderTargets().Length > 0 &&
-					Engine.GraphicsDevice.GetRenderTargets()[0].RenderTarget != renderTarget2D)
-				)
-			{
-				Flush();
-				Engine.GraphicsDevice.SetRenderTarget(renderTarget2D);
-			}
-		}
-
-		public static void Clear()
-		{
-			Clear(Colour.Transparent);
-		}
-
 		public static void Clear(Colour colour)
 		{
-			Engine.GraphicsDevice.Clear(colour);
+			Graphics.Clear(colour);
 		}
-
-		public static void Clear(ClearOptions options, Colour colour, float depth, int stencil)
+		public static void Clear(float depth)
 		{
-			Engine.GraphicsDevice.Clear(options, colour, depth, stencil);
+			Graphics.Clear(depth);
 		}
 
 		public static void SetShader(Shader shader)
@@ -178,8 +177,6 @@ namespace CKGL
 				Flush();
 				currentShader = shader;
 			}
-
-			currentShader.CurrentTechnique.Passes[0].Apply();
 		}
 
 		public static void ResetShader()
@@ -187,56 +184,57 @@ namespace CKGL
 			SetShader(DefaultShader);
 		}
 
-		public static void SetRasterizerState(RasterizerState rasterizerState)
-		{
-			if (Engine.GraphicsDevice.RasterizerState != rasterizerState)
-			{
-				Flush();
-				Engine.GraphicsDevice.RasterizerState = rasterizerState;
-			}
-		}
+		// TODO
+		//public static void SetRasterizerState(RasterizerState rasterizerState)
+		//{
+		//	if (Engine.GraphicsDevice.RasterizerState != rasterizerState)
+		//	{
+		//		Flush();
+		//		Engine.GraphicsDevice.RasterizerState = rasterizerState;
+		//	}
+		//}
 
-		public static void ResetRasterizerState()
-		{
-			SetRasterizerState(DefaultRasterizerState);
-		}
+		//public static void ResetRasterizerState()
+		//{
+		//	SetRasterizerState(DefaultRasterizerState);
+		//}
 
-		public static void SetSamplerState(SamplerState samplerState)
-		{
-			if (Engine.GraphicsDevice.SamplerStates[0] != samplerState)
-			{
-				Flush();
-				Engine.GraphicsDevice.SamplerStates[0] = samplerState;
-			}
-		}
+		//public static void SetSamplerState(SamplerState samplerState)
+		//{
+		//	if (Engine.GraphicsDevice.SamplerStates[0] != samplerState)
+		//	{
+		//		Flush();
+		//		Engine.GraphicsDevice.SamplerStates[0] = samplerState;
+		//	}
+		//}
 
-		public static void ResetSamplerState()
-		{
-			SetSamplerState(DefaultSamplerState);
-		}
+		//public static void ResetSamplerState()
+		//{
+		//	SetSamplerState(DefaultSamplerState);
+		//}
 
-		public static void SetBlendState(BlendState blendState)
-		{
-			if (Engine.GraphicsDevice.BlendState != blendState)
-			{
-				Flush();
-				Engine.GraphicsDevice.BlendState = blendState;
-			}
-		}
+		//public static void SetBlendState(BlendState blendState)
+		//{
+		//	if (Engine.GraphicsDevice.BlendState != blendState)
+		//	{
+		//		Flush();
+		//		Engine.GraphicsDevice.BlendState = blendState;
+		//	}
+		//}
 
-		public static void ResetBlendState()
-		{
-			SetBlendState(DefaultBlendState);
-		}
+		//public static void ResetBlendState()
+		//{
+		//	SetBlendState(DefaultBlendState);
+		//}
 
-		private static void SetTexture(Texture2D texture)
-		{
-			if (Engine.GraphicsDevice.Textures[0] != texture)
-			{
-				Flush();
-				Engine.GraphicsDevice.Textures[0] = texture;
-			}
-		}
+		//private static void SetTexture(Texture2D texture)
+		//{
+		//	if (Engine.GraphicsDevice.Textures[0] != texture)
+		//	{
+		//		Flush();
+		//		Engine.GraphicsDevice.Textures[0] = texture;
+		//	}
+		//}
 
 		public static void Start()
 		{
@@ -245,10 +243,11 @@ namespace CKGL
 
 			working = true;
 
-			Engine.GraphicsDevice.DepthStencilState = DepthStencilState.None;
-			SetRasterizerState(DefaultRasterizerState);
-			SetSamplerState(DefaultSamplerState);
-			SetBlendState(DefaultBlendState);
+			// TODO
+			//Engine.GraphicsDevice.DepthStencilState = DepthStencilState.None;
+			//SetRasterizerState(DefaultRasterizerState);
+			//SetSamplerState(DefaultSamplerState);
+			//SetBlendState(DefaultBlendState);
 
 			Initialize();
 		}
@@ -292,41 +291,47 @@ namespace CKGL
 
 			if (vertexCount > 0)
 			{
-				switch (currentDrawMode)
-				{
-					case (DrawMode.TriangleList):
-						if (vertexCount >= 3)
-						{
-							vertexBuffer.SetData(vertices);
-							Engine.GraphicsDevice.SetVertexBuffer(vertexBuffer);
-							Engine.GraphicsDevice.DrawPrimitives(currentDrawMode, 0, vertexCount / 3);
-						}
-						break;
-					case (DrawMode.LineList):
-						if (vertexCount >= 2)
-						{
-							vertexBuffer.SetData(vertices);
-							Engine.GraphicsDevice.SetVertexBuffer(vertexBuffer);
-							Engine.GraphicsDevice.DrawPrimitives(currentDrawMode, 0, vertexCount / 2);
-						}
-						break;
-					case (DrawMode.TriangleStrip):
-						if (vertexCount >= 3)
-						{
-							vertexBuffer.SetData(vertices);
-							Engine.GraphicsDevice.SetVertexBuffer(vertexBuffer);
-							Engine.GraphicsDevice.DrawPrimitives(currentDrawMode, 0, vertexCount - 2);
-						}
-						break;
-					case (DrawMode.LineStrip):
-						if (vertexCount >= 2)
-						{
-							vertexBuffer.SetData(vertices);
-							Engine.GraphicsDevice.SetVertexBuffer(vertexBuffer);
-							Engine.GraphicsDevice.DrawPrimitives(currentDrawMode, 0, vertexCount - 1);
-						}
-						break;
-				}
+				vao.Bind();
+				vbo.LoadData(Vertex.GetVBO(vertices), BufferUsage.DynamicDraw);
+
+				Graphics.DrawVertexArrays(currentDrawMode, 0, vertexCount);
+
+				// TODO
+				// Review if the following is necessary
+				//switch (currentDrawMode)
+				//{
+				//	case (DrawMode.TriangleList):
+				//		if (vertexCount >= 3)
+				//		{
+				//			Graphics.DrawVertexArrays(currentDrawMode, 0, vertexCount / 3);
+				//		}
+				//		break;
+				//	case (DrawMode.TriangleStrip):
+				//		if (vertexCount >= 3)
+				//		{
+				//			Graphics.DrawVertexArrays(currentDrawMode, 0, vertexCount - 2);
+				//		}
+				//		break;
+				//	case (DrawMode.TriangleFan):
+				//		if (vertexCount >= 3)
+				//		{
+				//			Graphics.DrawVertexArrays(currentDrawMode, 0, vertexCount);
+				//		}
+				//		break;
+				//	case (DrawMode.LineList):
+				//		if (vertexCount >= 2)
+				//		{
+				//			Graphics.DrawVertexArrays(currentDrawMode, 0, vertexCount / 2);
+				//		}
+				//		break;
+				//	case (DrawMode.LineLoop):
+				//	case (DrawMode.LineStrip):
+				//		if (vertexCount >= 2)
+				//		{
+				//			Graphics.DrawVertexArrays(currentDrawMode, 0, vertexCount - 1);
+				//		}
+				//		break;
+				//}
 			}
 
 			Initialize();
@@ -364,9 +369,9 @@ namespace CKGL
 		{
 			// TODO
 			//if (rotation != 0f)
-			//	AddVertex(type, Vector2.Transform(position, Matrix2D.createTranslation(-origin) * Matrix2D.createRotation(rotation * toRadians) * Matrix2D.createTranslation(origin)), colour, textured, uv);
+			//	AddVertex(type, Vector2.Transform(position, Matrix2D.createTranslation(-origin) * Matrix2D.createRotation(rotation * 360 * Math.Rad) * Matrix2D.createTranslation(origin)), colour, textured, uv);
 			//else
-				AddVertex(type, position, colour, textured, uv);
+			AddVertex(type, position, colour, textured, uv);
 		}
 
 		public static class Draw
