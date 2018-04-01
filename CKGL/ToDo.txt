@@ -1,3 +1,4 @@
 ﻿CKGL ToDo:
 
+- Figure out how to proccess Vertex into buffer data
 - Add Vector4, Mat3x2/4x4, Texture2dSampler, and CubeMap to Shader Uniform Set

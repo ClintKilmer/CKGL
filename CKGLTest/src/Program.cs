@@ -1,13 +1,22 @@
-﻿using OpenGL;
-using CKGL;
+﻿using CKGL;
 
-using GLint = System.Int32;
-using GLuint = System.UInt32;
+using OpenGL;
+
+using System.Runtime.InteropServices;
 
 namespace CKGLTest
 {
 	class Program
 	{
+		[StructLayout(LayoutKind.Sequential, Pack = 1)]
+		public struct Vertex
+		{
+			public Vector3 Position;
+			public Colour Colour;
+			public Vector2 UV;
+			public float Textured;
+		}
+
 		private static string Title = "CKGL Game!";
 		private static int WindowWidth = 640;
 		private static int WindowHeight = 360;
@@ -159,7 +168,7 @@ namespace CKGLTest
 				vbo.LoadData(Vertex.GetVBO(vertices), BufferUsage.DynamicDraw);
 				//vbo.Load(rawvertices, BufferUsage.DynamicDraw);
 
-				GL.DrawArrays(DrawMode.Triangles, 0, num);
+				GL.DrawArrays(DrawMode.TriangleList, 0, num);
 				//int numDrawCalls = 1;
 				//for (int i = 0; i < numDrawCalls; i++)
 				//	GL.DrawArrays(DrawMode.Triangles, i * vertices.Length / numDrawCalls, vertices.Length / numDrawCalls);

@@ -8,6 +8,14 @@ namespace CKGL
 {
 	public static class Graphics
 	{
+		#region State
+		private class State
+		{
+			public static bool BlendState = false;
+			public static BlendMode BlendMode = default(BlendMode);
+		}
+		#endregion
+
 		public static void Init()
 		{
 			GL.Init();
@@ -37,6 +45,39 @@ namespace CKGL
 			GL.ClearDepth(depth);
 			GL.Clear(BufferBit.Depth);
 		}
+		#endregion
+
+		#region State
+		public static void FrontFace(FrontFace frontFace)
+		{
+			GL.FrontFace(frontFace);
+		}
+
+		public static void CullMode(CullFace cullMode)
+		{
+			GL.CullFace(cullMode);
+		}
+
+		public static void BlendState(bool enabled)
+		{
+			if (enabled != State.BlendState)
+			{
+				if (enabled)
+					GL.Enable(EnableCap.Blend);
+				else
+					GL.Disable(EnableCap.Blend);
+			}
+		}
+
+		public static void BlendMode(BlendMode blendMode)
+		{
+			if (blendMode != State.BlendMode)
+			{
+				GL.BlendFunc(blendMode.Src, blendMode.Dst);
+				GL.BlendEquation(blendMode.Eq);
+			}
+		}
+
 		#endregion
 
 		#region Draw
