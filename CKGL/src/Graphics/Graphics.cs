@@ -11,8 +11,9 @@ namespace CKGL
 		#region State
 		private class State
 		{
-			public static bool BlendState = false;
-			public static BlendMode BlendMode = default(BlendMode);
+			public static FrontFace FrontFaceState = FrontFace.CounterClockwise; // OpenGL Default
+			public static CullState CullState = CullState.Off; // OpenGL Default
+			public static BlendState BlendState = BlendState.None; // OpenGL Default
 		}
 		#endregion
 
@@ -48,33 +49,57 @@ namespace CKGL
 		#endregion
 
 		#region State
-		public static void FrontFace(FrontFace frontFace)
+		public static FrontFace FrontFaceState
 		{
-			GL.FrontFace(frontFace);
-		}
-
-		public static void CullMode(CullFace cullMode)
-		{
-			GL.CullFace(cullMode);
-		}
-
-		public static void BlendState(bool enabled)
-		{
-			if (enabled != State.BlendState)
+			get
 			{
-				if (enabled)
-					GL.Enable(EnableCap.Blend);
-				else
-					GL.Disable(EnableCap.Blend);
+				return State.FrontFaceState;
+			}
+			set
+			{
+				if (value != State.FrontFaceState)
+				{
+					GL.FrontFace(value);
+				}
 			}
 		}
 
-		public static void BlendMode(BlendMode blendMode)
+		public static CullState CullState
 		{
-			if (blendMode != State.BlendMode)
+			get
 			{
-				GL.BlendFunc(blendMode.Src, blendMode.Dst);
-				GL.BlendEquation(blendMode.Eq);
+				return State.CullState;
+			}
+			set
+			{
+				if (value != State.CullState)
+				{
+					if (value.On)
+						GL.Enable(EnableCap.CullFace);
+					else
+						GL.Disable(EnableCap.CullFace);
+					GL.CullFace(value.CullFace);
+				}
+			}
+		}
+
+		public static BlendState BlendState
+		{
+			get
+			{
+				return State.BlendState;
+			}
+			set
+			{
+				if (value != State.BlendState)
+				{
+					if (value.On)
+						GL.Enable(EnableCap.Blend);
+					else
+						GL.Disable(EnableCap.Blend);
+					GL.BlendFunc(value.Src, value.Dst);
+					GL.BlendEquation(value.Eq);
+				}
 			}
 		}
 

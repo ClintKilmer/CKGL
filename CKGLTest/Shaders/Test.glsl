@@ -24,7 +24,7 @@ void main()
 ...
 #version 330 core
 in vec4 vertexColour;
-out vec4 colour;
+layout(location = 0) out vec4 colour;
 void main()
 {
 	colour = vertexColour;

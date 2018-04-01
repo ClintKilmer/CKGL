@@ -81,7 +81,7 @@ namespace CKGL
 
 		public void Destroy()
 		{
-			GL.DeleteShader(id);
+			GL.DeleteProgram(id);
 		}
 
 		//protected override void Dispose()

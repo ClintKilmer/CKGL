@@ -58,6 +58,9 @@ namespace CKGL
 					vbo[i * FloatStride + 4] = vertices[i].Colour.G;
 					vbo[i * FloatStride + 5] = vertices[i].Colour.B;
 					vbo[i * FloatStride + 6] = vertices[i].Colour.A;
+					vbo[i * FloatStride + 7] = vertices[i].UV.X;
+					vbo[i * FloatStride + 8] = vertices[i].UV.Y;
+					vbo[i * FloatStride + 9] = vertices[i].Textured ? 1.0f : 0.0f;
 				}
 
 				return vbo;
@@ -67,6 +70,19 @@ namespace CKGL
 		private static VertexArray vao;
 		private static VertexBuffer vbo;
 		private static VertexBufferLayout vboLayout;
+
+		private static bool working = false;
+		private static DrawMode currentDrawMode = DrawMode.TriangleList;
+		private static Shader DefaultShader { get; } = Shader.FromFile("Shaders/renderer.glsl");
+		private static Shader currentShader = DefaultShader;
+		private const int bufferSize = 32000;
+		private static Vertex[] vertices = new Vertex[bufferSize];
+		private static int vertexCount = 0;
+
+		private static Vector2 uvFull1 = new Vector2(0f, 0f);
+		private static Vector2 uvFull2 = new Vector2(1f, 0f);
+		private static Vector2 uvFull3 = new Vector2(0f, 1f);
+		private static Vector2 uvFull4 = new Vector2(1f, 1f);
 
 		public static void Init()
 		{
@@ -82,6 +98,7 @@ namespace CKGL
 
 		public static void Destroy()
 		{
+			//shader.Destroy();
 			vao.Destroy();
 			vbo.Destroy();
 
@@ -90,52 +107,33 @@ namespace CKGL
 			vboLayout = null;
 		}
 
+		// TODO
+		//		private static RasterizerState DefaultRasterizerState { get; } = new RasterizerState
+		//		{
+		//			CullMode = CullMode.None,
+		//			FillMode = FillMode.Solid,
+		//			DepthBias = 0,
+		//			MultiSampleAntiAlias = false,
+		//			ScissorTestEnable = false,
+		//			SlopeScaleDepthBias = 0,
+		//#if LINUX && !FNA
+		//			DepthClipEnable = false
+		//#elif WINDOWS
+		//			DepthClipEnable = true
+		//#endif
+		//		};
 
+		//		private static SamplerState DefaultSamplerState { get; } = SamplerState.PointClamp;
 
-
-
-
-
-
-
-		private static bool working = false;
-		private static DrawMode currentDrawMode = DrawMode.TriangleList;
-		private static Shader currentShader;
-		private const int bufferSize = 32000;
-		private static Vertex[] vertices = new Vertex[bufferSize];
-		private static int vertexCount = 0;
-
-		private static Vector2 uvFull1 = new Vector2(0f, 0f);
-		private static Vector2 uvFull2 = new Vector2(1f, 0f);
-		private static Vector2 uvFull3 = new Vector2(0f, 1f);
-		private static Vector2 uvFull4 = new Vector2(1f, 1f);
-
-		private static Shader DefaultShader { get; } = new Shader(Shader.Basic2D);
+		private static FrontFace DefaultFrontFaceState { get; } = FrontFace.CounterClockwise;
+		private static CullState DefaultCullState { get; } = CullState.Off;
+		private static BlendState DefaultBlendState { get; } = BlendState.None;
 
 		// TODO
-//		private static RasterizerState DefaultRasterizerState { get; } = new RasterizerState
-//		{
-//			CullMode = CullMode.None,
-//			FillMode = FillMode.Solid,
-//			DepthBias = 0,
-//			MultiSampleAntiAlias = false,
-//			ScissorTestEnable = false,
-//			SlopeScaleDepthBias = 0,
-//#if LINUX && !FNA
-//			DepthClipEnable = false
-//#elif WINDOWS
-//			DepthClipEnable = true
-//#endif
-//		};
-
-//		private static SamplerState DefaultSamplerState { get; } = SamplerState.PointClamp;
-
-//		private static BlendState DefaultBlendState { get; } = _BlendState.NonPremultiplied;
-
-//		public static void ResetRenderTarget()
-//		{
-//			SetRenderTarget(null);
-//		}
+		//		public static void ResetRenderTarget()
+		//		{
+		//			SetRenderTarget(null);
+		//		}
 
 		// TODO
 		//public static void SetRenderTarget(RenderTarget2D renderTarget2D)
@@ -169,12 +167,13 @@ namespace CKGL
 		{
 			Graphics.Clear(depth);
 		}
-
+		
 		public static void SetShader(Shader shader)
 		{
 			if (currentShader != shader)
 			{
 				Flush();
+				shader.Set();
 				currentShader = shader;
 			}
 		}
@@ -213,20 +212,49 @@ namespace CKGL
 		//	SetSamplerState(DefaultSamplerState);
 		//}
 
-		//public static void SetBlendState(BlendState blendState)
-		//{
-		//	if (Engine.GraphicsDevice.BlendState != blendState)
-		//	{
-		//		Flush();
-		//		Engine.GraphicsDevice.BlendState = blendState;
-		//	}
-		//}
+		public static void SetFrontFaceState(FrontFace frontFaceState)
+		{
+			if (Graphics.FrontFaceState != frontFaceState)
+			{
+				Flush();
+				Graphics.FrontFaceState = frontFaceState;
+			}
+		}
 
-		//public static void ResetBlendState()
-		//{
-		//	SetBlendState(DefaultBlendState);
-		//}
+		public static void ResetFrontFaceState()
+		{
+			SetFrontFaceState(DefaultFrontFaceState);
+		}
 
+		public static void SetCullState(CullState cullState)
+		{
+			if (Graphics.CullState != cullState)
+			{
+				Flush();
+				Graphics.CullState = cullState;
+			}
+		}
+
+		public static void ResetCullState()
+		{
+			SetCullState(DefaultCullState);
+		}
+
+		public static void SetBlendState(BlendState blendState)
+		{
+			if (Graphics.BlendState != blendState)
+			{
+				Flush();
+				Graphics.BlendState = blendState;
+			}
+		}
+
+		public static void ResetBlendState()
+		{
+			SetBlendState(DefaultBlendState);
+		}
+
+		// TODO
 		//private static void SetTexture(Texture2D texture)
 		//{
 		//	if (Engine.GraphicsDevice.Textures[0] != texture)
@@ -291,6 +319,8 @@ namespace CKGL
 
 			if (vertexCount > 0)
 			{
+				currentShader.Set();
+
 				vao.Bind();
 				vbo.LoadData(Vertex.GetVBO(vertices), BufferUsage.DynamicDraw);
 

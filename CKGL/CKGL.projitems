@@ -21,7 +21,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)lib\SDL2-CS\src\SDL2_mixer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)lib\SDL2-CS\src\SDL2_ttf.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Audio\Audio.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\BlendMode.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Game.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\CullState.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\BlendState.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\Graphics.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\Shader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\MeshBase.cs" />
