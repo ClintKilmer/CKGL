@@ -1,4 +1,12 @@
-﻿using System;
+﻿/*
+ * Partially Derived from:
+ * Matrix.cs in the MonoGame Library: https://github.com/MonoGame/MonoGame
+ * Matrix4x4.cs and Matrix3x2.cs in the Rise Library: https://github.com/ChevyRay/Rise
+ * Matrix2D.cs in the Nez Library: https://github.com/prime31/Nez/
+ * Matrix2D.cs in the MonoGame.Extended Library: https://github.com/craftworkgames/MonoGame.Extended
+ */
+
+using System;
 using System.Runtime.CompilerServices;
 
 namespace CKGL
