@@ -2,7 +2,15 @@
 {
 	public static class Random
 	{
-		private static System.Random random = new System.Random();
+		public static int Seed { get; private set; } = System.DateTime.Now.Millisecond;
+
+		private static System.Random random = new System.Random(Seed);
+
+		public static void SetSeed(int seed)
+		{
+			Seed = seed;
+			random = new System.Random(seed);
+		}
 
 		public static int Range(int max)
 		{
