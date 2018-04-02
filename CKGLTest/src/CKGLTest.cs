@@ -88,7 +88,8 @@ namespace CKGLTest
 			//					   new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0.0f),
 			//					   new Colour(Random.Range(1f), Random.Range(1f), Random.Range(1f), 0.5f));
 			Renderer.Draw.TriangleStrip.Begin();
-			for (int i = 0; i < 10; i++)
+			//int ii = Random.Range(1000, 10000);
+			for (int i = 0; i < 10000; i++)
 				Renderer.Draw.TriangleStrip.AddVertex(new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0.0f),
 													  new Colour(Random.Range(1f), Random.Range(1f), Random.Range(1f), Random.Range(1f)));
 			Renderer.Draw.TriangleStrip.End();

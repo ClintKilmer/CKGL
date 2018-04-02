@@ -27,6 +27,38 @@ namespace CKGL
 		//		  ^ ^
 		//		>( . )<
 
+		private static string rendererShader = @"
+#version 330 core
+uniform mat4 matrix;
+layout(location = 0) in vec3 position;
+layout(location = 1) in vec4 colour;
+layout(location = 2) in vec2 texCoord;
+layout(location = 3) in float textured;
+out vec4 v_colour;
+out vec2 v_texCoord;
+out float v_textured;
+void main()
+{
+	gl_Position = vec4(position.xyz, 1.0);// * matrix;
+	v_colour = colour;
+	v_texCoord = texCoord;
+	v_textured = textured;
+}
+...
+#version 330 core
+uniform sampler2D Texture;
+in vec4 v_colour;
+in vec2 v_texCoord;
+in float v_textured;
+layout(location = 0) out vec4 colour;
+void main()
+{
+    if (v_textured > 0.0)
+		colour = texture(Texture, v_texCoord) * v_colour;
+    else
+        colour = v_colour;
+}";
+
 		[StructLayout(LayoutKind.Sequential, Pack = 1)]
 		public struct Vertex
 		{
@@ -47,9 +79,9 @@ namespace CKGL
 
 			public static float[] GetVBO(Vertex[] vertices)
 			{
-				float[] vbo = new float[FloatStride * vertices.Length];
+				float[] vbo = new float[FloatStride * bufferSize];
 
-				for (int i = 0; i < vertices.Length; i++)
+				for (int i = 0; i < vertexCount; i++)
 				{
 					vbo[i * FloatStride + 0] = vertices[i].Position.X;
 					vbo[i * FloatStride + 1] = vertices[i].Position.Y;
@@ -73,9 +105,9 @@ namespace CKGL
 
 		private static bool working = false;
 		private static DrawMode currentDrawMode = DrawMode.TriangleList;
-		private static Shader DefaultShader { get; } = Shader.FromFile("Shaders/renderer.glsl");
+		private static Shader DefaultShader { get; } = new Shader(rendererShader);
 		private static Shader currentShader = DefaultShader;
-		private const int bufferSize = 32000;
+		private const int bufferSize = 1998; // Divisible by 3 and 2 for no vertex wrapping per batch
 		private static Vertex[] vertices = new Vertex[bufferSize];
 		private static int vertexCount = 0;
 
@@ -98,6 +130,7 @@ namespace CKGL
 
 		public static void Destroy()
 		{
+			// TODO
 			//shader.Destroy();
 			vao.Destroy();
 			vbo.Destroy();
@@ -154,7 +187,7 @@ namespace CKGL
 		//}
 
 		// TODO
-		// Do I really need these here since they're in Graphics._
+		// Do I really need these here since they're in Graphics?
 		public static void Clear(Colour colour, float depth)
 		{
 			Graphics.Clear(colour, depth);
@@ -167,7 +200,7 @@ namespace CKGL
 		{
 			Graphics.Clear(depth);
 		}
-		
+
 		public static void SetShader(Shader shader)
 		{
 			if (currentShader != shader)
@@ -277,28 +310,6 @@ namespace CKGL
 			//SetSamplerState(DefaultSamplerState);
 			//SetBlendState(DefaultBlendState);
 
-			Initialize();
-		}
-
-		private static void Initialize()
-		{
-			switch (currentDrawMode)
-			{
-				case (DrawMode.TriangleList):
-					vertices = new Vertex[bufferSize - bufferSize % 3];
-					break;
-				case (DrawMode.LineList):
-					vertices = new Vertex[bufferSize - bufferSize % 2];
-					break;
-				case (DrawMode.TriangleStrip):
-				case (DrawMode.LineStrip):
-					vertices = new Vertex[bufferSize];
-					break;
-			}
-
-			// Faster but unpresise. Could lose some vertices.
-			//Array.Clear(vertices, 0, vertices.Length);
-
 			vertexCount = 0;
 		}
 
@@ -325,46 +336,27 @@ namespace CKGL
 				vbo.LoadData(Vertex.GetVBO(vertices), BufferUsage.DynamicDraw);
 
 				Graphics.DrawVertexArrays(currentDrawMode, 0, vertexCount);
-
-				// TODO
-				// Review if the following is necessary
-				//switch (currentDrawMode)
-				//{
-				//	case (DrawMode.TriangleList):
-				//		if (vertexCount >= 3)
-				//		{
-				//			Graphics.DrawVertexArrays(currentDrawMode, 0, vertexCount / 3);
-				//		}
-				//		break;
-				//	case (DrawMode.TriangleStrip):
-				//		if (vertexCount >= 3)
-				//		{
-				//			Graphics.DrawVertexArrays(currentDrawMode, 0, vertexCount - 2);
-				//		}
-				//		break;
-				//	case (DrawMode.TriangleFan):
-				//		if (vertexCount >= 3)
-				//		{
-				//			Graphics.DrawVertexArrays(currentDrawMode, 0, vertexCount);
-				//		}
-				//		break;
-				//	case (DrawMode.LineList):
-				//		if (vertexCount >= 2)
-				//		{
-				//			Graphics.DrawVertexArrays(currentDrawMode, 0, vertexCount / 2);
-				//		}
-				//		break;
-				//	case (DrawMode.LineLoop):
-				//	case (DrawMode.LineStrip):
-				//		if (vertexCount >= 2)
-				//		{
-				//			Graphics.DrawVertexArrays(currentDrawMode, 0, vertexCount - 1);
-				//		}
-				//		break;
-				//}
 			}
 
-			Initialize();
+			// Reset vertexCount so we don't lose any vertex data
+			int remainder = 0;
+			switch (currentDrawMode)
+			{
+				case (DrawMode.TriangleList):
+					remainder = vertexCount % 3;
+					break;
+				case (DrawMode.LineList):
+					remainder = vertexCount % 2;
+					break;
+				default:
+					remainder = 0;
+					break;
+			}
+			for (int i = 0; i < remainder; i++)
+			{
+				vertices[i] = vertices[vertexCount - remainder + i];
+			}
+			vertexCount = remainder;
 		}
 
 		private static void AddVertex(DrawMode type, Vector2 position, Colour colour)
@@ -384,9 +376,11 @@ namespace CKGL
 			{
 				Flush();
 				currentDrawMode = type;
+				// can lose vertices here, but that's ok
+				vertexCount = 0;
 			}
 
-			if (vertexCount >= vertices.Length)
+			if (vertexCount >= bufferSize)
 				Flush();
 
 			vertices[vertexCount].Position = new Vector3(position.X, position.Y, 0f);
