@@ -35,6 +35,20 @@ namespace CKGL
 		public static readonly Vector3 Back = new Vector3(0f, 0f, -1f);
 		#endregion
 
+		#region Properties
+		public Vector3 Normalized
+		{
+			get
+			{
+				float num = Magnitude(this);
+				if (num > 1E-05f)
+					return this / num;
+				else
+					return Zero;
+			}
+		}
+		#endregion
+
 		#region Methods
 		public Vector3 Round()
 		{
@@ -54,6 +68,27 @@ namespace CKGL
 		public Vector3 Lerp(Vector3 b, float t)
 		{
 			return new Vector3(X.Lerp(b.X, t), Y.Lerp(b.Y, t), Z.Lerp(b.Z, t));
+		}
+
+		public float Magnitude()
+		{
+			return Math.Sqrt(X * X + Y * Y + Z * Z);
+		}
+
+		public float SqrMagnitude()
+		{
+			return X * X + Y * Y + Z * Z;
+		}
+
+		public Vector3 Normalize()
+		{
+			float num = Magnitude(this);
+			if (num > 1E-05f)
+				this /= num;
+			else
+				this = Zero;
+
+			return this;
 		}
 		#endregion
 
@@ -76,6 +111,27 @@ namespace CKGL
 		public static Vector3 Lerp(Vector3 a, Vector3 b, float t)
 		{
 			return new Vector3(a.X.Lerp(b.X, t), a.Y.Lerp(b.Y, t), a.Z.Lerp(b.Z, t));
+		}
+
+		public static float Magnitude(Vector3 v)
+		{
+			return Math.Sqrt(v.X * v.X + v.Y * v.Y + v.Z * v.Z);
+		}
+
+		public static float MagnitudeSquared(Vector3 v)
+		{
+			return v.X * v.X + v.Y * v.Y + v.Z * v.Z;
+		}
+
+		public static Vector3 Normalize(Vector3 v)
+		{
+			float num = Magnitude(v);
+			if (num > 1E-05f)
+				v /= num;
+			else
+				v = Zero;
+
+			return v;
 		}
 		#endregion
 
