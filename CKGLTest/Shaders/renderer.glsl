@@ -1,30 +1,30 @@
 ﻿#version 330 core
 uniform mat4 matrix;
-layout(location = 0) in vec3 vertexPosition;
-layout(location = 1) in vec4 vertexColour;
-layout(location = 2) in vec2 vertexUV;
-layout(location = 3) in float vertexTextured;
-out vec4 fragColour;
-out vec2 fragUV;
-out float fragTextured;
+layout(location = 0) in vec3 position;
+layout(location = 1) in vec4 colour;
+layout(location = 2) in vec2 texCoord;
+layout(location = 3) in float textured;
+out vec4 v_colour;
+out vec2 v_texCoord;
+out float v_textured;
 void main()
 {
-	gl_Position = vec4(vertexPosition.xyz, 1.0);// * matrix;
-	fragColour = vertexColour;
-	fragUV = vertexUV;
-	fragTextured = vertexTextured;
+	gl_Position = vec4(position.xyz, 1.0);// * matrix;
+	v_colour = colour;
+	v_texCoord = texCoord;
+	v_textured = textured;
 }
 ...
 #version 330 core
 uniform sampler2D Texture;
-in vec4 fragColour;
-in vec2 fragUV;
-in float fragTextured;
+in vec4 v_colour;
+in vec2 v_texCoord;
+in float v_textured;
 layout(location = 0) out vec4 colour;
 void main()
 {
-    if (fragTextured > 0.0)
-		colour = texture(Texture, fragUV) * fragColour;
+    if (v_textured > 0.0)
+		colour = texture(Texture, v_texCoord) * v_colour;
     else
-        colour = fragColour;
+        colour = v_colour;
 }
