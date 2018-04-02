@@ -89,6 +89,13 @@ namespace CKGL
 			p.Y /= n;
 			return p;
 		}
+
+		public static Point2 operator -(Point2 v)
+		{
+			v.X = -v.X;
+			v.Y = -v.Y;
+			return v;
+		}
 		#endregion
 
 		#region Implicit Convertion Operators

@@ -198,6 +198,13 @@ namespace CKGL
 			v.Y /= n;
 			return v;
 		}
+
+		public static Vector2 operator -(Vector2 v)
+		{
+			v.X = -v.X;
+			v.Y = -v.Y;
+			return v;
+		}
 		#endregion
 
 		// TODO

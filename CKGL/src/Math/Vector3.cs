@@ -211,6 +211,14 @@ namespace CKGL
 			v.Z /= n;
 			return v;
 		}
+
+		public static Vector3 operator -(Vector3 v)
+		{
+			v.X = -v.X;
+			v.Y = -v.Y;
+			v.Z = -v.Z;
+			return v;
+		}
 		#endregion
 
 		// TODO
