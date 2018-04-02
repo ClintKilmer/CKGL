@@ -240,11 +240,27 @@ namespace OpenGL
 			CheckError();
 		}
 
+		delegate void _glBlendEquationSeparate(BlendEquation modeRGB, BlendEquation modeAlpha);
+		static _glBlendEquationSeparate glBlendEquationSeparate;
+		public static void BlendEquationSeparate(BlendEquation modeRGB, BlendEquation modeAlpha)
+		{
+			glBlendEquationSeparate(modeRGB, modeAlpha);
+			CheckError();
+		}
+
 		delegate void _glBlendFunc(BlendFactor sfactor, BlendFactor dfactor);
 		static _glBlendFunc glBlendFunc;
 		public static void BlendFunc(BlendFactor sFactor, BlendFactor dFactor)
 		{
 			glBlendFunc(sFactor, dFactor);
+			CheckError();
+		}
+
+		delegate void _glBlendFuncSeparate(BlendFactor srcRGB, BlendFactor dstRGB, BlendFactor srcAlpha, BlendFactor dstAlpha);
+		static _glBlendFuncSeparate glBlendFuncSeparate;
+		public static void BlendFuncSeparate(BlendFactor srcRGB, BlendFactor dstRGB, BlendFactor srcAlpha, BlendFactor dstAlpha)
+		{
+			glBlendFuncSeparate(srcRGB, dstRGB, srcAlpha, dstAlpha);
 			CheckError();
 		}
 

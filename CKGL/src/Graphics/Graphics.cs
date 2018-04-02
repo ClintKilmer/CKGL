@@ -97,8 +97,8 @@ namespace CKGL
 						GL.Enable(EnableCap.Blend);
 					else
 						GL.Disable(EnableCap.Blend);
-					GL.BlendFunc(value.Src, value.Dst);
-					GL.BlendEquation(value.Eq);
+					GL.BlendFuncSeparate(value.ColourSource, value.ColourDestination, value.AlphaSource, value.AlphaDestination);
+					GL.BlendEquationSeparate(value.ColourEquation, value.AlphaEquation);
 				}
 			}
 		}

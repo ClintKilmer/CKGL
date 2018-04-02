@@ -82,7 +82,7 @@ namespace CKGLTest
 			//Renderer.SetShader(test);
 			//Renderer.ResetShader();
 			//Renderer.SetCullState(CullState.Back);
-			Renderer.SetBlendState(BlendState.Alpha);
+			Renderer.SetBlendState(BlendState.AlphaBlend);
 			//Renderer.Draw.Triangle(new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0.0f),
 			//					   new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0.0f),
 			//					   new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0.0f),
