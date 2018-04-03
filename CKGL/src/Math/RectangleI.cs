@@ -11,9 +11,19 @@ namespace CKGL
 		public int H;
 
 		#region Properties
+		public int Left
+		{
+			get { return X; }
+		}
+
 		public int Right
 		{
 			get { return X + W; }
+		}
+
+		public int Top
+		{
+			get { return Y; }
 		}
 
 		public int Bottom
@@ -61,6 +71,51 @@ namespace CKGL
 			get { return Y + H / 2; }
 		}
 
+		public Point2 TopLeft
+		{
+			get { return new Point2(Left, Top); }
+		}
+
+		public Point2 BottomLeft
+		{
+			get { return new Point2(Left, Bottom); }
+		}
+
+		public Point2 BottomRight
+		{
+			get { return new Point2(Right, Bottom); }
+		}
+
+		public Point2 TopRight
+		{
+			get { return new Point2(Right, Top); }
+		}
+
+		public Point2 Center
+		{
+			get { return new Point2(CenterX, CenterY); }
+		}
+
+		public Point2 TopCenter
+		{
+			get { return new Point2(CenterX, Top); }
+		}
+
+		public Point2 BottomCenter
+		{
+			get { return new Point2(CenterX, Bottom); }
+		}
+
+		public Point2 LeftCenter
+		{
+			get { return new Point2(Left, CenterY); }
+		}
+
+		public Point2 RightCenter
+		{
+			get { return new Point2(Right, CenterY); }
+		}
+
 		public bool IsEmpty
 		{
 			get { return W == 0f && H == 0f; }
@@ -93,51 +148,6 @@ namespace CKGL
 		public int Area
 		{
 			get { return Math.Abs(W * H); }
-		}
-
-		public Point2 TopLeft
-		{
-			get { return new Point2(X, Y); }
-		}
-
-		public Point2 BottomLeft
-		{
-			get { return new Point2(X, Bottom); }
-		}
-
-		public Point2 BottomRight
-		{
-			get { return new Point2(Right, Bottom); }
-		}
-
-		public Point2 TopRight
-		{
-			get { return new Point2(Right, Y); }
-		}
-
-		public Point2 Center
-		{
-			get { return new Point2(CenterX, CenterY); }
-		}
-
-		public Point2 TopCenter
-		{
-			get { return new Point2(CenterX, Y); }
-		}
-
-		public Point2 BottomCenter
-		{
-			get { return new Point2(CenterX, Y + H); }
-		}
-
-		public Point2 LeftCenter
-		{
-			get { return new Point2(X, CenterY); }
-		}
-
-		public Point2 RightCenter
-		{
-			get { return new Point2(X + W, CenterY); }
 		}
 		#endregion
 

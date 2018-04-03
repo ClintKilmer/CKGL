@@ -1,5 +1,6 @@
 ﻿CKGL ToDo:
 
+- Quaternions? - enable in Matrix class
 - Max Framerate
 - Mim Framerate before game slowdown
 - Figure out how to proccess Vertex into buffer data

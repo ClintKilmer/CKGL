@@ -11,7 +11,7 @@ using System.Runtime.CompilerServices;
 
 namespace CKGL
 {
-	public class Matrix3D
+	public struct Matrix
 	{
 		public float M11;
 		public float M12;
@@ -31,7 +31,7 @@ namespace CKGL
 		public float M44;
 
 		#region Constructors
-		public Matrix3D(float m11, float m12, float m13, float m14,
+		public Matrix(float m11, float m12, float m13, float m14,
 						float m21, float m22, float m23, float m24,
 						float m31, float m32, float m33, float m34,
 						float m41, float m42, float m43, float m44)
@@ -44,7 +44,7 @@ namespace CKGL
 		#endregion
 
 		#region Static Constructors
-		public static readonly Matrix3D Identity = new Matrix3D(1f, 0f, 0f, 0f, 0f, 1f, 0f, 0f, 0f, 0f, 1f, 0f, 0f, 0f, 0f, 1f);
+		public static readonly Matrix Identity = new Matrix(1f, 0f, 0f, 0f, 0f, 1f, 0f, 0f, 0f, 0f, 1f, 0f, 0f, 0f, 0f, 1f);
 		#endregion
 
 		#region Properties
@@ -52,13 +52,13 @@ namespace CKGL
 		{
 			get
 			{
-				return new Vector3(this.M31, this.M32, this.M33);
+				return new Vector3(M31, M32, M33);
 			}
 			set
 			{
-				this.M31 = value.X;
-				this.M32 = value.Y;
-				this.M33 = value.Z;
+				M31 = value.X;
+				M32 = value.Y;
+				M33 = value.Z;
 			}
 		}
 
@@ -66,13 +66,13 @@ namespace CKGL
 		{
 			get
 			{
-				return new Vector3(-this.M31, -this.M32, -this.M33);
+				return new Vector3(-M31, -M32, -M33);
 			}
 			set
 			{
-				this.M31 = -value.X;
-				this.M32 = -value.Y;
-				this.M33 = -value.Z;
+				M31 = -value.X;
+				M32 = -value.Y;
+				M33 = -value.Z;
 			}
 		}
 
@@ -80,13 +80,13 @@ namespace CKGL
 		{
 			get
 			{
-				return new Vector3(-this.M21, -this.M22, -this.M23);
+				return new Vector3(-M21, -M22, -M23);
 			}
 			set
 			{
-				this.M21 = -value.X;
-				this.M22 = -value.Y;
-				this.M23 = -value.Z;
+				M21 = -value.X;
+				M22 = -value.Y;
+				M23 = -value.Z;
 			}
 		}
 
@@ -94,13 +94,13 @@ namespace CKGL
 		{
 			get
 			{
-				return new Vector3(this.M21, this.M22, this.M23);
+				return new Vector3(M21, M22, M23);
 			}
 			set
 			{
-				this.M21 = value.X;
-				this.M22 = value.Y;
-				this.M23 = value.Z;
+				M21 = value.X;
+				M22 = value.Y;
+				M23 = value.Z;
 			}
 		}
 
@@ -108,13 +108,13 @@ namespace CKGL
 		{
 			get
 			{
-				return new Vector3(-this.M11, -this.M12, -this.M13);
+				return new Vector3(-M11, -M12, -M13);
 			}
 			set
 			{
-				this.M11 = -value.X;
-				this.M12 = -value.Y;
-				this.M13 = -value.Z;
+				M11 = -value.X;
+				M12 = -value.Y;
+				M13 = -value.Z;
 			}
 		}
 
@@ -122,13 +122,13 @@ namespace CKGL
 		{
 			get
 			{
-				return new Vector3(this.M11, this.M12, this.M13);
+				return new Vector3(M11, M12, M13);
 			}
 			set
 			{
-				this.M11 = value.X;
-				this.M12 = value.Y;
-				this.M13 = value.Z;
+				M11 = value.X;
+				M12 = value.Y;
+				M13 = value.Z;
 			}
 		}
 
@@ -136,24 +136,24 @@ namespace CKGL
 		{
 			get
 			{
-				return new Vector3(this.M41, this.M42, this.M43);
+				return new Vector3(M41, M42, M43);
 			}
 			set
 			{
-				this.M41 = value.X;
-				this.M42 = value.Y;
-				this.M43 = value.Z;
+				M41 = value.X;
+				M42 = value.Y;
+				M43 = value.Z;
 			}
 		}
 
-		public Matrix3D Inverse
+		public Matrix Inverse
 		{
 			get { return Invert(); }
 		}
 		#endregion
 
 		#region Methods
-		public float[] ToFloatArray(Matrix3D matrix)
+		public float[] ToFloatArray(Matrix matrix)
 		{
 			float[] array = {
 				matrix.M11, matrix.M12, matrix.M13, matrix.M14,
@@ -164,9 +164,36 @@ namespace CKGL
 			return array;
 		}
 
-		public Matrix3D Invert()
+		public float Determinant()
 		{
-			Matrix3D result = Identity;
+			float num22 = M11;
+			float num21 = M12;
+			float num20 = M13;
+			float num19 = M14;
+			float num12 = M21;
+			float num11 = M22;
+			float num10 = M23;
+			float num9 = M24;
+			float num8 = M31;
+			float num7 = M32;
+			float num6 = M33;
+			float num5 = M34;
+			float num4 = M41;
+			float num3 = M42;
+			float num2 = M43;
+			float num = M44;
+			float num18 = (num6 * num) - (num5 * num2);
+			float num17 = (num7 * num) - (num5 * num3);
+			float num16 = (num7 * num2) - (num6 * num3);
+			float num15 = (num8 * num) - (num5 * num4);
+			float num14 = (num8 * num2) - (num6 * num4);
+			float num13 = (num8 * num3) - (num7 * num4);
+			return ((((num22 * (((num11 * num18) - (num10 * num17)) + (num9 * num16))) - (num21 * (((num12 * num18) - (num10 * num15)) + (num9 * num14)))) + (num20 * (((num12 * num17) - (num11 * num15)) + (num9 * num13)))) - (num19 * (((num12 * num16) - (num11 * num14)) + (num10 * num13))));
+		}
+
+		public Matrix Invert()
+		{
+			Matrix result = Identity;
 
 			float num1 = M11;
 			float num2 = M12;
@@ -230,6 +257,378 @@ namespace CKGL
 		#endregion
 
 		#region Static Methods
+		public static Matrix CreateFromAxisAngle(ref Vector3 axis, float angle)
+		{
+			Matrix result = Identity;
+
+			float x = axis.X;
+			float y = axis.Y;
+			float z = axis.Z;
+			float num2 = Math.Sin(angle);
+			float num = Math.Cos(angle);
+			float num11 = x * x;
+			float num10 = y * y;
+			float num9 = z * z;
+			float num8 = x * y;
+			float num7 = x * z;
+			float num6 = y * z;
+			result.M11 = num11 + (num * (1f - num11));
+			result.M12 = (num8 - (num * num8)) + (num2 * z);
+			result.M13 = (num7 - (num * num7)) - (num2 * y);
+			result.M14 = 0;
+			result.M21 = (num8 - (num * num8)) - (num2 * z);
+			result.M22 = num10 + (num * (1f - num10));
+			result.M23 = (num6 - (num * num6)) + (num2 * x);
+			result.M24 = 0;
+			result.M31 = (num7 - (num * num7)) + (num2 * y);
+			result.M32 = (num6 - (num * num6)) - (num2 * x);
+			result.M33 = num9 + (num * (1f - num9));
+			result.M34 = 0;
+			result.M41 = 0;
+			result.M42 = 0;
+			result.M43 = 0;
+			result.M44 = 1;
+
+			return result;
+		}
+
+		// TODO
+		//public static Matrix CreateFromQuaternion(ref Quaternion quaternion)
+		//{
+		//	Matrix result = Identity;
+
+		//	float num9 = quaternion.X * quaternion.X;
+		//	float num8 = quaternion.Y * quaternion.Y;
+		//	float num7 = quaternion.Z * quaternion.Z;
+		//	float num6 = quaternion.X * quaternion.Y;
+		//	float num5 = quaternion.Z * quaternion.W;
+		//	float num4 = quaternion.Z * quaternion.X;
+		//	float num3 = quaternion.Y * quaternion.W;
+		//	float num2 = quaternion.Y * quaternion.Z;
+		//	float num = quaternion.X * quaternion.W;
+		//	result.M11 = 1f - (2f * (num8 + num7));
+		//	result.M12 = 2f * (num6 + num5);
+		//	result.M13 = 2f * (num4 - num3);
+		//	result.M14 = 0f;
+		//	result.M21 = 2f * (num6 - num5);
+		//	result.M22 = 1f - (2f * (num7 + num9));
+		//	result.M23 = 2f * (num2 + num);
+		//	result.M24 = 0f;
+		//	result.M31 = 2f * (num4 + num3);
+		//	result.M32 = 2f * (num2 - num);
+		//	result.M33 = 1f - (2f * (num8 + num9));
+		//	result.M34 = 0f;
+		//	result.M41 = 0f;
+		//	result.M42 = 0f;
+		//	result.M43 = 0f;
+		//	result.M44 = 1f;
+
+		//	return result;
+		//}
+
+		// TODO
+		//public static Matrix CreateFromYawPitchRoll(float yaw, float pitch, float roll)
+		//{
+		//	Matrix result = Identity;
+
+		//	Quaternion quaternion;
+		//	Quaternion.CreateFromYawPitchRoll(yaw, pitch, roll, out quaternion);
+		//	CreateFromQuaternion(ref quaternion, out result);
+
+		//	return result;
+		//}
+
+		public static Matrix CreateLookAt(ref Vector3 cameraPosition, ref Vector3 cameraTarget, ref Vector3 cameraUpVector)
+		{
+			Matrix result = Identity;
+
+			var vector = Vector3.Normalize(cameraPosition - cameraTarget);
+			var vector2 = Vector3.Normalize(Vector3.Cross(cameraUpVector, vector));
+			var vector3 = Vector3.Cross(vector, vector2);
+			result.M11 = vector2.X;
+			result.M12 = vector3.X;
+			result.M13 = vector.X;
+			result.M14 = 0f;
+			result.M21 = vector2.Y;
+			result.M22 = vector3.Y;
+			result.M23 = vector.Y;
+			result.M24 = 0f;
+			result.M31 = vector2.Z;
+			result.M32 = vector3.Z;
+			result.M33 = vector.Z;
+			result.M34 = 0f;
+			result.M41 = -Vector3.Dot(vector2, cameraPosition);
+			result.M42 = -Vector3.Dot(vector3, cameraPosition);
+			result.M43 = -Vector3.Dot(vector, cameraPosition);
+			result.M44 = 1f;
+
+			return result;
+		}
+
+		public static Matrix CreateOrthographic(float width, float height, float zNearPlane, float zFarPlane)
+		{
+			Matrix result = Identity;
+
+			result.M11 = 2f / width;
+			result.M12 = result.M13 = result.M14 = 0f;
+			result.M22 = 2f / height;
+			result.M21 = result.M23 = result.M24 = 0f;
+			result.M33 = 1f / (zNearPlane - zFarPlane);
+			result.M31 = result.M32 = result.M34 = 0f;
+			result.M41 = result.M42 = 0f;
+			result.M43 = zNearPlane / (zNearPlane - zFarPlane);
+			result.M44 = 1f;
+
+			return result;
+		}
+
+		public static Matrix CreateOrthographicOffCenter(RectangleI viewingVolume, float zNearPlane, float zFarPlane)
+		{
+			return CreateOrthographicOffCenter(viewingVolume.Left, viewingVolume.Right, viewingVolume.Bottom, viewingVolume.Top, zNearPlane, zFarPlane);
+		}
+		public static Matrix CreateOrthographicOffCenter(float left, float right, float bottom, float top, float zNearPlane, float zFarPlane)
+		{
+			Matrix result = Identity;
+
+			result.M11 = (float)(2.0 / ((double)right - (double)left));
+			result.M12 = 0.0f;
+			result.M13 = 0.0f;
+			result.M14 = 0.0f;
+			result.M21 = 0.0f;
+			result.M22 = (float)(2.0 / ((double)top - (double)bottom));
+			result.M23 = 0.0f;
+			result.M24 = 0.0f;
+			result.M31 = 0.0f;
+			result.M32 = 0.0f;
+			result.M33 = (float)(1.0 / ((double)zNearPlane - (double)zFarPlane));
+			result.M34 = 0.0f;
+			result.M41 = (float)(((double)left + (double)right) / ((double)left - (double)right));
+			result.M42 = (float)(((double)top + (double)bottom) / ((double)bottom - (double)top));
+			result.M43 = (float)((double)zNearPlane / ((double)zNearPlane - (double)zFarPlane));
+			result.M44 = 1.0f;
+
+			return result;
+		}
+
+		public static Matrix CreatePerspective(float width, float height, float nearPlaneDistance, float farPlaneDistance)
+		{
+			Matrix result = Identity;
+
+			if (nearPlaneDistance <= 0f)
+			{
+				throw new ArgumentException("nearPlaneDistance <= 0");
+			}
+			if (farPlaneDistance <= 0f)
+			{
+				throw new ArgumentException("farPlaneDistance <= 0");
+			}
+			if (nearPlaneDistance >= farPlaneDistance)
+			{
+				throw new ArgumentException("nearPlaneDistance >= farPlaneDistance");
+			}
+			result.M11 = (2f * nearPlaneDistance) / width;
+			result.M12 = result.M13 = result.M14 = 0f;
+			result.M22 = (2f * nearPlaneDistance) / height;
+			result.M21 = result.M23 = result.M24 = 0f;
+			result.M33 = farPlaneDistance / (nearPlaneDistance - farPlaneDistance);
+			result.M31 = result.M32 = 0f;
+			result.M34 = -1f;
+			result.M41 = result.M42 = result.M44 = 0f;
+			result.M43 = (nearPlaneDistance * farPlaneDistance) / (nearPlaneDistance - farPlaneDistance);
+
+			return result;
+		}
+
+		public static Matrix CreatePerspectiveFieldOfView(float fieldOfView, float aspectRatio, float nearPlaneDistance, float farPlaneDistance)
+		{
+			Matrix result = Identity;
+
+			if ((fieldOfView <= 0f) || (fieldOfView >= Math.PI))
+			{
+				throw new ArgumentException("fieldOfView <= 0 or >= PI");
+			}
+			if (nearPlaneDistance <= 0f)
+			{
+				throw new ArgumentException("nearPlaneDistance <= 0");
+			}
+			if (farPlaneDistance <= 0f)
+			{
+				throw new ArgumentException("farPlaneDistance <= 0");
+			}
+			if (nearPlaneDistance >= farPlaneDistance)
+			{
+				throw new ArgumentException("nearPlaneDistance >= farPlaneDistance");
+			}
+			float num = 1f / (Math.Tan(fieldOfView * 0.5f));
+			float num9 = num / aspectRatio;
+			result.M11 = num9;
+			result.M12 = result.M13 = result.M14 = 0;
+			result.M22 = num;
+			result.M21 = result.M23 = result.M24 = 0;
+			result.M31 = result.M32 = 0f;
+			result.M33 = farPlaneDistance / (nearPlaneDistance - farPlaneDistance);
+			result.M34 = -1;
+			result.M41 = result.M42 = result.M44 = 0;
+			result.M43 = (nearPlaneDistance * farPlaneDistance) / (nearPlaneDistance - farPlaneDistance);
+
+			return result;
+		}
+
+		public static Matrix CreatePerspectiveOffCenter(RectangleI viewingVolume, float nearPlaneDistance, float farPlaneDistance)
+		{
+			return CreatePerspectiveOffCenter(viewingVolume.Left, viewingVolume.Right, viewingVolume.Bottom, viewingVolume.Top, nearPlaneDistance, farPlaneDistance);
+		}
+		public static Matrix CreatePerspectiveOffCenter(float left, float right, float bottom, float top, float nearPlaneDistance, float farPlaneDistance)
+		{
+			Matrix result = Identity;
+
+			if (nearPlaneDistance <= 0f)
+			{
+				throw new ArgumentException("nearPlaneDistance <= 0");
+			}
+			if (farPlaneDistance <= 0f)
+			{
+				throw new ArgumentException("farPlaneDistance <= 0");
+			}
+			if (nearPlaneDistance >= farPlaneDistance)
+			{
+				throw new ArgumentException("nearPlaneDistance >= farPlaneDistance");
+			}
+			result.M11 = (2f * nearPlaneDistance) / (right - left);
+			result.M12 = result.M13 = result.M14 = 0;
+			result.M22 = (2f * nearPlaneDistance) / (top - bottom);
+			result.M21 = result.M23 = result.M24 = 0;
+			result.M31 = (left + right) / (right - left);
+			result.M32 = (top + bottom) / (top - bottom);
+			result.M33 = farPlaneDistance / (nearPlaneDistance - farPlaneDistance);
+			result.M34 = -1;
+			result.M43 = (nearPlaneDistance * farPlaneDistance) / (nearPlaneDistance - farPlaneDistance);
+			result.M41 = result.M42 = result.M44 = 0;
+
+			return result;
+		}
+
+		public static Matrix CreateRotationX(float radians)
+		{
+			Matrix result = Identity;
+
+			var val1 = (float)Math.Cos(radians);
+			var val2 = (float)Math.Sin(radians);
+
+			result.M22 = val1;
+			result.M23 = val2;
+			result.M32 = -val2;
+			result.M33 = val1;
+
+			return result;
+		}
+
+		public static Matrix CreateRotationY(float radians)
+		{
+			Matrix result = Identity;
+
+			var val1 = (float)Math.Cos(radians);
+			var val2 = (float)Math.Sin(radians);
+
+			result.M11 = val1;
+			result.M13 = -val2;
+			result.M31 = val2;
+			result.M33 = val1;
+
+			return result;
+		}
+
+		public static Matrix CreateRotationZ(float radians)
+		{
+			Matrix result = Identity;
+
+			var val1 = (float)Math.Cos(radians);
+			var val2 = (float)Math.Sin(radians);
+
+			result.M11 = val1;
+			result.M12 = val2;
+			result.M21 = -val2;
+			result.M22 = val1;
+
+			return result;
+		}
+
+		public static Matrix CreateScale(Vector3 scale)
+		{
+			return CreateScale(scale.X, scale.Y, scale.Z);
+		}
+		public static Matrix CreateScale(float scale)
+		{
+			return CreateScale(scale, scale, scale);
+		}
+		public static Matrix CreateScale(float scaleX, float scaleY, float scaleZ)
+		{
+			Matrix result = Identity;
+
+			result.M11 = scaleX;
+			result.M12 = 0;
+			result.M13 = 0;
+			result.M14 = 0;
+			result.M21 = 0;
+			result.M22 = scaleY;
+			result.M23 = 0;
+			result.M24 = 0;
+			result.M31 = 0;
+			result.M32 = 0;
+			result.M33 = scaleZ;
+			result.M34 = 0;
+			result.M41 = 0;
+			result.M42 = 0;
+			result.M43 = 0;
+			result.M44 = 1;
+
+			return result;
+		}
+
+		public static Matrix CreateTranslation(Vector3 position)
+		{
+			return CreateTranslation(position);
+		}
+		public static Matrix CreateTranslation(float positionX, float positionY, float positionZ)
+		{
+			Matrix result = Identity;
+
+			result.M11 = 1;
+			result.M12 = 0;
+			result.M13 = 0;
+			result.M14 = 0;
+			result.M21 = 0;
+			result.M22 = 1;
+			result.M23 = 0;
+			result.M24 = 0;
+			result.M31 = 0;
+			result.M32 = 0;
+			result.M33 = 1;
+			result.M34 = 0;
+			result.M41 = positionX;
+			result.M42 = positionY;
+			result.M43 = positionZ;
+			result.M44 = 1;
+
+			return result;
+		}
+
+		public static Matrix CreateWorld(Vector3 position, Vector3 forward, Vector3 up)
+		{
+			Matrix result = Identity;
+
+			Vector3 z = forward.Normalized;
+			Vector3 x = Vector3.Cross(forward, up).Normalize();
+			Vector3 y = Vector3.Cross(x, forward).Normalize();
+
+			result.Right = x;
+			result.Up = y;
+			result.Forward = z;
+			result.Translation = position;
+			result.M44 = 1f;
+
+			return result;
+		}
 		#endregion
 
 		#region Overrides
@@ -243,7 +642,7 @@ namespace CKGL
 		#endregion
 
 		#region Operators
-		public static bool operator ==(Matrix3D matrix1, Matrix3D matrix2)
+		public static bool operator ==(Matrix matrix1, Matrix matrix2)
 		{
 			return (
 				matrix1.M11 == matrix2.M11 &&
@@ -265,7 +664,7 @@ namespace CKGL
 				);
 		}
 
-		public static bool operator !=(Matrix3D matrix1, Matrix3D matrix2)
+		public static bool operator !=(Matrix matrix1, Matrix matrix2)
 		{
 			return (
 				matrix1.M11 != matrix2.M11 ||
@@ -287,7 +686,7 @@ namespace CKGL
 				);
 		}
 
-		public static Matrix3D operator +(Matrix3D matrix1, Matrix3D matrix2)
+		public static Matrix operator +(Matrix matrix1, Matrix matrix2)
 		{
 			matrix1.M11 = matrix1.M11 + matrix2.M11;
 			matrix1.M12 = matrix1.M12 + matrix2.M12;
@@ -308,7 +707,7 @@ namespace CKGL
 			return matrix1;
 		}
 
-		public static Matrix3D operator -(Matrix3D matrix1, Matrix3D matrix2)
+		public static Matrix operator -(Matrix matrix1, Matrix matrix2)
 		{
 			matrix1.M11 = matrix1.M11 - matrix2.M11;
 			matrix1.M12 = matrix1.M12 - matrix2.M12;
@@ -330,7 +729,7 @@ namespace CKGL
 		}
 
 		// Using matrix multiplication algorithm - see http://en.wikipedia.org/wiki/Matrix_multiplication.
-		public static Matrix3D operator *(Matrix3D matrix1, Matrix3D matrix2)
+		public static Matrix operator *(Matrix matrix1, Matrix matrix2)
 		{
 			var m11 = (((matrix1.M11 * matrix2.M11) + (matrix1.M12 * matrix2.M21)) + (matrix1.M13 * matrix2.M31)) + (matrix1.M14 * matrix2.M41);
 			var m12 = (((matrix1.M11 * matrix2.M12) + (matrix1.M12 * matrix2.M22)) + (matrix1.M13 * matrix2.M32)) + (matrix1.M14 * matrix2.M42);
@@ -367,7 +766,7 @@ namespace CKGL
 			return matrix1;
 		}
 
-		public static Matrix3D operator *(Matrix3D matrix, float scalar)
+		public static Matrix operator *(Matrix matrix, float scalar)
 		{
 			matrix.M11 = matrix.M11 * scalar;
 			matrix.M12 = matrix.M12 * scalar;
@@ -388,7 +787,7 @@ namespace CKGL
 			return matrix;
 		}
 
-		public static Matrix3D operator /(Matrix3D matrix1, Matrix3D matrix2)
+		public static Matrix operator /(Matrix matrix1, Matrix matrix2)
 		{
 			matrix1.M11 = matrix1.M11 / matrix2.M11;
 			matrix1.M12 = matrix1.M12 / matrix2.M12;
@@ -409,7 +808,7 @@ namespace CKGL
 			return matrix1;
 		}
 
-		public static Matrix3D operator /(Matrix3D matrix, float scalar)
+		public static Matrix operator /(Matrix matrix, float scalar)
 		{
 			float num = 1f / scalar;
 			matrix.M11 = matrix.M11 * num;
@@ -431,7 +830,7 @@ namespace CKGL
 			return matrix;
 		}
 
-		public static Matrix3D operator -(Matrix3D matrix)
+		public static Matrix operator -(Matrix matrix)
 		{
 			matrix.M11 = -matrix.M11;
 			matrix.M12 = -matrix.M12;
@@ -454,9 +853,9 @@ namespace CKGL
 		#endregion
 
 		#region Implicit Convertion Operators
-		public static implicit operator Matrix3D(Matrix2D matrix2D)
+		public static implicit operator Matrix(Matrix2D matrix2D)
 		{
-			return matrix2D.ToMatrix3D();
+			return matrix2D.ToMatrix();
 		}
 		#endregion
 	}

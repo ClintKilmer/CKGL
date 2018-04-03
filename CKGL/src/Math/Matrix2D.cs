@@ -10,7 +10,7 @@ using System.Runtime.CompilerServices;
 
 namespace CKGL
 {
-	public class Matrix2D
+	public struct Matrix2D
 	{
 		public float M11; // x scale	// z rotation
 		public float M12;               // z rotation
@@ -145,7 +145,7 @@ namespace CKGL
 			}
 		}
 
-		public Matrix3D Inverse
+		public Matrix2D Inverse
 		{
 			get { return Invert(); }
 		}
@@ -177,9 +177,9 @@ namespace CKGL
 			return result;
 		}
 
-		public Matrix3D ToMatrix3D(float depth = 0)
+		public Matrix ToMatrix(float depth = 0)
 		{
-			Matrix3D result = Matrix3D.Identity;
+			Matrix result = Matrix.Identity;
 
 			result.M11 = M11;
 			result.M12 = M12;
@@ -440,13 +440,13 @@ namespace CKGL
 		#endregion
 
 		#region Implicit Convertion Operators
-		public static implicit operator Matrix2D(Matrix3D matrix3D)
+		public static implicit operator Matrix2D(Matrix matrix)
 		{
 			return new Matrix2D
 			(
-				matrix3D.M11, matrix3D.M12,
-				matrix3D.M21, matrix3D.M22,
-				matrix3D.M41, matrix3D.M42
+				matrix.M11, matrix.M12,
+				matrix.M21, matrix.M22,
+				matrix.M41, matrix.M42
 			);
 		}
 		#endregion

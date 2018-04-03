@@ -38,7 +38,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\Colour.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\Math.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\Extensions.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)src\Math\Matrix3D.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Math\Matrix.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\Matrix2D.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\Random.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\Vector3.cs" />

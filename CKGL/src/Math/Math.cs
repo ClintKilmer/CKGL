@@ -173,6 +173,11 @@
 			return (float)System.Math.Atan(x);
 		}
 
+		public static float Tan(float x)
+		{
+			return (float)System.Math.Tan(x);
+		}
+
 		public static float Atan2(float y, float x)
 		{
 			return (float)System.Math.Atan2(y, x);

@@ -160,6 +160,11 @@
 			return (float)System.Math.Cos(x);
 		}
 
+		public static float Tan(this float x)
+		{
+			return (float)System.Math.Tan(x);
+		}
+
 		public static float Atan(this float x)
 		{
 			return (float)System.Math.Atan(x);
