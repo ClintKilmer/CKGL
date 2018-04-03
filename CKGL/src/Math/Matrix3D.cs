@@ -11,7 +11,7 @@ using System.Runtime.CompilerServices;
 
 namespace CKGL
 {
-	class Matrix3D
+	public class Matrix3D
 	{
 		public float M11;
 		public float M12;

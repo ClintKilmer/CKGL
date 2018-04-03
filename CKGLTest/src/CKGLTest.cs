@@ -83,22 +83,30 @@ namespace CKGLTest
 			//Renderer.ResetShader();
 			//Renderer.SetCullState(CullState.Back);
 			Renderer.SetBlendState(BlendState.AlphaBlend);
-			//Renderer.Draw.Triangle(new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0.0f),
-			//					   new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0.0f),
-			//					   new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0.0f),
-			//					   new Colour(Random.Range(1f), Random.Range(1f), Random.Range(1f), 0.5f));
-			Renderer.Draw.TriangleStrip.Begin();
-			//int ii = Random.Range(1000, 10000);
-			for (int i = 0; i < 10000; i++)
-				Renderer.Draw.TriangleStrip.AddVertex(new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0.0f),
-													  new Colour(Random.Range(1f), Random.Range(1f), Random.Range(1f), Random.Range(1f)));
-			Renderer.Draw.TriangleStrip.End();
+			Renderer.Draw.Triangle(new Vector3(-0.5f, -0.5f, 0.0f),
+								   new Vector3(0.5f, -0.5f, 0.0f),
+								   new Vector2(0.0f, 0.5f) * Matrix2D.CreateScale(2f) * Matrix2D.CreateRotationZ(Input.Mouse.X / (float)Window.Size.X * 360 * Math.Rad) * Matrix2D.CreateTranslation(new Vector2(0.5f, 0f)),
+								   Colour.Red,
+								   Colour.Green,
+								   Colour.Blue,
+								   false,
+								   Vector2.Zero,
+								   Vector2.Zero,
+								   Vector2.Zero,
+								   Input.Mouse.X / (float)Window.Size.X,
+								   Vector2.Zero);
+			//Renderer.Draw.TriangleStrip.Begin();
+			////int ii = Random.Range(1000, 10000);
+			//for (int i = 0; i < 10000; i++)
+			//	Renderer.Draw.TriangleStrip.AddVertex(new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0.0f),
+			//										  new Colour(Random.Range(1f), Random.Range(1f), Random.Range(1f), Random.Range(1f)));
+			//Renderer.Draw.TriangleStrip.End();
 
-			Renderer.Draw.LineStrip.Begin();
-			for (int i = 0; i < 10; i++)
-				Renderer.Draw.LineStrip.AddVertex(new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0.0f),
-												  new Colour(Random.Range(1f), Random.Range(1f), Random.Range(1f), Random.Range(1f)));
-			Renderer.Draw.LineStrip.End();
+			//Renderer.Draw.LineStrip.Begin();
+			//for (int i = 0; i < 10; i++)
+			//	Renderer.Draw.LineStrip.AddVertex(new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0.0f),
+			//									  new Colour(Random.Range(1f), Random.Range(1f), Random.Range(1f), Random.Range(1f)));
+			//Renderer.Draw.LineStrip.End();
 
 			//Renderer.Draw.Pixel(new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0.0f),
 			//					new Colour(Random.Range(1f), Random.Range(1f), Random.Range(1f), 1f));

@@ -179,6 +179,20 @@ namespace CKGL
 			v.Y *= n;
 			return v;
 		}
+		public static Vector2 operator *(Vector2 v, Matrix2D m)
+		{
+			return new Vector2(
+				v.X * m.M11 + v.Y * m.M21 + m.M31,
+				v.X * m.M12 + v.Y * m.M22 + m.M32
+			);
+		}
+		public static Vector2 operator *(Matrix2D m, Vector2 v)
+		{
+			return new Vector2(
+				v.X * m.M11 + v.Y * m.M21 + m.M31,
+				v.X * m.M12 + v.Y * m.M22 + m.M32
+			);
+		}
 
 		public static Vector2 operator /(Vector2 a, Vector2 b)
 		{

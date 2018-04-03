@@ -10,23 +10,28 @@ using System.Runtime.CompilerServices;
 
 namespace CKGL
 {
-	class Matrix2D
+	public class Matrix2D
 	{
-		public float M11; // x scale
-		public float M12;
-		public float M21;
-		public float M22; // y scale
-		public float M31; // x translation
-		public float M32; // y translation
+		public float M11; // x scale	// z rotation
+		public float M12;               // z rotation
+
+		public float M21;               // z rotation
+		public float M22; // y scale	// z rotation
+
+		public float M31;                           // x translation
+		public float M32;                           // y translation
 
 		#region Constructors
-		public Matrix2D(float m11, float m12,
-						float m21, float m22,
-						float m31, float m32)
+		public Matrix2D(float m11, float m12, float m21, float m22, float m31, float m32)
 		{
-			M11 = m11; M12 = m12;
-			M21 = m21; M22 = m22;
-			M31 = m31; M32 = m32;
+			M11 = m11;
+			M12 = m12;
+
+			M21 = m21;
+			M22 = m22;
+
+			M31 = m31;
+			M32 = m32;
 		}
 		#endregion
 
@@ -53,13 +58,13 @@ namespace CKGL
 			get { return Math.Atan2(M21, M11); }
 			set
 			{
-				var val1 = Math.Cos(value);
-				var val2 = Math.Sin(value);
+				var cos = Math.Cos(value);
+				var sin = Math.Sin(value);
 
-				M11 = val1;
-				M12 = val2;
-				M21 = -val2;
-				M22 = val1;
+				M11 = cos;
+				M12 = sin;
+				M21 = -sin;
+				M22 = cos;
 			}
 		}
 
@@ -67,6 +72,12 @@ namespace CKGL
 		{
 			get { return Math.Deg * Rotation; }
 			set { Rotation = Math.Rad * value; }
+		}
+
+		public float RotationNormalizedUnits
+		{
+			get { return Math.Deg * Rotation * 360; }
+			set { Rotation = Math.Rad * value * 360; }
 		}
 
 		public Vector2 Scale
@@ -82,29 +93,56 @@ namespace CKGL
 			}
 		}
 
-		public Vector2 Position
-		{
-			get { return Transform(Vector2.Zero); }
-		}
-
 		public Vector2 Left
 		{
-			get { return TransformDirection(Vector2.Left).Normalized; }
+			get
+			{
+				return new Vector2(-M11, -M12);
+			}
+			set
+			{
+				M11 = -value.X;
+				M12 = -value.Y;
+			}
 		}
 
 		public Vector2 Right
 		{
-			get { return TransformDirection(Vector2.Right).Normalized; }
+			get
+			{
+				return new Vector2(M11, M12);
+			}
+			set
+			{
+				M11 = value.X;
+				M12 = value.Y;
+			}
 		}
 
 		public Vector2 Up
 		{
-			get { return TransformDirection(Vector2.Up).Normalized; }
+			get
+			{
+				return new Vector2(M21, M22);
+			}
+			set
+			{
+				M21 = value.X;
+				M22 = value.Y;
+			}
 		}
 
 		public Vector2 Down
 		{
-			get { return TransformDirection(Vector2.Down).Normalized; }
+			get
+			{
+				return new Vector2(-M21, -M22);
+			}
+			set
+			{
+				M21 = -value.X;
+				M22 = -value.Y;
+			}
 		}
 
 		public Matrix3D Inverse
@@ -139,33 +177,6 @@ namespace CKGL
 			return result;
 		}
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public Vector2 Transform(Vector2 v)
-		{
-			return new Vector2(
-				v.X * M11 + v.Y * M21 + M31,
-				v.X * M12 + v.Y * M22 + M32
-			);
-		}
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public Vector2 Transform(float x, float y)
-		{
-			return new Vector2(
-				x * M11 + y * M21 + M31,
-				x * M12 + y * M22 + M32
-			);
-		}
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public Vector2 TransformDirection(Vector2 v)
-		{
-			return new Vector2(
-				v.X * M11 + v.Y * M21,
-				v.X * M12 + v.Y * M22
-			);
-		}
-
 		public Matrix3D ToMatrix3D(float depth = 0)
 		{
 			Matrix3D result = Matrix3D.Identity;
@@ -198,7 +209,7 @@ namespace CKGL
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static Matrix2D CreateFrom(Vector2 position, float rotationInRadians, Vector2? scale = null, Vector2? origin = null)
 		{
-			var transformMatrix = Identity;
+			Matrix2D transformMatrix = Identity;
 
 			if (origin.HasValue)
 			{
@@ -218,7 +229,7 @@ namespace CKGL
 				transformMatrix = transformMatrix * rotationMatrix;
 			}
 
-			var translationMatrix = CreateTranslation(position);
+			Matrix2D translationMatrix = CreateTranslation(position);
 			transformMatrix = transformMatrix * translationMatrix;
 
 			return transformMatrix;
@@ -229,7 +240,7 @@ namespace CKGL
 			return CreateTranslation(position.X, position.Y);
 		}
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static Matrix2D CreateTranslation(float xPosition, float yPosition)
+		public static Matrix2D CreateTranslation(float positionX, float positionY)
 		{
 			Matrix2D result = Identity;
 
@@ -239,8 +250,8 @@ namespace CKGL
 			result.M21 = 0;
 			result.M22 = 1;
 
-			result.M31 = xPosition;
-			result.M32 = yPosition;
+			result.M31 = positionX;
+			result.M32 = positionY;
 
 			return result;
 		}
@@ -250,14 +261,14 @@ namespace CKGL
 		{
 			Matrix2D result = Identity;
 
-			var val1 = Math.Cos(rotationInRadians);
-			var val2 = Math.Sin(rotationInRadians);
+			float cos = Math.Cos(rotationInRadians);
+			float sin = Math.Sin(rotationInRadians);
 
-			result.M11 = val1;
-			result.M12 = val2;
+			result.M11 = cos;
+			result.M12 = sin;
 
-			result.M21 = -val2;
-			result.M22 = val1;
+			result.M21 = -sin;
+			result.M22 = cos;
 
 			result.M31 = 0;
 			result.M32 = 0;
@@ -302,16 +313,14 @@ namespace CKGL
 		#region Operators
 		public static bool operator ==(Matrix2D matrix1, Matrix2D matrix2)
 		{
-			return matrix1.M11 == matrix2.M11 && matrix1.M12 == matrix2.M12 &&
-				   matrix1.M21 == matrix2.M21 && matrix1.M22 == matrix2.M22 &&
-				   matrix1.M31 == matrix2.M31 && matrix1.M32 == matrix2.M32;
+			return matrix1.M11 == matrix2.M11 && matrix1.M21 == matrix2.M21 && matrix1.M31 == matrix2.M31 &&
+				   matrix1.M12 == matrix2.M12 && matrix1.M22 == matrix2.M22 && matrix1.M32 == matrix2.M32;
 		}
 
 		public static bool operator !=(Matrix2D matrix1, Matrix2D matrix2)
 		{
-			return matrix1.M11 != matrix2.M11 || matrix1.M12 != matrix2.M12 ||
-				   matrix1.M21 != matrix2.M21 || matrix1.M22 != matrix2.M22 ||
-				   matrix1.M31 != matrix2.M31 || matrix1.M32 != matrix2.M32;
+			return matrix1.M11 != matrix2.M11 || matrix1.M21 != matrix2.M21 || matrix1.M31 != matrix2.M31 ||
+				   matrix1.M12 != matrix2.M12 || matrix1.M22 != matrix2.M22 || matrix1.M32 != matrix2.M32;
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -340,6 +349,7 @@ namespace CKGL
 
 			matrix1.M31 = matrix1.M31 - matrix2.M31;
 			matrix1.M32 = matrix1.M32 - matrix2.M32;
+
 			return matrix1;
 		}
 
@@ -393,21 +403,23 @@ namespace CKGL
 
 			matrix1.M31 = matrix1.M31 / matrix2.M31;
 			matrix1.M32 = matrix1.M32 / matrix2.M32;
+
 			return matrix1;
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static Matrix2D operator /(Matrix2D matrix, float scalar)
 		{
-			var num = 1f / scalar;
-			matrix.M11 = matrix.M11 * num;
-			matrix.M12 = matrix.M12 * num;
+			float inverseScalar = 1f / scalar;
+			matrix.M11 = matrix.M11 * inverseScalar;
+			matrix.M12 = matrix.M12 * inverseScalar;
 
-			matrix.M21 = matrix.M21 * num;
-			matrix.M22 = matrix.M22 * num;
+			matrix.M21 = matrix.M21 * inverseScalar;
+			matrix.M22 = matrix.M22 * inverseScalar;
 
-			matrix.M31 = matrix.M31 * num;
-			matrix.M32 = matrix.M32 * num;
+			matrix.M31 = matrix.M31 * inverseScalar;
+			matrix.M32 = matrix.M32 * inverseScalar;
+
 			return matrix;
 		}
 
@@ -422,6 +434,7 @@ namespace CKGL
 
 			matrix.M31 = -matrix.M31;
 			matrix.M32 = -matrix.M32;
+
 			return matrix;
 		}
 		#endregion
