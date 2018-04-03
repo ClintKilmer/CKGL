@@ -153,13 +153,13 @@ namespace CKGL
 		#endregion
 
 		#region Methods
-		public float[] ToFloatArray(Matrix matrix)
+		public float[] ToFloatArray()
 		{
 			float[] array = {
-				matrix.M11, matrix.M12, matrix.M13, matrix.M14,
-				matrix.M21, matrix.M22, matrix.M23, matrix.M24,
-				matrix.M31, matrix.M32, matrix.M33, matrix.M34,
-				matrix.M41, matrix.M42, matrix.M43, matrix.M44
+				M11, M12, M13, M14,
+				M21, M22, M23, M24,
+				M31, M32, M33, M34,
+				M41, M42, M43, M44
 			};
 			return array;
 		}
@@ -338,7 +338,7 @@ namespace CKGL
 		//	return result;
 		//}
 
-		public static Matrix CreateLookAt(ref Vector3 cameraPosition, ref Vector3 cameraTarget, ref Vector3 cameraUpVector)
+		public static Matrix CreateLookAt(Vector3 cameraPosition, Vector3 cameraTarget, Vector3 cameraUpVector)
 		{
 			Matrix result = Identity;
 
@@ -365,6 +365,10 @@ namespace CKGL
 			return result;
 		}
 
+		public static Matrix CreateOrthographic(Point2 size, float zNearPlane, float zFarPlane)
+		{
+			return CreateOrthographic(size.X, size.Y, zNearPlane, zFarPlane);
+		}
 		public static Matrix CreateOrthographic(float width, float height, float zNearPlane, float zFarPlane)
 		{
 			Matrix result = Identity;
@@ -587,7 +591,7 @@ namespace CKGL
 
 		public static Matrix CreateTranslation(Vector3 position)
 		{
-			return CreateTranslation(position);
+			return CreateTranslation(position.X, position.Y, position.Z);
 		}
 		public static Matrix CreateTranslation(float positionX, float positionY, float positionZ)
 		{

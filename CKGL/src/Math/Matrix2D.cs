@@ -62,8 +62,8 @@ namespace CKGL
 				var sin = Math.Sin(value);
 
 				M11 = cos;
-				M12 = sin;
-				M21 = -sin;
+				M12 = -sin;
+				M21 = sin;
 				M22 = cos;
 			}
 		}
@@ -76,8 +76,8 @@ namespace CKGL
 
 		public float RotationNormalizedUnits
 		{
-			get { return Math.Deg * Rotation * 360; }
-			set { Rotation = Math.Rad * value * 360; }
+			get { return (Rotation * Math.Deg + 180) / 360; }
+			set { Rotation = value * 360 * Math.Rad; }
 		}
 
 		public Vector2 Scale
@@ -151,7 +151,18 @@ namespace CKGL
 		}
 		#endregion
 
-		#region Methods
+		#region 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public float[] ToFloatArray()
+		{
+			float[] array = {
+				M11, M12,
+				M21, M22,
+				M31, M32
+			};
+			return array;
+		}
+
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public float Determinant()
 		{
@@ -265,9 +276,9 @@ namespace CKGL
 			float sin = Math.Sin(rotationInRadians);
 
 			result.M11 = cos;
-			result.M12 = sin;
+			result.M12 = -sin;
 
-			result.M21 = -sin;
+			result.M21 = sin;
 			result.M22 = cos;
 
 			result.M31 = 0;
@@ -305,7 +316,7 @@ namespace CKGL
 		#region Overrides
 		public override string ToString()
 		{
-			return this == Identity ? "Identity" : $"T:({Translation.X:0.##}, {Translation.Y:0.##}), R:{Math.Deg * Rotation:0.##}°, S:({Scale.X:0.##},{Scale.Y:0.##})";
+			return this == Identity ? "Identity" : $"T:({Translation.X:0.##}, {Translation.Y:0.##}), R:{RotationNormalizedUnits:0.##}°, S:({Scale.X:0.##},{Scale.Y:0.##})";
 			//return $"{{M11:{M11} M12:{M12}}} {{M21:{M21} M22:{M22}}} {{M31:{M31} M32:{M32}}}";
 		}
 		#endregion

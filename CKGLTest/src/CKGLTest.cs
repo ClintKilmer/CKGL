@@ -24,6 +24,10 @@ namespace CKGLTest
 		// Variable for moving window on mouse click and drag
 		Point2 windowDraggingPosition = Point2.Zero;
 
+		Vector3 cameraPosition = Vector3.Zero;
+		float cameraScale = 1f;
+		Matrix WorldMatrix = Matrix.Identity;
+
 		public override void Init()
 		{
 			//Platform.ShowCursor = false; // Default true
@@ -64,6 +68,21 @@ namespace CKGLTest
 				sndPop1.Play();
 			if (Input.Keyboard.Released(KeyCode.Space) || Input.Mouse.LeftReleased)
 				sndPop2.Play();
+
+			var speed = 10f;
+			if (Input.Keyboard.Down(KeyCode.A))
+				cameraPosition.X -= speed;
+			if (Input.Keyboard.Down(KeyCode.D))
+				cameraPosition.X += speed;
+			if (Input.Keyboard.Down(KeyCode.W))
+				cameraPosition.Y -= speed;
+			if (Input.Keyboard.Down(KeyCode.S))
+				cameraPosition.Y += speed;
+			if (Input.Keyboard.Down(KeyCode.Q))
+				cameraScale -= 0.03f * cameraScale;
+			if (Input.Keyboard.Down(KeyCode.E))
+				cameraScale += 0.03f * cameraScale;
+			WorldMatrix = Matrix.CreateTranslation(-cameraPosition);
 		}
 
 		public override void Draw()
@@ -80,12 +99,20 @@ namespace CKGLTest
 
 			Renderer.Start();
 			//Renderer.SetShader(test);
+			Renderer.currentShader.Bind();
+			Matrix ViewMatrix = Matrix.CreateLookAt(Vector3.Zero, new Vector3(0f, 0f, 1f), new Vector3(0f, -1f, 0f));
+			Renderer.currentShader.SetUniform("matrix", WorldMatrix * ViewMatrix * Matrix.CreateOrthographic(Window.Size, -10000f, 10000f) * Matrix.CreateScale(cameraScale, cameraScale, 0f));
 			//Renderer.ResetShader();
+			//Renderer.SetFrontFaceState(FrontFace.Clockwise);
 			//Renderer.SetCullState(CullState.Back);
-			Renderer.SetBlendState(BlendState.AlphaBlend);
-			Renderer.Draw.Triangle(new Vector3(-0.5f, -0.5f, 0.0f),
-								   new Vector3(0.5f, -0.5f, 0.0f),
-								   new Vector2(0.0f, 0.5f) * Matrix2D.CreateScale(2f) * Matrix2D.CreateRotationZ(Input.Mouse.X / (float)Window.Size.X * 360 * Math.Rad) * Matrix2D.CreateTranslation(new Vector2(0.5f, 0f)),
+			//Renderer.SetBlendState(BlendState.AlphaBlend);
+			var rotation = Matrix.CreateRotationX(Time.TotalSeconds * 0.231f * 360 * Math.Rad) *
+						   Matrix.CreateRotationY(Time.TotalSeconds * 0.222f * 360 * Math.Rad) *
+						   Matrix.CreateRotationZ(Time.TotalSeconds * 0.213f * 360 * Math.Rad);
+			//var rotation = Matrix2D.CreateRotationZ(Time.TotalSeconds * 0.2f * 360 * Math.Rad);
+			Renderer.Draw.Triangle(new Vector3(-100f, -100f, 0f) * rotation,
+								   new Vector3(100f, -100f, 0f) * rotation,
+								   new Vector3(0f, 100f, 0f) * rotation,
 								   Colour.Red,
 								   Colour.Green,
 								   Colour.Blue,
@@ -93,12 +120,12 @@ namespace CKGLTest
 								   Vector2.Zero,
 								   Vector2.Zero,
 								   Vector2.Zero,
-								   Input.Mouse.X / (float)Window.Size.X,
+								   0f,
 								   Vector2.Zero);
 			//Renderer.Draw.TriangleStrip.Begin();
 			////int ii = Random.Range(1000, 10000);
 			//for (int i = 0; i < 10000; i++)
-			//	Renderer.Draw.TriangleStrip.AddVertex(new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0.0f),
+			//	Renderer.Draw.TriangleStrip.AddVertex(new Vector3(Random.Range(-1f, 1f), Random.Range(10;, 1f), 0.0f),
 			//										  new Colour(Random.Range(1f), Random.Range(1f), Random.Range(1f), Random.Range(1f)));
 			//Renderer.Draw.TriangleStrip.End();
 
@@ -108,16 +135,9 @@ namespace CKGLTest
 			//									  new Colour(Random.Range(1f), Random.Range(1f), Random.Range(1f), Random.Range(1f)));
 			//Renderer.Draw.LineStrip.End();
 
-			//Renderer.Draw.Pixel(new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0.0f),
-			//					new Colour(Random.Range(1f), Random.Range(1f), Random.Range(1f), 1f));
-			//Renderer.Draw.Pixel(new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0.0f),
-			//					new Colour(Random.Range(1f), Random.Range(1f), Random.Range(1f), 1f));
-			//Renderer.Draw.Pixel(new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0.0f),
-			//					new Colour(Random.Range(1f), Random.Range(1f), Random.Range(1f), 1f));
-			//Renderer.Draw.Pixel(new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0.0f),
-			//					new Colour(Random.Range(1f), Random.Range(1f), Random.Range(1f), 1f));
-			//Renderer.Draw.Pixel(new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0.0f),
-			//					new Colour(Random.Range(1f), Random.Range(1f), Random.Range(1f), 1f));
+			//for (int i = 0; i < 100; i++)
+			//	Renderer.Draw.Pixel(new Vector3(Random.Range(-400f, 400f), Random.Range(-200f, 200f), 0.0f),
+			//						new Colour(Random.Range(1f), Random.Range(1f), Random.Range(1f), 1f));
 			Renderer.End();
 		}
 

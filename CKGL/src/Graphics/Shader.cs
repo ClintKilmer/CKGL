@@ -89,7 +89,7 @@ namespace CKGL
 		//	Destroy();
 		//}
 
-		public void Set()
+		public void Bind()
 		{
 			GL.UseProgram(id);
 		}
@@ -229,20 +229,14 @@ namespace CKGL
 			//{
 			//	GL.Uniform4F(Location, value.X, value.Y, value.Z, value.W);
 			//}
-			//public void SetUniform(Matrix3x2 value)
-			//{
-			//	fixed (float* m = &value.M0)
-			//	{
-			//		GL.UniformMatrix3x2FV(Location, 1, false, m);
-			//	}
-			//}
-			//public void SetUniform(Matrix4x4 value)
-			//{
-			//	fixed (float* m = &Val.M11)
-			//	{
-			//		GL.UniformMatrix4FV(Location, 1, false, m);
-			//	}
-			//}
+			public void SetUniform(Matrix2D value)
+			{
+				GL.UniformMatrix3x2FV(Location, 1, false, value.ToFloatArray());
+			}
+			public void SetUniform(Matrix value)
+			{
+				GL.UniformMatrix4FV(Location, 1, false, value.ToFloatArray());
+			}
 			//public void SetUniform(UniformSampler2D value)
 			//{
 			//	int slot = Texture.Bind(value.ID, value.BindTarget);
@@ -291,26 +285,26 @@ namespace CKGL
 		{
 			GetUniform(name).SetUniform(x, y, z, w);
 		}
-		//public void SetUniform(string name, Vector2 value)
-		//{
-		//	GetUniform(name).SetUniform(value);
-		//}
-		//public void SetUniform(string name, Vector3 value)
-		//{
-		//	GetUniform(name).SetUniform(value);
-		//}
+		public void SetUniform(string name, Vector2 value)
+		{
+			GetUniform(name).SetUniform(value);
+		}
+		public void SetUniform(string name, Vector3 value)
+		{
+			GetUniform(name).SetUniform(value);
+		}
 		//public void SetUniform(string name, Vector4 value)
 		//{
 		//	GetUniform(name).SetUniform(value);
 		//}
-		//public void SetUniform(string name, Matrix3x2 value)
-		//{
-		//	GetUniform(name).SetUniform(value);
-		//}
-		//public void SetUniform(string name, Matrix4x4 value)
-		//{
-		//	GetUniform(name).SetUniform(value);
-		//}
+		public void SetUniform(string name, Matrix2D value)
+		{
+			GetUniform(name).SetUniform(value);
+		}
+		public void SetUniform(string name, Matrix value)
+		{
+			GetUniform(name).SetUniform(value);
+		}
 		//public void SetUniform(string name, UniformSampler2D value)
 		//{
 		//	GetUniform(name).SetUniform(value);

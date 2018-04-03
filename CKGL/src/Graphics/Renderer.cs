@@ -39,7 +39,7 @@ out vec2 v_texCoord;
 out float v_textured;
 void main()
 {
-	gl_Position = vec4(position.xyz, 1.0);// * matrix;
+	gl_Position = matrix * vec4(position.xyz, 1.0);
 	v_colour = colour;
 	v_texCoord = texCoord;
 	v_textured = textured;
@@ -106,7 +106,8 @@ void main()
 		private static bool working = false;
 		private static DrawMode currentDrawMode = DrawMode.TriangleList;
 		private static Shader DefaultShader { get; } = new Shader(rendererShader);
-		private static Shader currentShader = DefaultShader;
+		// TODO - make private, but be able to set uniforms
+		public static Shader currentShader = DefaultShader;
 		private const int bufferSize = 1998; // Divisible by 3 and 2 for no vertex wrapping per batch
 		private static Vertex[] vertices = new Vertex[bufferSize];
 		private static int vertexCount = 0;
@@ -206,7 +207,7 @@ void main()
 			if (currentShader != shader)
 			{
 				Flush();
-				shader.Set();
+				shader.Bind();
 				currentShader = shader;
 			}
 		}
@@ -330,7 +331,7 @@ void main()
 
 			if (vertexCount > 0)
 			{
-				currentShader.Set();
+				currentShader.Bind();
 
 				vao.Bind();
 				vbo.LoadData(Vertex.GetVBO(vertices), BufferUsage.DynamicDraw);
@@ -376,7 +377,7 @@ void main()
 			{
 				Flush();
 				currentDrawMode = type;
-				// can lose vertices here, but that's ok
+				// We can lose vertices here, but it's ok as we're switching primitive types anyways
 				vertexCount = 0;
 			}
 
@@ -392,7 +393,7 @@ void main()
 		private static void AddVertex(DrawMode type, Vector2 position, Colour colour, bool textured, Vector2 uv, float rotation, Vector2 origin)
 		{
 			if (rotation != 0f)
-				AddVertex(type, position * Matrix2D.CreateTranslation(-origin) * Matrix2D.CreateRotationZ(rotation * 360 * Math.Rad) * Matrix2D.CreateTranslation(origin), colour, textured, uv);
+				AddVertex(type, position * (Matrix2D.CreateTranslation(-origin) * Matrix2D.CreateRotationZ(rotation * 360 * Math.Rad) * Matrix2D.CreateTranslation(origin)), colour, textured, uv);
 			else
 				AddVertex(type, position, colour, textured, uv);
 		}
