@@ -30,6 +30,20 @@ namespace CKGL
 		public static readonly Vector2 Down = new Vector2(0f, -1f);
 		#endregion
 
+		#region Properties
+		public Vector2 Normalized
+		{
+			get
+			{
+				float num = Magnitude(this);
+				if (num > 1E-05f)
+					return this / num;
+				else
+					return Zero;
+			}
+		}
+		#endregion
+
 		#region Methods
 		public Vector2 Round()
 		{
@@ -49,6 +63,27 @@ namespace CKGL
 		public Vector2 Lerp(Vector2 b, float t)
 		{
 			return new Vector2(X.Lerp(b.X, t), Y.Lerp(b.Y, t));
+		}
+
+		public float Magnitude()
+		{
+			return Math.Sqrt(X * X + Y * Y);
+		}
+
+		public float SqrMagnitude()
+		{
+			return X * X + Y * Y;
+		}
+
+		public Vector2 Normalize()
+		{
+			float num = Magnitude(this);
+			if (num > 1E-05f)
+				this /= num;
+			else
+				this = Zero;
+
+			return this;
 		}
 		#endregion
 
@@ -71,6 +106,27 @@ namespace CKGL
 		public static Vector2 Lerp(Vector2 a, Vector2 b, float t)
 		{
 			return new Vector2(a.X.Lerp(b.X, t), a.Y.Lerp(b.Y, t));
+		}
+
+		public static float Magnitude(Vector2 v)
+		{
+			return Math.Sqrt(v.X * v.X + v.Y * v.Y);
+		}
+
+		public static float MagnitudeSquared(Vector2 v)
+		{
+			return v.X * v.X + v.Y * v.Y;
+		}
+
+		public static Vector2 Normalize(Vector2 v)
+		{
+			float num = Magnitude(v);
+			if (num > 1E-05f)
+				v /= num;
+			else
+				v = Zero;
+
+			return v;
 		}
 		#endregion
 
@@ -123,6 +179,20 @@ namespace CKGL
 			v.Y *= n;
 			return v;
 		}
+		public static Vector2 operator *(Vector2 v, Matrix2D m)
+		{
+			return new Vector2(
+				v.X * m.M11 + v.Y * m.M21 + m.M31,
+				v.X * m.M12 + v.Y * m.M22 + m.M32
+			);
+		}
+		public static Vector2 operator *(Matrix2D m, Vector2 v)
+		{
+			return new Vector2(
+				v.X * m.M11 + v.Y * m.M21 + m.M31,
+				v.X * m.M12 + v.Y * m.M22 + m.M32
+			);
+		}
 
 		public static Vector2 operator /(Vector2 a, Vector2 b)
 		{
@@ -140,6 +210,13 @@ namespace CKGL
 		{
 			v.X /= n;
 			v.Y /= n;
+			return v;
+		}
+
+		public static Vector2 operator -(Vector2 v)
+		{
+			v.X = -v.X;
+			v.Y = -v.Y;
 			return v;
 		}
 		#endregion

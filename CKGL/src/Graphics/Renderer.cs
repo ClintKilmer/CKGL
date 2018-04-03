@@ -391,11 +391,10 @@ void main()
 		}
 		private static void AddVertex(DrawMode type, Vector2 position, Colour colour, bool textured, Vector2 uv, float rotation, Vector2 origin)
 		{
-			// TODO
-			//if (rotation != 0f)
-			//	AddVertex(type, Vector2.Transform(position, Matrix2D.createTranslation(-origin) * Matrix2D.createRotation(rotation * 360 * Math.Rad) * Matrix2D.createTranslation(origin)), colour, textured, uv);
-			//else
-			AddVertex(type, position, colour, textured, uv);
+			if (rotation != 0f)
+				AddVertex(type, position * Matrix2D.CreateTranslation(-origin) * Matrix2D.CreateRotationZ(rotation * 360 * Math.Rad) * Matrix2D.CreateTranslation(origin), colour, textured, uv);
+			else
+				AddVertex(type, position, colour, textured, uv);
 		}
 
 		public static class Draw

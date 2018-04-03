@@ -149,5 +149,30 @@
 		{
 			return (float)System.Math.Sqrt(x);
 		}
+
+		public static float Sin(this float x)
+		{
+			return (float)System.Math.Sin(x);
+		}
+
+		public static float Cos(this float x)
+		{
+			return (float)System.Math.Cos(x);
+		}
+
+		public static float Tan(this float x)
+		{
+			return (float)System.Math.Tan(x);
+		}
+
+		public static float Atan(this float x)
+		{
+			return (float)System.Math.Atan(x);
+		}
+
+		public static float Atan2(this float y, float x)
+		{
+			return (float)System.Math.Atan2(y, x);
+		}
 	}
 }
