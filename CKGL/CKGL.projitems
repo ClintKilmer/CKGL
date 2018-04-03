@@ -25,6 +25,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\CullState.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\BlendState.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\Graphics.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\Texture.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\Shader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\MeshBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\Renderer.cs" />
