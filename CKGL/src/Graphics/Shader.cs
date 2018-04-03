@@ -1,5 +1,8 @@
 ﻿using OpenGL;
 
+using GLint = System.Int32;
+using GLuint = System.UInt32;
+
 using System;
 using System.IO;
 using System.Collections.Generic;
@@ -8,8 +11,9 @@ namespace CKGL
 {
 	public class Shader
 	{
-		private uint id;
-		//private List<Uniform> uniforms = new List<Uniform>();
+		private static GLuint currentlyBoundShader;
+
+		private GLuint id;
 		private Dictionary<string, Uniform> uniforms = new Dictionary<string, Uniform>(StringComparer.Ordinal);
 
 		#region Default Shaders
@@ -79,30 +83,15 @@ namespace CKGL
 			return new Shader(File.ReadAllText(file));
 		}
 
-		public void Destroy()
-		{
-			GL.DeleteProgram(id);
-		}
-
-		//protected override void Dispose()
-		//{
-		//	Destroy();
-		//}
-
-		public void Bind()
-		{
-			GL.UseProgram(id);
-		}
-
 		#region Compile
-		private void CompileShader(uint shaderID, string source)
+		private void CompileShader(GLuint shaderID, string source)
 		{
 			//Populate the shader and compile it
 			GL.ShaderSource(shaderID, source);
 			GL.CompileShader(shaderID);
 
 			//Check for shader compile errors
-			GL.GetShader(shaderID, ShaderParam.CompileStatus, out int status);
+			GL.GetShader(shaderID, ShaderParam.CompileStatus, out GLint status);
 			if (status == 0)
 				throw new Exception("Shader compile error: " + GL.GetShaderInfoLog(shaderID));
 		}
@@ -121,8 +110,8 @@ namespace CKGL
 		private void Compile(ref string vertSource, ref string fragSource)
 		{
 			//Create the shaders and compile them
-			uint vertID = GL.CreateShader(ShaderType.Vertex);
-			uint fragID = GL.CreateShader(ShaderType.Fragment);
+			GLuint vertID = GL.CreateShader(ShaderType.Vertex);
+			GLuint fragID = GL.CreateShader(ShaderType.Fragment);
 			CompileShader(vertID, vertSource);
 			CompileShader(fragID, fragSource);
 
@@ -133,7 +122,7 @@ namespace CKGL
 
 			//Link the program and check for errors
 			GL.LinkProgram(id);
-			GL.GetProgram(id, ProgramParam.LinkStatus, out int status);
+			GL.GetProgram(id, ProgramParam.LinkStatus, out GLint status);
 			if (status == 0)
 				throw new Exception("Program link error: " + GL.GetProgramInfoLog(id));
 
@@ -144,10 +133,10 @@ namespace CKGL
 			GL.DeleteShader(fragID);
 
 			//Get all the uniforms the shader has and store their information
-			GL.GetProgram(id, ProgramParam.ActiveUniforms, out int numUniforms);
+			GL.GetProgram(id, ProgramParam.ActiveUniforms, out GLint numUniforms);
 			for (int i = 0; i < numUniforms; ++i)
 			{
-				GL.GetActiveUniform(id, (uint)i, out int count, out UniformType type, out string name);
+				GL.GetActiveUniform(id, (GLuint)i, out GLint count, out UniformType type, out string name);
 				if (count > 0 && name != null)
 				{
 					if (count > 1)
@@ -160,16 +149,14 @@ namespace CKGL
 							int loc = GL.GetUniformLocation(id, arrName);
 							//Console.WriteLine("index:{0} name:{1} type:{2} loc:{3} count:{4}", i, arrName, type, loc, count);
 							var uniform = new Uniform(i, arrName, type, loc);
-							//uniforms.Add(uniform);
 							uniforms.Add(arrName, uniform);
 						}
 					}
 					else
 					{
-						int loc = GL.GetUniformLocation(id, name);
+						GLint loc = GL.GetUniformLocation(id, name);
 						//Console.WriteLine("index:{0} name:{1} type:{2} loc:{3} count:{4}", i, name, type, loc, count);
 						var uniform = new Uniform(i, name, type, loc);
-						//uniforms.Add(uniform);
 						uniforms.Add(name, uniform);
 					}
 				}
@@ -177,22 +164,170 @@ namespace CKGL
 		}
 		#endregion
 
-		#region Uniforms
-		private class Uniform
+		public void Destroy()
+		{
+			if (id != default(GLuint))
+			{
+				GL.DeleteProgram(id);
+				id = default(GLuint);
+			}
+		}
+
+		//protected override void Dispose()
+		//{
+		//	Destroy();
+		//}
+
+		public void Bind()
+		{
+			if (id != currentlyBoundShader)
+			{
+				GL.UseProgram(id);
+				currentlyBoundShader = id;
+
+				BindUniforms();
+			}
+		}
+
+		private void BindUniforms()
+		{
+			foreach (KeyValuePair<string, Uniform> entry in uniforms)
+			{
+				if (entry.Value.Dirty)
+					entry.Value.Upload();
+			}
+		}
+
+		#region Uniform
+		private struct Uniform
 		{
 			public int Index;
 			public string Name;
 			public UniformType Type;
 			public int Location;
+			public object Value;
+			public bool Dirty;
 
-			public Uniform(int index, string name, UniformType type, int location)
+			public Uniform(int index, string name, UniformType type, GLint location)
 			{
 				Index = index;
 				Name = name;
 				Type = type;
 				Location = location;
+				Value = "";
+				Dirty = false;
 			}
 
+			public void Set(object value, bool setNow)
+			{
+				bool valueDifferent = false;
+				//bool valueDifferent = Value != value;
+				if (Value == (object)"")
+				{
+					valueDifferent = true;
+				}
+				else
+				{
+					switch (Type)
+					{
+						case UniformType.Bool:
+							valueDifferent = ((bool)Value) != ((bool)value);
+							break;
+						case UniformType.Int:
+							valueDifferent = ((int)Value) != ((int)value);
+							break;
+						case UniformType.Float:
+							valueDifferent = ((float)Value) != ((float)value);
+							break;
+						case UniformType.Vec2:
+							valueDifferent = ((Vector2)Value) != ((Vector2)value);
+							break;
+						case UniformType.Vec3:
+							valueDifferent = ((Vector3)Value) != ((Vector3)value);
+							break;
+						case UniformType.Vec4:
+							valueDifferent = ((Vector4)Value) != ((Vector4)value);
+							break;
+						case UniformType.Mat3x2:
+							valueDifferent = ((Matrix2D)Value) != ((Matrix2D)value);
+							break;
+						case UniformType.Mat4:
+							valueDifferent = ((Matrix)Value) != ((Matrix)value);
+							break;
+						//case UniformType.Sampler2D:
+						//	valueDifferent = (UniformSampler2D)Value != (UniformSampler2D)value;
+						//	break;
+						//case UniformType.SamplerCube:
+						//	valueDifferent = (UniformSamplerCube)Value != (UniformSamplerCube)value;
+						//	break;
+						default:
+							throw new NotImplementedException();
+					}
+				}
+
+				if (valueDifferent)
+				{
+					Value = value;
+					Dirty = true;
+
+					if (setNow)
+						Upload();
+				}
+			}
+
+			public void Upload()
+			{
+				if (Dirty)
+				{
+					switch (Type)
+					{
+						case UniformType.Bool:
+							GL.Uniform1I(Location, (bool)Value ? 1 : 0);
+							break;
+						case UniformType.Int:
+							GL.Uniform1I(Location, (int)Value);
+							break;
+						case UniformType.Float:
+							GL.Uniform1F(Location, (float)Value);
+							break;
+						case UniformType.Vec2:
+							Vector2 vector2 = (Vector2)Value;
+							GL.Uniform2F(Location, vector2.X, vector2.Y);
+							break;
+						case UniformType.Vec3:
+							Vector3 vector3 = (Vector3)Value;
+							GL.Uniform3F(Location, vector3.X, vector3.Y, vector3.Z);
+							break;
+						case UniformType.Vec4:
+							Vector4 vector4 = (Vector4)Value;
+							GL.Uniform4F(Location, vector4.X, vector4.Y, vector4.Z, vector4.W);
+							break;
+						case UniformType.Mat3x2:
+							GL.UniformMatrix3x2FV(Location, 1, false, ((Matrix2D)Value).ToFloatArray());
+							break;
+						case UniformType.Mat4:
+							GL.UniformMatrix4FV(Location, 1, false, ((Matrix)Value).ToFloatArray());
+							Console.WriteLine(Value);
+							break;
+						//case UniformType.Sampler2D:
+						//	UniformSampler2D uniformSampler2D = (UniformSampler2D)Value;
+						//	int slot = Texture.Bind(uniformSampler2D.ID, uniformSampler2D.BindTarget);
+						//	GL.Uniform1I(Location, slot);
+						//	break;
+						//case UniformType.SamplerCube:
+						//	UniformSamplerCube uniformSamplerCube = (UniformSamplerCube)Value;
+						//	int slot = Texture.Bind(uniformSamplerCube.ID, TextureTarget.TextureCubeMap);
+						//	GL.Uniform1I(Location, slot);
+						//	break;
+						default:
+							throw new NotImplementedException();
+					}
+
+					Dirty = false;
+				}
+			}
+
+			#region Direct
 			public void SetUniform(bool value)
 			{
 				GL.Uniform1I(Location, value ? 1 : 0);
@@ -225,10 +360,10 @@ namespace CKGL
 			{
 				GL.Uniform3F(Location, value.X, value.Y, value.Z);
 			}
-			//public void SetUniform(Vector4 value)
-			//{
-			//	GL.Uniform4F(Location, value.X, value.Y, value.Z, value.W);
-			//}
+			public void SetUniform(Vector4 value)
+			{
+				GL.Uniform4F(Location, value.X, value.Y, value.Z, value.W);
+			}
 			public void SetUniform(Matrix2D value)
 			{
 				GL.UniformMatrix3x2FV(Location, 1, false, value.ToFloatArray());
@@ -246,75 +381,107 @@ namespace CKGL
 			//{
 			//	int slot = Texture.Bind(value.ID, TextureTarget.TextureCubeMap);
 			//	GL.Uniform1I(Location, slot);
-			//}
+			//} 
+			#endregion
 		}
+		#endregion
 
+		#region Uniform Methods
 		private Uniform GetUniform(string name)
 		{
 			if (uniforms.TryGetValue(name, out Uniform uniform))
-			{
 				return uniform;
-			}
 			else
-			{
 				throw new Exception($"No uniform with name: {name}");
-			}
 		}
 
-		public void SetUniform(string name, bool value)
+		public void SetUniform(string name, object value)
 		{
-			GetUniform(name).SetUniform(value);
-		}
-		public void SetUniform(string name, int value)
-		{
-			GetUniform(name).SetUniform(value);
-		}
-		public void SetUniform(string name, float value)
-		{
-			GetUniform(name).SetUniform(value);
+			GetUniform(name).Set(value, id == currentlyBoundShader);
 		}
 		public void SetUniform(string name, float x, float y)
 		{
-			GetUniform(name).SetUniform(x, y);
+			SetUniform(name, new Vector2(x, y));
 		}
 		public void SetUniform(string name, float x, float y, float z)
 		{
-			GetUniform(name).SetUniform(x, y, z);
+			SetUniform(name, new Vector3(x, y, z));
 		}
 		public void SetUniform(string name, float x, float y, float z, float w)
 		{
-			GetUniform(name).SetUniform(x, y, z, w);
+			SetUniform(name, new Vector4(x, y, z, w));
 		}
-		public void SetUniform(string name, Vector2 value)
-		{
-			GetUniform(name).SetUniform(value);
-		}
-		public void SetUniform(string name, Vector3 value)
-		{
-			GetUniform(name).SetUniform(value);
-		}
+
+		#region Direct
+		//public void SetUniform(string name, bool value)
+		//{
+		//	Bind();
+		//	GetUniform(name).SetUniform(value);
+		//}
+		//public void SetUniform(string name, int value)
+		//{
+		//	Bind();
+		//	GetUniform(name).SetUniform(value);
+		//}
+		//public void SetUniform(string name, float value)
+		//{
+		//	Bind();
+		//	GetUniform(name).SetUniform(value);
+		//}
+		//public void SetUniform(string name, float x, float y)
+		//{
+		//	Bind();
+		//	GetUniform(name).SetUniform(x, y);
+		//}
+		//public void SetUniform(string name, float x, float y, float z)
+		//{
+		//	Bind();
+		//	GetUniform(name).SetUniform(x, y, z);
+		//}
+		//public void SetUniform(string name, float x, float y, float z, float w)
+		//{
+		//	Bind();
+		//	GetUniform(name).SetUniform(x, y, z, w);
+		//}
+		//public void SetUniform(string name, Vector2 value)
+		//{
+		//	Bind();
+		//	GetUniform(name).SetUniform(value);
+		//}
+		//public void SetUniform(string name, Vector3 value)
+		//{
+		//	Bind();
+		//	GetUniform(name).SetUniform(value);
+		//}
 		//public void SetUniform(string name, Vector4 value)
 		//{
+		//	Bind();
 		//	GetUniform(name).SetUniform(value);
 		//}
-		public void SetUniform(string name, Matrix2D value)
-		{
-			GetUniform(name).SetUniform(value);
-		}
-		public void SetUniform(string name, Matrix value)
-		{
-			GetUniform(name).SetUniform(value);
-		}
-		//public void SetUniform(string name, UniformSampler2D value)
+		//public void SetUniform(string name, Matrix2D value)
 		//{
+		//	Bind();
 		//	GetUniform(name).SetUniform(value);
 		//}
-		//public void SetUniform(string name, UniformSamplerCube value)
+		//public void SetUniform(string name, Matrix value)
 		//{
+		//	Bind();
 		//	GetUniform(name).SetUniform(value);
 		//}
+		////public void SetUniform(string name, UniformSampler2D value)
+		////{
+		////	Bind();
+		////	GetUniform(name).SetUniform(value);
+		////}
+		////public void SetUniform(string name, UniformSamplerCube value)
+		////{
+		////	Bind();
+		////	GetUniform(name).SetUniform(value);
+		////} 
+		#endregion
 		#endregion
 
+		#region Operators
 		public static bool operator ==(Shader a, Shader b)
 		{
 			return a.id == b.id;
@@ -323,5 +490,6 @@ namespace CKGL
 		{
 			return a.id != b.id;
 		}
+		#endregion
 	}
 }
