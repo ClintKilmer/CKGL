@@ -84,6 +84,11 @@ namespace CKGL
 			}
 		}
 
+		public static float AspectRatio
+		{
+			get { return Width / (float)Height; }
+		}
+
 		public class VSyncMode
 		{
 			// TODO - VSyncMode - LateSwapTearing
