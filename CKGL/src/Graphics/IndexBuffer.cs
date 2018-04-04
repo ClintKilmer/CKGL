@@ -21,16 +21,16 @@ namespace CKGL
 
 		private void Generate()
 		{
-			if (ID == 0)
+			if (ID == default(GLuint))
 				ID = GL.GenBuffer();
 		}
 
 		public void Destroy()
 		{
-			if (ID != 0)
+			if (ID != default(GLuint))
 			{
 				GL.DeleteBuffer(ID);
-				ID = 0;
+				ID = default(GLuint);
 			}
 		}
 

@@ -1,4 +1,4 @@
-﻿using static  SDL2.SDL_image;
+﻿using static SDL2.SDL_image;
 
 using OpenGL;
 
@@ -27,16 +27,16 @@ namespace CKGL
 
 		private void Generate()
 		{
-			if (ID == 0)
+			if (ID == default(GLuint))
 				ID = GL.GenTexture();
 		}
 
 		public void Destroy()
 		{
-			if (ID != 0)
+			if (ID != default(GLuint))
 			{
 				GL.DeleteTexture(ID);
-				ID = 0;
+				ID = default(GLuint);
 			}
 		}
 

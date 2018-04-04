@@ -15,6 +15,9 @@
 			Audio.Init();
 			Input.Init();
 			Renderer.Init();
+
+			Platform.OnWinFocusGained += () => { OnFocusGained(); };
+			Platform.OnWinFocusLost += () => { OnFocusLost(); };
 		}
 
 		public void GameLoop()
@@ -46,6 +49,10 @@
 
 		public abstract void Draw();
 
+		public abstract void OnFocusGained();
+
+		public abstract void OnFocusLost();
+
 		public abstract void Destroy();
 
 		private void PostDestroy()
@@ -53,6 +60,11 @@
 			Renderer.Destroy();
 			Audio.Destroy();
 			Platform.Destroy();
+		}
+
+		public void Debug(string message)
+		{
+			System.Console.WriteLine(message);
 		}
 	}
 }

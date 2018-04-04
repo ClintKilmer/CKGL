@@ -292,7 +292,7 @@ namespace CKGL
 			return result;
 		}
 
-		// TODO
+		// TODO - Quaternion
 		//public static Matrix CreateFromQuaternion(ref Quaternion quaternion)
 		//{
 		//	Matrix result = Identity;
@@ -326,7 +326,7 @@ namespace CKGL
 		//	return result;
 		//}
 
-		// TODO
+		// TODO - Quaternion
 		//public static Matrix CreateFromYawPitchRoll(float yaw, float pitch, float roll)
 		//{
 		//	Matrix result = Identity;

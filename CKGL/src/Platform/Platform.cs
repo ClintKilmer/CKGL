@@ -137,7 +137,7 @@ namespace CKGL
 					);
 				}
 
-				// TODO
+				// TODO - Win32 WM_PAINT Interop
 				/* Windows has terrible event pumping and doesn't give us
 				 * WM_PAINT events correctly. So we get to do this!
 				 * -flibit
@@ -327,7 +327,7 @@ namespace CKGL
 			SDL_Delay(ms); //release the thread
 		}
 
-		// TODO
+		// TODO - Win32 WM_PAINT Interop
 		#region Private Static Win32 WM_PAINT Interop
 		//private static SDL_EventFilter win32OnPaint = Win32OnPaint;
 		//private static unsafe int Win32OnPaint(IntPtr func, IntPtr evtPtr)

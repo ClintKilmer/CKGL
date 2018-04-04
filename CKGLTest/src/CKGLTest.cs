@@ -42,6 +42,14 @@ void main()
 	}
 	#endregion
 
+	#region Sounds
+	public static class Sounds
+	{
+		public static Audio.Buffer sndPop1 = new Audio.Buffer("snd/sndPop1.wav");
+		public static Audio.Buffer sndPop2 = new Audio.Buffer("snd/sndPop2.wav");
+	}
+	#endregion
+
 	public class CKGLTest : Game
 	{
 		public CKGLTest()
@@ -54,13 +62,6 @@ void main()
 				   windowBorderless: false)
 		{ }
 
-		// Load Shaders
-		Shader test;
-
-		// Load Audio
-		Audio.Buffer sndPop1;
-		Audio.Buffer sndPop2;
-
 		// Variable for moving window on mouse click and drag
 		Point2 windowDraggingPosition = Point2.Zero;
 
@@ -72,18 +73,12 @@ void main()
 		{
 			//Platform.ShowCursor = false; // Default true
 			//Platform.ScreensaverAllowed = true; // Default false
-
-			// Load Shaders
-			test = Shader.FromFile("Shaders/test.glsl");
-
-			// Load Audio
-			sndPop1 = new Audio.Buffer("snd/sndPop1.wav");
-			sndPop2 = new Audio.Buffer("snd/sndPop2.wav");
 		}
 
 		public override void Update()
 		{
-			Window.Title = $"{Time.DeltaTime.ToString("n1")}ms - Info: {Platform.OS} | {Time.TotalSeconds.ToString("n1")} - Buffers: {Audio.BufferCount} - Sources: {Audio.SourceCount} - Position: [{Window.X}, {Window.Y}] - Size: [{Window.Width}, {Window.Height}] - Mouse: [{Input.Mouse.Position.X}, {Input.Mouse.Position.Y}]";
+			//Window.Title = $"{Time.DeltaTime.ToString("n1")}ms - Info: {Platform.OS} | {Time.TotalSeconds.ToString("n1")} - Buffers: {Audio.BufferCount} - Sources: {Audio.SourceCount} - Position: [{Window.X}, {Window.Y}] - Size: [{Window.Width}, {Window.Height}] - Mouse: [{Input.Mouse.Position.X}, {Input.Mouse.Position.Y}]";
+			Window.Title = $"{Time.DeltaTime.ToString("n1")}ms | Position: [{Window.X}, {Window.Y}] | Size: [{Window.Width}, {Window.Height}] | Mouse: [{Input.Mouse.Position.X}, {Input.Mouse.Position.Y}]";
 
 			if (Input.Keyboard.Down(KeyCode.Backspace))
 				Platform.Quit();
@@ -105,11 +100,11 @@ void main()
 			Window.Position -= Input.Mouse.Scroll;
 
 			if (Input.Keyboard.Pressed(KeyCode.Space) || Input.Mouse.LeftPressed)
-				sndPop1.Play();
+				Sounds.sndPop1.Play();
 			if (Input.Keyboard.Released(KeyCode.Space) || Input.Mouse.LeftReleased)
-				sndPop2.Play();
+				Sounds.sndPop2.Play();
 
-			var speed = 10f;
+			var speed = 1f;
 			if (Input.Keyboard.Down(KeyCode.A))
 				cameraPosition.X -= speed;
 			if (Input.Keyboard.Down(KeyCode.D))
@@ -118,6 +113,8 @@ void main()
 				cameraPosition.Y -= speed;
 			if (Input.Keyboard.Down(KeyCode.S))
 				cameraPosition.Y += speed;
+				direction += ViewMatrix.Backward;
+			cameraPosition += direction.Normalized * speed * Time.DeltaTime;
 			if (Input.Keyboard.Down(KeyCode.Q))
 				cameraScale -= 0.03f * cameraScale;
 			if (Input.Keyboard.Down(KeyCode.E))
@@ -138,16 +135,16 @@ void main()
 			//shader.SetUniform("offset", Time.TotalMilliseconds * 0.0016f, Time.TotalMilliseconds * 0.002f, Time.TotalMilliseconds * 0.0023f);
 
 			Renderer.Start();
-			//Renderer.SetShader(test);
 			Matrix ViewMatrix = Matrix.CreateLookAt(Vector3.Zero, new Vector3(0f, 0f, 1f), new Vector3(0f, -1f, 0f));
 			Renderer.currentShader.SetUniform("matrix", WorldMatrix * ViewMatrix * Matrix.CreateOrthographic(Window.Size, -10000f, 10000f) * Matrix.CreateScale(cameraScale, cameraScale, 0f));
 			//Renderer.ResetShader();
 			//Renderer.SetFrontFaceState(FrontFace.Clockwise);
 			//Renderer.SetCullState(CullState.Back);
 			//Renderer.SetBlendState(BlendState.AlphaBlend);
-			var rotation = Matrix.CreateRotationX(Time.TotalSeconds * 0.231f * 360 * Math.Rad) *
-						   Matrix.CreateRotationY(Time.TotalSeconds * 0.222f * 360 * Math.Rad) *
-						   Matrix.CreateRotationZ(Time.TotalSeconds * 0.213f * 360 * Math.Rad);
+			var rotation = Matrix.Identity;
+			//var rotation = Matrix.CreateRotationX(Time.TotalSeconds * 0.231f * 360 * Math.Rad) *
+			//			   Matrix.CreateRotationY(Time.TotalSeconds * 0.222f * 360 * Math.Rad) *
+			//			   Matrix.CreateRotationZ(Time.TotalSeconds * 0.213f * 360 * Math.Rad);
 			//var rotation = Matrix2D.CreateRotationZ(Time.TotalSeconds * 0.2f * 360 * Math.Rad);
 			Renderer.Draw.Triangle(new Vector3(-100f, -100f, 0f) * rotation,
 								   new Vector3(100f, -100f, 0f) * rotation,
@@ -182,6 +179,16 @@ void main()
 
 		public override void Destroy()
 		{
+		}
+
+		public override void OnFocusGained()
+		{
+			Debug("Focus Gained");
+		}
+
+		public override void OnFocusLost()
+		{
+			Debug("Focus Lost");
 		}
 	}
 }

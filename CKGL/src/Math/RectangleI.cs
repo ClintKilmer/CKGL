@@ -197,7 +197,7 @@ namespace CKGL
 		}
 		#endregion
 
-		// TODO
+		// TODO - RectangleI -> Rectangle
 		#region Implicit Convertion Operators
 		//public static implicit operator Rectangle(RectangleI r)
 		//{

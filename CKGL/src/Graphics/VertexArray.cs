@@ -18,7 +18,7 @@ namespace CKGL
 
 		private void Generate()
 		{
-			if (ID == 0)
+			if (ID == default(GLuint))
 				ID = GL.GenVertexArray();
 		}
 
@@ -27,7 +27,7 @@ namespace CKGL
 			if (ID != 0)
 			{
 				GL.DeleteVertexArray(ID);
-				ID = 0;
+				ID = default(GLuint);
 			}
 		}
 

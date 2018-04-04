@@ -86,7 +86,8 @@ namespace CKGL
 
 		public class VSyncMode
 		{
-			public static int LateSwapTearing { get; } = -1; // TODO
+			// TODO - VSyncMode - LateSwapTearing
+			public static int LateSwapTearing { get; } = -1;
 			public static int Off { get; } = 0;
 			public static int On { get; } = 1;
 		}

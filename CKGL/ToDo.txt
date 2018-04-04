@@ -5,3 +5,156 @@
 - Mim Framerate before game slowdown
 - Figure out how to proccess Vertex into buffer data
 - Add Texture2dSampler, and CubeMap to Shader Uniform Set
+- ResourceHandle?
+
+
+
+
+
+
+// From occlusion
+
+/// PlaySound(sound);
+audio_sound_gain(argument0, audio.sounds[argument0, 0] + random_range(-audio.sounds[argument0, 1], audio.sounds[argument0, 1]), 0);
+audio_sound_pitch(argument0, audio.sounds[argument0, 2] + random_range(-audio.sounds[argument0, 3], audio.sounds[argument0, 3]));
+return audio_play_sound(argument0, 0, false);
+
+
+/// PlaySoundAt(sound, x, y);
+audio_sound_gain(argument0, audio.sounds[argument0, 0] + random_range(-audio.sounds[argument0, 1], audio.sounds[argument0, 1]), 0);
+audio_sound_pitch(argument0, audio.sounds[argument0, 2] + random_range(-audio.sounds[argument0, 3], audio.sounds[argument0, 3]));
+return audio_play_sound_at(argument0, (argument1 / room_width - 0.5) * -2, (argument2 / room_height - 0.5) * -2, 0, 1, 2, 1, false, 0);
+
+
+// sound balancing
+
+// sounds[soundID, ?]
+//                 0 = gain
+//                 1 = gainJitter
+//                 2 = pitch
+//                 3 = pitchJitter
+
+sounds[sndStep, 0] = 0.08; // gain
+sounds[sndStep, 1] = 0.01; // gainJitter
+sounds[sndStep, 2] = 1.5; // pitch
+sounds[sndStep, 3] = 0.2; // pitchJitter
+
+sounds[sndJump, 0] = 0.2; // gain
+sounds[sndJump, 1] = 0.05; // gainJitter
+sounds[sndJump, 2] = 1.25; // pitch
+sounds[sndJump, 3] = 0.2; // pitchJitter
+
+sounds[sndWallJump, 0] = 0.2; // gain
+sounds[sndWallJump, 1] = 0.05; // gainJitter
+sounds[sndWallJump, 2] = 1.5; // pitch
+sounds[sndWallJump, 3] = 0.2; // pitchJitter
+
+sounds[sndLand, 0] = 0.2; // gain
+sounds[sndLand, 1] = 0.05; // gainJitter
+sounds[sndLand, 2] = 1; // pitch
+sounds[sndLand, 3] = 0.2; // pitchJitter
+
+sounds[sndWallGrab, 0] = 0.15; // gain
+sounds[sndWallGrab, 1] = 0.05; // gainJitter
+sounds[sndWallGrab, 2] = 1.5; // pitch
+sounds[sndWallGrab, 3] = 0.2; // pitchJitter
+
+sounds[sndWallSlide, 0] = 0.25; // gain
+sounds[sndWallSlide, 1] = 0; // gainJitter
+sounds[sndWallSlide, 2] = 1.5; // pitch
+sounds[sndWallSlide, 3] = 0; // pitchJitter
+
+sounds[sndWallSlideFast, 0] = 0.25; // gain
+sounds[sndWallSlideFast, 1] = 0; // gainJitter
+sounds[sndWallSlideFast, 2] = 2; // pitch
+sounds[sndWallSlideFast, 3] = 0; // pitchJitter
+
+sounds[sndExplosion, 0] = 0.4; // gain
+sounds[sndExplosion, 1] = 0.05; // gainJitter
+sounds[sndExplosion, 2] = 1; // pitch
+sounds[sndExplosion, 3] = 0.4; // pitchJitter
+
+sounds[sndGhost, 0] = 0.2; // gain
+sounds[sndGhost, 1] = 0.05; // gainJitter
+sounds[sndGhost, 2] = 1; // pitch
+sounds[sndGhost, 3] = 0.2; // pitchJitter
+
+sounds[sndLaser, 0] = 0.75; // gain
+sounds[sndLaser, 1] = 0; // gainJitter
+sounds[sndLaser, 2] = 1; // pitch
+sounds[sndLaser, 3] = 0; // pitchJitter
+
+sounds[sndMenuFadeIn, 0] = 1; // gain
+sounds[sndMenuFadeIn, 1] = 0; // gainJitter
+sounds[sndMenuFadeIn, 2] = 0.85; // pitch
+sounds[sndMenuFadeIn, 3] = 0; // pitchJitter
+
+sounds[sndMenuFadeOut, 0] = 1; // gain
+sounds[sndMenuFadeOut, 1] = 0; // gainJitter
+sounds[sndMenuFadeOut, 2] = 1.1; // pitch
+sounds[sndMenuFadeOut, 3] = 0; // pitchJitter
+
+sounds[sndMenuCursor, 0] = 0.15; // gain
+sounds[sndMenuCursor, 1] = 0; // gainJitter
+sounds[sndMenuCursor, 2] = 1.5; // pitch
+sounds[sndMenuCursor, 3] = 0; // pitchJitter
+
+sounds[sndMenuSelect, 0] = 0.15; // gain
+sounds[sndMenuSelect, 1] = 0; // gainJitter
+sounds[sndMenuSelect, 2] = 1; // pitch
+sounds[sndMenuSelect, 3] = 0; // pitchJitter
+
+sounds[sndPop1, 0] = 1; // gain
+sounds[sndPop1, 1] = 0; // gainJitter
+sounds[sndPop1, 2] = 1; // pitch
+sounds[sndPop1, 3] = 0.2; // pitchJitter
+
+sounds[sndPop2, 0] = 1; // gain
+sounds[sndPop2, 1] = 0; // gainJitter
+sounds[sndPop2, 2] = 1; // pitch
+sounds[sndPop2, 3] = 0.2; // pitchJitter
+
+sounds[sndC1, 0] = 1; // gain
+sounds[sndC1, 1] = 0; // gainJitter
+sounds[sndC1, 2] = 1; // pitch
+sounds[sndC1, 3] = 0; // pitchJitter
+
+sounds[sndA2, 0] = 1; // gain
+sounds[sndA2, 1] = 0; // gainJitter
+sounds[sndA2, 2] = 1; // pitch
+sounds[sndA2, 3] = 0; // pitchJitter
+
+sounds[sndA_2, 0] = 1; // gain
+sounds[sndA_2, 1] = 0; // gainJitter
+sounds[sndA_2, 2] = 1; // pitch
+sounds[sndA_2, 3] = 0; // pitchJitter
+
+sounds[sndC2, 0] = 1; // gain
+sounds[sndC2, 1] = 0; // gainJitter
+sounds[sndC2, 2] = 1; // pitch
+sounds[sndC2, 3] = 0; // pitchJitter
+
+sounds[sndC_2, 0] = 1; // gain
+sounds[sndC_2, 1] = 0; // gainJitter
+sounds[sndC_2, 2] = 1; // pitch
+sounds[sndC_2, 3] = 0; // pitchJitter
+
+sounds[sndF2, 0] = 1; // gain
+sounds[sndF2, 1] = 0; // gainJitter
+sounds[sndF2, 2] = 1; // pitch
+sounds[sndF2, 3] = 0; // pitchJitter
+
+sounds[sndF_2, 0] = 1; // gain
+sounds[sndF_2, 1] = 0; // gainJitter
+sounds[sndF_2, 2] = 1; // pitch
+sounds[sndF_2, 3] = 0; // pitchJitter
+
+sounds[sndA3, 0] = 1; // gain
+sounds[sndA3, 1] = 0; // gainJitter
+sounds[sndA3, 2] = 1; // pitch
+sounds[sndA3, 3] = 0; // pitchJitter
+
+sounds[sndA_3, 0] = 1; // gain
+sounds[sndA_3, 1] = 0; // gainJitter
+sounds[sndA_3, 2] = 1; // pitch
+sounds[sndA_3, 3] = 0; // pitchJitter

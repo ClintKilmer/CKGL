@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-//using OpenGL;
-
 namespace CKGL
 {
+	// TODO - Move these to SpriteFont.cs
 	#region Font enums
 	public enum HAlign
 	{
@@ -78,6 +77,7 @@ namespace CKGL
 		private static Vertex[] vertices = new Vertex[bufferSize];
 		private static int vertexCount = 0;
 
+		// TODO - Remove these uv defaults
 		private static Vector2 uvFull1 = new Vector2(0f, 0f);
 		private static Vector2 uvFull2 = new Vector2(1f, 0f);
 		private static Vector2 uvFull3 = new Vector2(0f, 1f);
@@ -105,7 +105,7 @@ namespace CKGL
 			vboLayout = null;
 		}
 
-		// TODO
+		// TODO - Render States
 		//		private static RasterizerState DefaultRasterizerState { get; } = new RasterizerState
 		//		{
 		//			CullMode = CullMode.None,
@@ -127,13 +127,13 @@ namespace CKGL
 		private static CullState DefaultCullState { get; } = CullState.Off;
 		private static BlendState DefaultBlendState { get; } = BlendState.None;
 
-		// TODO
+		// TODO - RenderTarget
 		//		public static void ResetRenderTarget()
 		//		{
 		//			SetRenderTarget(null);
 		//		}
 
-		// TODO
+		// TODO - RenderTarget
 		//public static void SetRenderTarget(RenderTarget2D renderTarget2D)
 		//{
 		//	if ((
@@ -151,7 +151,7 @@ namespace CKGL
 		//	}
 		//}
 
-		// TODO
+		// TODO - API decision
 		// Do I really need these here since they're in Graphics?
 		public static void Clear(Colour colour, float depth)
 		{
@@ -181,7 +181,7 @@ namespace CKGL
 			SetShader(DefaultShader);
 		}
 
-		// TODO
+		// TODO - Render States
 		//public static void SetRasterizerState(RasterizerState rasterizerState)
 		//{
 		//	if (Engine.GraphicsDevice.RasterizerState != rasterizerState)
@@ -252,7 +252,7 @@ namespace CKGL
 			SetBlendState(DefaultBlendState);
 		}
 
-		// TODO
+		// TODO - Texture
 		//private static void SetTexture(Texture2D texture)
 		//{
 		//	if (Engine.GraphicsDevice.Textures[0] != texture)
@@ -262,6 +262,7 @@ namespace CKGL
 		//	}
 		//}
 
+		// TODO - Remove Renderer.Start(), useless method
 		public static void Start()
 		{
 			if (working)
@@ -269,7 +270,7 @@ namespace CKGL
 
 			working = true;
 
-			// TODO
+			// TODO - Render States
 			//Engine.GraphicsDevice.DepthStencilState = DepthStencilState.None;
 			//SetRasterizerState(DefaultRasterizerState);
 			//SetSamplerState(DefaultSamplerState);
@@ -493,7 +494,7 @@ namespace CKGL
 				}
 			}
 
-			// TODO
+			// TODO - Sprites
 			// Sprites
 			//public static void Sprite(Sprite sprite, Vector2 position, Colour colour)
 			//{
@@ -683,7 +684,7 @@ namespace CKGL
 			//	}
 			//}
 
-			// TODO
+			// TODO - RenderTargets
 			// RenderTargets
 			//public static void RenderTarget2D(RenderTarget2D renderTarget2D, float x, float y, Colour colour)
 			//{
