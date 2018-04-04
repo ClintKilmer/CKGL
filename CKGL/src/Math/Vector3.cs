@@ -32,7 +32,7 @@ namespace CKGL
 		public static readonly Vector3 Up = new Vector3(0f, 1f, 0f);
 		public static readonly Vector3 Down = new Vector3(0f, -1f, 0f);
 		public static readonly Vector3 Forward = new Vector3(0f, 0f, 1f);
-		public static readonly Vector3 Back = new Vector3(0f, 0f, -1f);
+		public static readonly Vector3 Backward = new Vector3(0f, 0f, -1f);
 		#endregion
 
 		#region Properties
@@ -263,17 +263,16 @@ namespace CKGL
 		}
 		#endregion
 
-		// TODO
 		#region Implicit Convertion Operators
 		public static implicit operator Vector3(Vector2 v)
 		{
 			return new Vector3(v.X, v.Y, 0f);
 		}
 
-		//public static implicit operator Vector3(Vector4 v)
-		//{
-		//	return new Vector3(v.X, v.Y, v.Z);
-		//}
+		public static implicit operator Vector3(Vector4 v)
+		{
+			return new Vector3(v.X, v.Y, v.Z);
+		}
 		#endregion
 	}
 }

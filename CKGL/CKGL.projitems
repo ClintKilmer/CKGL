@@ -45,6 +45,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\Random.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\RectangleI.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\Vector2.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Math\Vector4.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\Vector3.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Platform\Platform.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Platform\Time.cs" />

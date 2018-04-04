@@ -1,7 +1,7 @@
-﻿CKGL ToDo:
+﻿CKGL TODO List:
 
 - Quaternions? - enable in Matrix class
 - Max Framerate
 - Mim Framerate before game slowdown
 - Figure out how to proccess Vertex into buffer data
-- Add Vector4, Texture2dSampler, and CubeMap to Shader Uniform Set
+- Add Texture2dSampler, and CubeMap to Shader Uniform Set

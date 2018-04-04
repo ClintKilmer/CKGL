@@ -184,17 +184,6 @@ namespace CKGL
 			{
 				GL.UseProgram(id);
 				currentlyBoundShader = id;
-
-				BindUniforms();
-			}
-		}
-
-		private void BindUniforms()
-		{
-			foreach (KeyValuePair<string, Uniform> entry in uniforms)
-			{
-				if (entry.Value.Dirty)
-					entry.Value.Upload();
 			}
 		}
 
@@ -205,8 +194,6 @@ namespace CKGL
 			public string Name;
 			public UniformType Type;
 			public int Location;
-			public object Value;
-			public bool Dirty;
 
 			public Uniform(int index, string name, UniformType type, GLint location)
 			{
@@ -214,120 +201,9 @@ namespace CKGL
 				Name = name;
 				Type = type;
 				Location = location;
-				Value = "";
-				Dirty = false;
 			}
 
-			public void Set(object value, bool setNow)
-			{
-				bool valueDifferent = false;
-				//bool valueDifferent = Value != value;
-				if (Value == (object)"")
-				{
-					valueDifferent = true;
-				}
-				else
-				{
-					switch (Type)
-					{
-						case UniformType.Bool:
-							valueDifferent = ((bool)Value) != ((bool)value);
-							break;
-						case UniformType.Int:
-							valueDifferent = ((int)Value) != ((int)value);
-							break;
-						case UniformType.Float:
-							valueDifferent = ((float)Value) != ((float)value);
-							break;
-						case UniformType.Vec2:
-							valueDifferent = ((Vector2)Value) != ((Vector2)value);
-							break;
-						case UniformType.Vec3:
-							valueDifferent = ((Vector3)Value) != ((Vector3)value);
-							break;
-						case UniformType.Vec4:
-							valueDifferent = ((Vector4)Value) != ((Vector4)value);
-							break;
-						case UniformType.Mat3x2:
-							valueDifferent = ((Matrix2D)Value) != ((Matrix2D)value);
-							break;
-						case UniformType.Mat4:
-							valueDifferent = ((Matrix)Value) != ((Matrix)value);
-							break;
-						//case UniformType.Sampler2D:
-						//	valueDifferent = (UniformSampler2D)Value != (UniformSampler2D)value;
-						//	break;
-						//case UniformType.SamplerCube:
-						//	valueDifferent = (UniformSamplerCube)Value != (UniformSamplerCube)value;
-						//	break;
-						default:
-							throw new NotImplementedException();
-					}
-				}
-
-				if (valueDifferent)
-				{
-					Value = value;
-					Dirty = true;
-
-					if (setNow)
-						Upload();
-				}
-			}
-
-			public void Upload()
-			{
-				if (Dirty)
-				{
-					switch (Type)
-					{
-						case UniformType.Bool:
-							GL.Uniform1I(Location, (bool)Value ? 1 : 0);
-							break;
-						case UniformType.Int:
-							GL.Uniform1I(Location, (int)Value);
-							break;
-						case UniformType.Float:
-							GL.Uniform1F(Location, (float)Value);
-							break;
-						case UniformType.Vec2:
-							Vector2 vector2 = (Vector2)Value;
-							GL.Uniform2F(Location, vector2.X, vector2.Y);
-							break;
-						case UniformType.Vec3:
-							Vector3 vector3 = (Vector3)Value;
-							GL.Uniform3F(Location, vector3.X, vector3.Y, vector3.Z);
-							break;
-						case UniformType.Vec4:
-							Vector4 vector4 = (Vector4)Value;
-							GL.Uniform4F(Location, vector4.X, vector4.Y, vector4.Z, vector4.W);
-							break;
-						case UniformType.Mat3x2:
-							GL.UniformMatrix3x2FV(Location, 1, false, ((Matrix2D)Value).ToFloatArray());
-							break;
-						case UniformType.Mat4:
-							GL.UniformMatrix4FV(Location, 1, false, ((Matrix)Value).ToFloatArray());
-							Console.WriteLine(Value);
-							break;
-						//case UniformType.Sampler2D:
-						//	UniformSampler2D uniformSampler2D = (UniformSampler2D)Value;
-						//	int slot = Texture.Bind(uniformSampler2D.ID, uniformSampler2D.BindTarget);
-						//	GL.Uniform1I(Location, slot);
-						//	break;
-						//case UniformType.SamplerCube:
-						//	UniformSamplerCube uniformSamplerCube = (UniformSamplerCube)Value;
-						//	int slot = Texture.Bind(uniformSamplerCube.ID, TextureTarget.TextureCubeMap);
-						//	GL.Uniform1I(Location, slot);
-						//	break;
-						default:
-							throw new NotImplementedException();
-					}
-
-					Dirty = false;
-				}
-			}
-
-			#region Direct
+			#region GL Set Calls
 			public void SetUniform(bool value)
 			{
 				GL.Uniform1I(Location, value ? 1 : 0);
@@ -395,90 +271,71 @@ namespace CKGL
 				throw new Exception($"No uniform with name: {name}");
 		}
 
-		public void SetUniform(string name, object value)
+		public void SetUniform(string name, bool value)
 		{
-			GetUniform(name).Set(value, id == currentlyBoundShader);
+			Bind();
+			GetUniform(name).SetUniform(value);
+		}
+		public void SetUniform(string name, int value)
+		{
+			Bind();
+			GetUniform(name).SetUniform(value);
+		}
+		public void SetUniform(string name, float value)
+		{
+			Bind();
+			GetUniform(name).SetUniform(value);
 		}
 		public void SetUniform(string name, float x, float y)
 		{
-			SetUniform(name, new Vector2(x, y));
+			Bind();
+			GetUniform(name).SetUniform(x, y);
 		}
 		public void SetUniform(string name, float x, float y, float z)
 		{
-			SetUniform(name, new Vector3(x, y, z));
+			Bind();
+			GetUniform(name).SetUniform(x, y, z);
 		}
 		public void SetUniform(string name, float x, float y, float z, float w)
 		{
-			SetUniform(name, new Vector4(x, y, z, w));
+			Bind();
+			GetUniform(name).SetUniform(x, y, z, w);
 		}
-
-		#region Direct
-		//public void SetUniform(string name, bool value)
+		public void SetUniform(string name, Vector2 value)
+		{
+			Bind();
+			GetUniform(name).SetUniform(value);
+		}
+		public void SetUniform(string name, Vector3 value)
+		{
+			Bind();
+			GetUniform(name).SetUniform(value);
+		}
+		public void SetUniform(string name, Vector4 value)
+		{
+			Bind();
+			GetUniform(name).SetUniform(value);
+		}
+		public void SetUniform(string name, Matrix2D value)
+		{
+			Bind();
+			GetUniform(name).SetUniform(value);
+		}
+		public void SetUniform(string name, Matrix value)
+		{
+			Bind();
+			GetUniform(name).SetUniform(value);
+		}
+		//public void SetUniform(string name, UniformSampler2D value)
 		//{
 		//	Bind();
 		//	GetUniform(name).SetUniform(value);
 		//}
-		//public void SetUniform(string name, int value)
+		//public void SetUniform(string name, UniformSamplerCube value)
 		//{
 		//	Bind();
 		//	GetUniform(name).SetUniform(value);
 		//}
-		//public void SetUniform(string name, float value)
-		//{
-		//	Bind();
-		//	GetUniform(name).SetUniform(value);
-		//}
-		//public void SetUniform(string name, float x, float y)
-		//{
-		//	Bind();
-		//	GetUniform(name).SetUniform(x, y);
-		//}
-		//public void SetUniform(string name, float x, float y, float z)
-		//{
-		//	Bind();
-		//	GetUniform(name).SetUniform(x, y, z);
-		//}
-		//public void SetUniform(string name, float x, float y, float z, float w)
-		//{
-		//	Bind();
-		//	GetUniform(name).SetUniform(x, y, z, w);
-		//}
-		//public void SetUniform(string name, Vector2 value)
-		//{
-		//	Bind();
-		//	GetUniform(name).SetUniform(value);
-		//}
-		//public void SetUniform(string name, Vector3 value)
-		//{
-		//	Bind();
-		//	GetUniform(name).SetUniform(value);
-		//}
-		//public void SetUniform(string name, Vector4 value)
-		//{
-		//	Bind();
-		//	GetUniform(name).SetUniform(value);
-		//}
-		//public void SetUniform(string name, Matrix2D value)
-		//{
-		//	Bind();
-		//	GetUniform(name).SetUniform(value);
-		//}
-		//public void SetUniform(string name, Matrix value)
-		//{
-		//	Bind();
-		//	GetUniform(name).SetUniform(value);
-		//}
-		////public void SetUniform(string name, UniformSampler2D value)
-		////{
-		////	Bind();
-		////	GetUniform(name).SetUniform(value);
-		////}
-		////public void SetUniform(string name, UniformSamplerCube value)
-		////{
-		////	Bind();
-		////	GetUniform(name).SetUniform(value);
-		////} 
-		#endregion
 		#endregion
 
 		#region Operators

@@ -27,38 +27,6 @@ namespace CKGL
 		//		  ^ ^
 		//		>( . )<
 
-		private static string rendererShader = @"
-#version 330 core
-uniform mat4 matrix;
-layout(location = 0) in vec3 position;
-layout(location = 1) in vec4 colour;
-layout(location = 2) in vec2 texCoord;
-layout(location = 3) in float textured;
-out vec4 v_colour;
-out vec2 v_texCoord;
-out float v_textured;
-void main()
-{
-	gl_Position = matrix * vec4(position.xyz, 1.0);
-	v_colour = colour;
-	v_texCoord = texCoord;
-	v_textured = textured;
-}
-...
-#version 330 core
-uniform sampler2D Texture;
-in vec4 v_colour;
-in vec2 v_texCoord;
-in float v_textured;
-layout(location = 0) out vec4 colour;
-void main()
-{
-    if (v_textured > 0.0)
-		colour = texture(Texture, v_texCoord) * v_colour;
-    else
-        colour = v_colour;
-}";
-
 		[StructLayout(LayoutKind.Sequential, Pack = 1)]
 		public struct Vertex
 		{
@@ -99,15 +67,13 @@ void main()
 			}
 		}
 
+		private static bool working = false;
 		private static VertexArray vao;
 		private static VertexBuffer vbo;
 		private static VertexBufferLayout vboLayout;
-
-		private static bool working = false;
 		private static DrawMode currentDrawMode = DrawMode.TriangleList;
-		private static Shader DefaultShader { get; } = new Shader(rendererShader);
-		// TODO - make private, but be able to set uniforms
-		public static Shader currentShader = DefaultShader;
+		private static Shader DefaultShader { get; } = Shaders.Renderer;
+		private static Shader currentShader = DefaultShader;
 		private const int bufferSize = 1998; // Divisible by 3 and 2 for no vertex wrapping per batch
 		private static Vertex[] vertices = new Vertex[bufferSize];
 		private static int vertexCount = 0;
@@ -131,8 +97,6 @@ void main()
 
 		public static void Destroy()
 		{
-			// TODO
-			//shader.Destroy();
 			vao.Destroy();
 			vbo.Destroy();
 

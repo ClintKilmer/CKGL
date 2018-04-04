@@ -221,7 +221,6 @@ namespace CKGL
 		}
 		#endregion
 
-		// TODO
 		#region Implicit Convertion Operators
 		public static implicit operator Vector2(Point2 p)
 		{
@@ -233,10 +232,10 @@ namespace CKGL
 			return new Vector2(v.X, v.Y);
 		}
 
-		//public static implicit operator Vector2(Vector4 v)
-		//{
-		//	return new Vector2(v.X, v.Y);
-		//}
+		public static implicit operator Vector2(Vector4 v)
+		{
+			return new Vector2(v.X, v.Y);
+		}
 		#endregion
 	}
 }
