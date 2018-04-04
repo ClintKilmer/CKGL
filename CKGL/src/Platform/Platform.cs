@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Runtime.InteropServices;
+using SDL2;
 using static SDL2.SDL;
 
 namespace CKGL
@@ -326,6 +327,432 @@ namespace CKGL
 		{
 			SDL_Delay(ms); //release the thread
 		}
+
+		#region Image I/O Methods | From FNA SDL2_FNAPlatform.cs https://github.com/FNA-XNA/FNA
+		public static void TextureDataFromStream(
+			Stream stream,
+			out int width,
+			out int height,
+			out byte[] pixels,
+			int reqWidth = -1,
+			int reqHeight = -1,
+			bool zoom = false
+		)
+		{
+			// Load the SDL_Surface* from RWops, get the image data
+			FakeRWops reader = new FakeRWops(stream);
+			IntPtr surface = SDL_image.IMG_Load_RW(reader.rwops, 0);
+			reader.Free();
+			if (surface == IntPtr.Zero)
+			{
+				// File not found, supported, etc.
+				Console.WriteLine($"TextureDataFromStream: {SDL_GetError()}");
+				width = 0;
+				height = 0;
+				pixels = null;
+				return;
+			}
+			surface = INTERNAL_convertSurfaceFormat(surface);
+
+			// Image scaling, if applicable
+			if (reqWidth != -1 && reqHeight != -1)
+			{
+				// Get the file surface dimensions now...
+				int rw;
+				int rh;
+				unsafe
+				{
+					SDL_Surface* surPtr = (SDL_Surface*)surface;
+					rw = surPtr->w;
+					rh = surPtr->h;
+				}
+
+				// Calculate the image scale factor
+				bool scaleWidth;
+				if (zoom)
+				{
+					scaleWidth = rw < rh;
+				}
+				else
+				{
+					scaleWidth = rw > rh;
+				}
+				float scale;
+				if (scaleWidth)
+				{
+					scale = reqWidth / (float)rw;
+				}
+				else
+				{
+					scale = reqHeight / (float)rh;
+				}
+
+				// Calculate the scaled image size, crop if zoomed
+				int resultWidth;
+				int resultHeight;
+				SDL_Rect crop = new SDL_Rect();
+				if (zoom)
+				{
+					resultWidth = reqWidth;
+					resultHeight = reqHeight;
+					if (scaleWidth)
+					{
+						crop.x = 0;
+						crop.w = rw;
+						crop.y = (int)(rh / 2 - (reqHeight / scale) / 2);
+						crop.h = (int)(reqHeight / scale);
+					}
+					else
+					{
+						crop.y = 0;
+						crop.h = rh;
+						crop.x = (int)(rw / 2 - (reqWidth / scale) / 2);
+						crop.w = (int)(reqWidth / scale);
+					}
+				}
+				else
+				{
+					resultWidth = (int)(rw * scale);
+					resultHeight = (int)(rh * scale);
+				}
+
+				// Alloc surface, blit!
+				IntPtr newSurface = SDL_CreateRGBSurface(
+					0,
+					resultWidth,
+					resultHeight,
+					32,
+					0x000000FF,
+					0x0000FF00,
+					0x00FF0000,
+					0xFF000000
+				);
+				SDL_SetSurfaceBlendMode(
+					surface,
+					SDL_BlendMode.SDL_BLENDMODE_NONE
+				);
+				if (zoom)
+				{
+					SDL_BlitScaled(
+						surface,
+						ref crop,
+						newSurface,
+						IntPtr.Zero
+					);
+				}
+				else
+				{
+					SDL_BlitScaled(
+						surface,
+						IntPtr.Zero,
+						newSurface,
+						IntPtr.Zero
+					);
+				}
+				SDL_FreeSurface(surface);
+				surface = newSurface;
+			}
+
+			// Copy surface data to output managed byte array
+			unsafe
+			{
+				SDL_Surface* surPtr = (SDL_Surface*)surface;
+				width = surPtr->w;
+				height = surPtr->h;
+				pixels = new byte[width * height * 4]; // MUST be SurfaceFormat.Color!
+				Marshal.Copy(surPtr->pixels, pixels, 0, pixels.Length);
+			}
+			SDL_FreeSurface(surface);
+
+			/* Ensure that the alpha pixels are... well, actual alpha.
+			 * You think this looks stupid, but be assured: Your paint program is
+			 * almost certainly even stupider.
+			 * -flibit
+			 */
+			for (int i = 0; i < pixels.Length; i += 4)
+			{
+				if (pixels[i + 3] == 0)
+				{
+					pixels[i] = 0;
+					pixels[i + 1] = 0;
+					pixels[i + 2] = 0;
+				}
+			}
+		}
+
+		public static void SavePNG(
+			Stream stream,
+			int width,
+			int height,
+			int imgWidth,
+			int imgHeight,
+			byte[] data
+		)
+		{
+			IntPtr surface = INTERNAL_getScaledSurface(
+				data,
+				imgWidth,
+				imgHeight,
+				width,
+				height
+			);
+			FakeRWops writer = new FakeRWops(stream);
+			SDL_image.IMG_SavePNG_RW(surface, writer.rwops, 0);
+			writer.Free();
+			SDL_FreeSurface(surface);
+		}
+
+		public static void SaveJPG(
+			Stream stream,
+			int width,
+			int height,
+			int imgWidth,
+			int imgHeight,
+			byte[] data
+		)
+		{
+			// FIXME: What does XNA pick for this? -flibit
+			const int quality = 100;
+
+			IntPtr surface = INTERNAL_getScaledSurface(
+				data,
+				imgWidth,
+				imgHeight,
+				width,
+				height
+			);
+
+			// FIXME: Hack for Bugzilla #3972
+			IntPtr temp = SDL_ConvertSurfaceFormat(
+				surface,
+				SDL_PIXELFORMAT_RGB24,
+				0
+			);
+			SDL_FreeSurface(surface);
+			surface = temp;
+
+			FakeRWops writer = new FakeRWops(stream);
+			SDL_image.IMG_SaveJPG_RW(surface, writer.rwops, 0, quality);
+			writer.Free();
+			SDL_FreeSurface(surface);
+		}
+
+		public static IntPtr INTERNAL_getScaledSurface(
+			byte[] data,
+			int srcW,
+			int srcH,
+			int dstW,
+			int dstH
+		)
+		{
+			// Create an SDL_Surface*, write the pixel data
+			IntPtr surface = SDL_CreateRGBSurface(
+				0,
+				srcW,
+				srcH,
+				32,
+				0x000000FF,
+				0x0000FF00,
+				0x00FF0000,
+				0xFF000000
+			);
+			SDL_LockSurface(surface);
+			unsafe
+			{
+				SDL_Surface* surPtr = (SDL_Surface*)surface;
+				Marshal.Copy(
+					data,
+					0,
+					surPtr->pixels,
+					data.Length
+				);
+			}
+			SDL_UnlockSurface(surface);
+
+			// Blit to a scaled surface of the size we want, if needed.
+			if (srcW != dstW || srcH != dstH)
+			{
+				IntPtr scaledSurface = SDL_CreateRGBSurface(
+					0,
+					dstW,
+					dstH,
+					32,
+					0x000000FF,
+					0x0000FF00,
+					0x00FF0000,
+					0xFF000000
+				);
+				SDL_SetSurfaceBlendMode(
+					surface,
+					SDL_BlendMode.SDL_BLENDMODE_NONE
+				);
+				SDL_BlitScaled(
+					surface,
+					IntPtr.Zero,
+					scaledSurface,
+					IntPtr.Zero
+				);
+				SDL_FreeSurface(surface);
+				surface = scaledSurface;
+			}
+
+			return surface;
+		}
+
+		private static unsafe IntPtr INTERNAL_convertSurfaceFormat(IntPtr surface)
+		{
+			IntPtr result = surface;
+			unsafe
+			{
+				SDL_Surface* surPtr = (SDL_Surface*)surface;
+				SDL_PixelFormat* pixelFormatPtr = (SDL_PixelFormat*)surPtr->format;
+
+				// SurfaceFormat.Color is SDL_PIXELFORMAT_ABGR8888
+				if (pixelFormatPtr->format != SDL_PIXELFORMAT_ABGR8888)
+				{
+					// Create a properly formatted copy, free the old surface
+					result = SDL_ConvertSurfaceFormat(surface, SDL_PIXELFORMAT_ABGR8888, 0);
+					SDL_FreeSurface(surface);
+				}
+			}
+			return result;
+		}
+
+		private class FakeRWops
+		{
+			[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+			private delegate long SizeFunc(IntPtr context);
+
+			[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+			private delegate long SeekFunc(
+				IntPtr context,
+				long offset,
+				int whence
+			);
+
+			[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+			private delegate IntPtr ReadFunc(
+				IntPtr context,
+				IntPtr ptr,
+				IntPtr size,
+				IntPtr maxnum
+			);
+
+			[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+			private delegate IntPtr WriteFunc(
+				IntPtr context,
+				IntPtr ptr,
+				IntPtr size,
+				IntPtr num
+			);
+
+			[StructLayout(LayoutKind.Sequential)]
+			private struct PartialRWops
+			{
+				public IntPtr size;
+				public IntPtr seek;
+				public IntPtr read;
+				public IntPtr write;
+			}
+
+			[DllImport("SDL2.dll", CallingConvention = CallingConvention.Cdecl)]
+			private static extern IntPtr SDL_AllocRW();
+
+			[DllImport("SDL2.dll", CallingConvention = CallingConvention.Cdecl)]
+			private static extern void SDL_FreeRW(IntPtr area);
+
+			public readonly IntPtr rwops;
+			private Stream stream;
+			private byte[] temp;
+
+			private SizeFunc sizeFunc;
+			private SeekFunc seekFunc;
+			private ReadFunc readFunc;
+			private WriteFunc writeFunc;
+
+			public FakeRWops(Stream stream)
+			{
+				this.stream = stream;
+				rwops = SDL_AllocRW();
+				temp = new byte[8192]; // Based on PNG_ZBUF_SIZE default
+
+				sizeFunc = size;
+				seekFunc = seek;
+				readFunc = read;
+				writeFunc = write;
+				unsafe
+				{
+					PartialRWops* p = (PartialRWops*)rwops;
+					p->size = Marshal.GetFunctionPointerForDelegate(sizeFunc);
+					p->seek = Marshal.GetFunctionPointerForDelegate(seekFunc);
+					p->read = Marshal.GetFunctionPointerForDelegate(readFunc);
+					p->write = Marshal.GetFunctionPointerForDelegate(writeFunc);
+				}
+			}
+
+			public void Free()
+			{
+				SDL_FreeRW(rwops);
+				stream = null;
+				temp = null;
+			}
+
+			private byte[] GetTemp(int len)
+			{
+				if (len > temp.Length)
+				{
+					temp = new byte[len];
+				}
+				return temp;
+			}
+
+			private long size(IntPtr context)
+			{
+				return -1;
+			}
+
+			private long seek(IntPtr context, long offset, int whence)
+			{
+				stream.Seek(offset, (SeekOrigin)whence);
+				return stream.Position;
+			}
+
+			private IntPtr read(
+				IntPtr context,
+				IntPtr ptr,
+				IntPtr size,
+				IntPtr maxnum
+			)
+			{
+				int len = size.ToInt32() * maxnum.ToInt32();
+				len = stream.Read(
+					GetTemp(len),
+					0,
+					len
+				);
+				Marshal.Copy(temp, 0, ptr, len);
+				return (IntPtr)len;
+			}
+
+			private IntPtr write(
+				IntPtr context,
+				IntPtr ptr,
+				IntPtr size,
+				IntPtr num
+			)
+			{
+				int len = size.ToInt32() * num.ToInt32();
+				Marshal.Copy(
+					ptr,
+					GetTemp(len),
+					0,
+					len
+				);
+				stream.Write(temp, 0, len);
+				return (IntPtr)len;
+			}
+		}
+		#endregion
 
 		// TODO - Win32 WM_PAINT Interop
 		#region Private Static Win32 WM_PAINT Interop

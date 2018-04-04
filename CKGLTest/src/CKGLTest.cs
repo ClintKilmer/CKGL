@@ -50,6 +50,13 @@ void main()
 	}
 	#endregion
 
+	#region Sprites
+	public static class Sprites
+	{
+		public static Texture2D test1 = Texture2D.LoadTexture2DFromStream("Textures/Character1.png");
+	}
+	#endregion
+
 	public class CKGLTest : Game
 	{
 		public CKGLTest()

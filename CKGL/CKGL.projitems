@@ -30,6 +30,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\Renderer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\Shader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\Shaders.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\Texture2D.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\Texture.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\VertexArray.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\VertexBuffer.cs" />
