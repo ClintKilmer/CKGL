@@ -242,11 +242,11 @@ namespace CKGL
 			}
 			public void SetUniform(Matrix2D value)
 			{
-				GL.UniformMatrix3x2FV(Location, 1, false, value.ToFloatArray());
+				GL.UniformMatrix3x2FV(Location, 1, false, value.ToArrayColumnMajor());
 			}
 			public void SetUniform(Matrix value)
 			{
-				GL.UniformMatrix4FV(Location, 1, false, value.ToFloatArray());
+				GL.UniformMatrix4FV(Location, 1, false, value.ToArrayColumnMajor());
 			}
 			//public void SetUniform(UniformSampler2D value)
 			//{
