@@ -21,6 +21,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)lib\SDL2-CS\src\SDL2_mixer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)lib\SDL2-CS\src\SDL2_ttf.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Audio\Audio.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Collision\AABB.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Collision\AABBi.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Game.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\BlendState.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\CullState.cs" />
