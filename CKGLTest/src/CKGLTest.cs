@@ -79,14 +79,17 @@ void main()
 		Matrix cameraRotationMatrix = Matrix.Identity;
 		Matrix cameraTranslationMatrix = Matrix.Identity;
 
-		Matrix WorldMatrix;
-		Matrix ViewMatrix;
+		Matrix WorldMatrix = Matrix.CreateWorld(Vector3.Zero, Vector3.Forward, Vector3.Up);
+		Matrix ViewMatrix = Matrix.Identity;
 		Matrix ProjectionMatrix = Matrix.Identity;
 
 		public override void Init()
 		{
 			//Platform.ShowCursor = false; // Default true
 			//Platform.ScreensaverAllowed = true; // Default false
+
+			//ProjectionMatrix = Matrix.CreateOrthographic(Window.Size, -10000f, 10000f);
+			ProjectionMatrix = Matrix.CreatePerspectiveFieldOfView(Math.DegreesToRadians(75f), Window.AspectRatio, 1f, 10000f);
 		}
 
 		public override void Update()
@@ -111,8 +114,6 @@ void main()
 			else if (Input.Mouse.LeftDown)
 				Window.Position = Input.Mouse.PositionDisplay - windowDraggingPosition;
 
-			Window.Position -= Input.Mouse.Scroll;
-
 			if (Input.Keyboard.Pressed(KeyCode.Space) || Input.Mouse.LeftPressed)
 				Sounds.sndPop1.Play();
 			if (Input.Keyboard.Released(KeyCode.Space) || Input.Mouse.LeftReleased)
@@ -125,30 +126,27 @@ void main()
 				cameraRotation += 0.01f;
 			Vector3 direction = Vector3.Zero;
 			if (Input.Keyboard.Down(KeyCode.A))
-				direction += ViewMatrix.Left;
+				direction += Vector3.Cross(Vector3.Up, cameraLookat).Normalized;
 			if (Input.Keyboard.Down(KeyCode.D))
-				direction += ViewMatrix.Right;
+				direction += Vector3.Cross(cameraLookat, Vector3.Up).Normalized;
+			Vector3 cameraLookatNoVertical = new Vector3(cameraLookat.X, 0f, cameraLookat.Z).Normalized;
 			if (Input.Keyboard.Down(KeyCode.W))
-				direction += ViewMatrix.Forward;
+				direction += cameraLookatNoVertical;
 			if (Input.Keyboard.Down(KeyCode.S))
-				direction += ViewMatrix.Backward;
-			cameraPosition += direction.Normalized * speed * Time.DeltaTime;
+				direction -= cameraLookatNoVertical;
 			//cameraTranslationMatrix = Matrix.CreateTranslation(-cameraPosition);
 			if (Input.Keyboard.Down(KeyCode.Q))
 				cameraScale -= 0.03f * cameraScale;
 			if (Input.Keyboard.Down(KeyCode.E))
 				cameraScale += 0.03f * cameraScale;
 
-			cameraLookat = cameraLookat * (Matrix.CreateRotationY((Input.Mouse.Position.X - Input.Mouse.LastPosition.X) * -0.1f * Math.Rad) * Matrix.CreateRotationX((Input.Mouse.Position.Y - Input.Mouse.LastPosition.Y) * 0.1f * Math.Rad));
+			cameraPosition += direction.Normalized * speed * Time.DeltaTime;
 
-			//WorldMatrix = Matrix.CreateWorld(Vector3.Zero, Vector3.Forward, Vector3.Up);
-			//WorldMatrix = Matrix.CreateScale(1f, 1f, -1f);
-			WorldMatrix = Matrix.Identity;
-			//ModelMatrix = Matrix.CreateScale(cameraScale, cameraScale, 0f) * cameraRotationMatrix * cameraTranslationMatrix;
-			//ViewMatrix = Matrix.CreateLookAt(cameraPosition, cameraPosition + cameraLookat, Vector3.Up);
-			ViewMatrix = Matrix.Identity;
-			//ProjectionMatrix = Matrix.CreateOrthographic(Window.Size, -10000f, 10000f);
-			ProjectionMatrix = Matrix.CreatePerspectiveFieldOfView(75f * Math.Rad, Window.AspectRatio, 1f, 10000f) * Matrix.CreateScale(1f, 1f, 11f);
+			cameraLookat = cameraLookat * (Matrix.CreateRotationY(Math.DegreesToRadians((Input.Mouse.Position.X - Input.Mouse.LastPosition.X) * -0.3f)) *
+										   Matrix.CreateRotationX(Math.DegreesToRadians((Input.Mouse.Position.Y - Input.Mouse.LastPosition.Y) * 0.3f)));
+
+			//ViewMatrix = cameraRotationMatrix * cameraTranslationMatrix;
+			ViewMatrix = Matrix.CreateLookAt(cameraPosition, cameraPosition + cameraLookat, Vector3.Up);
 		}
 
 		public override void Draw()
@@ -169,14 +167,9 @@ void main()
 			//Renderer.SetFrontFaceState(FrontFace.Clockwise);
 			//Renderer.SetCullState(CullState.Back);
 			//Renderer.SetBlendState(BlendState.AlphaBlend);
-			var rotation = Matrix.Identity;
-			//var rotation = Matrix.CreateRotationX(Time.TotalSeconds * 0.231f * 360 * Math.Rad) *
-			//			   Matrix.CreateRotationY(Time.TotalSeconds * 0.222f * 360 * Math.Rad) *
-			//			   Matrix.CreateRotationZ(Time.TotalSeconds * 0.213f * 360 * Math.Rad);
-			//var rotation = Matrix2D.CreateRotationZ(Time.TotalSeconds * 0.2f * 360 * Math.Rad);
-			Renderer.Draw.Triangle(new Vector3(0f, 1f, 2f) * rotation,
-								   new Vector3(-1f, -1f, 2f) * rotation,
-								   new Vector3(1f, -1f, 2f) * rotation,
+			Renderer.Draw.Triangle(new Vector2(0f, 1f),
+								   new Vector2(0f, 1f) * Matrix2D.CreateRotationZ(Math.RotationsToRadians(0.66666f)),
+								   new Vector2(0f, 1f) * Matrix2D.CreateRotationZ(Math.RotationsToRadians(0.33333f)),
 								   Colour.Red,
 								   Colour.Green,
 								   Colour.Blue,
@@ -184,7 +177,7 @@ void main()
 								   Vector2.Zero,
 								   Vector2.Zero,
 								   Vector2.Zero,
-								   0f,
+								   Time.TotalSeconds * 0.5f,
 								   Vector2.Zero);
 			//Renderer.Draw.TriangleStrip.Begin();
 			////int ii = Random.Range(1000, 10000);
@@ -217,6 +210,12 @@ void main()
 		public override void OnFocusLost()
 		{
 			Debug("Focus Lost");
+		}
+
+		public override void OnWindowResized()
+		{
+			//ProjectionMatrix = Matrix.CreateOrthographic(Window.Size, -10000f, 10000f);
+			ProjectionMatrix = Matrix.CreatePerspectiveFieldOfView(Math.DegreesToRadians(75f), Window.AspectRatio, 1f, 10000f);
 		}
 	}
 }

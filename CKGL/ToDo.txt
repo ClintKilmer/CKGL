@@ -1,12 +1,13 @@
 ﻿CKGL TODO List:
 
 - Hard Coded uniforms in shaders via inheritance
+- Remove GLResource Unbinds
 - Quaternions? - enable in Matrix class
 - Max Framerate
 - Mim Framerate before game slowdown
 - Figure out how to proccess Vertex into buffer data
 - Add Texture2dSampler, and CubeMap to Shader Uniform Set
-- ResourceHandle?
+- ResourceHandle? GLResource?
 
 
 

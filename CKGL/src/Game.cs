@@ -18,6 +18,7 @@
 
 			Platform.OnWinFocusGained += () => { OnFocusGained(); };
 			Platform.OnWinFocusLost += () => { OnFocusLost(); };
+			Platform.OnWinResized += () => { OnWindowResized(); };
 		}
 
 		public void GameLoop()
@@ -50,8 +51,8 @@
 		public abstract void Draw();
 
 		public abstract void OnFocusGained();
-
 		public abstract void OnFocusLost();
+		public abstract void OnWindowResized();
 
 		public abstract void Destroy();
 
