@@ -48,7 +48,7 @@
 			//return i;
 		}
 
-		public static float Clamp(this float f, int min, int max)
+		public static float Clamp(this float f, float min, float max)
 		{
 			return (f > max ? max : (f < min ? min : f));
 
