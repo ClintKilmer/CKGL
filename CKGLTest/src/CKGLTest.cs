@@ -72,9 +72,16 @@ void main()
 		// Variable for moving window on mouse click and drag
 		Point2 windowDraggingPosition = Point2.Zero;
 
-		Vector3 cameraPosition = Vector3.Zero;
-		float cameraScale = 1f;
-		Matrix WorldMatrix = Matrix.Identity;
+		Vector3 cameraPosition = new Vector3(0f, 0f, -10f);
+		Vector3 cameraLookat = Vector3.Forward;
+		Vector3 cameraScale = Vector3.One;
+		float cameraRotation = 0f;
+		Matrix cameraRotationMatrix = Matrix.Identity;
+		Matrix cameraTranslationMatrix = Matrix.Identity;
+
+		Matrix WorldMatrix;
+		Matrix ViewMatrix;
+		Matrix ProjectionMatrix = Matrix.Identity;
 
 		public override void Init()
 		{
@@ -111,22 +118,37 @@ void main()
 			if (Input.Keyboard.Released(KeyCode.Space) || Input.Mouse.LeftReleased)
 				Sounds.sndPop2.Play();
 
-			var speed = 1f;
+			var speed = 0.01f;
+			if (Input.Keyboard.Down(KeyCode.Z))
+				cameraRotation -= 0.01f;
+			if (Input.Keyboard.Down(KeyCode.C))
+				cameraRotation += 0.01f;
+			Vector3 direction = Vector3.Zero;
 			if (Input.Keyboard.Down(KeyCode.A))
-				cameraPosition.X -= speed;
+				direction += ViewMatrix.Left;
 			if (Input.Keyboard.Down(KeyCode.D))
-				cameraPosition.X += speed;
+				direction += ViewMatrix.Right;
 			if (Input.Keyboard.Down(KeyCode.W))
-				cameraPosition.Y -= speed;
+				direction += ViewMatrix.Forward;
 			if (Input.Keyboard.Down(KeyCode.S))
-				cameraPosition.Y += speed;
 				direction += ViewMatrix.Backward;
 			cameraPosition += direction.Normalized * speed * Time.DeltaTime;
+			//cameraTranslationMatrix = Matrix.CreateTranslation(-cameraPosition);
 			if (Input.Keyboard.Down(KeyCode.Q))
 				cameraScale -= 0.03f * cameraScale;
 			if (Input.Keyboard.Down(KeyCode.E))
 				cameraScale += 0.03f * cameraScale;
-			WorldMatrix = Matrix.CreateTranslation(-cameraPosition);
+
+			cameraLookat = cameraLookat * (Matrix.CreateRotationY((Input.Mouse.Position.X - Input.Mouse.LastPosition.X) * -0.1f * Math.Rad) * Matrix.CreateRotationX((Input.Mouse.Position.Y - Input.Mouse.LastPosition.Y) * 0.1f * Math.Rad));
+
+			//WorldMatrix = Matrix.CreateWorld(Vector3.Zero, Vector3.Forward, Vector3.Up);
+			//WorldMatrix = Matrix.CreateScale(1f, 1f, -1f);
+			WorldMatrix = Matrix.Identity;
+			//ModelMatrix = Matrix.CreateScale(cameraScale, cameraScale, 0f) * cameraRotationMatrix * cameraTranslationMatrix;
+			//ViewMatrix = Matrix.CreateLookAt(cameraPosition, cameraPosition + cameraLookat, Vector3.Up);
+			ViewMatrix = Matrix.Identity;
+			//ProjectionMatrix = Matrix.CreateOrthographic(Window.Size, -10000f, 10000f);
+			ProjectionMatrix = Matrix.CreatePerspectiveFieldOfView(75f * Math.Rad, Window.AspectRatio, 1f, 10000f) * Matrix.CreateScale(1f, 1f, 11f);
 		}
 
 		public override void Draw()
@@ -142,8 +164,7 @@ void main()
 			//shader.SetUniform("offset", Time.TotalMilliseconds * 0.0016f, Time.TotalMilliseconds * 0.002f, Time.TotalMilliseconds * 0.0023f);
 
 			Renderer.Start();
-			Matrix ViewMatrix = Matrix.CreateLookAt(Vector3.Zero, new Vector3(0f, 0f, 1f), new Vector3(0f, -1f, 0f));
-			Renderer.currentShader.SetUniform("matrix", WorldMatrix * ViewMatrix * Matrix.CreateOrthographic(Window.Size, -10000f, 10000f) * Matrix.CreateScale(cameraScale, cameraScale, 0f));
+			CKGL.Shaders.Renderer.SetUniform("MVP", WorldMatrix * ViewMatrix * ProjectionMatrix);
 			//Renderer.ResetShader();
 			//Renderer.SetFrontFaceState(FrontFace.Clockwise);
 			//Renderer.SetCullState(CullState.Back);
@@ -153,9 +174,9 @@ void main()
 			//			   Matrix.CreateRotationY(Time.TotalSeconds * 0.222f * 360 * Math.Rad) *
 			//			   Matrix.CreateRotationZ(Time.TotalSeconds * 0.213f * 360 * Math.Rad);
 			//var rotation = Matrix2D.CreateRotationZ(Time.TotalSeconds * 0.2f * 360 * Math.Rad);
-			Renderer.Draw.Triangle(new Vector3(-100f, -100f, 0f) * rotation,
-								   new Vector3(100f, -100f, 0f) * rotation,
-								   new Vector3(0f, 100f, 0f) * rotation,
+			Renderer.Draw.Triangle(new Vector3(0f, 1f, 2f) * rotation,
+								   new Vector3(-1f, -1f, 2f) * rotation,
+								   new Vector3(1f, -1f, 2f) * rotation,
 								   Colour.Red,
 								   Colour.Green,
 								   Colour.Blue,

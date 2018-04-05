@@ -15,7 +15,7 @@ out vec2 v_texCoord;
 out float v_textured;
 void main()
 {
-	gl_Position = MVP * vec4(position.xyz, 1.0);
+	gl_Position = vec4(position.xyz, 1.0) * MVP;
 	v_colour = colour;
 	v_texCoord = texCoord;
 	v_textured = textured;
