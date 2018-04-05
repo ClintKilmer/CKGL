@@ -172,7 +172,7 @@ namespace CKGL
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public Matrix2D Invert()
 		{
-			Matrix2D result = Matrix2D.Identity;
+			Matrix2D result = Identity;
 
 			var det = 1 / Determinant();
 

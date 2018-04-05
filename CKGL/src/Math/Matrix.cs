@@ -516,13 +516,13 @@ namespace CKGL
 		{
 			Matrix result = Identity;
 
-			var val1 = (float)Math.Cos(radians);
-			var val2 = (float)Math.Sin(radians);
+			var cos = Math.Cos(radians);
+			var sin = Math.Sin(radians);
 
-			result.M22 = val1;
-			result.M23 = val2;
-			result.M32 = -val2;
-			result.M33 = val1;
+			result.M22 = cos;
+			result.M23 = sin;
+			result.M32 = -sin;
+			result.M33 = cos;
 
 			return result;
 		}
@@ -531,13 +531,13 @@ namespace CKGL
 		{
 			Matrix result = Identity;
 
-			var val1 = (float)Math.Cos(radians);
-			var val2 = (float)Math.Sin(radians);
+			var cos = Math.Cos(radians);
+			var sin = Math.Sin(radians);
 
-			result.M11 = val1;
-			result.M13 = -val2;
-			result.M31 = val2;
-			result.M33 = val1;
+			result.M11 = cos;
+			result.M13 = -sin;
+			result.M31 = sin;
+			result.M33 = cos;
 
 			return result;
 		}
@@ -546,13 +546,13 @@ namespace CKGL
 		{
 			Matrix result = Identity;
 
-			var val1 = (float)Math.Cos(radians);
-			var val2 = (float)Math.Sin(radians);
+			var cos = Math.Cos(radians);
+			var sin = Math.Sin(radians);
 
-			result.M11 = val1;
-			result.M12 = val2;
-			result.M21 = -val2;
-			result.M22 = val1;
+			result.M11 = cos;
+			result.M12 = sin;
+			result.M21 = -sin;
+			result.M22 = cos;
 
 			return result;
 		}

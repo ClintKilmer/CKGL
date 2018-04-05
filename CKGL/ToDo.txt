@@ -1,5 +1,6 @@
 ﻿CKGL TODO List:
 
+- Hard Coded uniforms in shaders via inheritance
 - Quaternions? - enable in Matrix class
 - Max Framerate
 - Mim Framerate before game slowdown
