@@ -358,7 +358,7 @@ namespace CKGL
 		private static void AddVertex(DrawMode type, Vector2 position, Colour colour, bool textured, Vector2 uv, float rotation, Vector2 origin)
 		{
 			if (rotation != 0f)
-				AddVertex(type, position * (Matrix2D.CreateTranslation(-origin) * Matrix2D.CreateRotationZ(rotation * 360 * Math.Rad) * Matrix2D.CreateTranslation(origin)), colour, textured, uv);
+				AddVertex(type, position * (Matrix2D.CreateTranslation(-origin) * Matrix2D.CreateRotationZ(Math.RotationsToRadians(rotation)) * Matrix2D.CreateTranslation(origin)), colour, textured, uv);
 			else
 				AddVertex(type, position, colour, textured, uv);
 		}

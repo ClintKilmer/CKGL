@@ -70,14 +70,14 @@ namespace CKGL
 
 		public float RotationDegrees
 		{
-			get { return Math.Deg * Rotation; }
-			set { Rotation = Math.Rad * value; }
+			get { return Math.RadiansToDegrees(Rotation); }
+			set { Rotation = Math.DegreesToRadians(value); }
 		}
 
 		public float RotationNormalizedUnits
 		{
-			get { return (Rotation * Math.Deg + 180) / 360; }
-			set { Rotation = value * 360 * Math.Rad; }
+			get { return Math.RadiansToDegrees(Rotation) / 360f; }
+			set { Rotation = Math.RotationsToRadians(value); }
 		}
 
 		public Vector2 Scale
@@ -151,9 +151,19 @@ namespace CKGL
 		}
 		#endregion
 
-		#region 
+		#region Methods
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public float[] ToFloatArray()
+		public float[] ToArrayRowMajor()
+		{
+			float[] array = {
+				M11, M21, M31,
+				M12, M22, M32
+			};
+			return array;
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public float[] ToArrayColumnMajor()
 		{
 			float[] array = {
 				M11, M12,

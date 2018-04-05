@@ -6,9 +6,25 @@
 		public const float PI = (float)System.Math.PI;
 		public const float HalfPI = (float)(System.Math.PI * 0.5);
 		public const float Tau = (float)(System.Math.PI * 2.0);
-		public const float Deg = (float)(180.0 / System.Math.PI);
-		public const float Rad = (float)(System.Math.PI / 180.0);
+		public const float RadianCoefficient = (float)(System.Math.PI / 180.0);
+		public const float DegreeCoefficient = (float)(180.0 / System.Math.PI);
+		public const float RotationCoefficient = (float)(360.0 * System.Math.PI / 180.0);
 		public const float ZeroTolerance = 1e-6f;
+
+		public static float DegreesToRadians(float degrees)
+		{
+			return degrees * RadianCoefficient;
+		}
+
+		public static float RadiansToDegrees(float radians)
+		{
+			return radians * DegreeCoefficient;
+		}
+
+		public static float RotationsToRadians(float rotations)
+		{
+			return rotations * RotationCoefficient;
+		}
 
 		public static int Min(int a, int b)
 		{

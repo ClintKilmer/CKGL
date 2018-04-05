@@ -2,6 +2,21 @@
 {
 	public static partial class Extensions
 	{
+		public static float DegreesToRadians(this float degrees)
+		{
+			return degrees * Math.RadianCoefficient;
+		}
+		
+		public static float RadiansToDegrees(this float radians)
+		{
+			return radians * Math.DegreeCoefficient;
+		}
+		
+		public static float RotationsToRadians(this float rotations)
+		{
+			return rotations * Math.RotationCoefficient;
+		}
+
 		internal static int Min(this int a, int b)
 		{
 			return (a < b ? a : b);
