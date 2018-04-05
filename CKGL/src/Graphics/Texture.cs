@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using static SDL2.SDL_image;
-
 using OpenGL;
 
 using GLint = System.Int32;
@@ -187,8 +185,17 @@ namespace CKGL
 			}
 		}
 		#endregion
-
-
+		
+		#region Operators
+		public static bool operator ==(Texture a, Texture b)
+		{
+			return a.ID == b.ID;
+		}
+		public static bool operator !=(Texture a, Texture b)
+		{
+			return a.ID != b.ID;
+		}
+		#endregion
 
 		// TODO - Get rid of this original code
 		// CKGL Original

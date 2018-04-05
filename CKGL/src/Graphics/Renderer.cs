@@ -252,15 +252,15 @@ namespace CKGL
 			SetBlendState(DefaultBlendState);
 		}
 
-		// TODO - Texture
-		//private static void SetTexture(Texture2D texture)
-		//{
-		//	if (Engine.GraphicsDevice.Textures[0] != texture)
-		//	{
-		//		Flush();
-		//		Engine.GraphicsDevice.Textures[0] = texture;
-		//	}
-		//}
+		// TODO - Sprites - Make SetTexture private
+		public static void SetTexture(Texture2D texture)
+		{
+			if (Texture2D.currentlyBoundTexture2D != texture.ID)
+			{
+				Flush();
+				texture.MakeCurrent();
+			}
+		}
 
 		// TODO - Remove Renderer.Start(), useless method
 		public static void Start()
