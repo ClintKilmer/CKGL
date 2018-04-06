@@ -179,6 +179,7 @@ namespace CKGL
 			v.Y *= n;
 			return v;
 		}
+		// Pre-multiplication only
 		public static Vector2 operator *(Vector2 v, Matrix2D m)
 		{
 			return new Vector2(
@@ -186,6 +187,7 @@ namespace CKGL
 				v.X * m.M12 + v.Y * m.M22 + m.M32
 			);
 		}
+		// Pre-multiplication conversion from Post-multiplication order
 		public static Vector2 operator *(Matrix2D m, Vector2 v)
 		{
 			return new Vector2(

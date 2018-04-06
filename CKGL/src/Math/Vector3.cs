@@ -217,6 +217,7 @@ namespace CKGL
 			v.Z *= n;
 			return v;
 		}
+		// Pre-multiplication only
 		public static Vector3 operator *(Vector3 v, Matrix m)
 		{
 			var x = (v.X * m.M11) + (v.Y * m.M21) + (v.Z * m.M31) + m.M41;
@@ -224,6 +225,7 @@ namespace CKGL
 			var z = (v.X * m.M13) + (v.Y * m.M23) + (v.Z * m.M33) + m.M43;
 			return new Vector3(x, y, z);
 		}
+		// Pre-multiplication conversion from Post-multiplication order
 		public static Vector3 operator *(Matrix m, Vector3 v)
 		{
 			var x = (v.X * m.M11) + (v.Y * m.M21) + (v.Z * m.M31) + m.M41;
