@@ -6,12 +6,12 @@
 		{
 			return degrees * Math.RadianCoefficient;
 		}
-		
+
 		public static float RadiansToDegrees(this float radians)
 		{
 			return radians * Math.DegreeCoefficient;
 		}
-		
+
 		public static float RotationsToRadians(this float rotations)
 		{
 			return rotations * Math.RotationCoefficient;
@@ -170,9 +170,19 @@
 			return (float)System.Math.Sin(x);
 		}
 
+		public static float Asin(this float x)
+		{
+			return (float)System.Math.Asin(x);
+		}
+
 		public static float Cos(this float x)
 		{
 			return (float)System.Math.Cos(x);
+		}
+
+		public static float Acos(this float x)
+		{
+			return (float)System.Math.Acos(x);
 		}
 
 		public static float Tan(this float x)

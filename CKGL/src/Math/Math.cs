@@ -179,19 +179,29 @@
 			return (float)System.Math.Sin(x);
 		}
 
+		public static float Asin(float x)
+		{
+			return (float)System.Math.Asin(x);
+		}
+
 		public static float Cos(float x)
 		{
 			return (float)System.Math.Cos(x);
 		}
 
-		public static float Atan(float x)
+		public static float Acos(float x)
 		{
-			return (float)System.Math.Atan(x);
+			return (float)System.Math.Acos(x);
 		}
 
 		public static float Tan(float x)
 		{
 			return (float)System.Math.Tan(x);
+		}
+
+		public static float Atan(float x)
+		{
+			return (float)System.Math.Atan(x);
 		}
 
 		public static float Atan2(float y, float x)
