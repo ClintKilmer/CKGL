@@ -11,6 +11,8 @@ namespace CKGL
 	// TODO - Remove internals?
 	public abstract class Texture
 	{
+		public static GLuint currentlyBoundTexture { get; private set; }
+
 		private struct Binding
 		{
 			public GLuint ID;
@@ -43,6 +45,12 @@ namespace CKGL
 		public void Destroy()
 		{
 			GL.DeleteTexture(ID);
+		}
+
+		public void Bind()
+		{
+			MakeCurrent();
+			currentlyBoundTexture = ID;
 		}
 
 		#region SetPixels
@@ -185,7 +193,7 @@ namespace CKGL
 			}
 		}
 		#endregion
-		
+
 		#region Operators
 		public static bool operator ==(Texture a, Texture b)
 		{

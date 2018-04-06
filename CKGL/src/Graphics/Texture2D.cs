@@ -9,8 +9,6 @@ namespace CKGL
 {
 	public class Texture2D : Texture
 	{
-		public static GLuint currentlyBoundTexture2D { get; private set; }
-
 		Texture2D(TextureFormat format) : base(GL.GenTexture(), format, TextureTarget.Texture2D, TextureTarget.Texture2D)
 		{
 			WrapX = DefaultWrapX;
@@ -88,12 +86,6 @@ namespace CKGL
 		{
 			MakeCurrent();
 			GL.TexParameterI(BindTarget, p, val);
-		}
-
-		public void Bind()
-		{
-			MakeCurrent();
-			currentlyBoundTexture2D = ID;
 		}
 
 		#region Public Texture2D Save Methods
