@@ -1,4 +1,6 @@
-﻿/*
+﻿// Right-handed, Row-Major, 3x2 Matrix for 2D Transformations
+
+/*
  * Partially Derived from:
  * Matrix2D.cs in the Nez Library: https://github.com/prime31/Nez/
  * Matrix2D.cs in the MonoGame.Extended Library: https://github.com/craftworkgames/MonoGame.Extended
