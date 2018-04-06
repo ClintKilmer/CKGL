@@ -107,6 +107,12 @@ namespace CKGL
 		#endregion
 
 		#region LoadTexture2DFromStream
+		public static Texture2D LoadTexture2DFromStream(string file, TextureFilter textureFilter)
+		{
+			Texture2D texture = LoadTexture2DFromStream(file);
+			texture.SetFilter(textureFilter);
+			return texture;
+		}
 		public static Texture2D LoadTexture2DFromStream(string file)
 		{
 			Texture2D texture;

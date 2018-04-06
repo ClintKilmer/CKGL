@@ -53,7 +53,7 @@ void main()
 	#region Sprites
 	public static class Sprites
 	{
-		public static Texture2D test1 = Texture2D.LoadTexture2DFromStream("Textures/Character1.png");
+		public static Texture2D test1 = Texture2D.LoadTexture2DFromStream("Textures/Character1.png", TextureFilter.Nearest);
 	}
 	#endregion
 
@@ -167,9 +167,7 @@ void main()
 			//Renderer.SetFrontFaceState(FrontFace.Clockwise);
 			//Renderer.SetCullState(CullState.Back);
 			//Renderer.SetBlendState(BlendState.AlphaBlend);
-			Sprites.test1.MagFilter = TextureFilter.Nearest;
-			Sprites.test1.MinFilter = TextureFilter.Nearest;
-			Renderer.SetTexture(Sprites.test1);
+
 			Renderer.Draw.Triangle(new Vector2(0f, 1f),
 								   new Vector2(0f, 1f) * Matrix2D.CreateRotationZ(Math.RotationsToRadians(0.66666f)),
 								   new Vector2(0f, 1f) * Matrix2D.CreateRotationZ(Math.RotationsToRadians(0.33333f)),
@@ -182,6 +180,8 @@ void main()
 								   new Vector2(1f, 0f),
 								   Time.TotalSeconds * 0.5f,
 								   Vector2.Zero);
+
+			Renderer.SetTexture(Sprites.test1);
 			Renderer.Draw.Rectangle(2f,
 									1f,
 									1f,
@@ -195,6 +195,7 @@ void main()
 									new Vector2(1f, 0f),
 									new Vector2(0f, 1f),
 									new Vector2(1f, 1f));
+
 			//Renderer.Draw.TriangleStrip.Begin();
 			////int ii = Random.Range(1000, 10000);
 			//for (int i = 0; i < 10000; i++)
