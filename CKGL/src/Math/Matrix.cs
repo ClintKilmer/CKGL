@@ -15,6 +15,7 @@ namespace CKGL
 {
 	public struct Matrix
 	{
+		// Column-Major Storage Order
 		public float M11;
 		public float M12;
 		public float M13;
@@ -27,16 +28,16 @@ namespace CKGL
 		public float M32;
 		public float M33;
 		public float M34;
-		public float M41;
-		public float M42;
-		public float M43;
+		public float M41; // X Translation
+		public float M42; // Y Translation
+		public float M43; // Z Translation
 		public float M44;
 
 		#region Constructors
 		public Matrix(float m11, float m12, float m13, float m14,
-						float m21, float m22, float m23, float m24,
-						float m31, float m32, float m33, float m34,
-						float m41, float m42, float m43, float m44)
+					  float m21, float m22, float m23, float m24,
+					  float m31, float m32, float m33, float m34,
+					  float m41, float m42, float m43, float m44)
 		{
 			M11 = m11; M12 = m12; M13 = m13; M14 = m14;
 			M21 = m21; M22 = m22; M23 = m23; M24 = m24;

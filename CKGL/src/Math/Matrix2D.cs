@@ -14,14 +14,13 @@ namespace CKGL
 {
 	public struct Matrix2D
 	{
-		public float M11; // x scale	// z rotation
-		public float M12;               // z rotation
-
-		public float M21;               // z rotation
-		public float M22; // y scale	// z rotation
-
-		public float M31;                           // x translation
-		public float M32;                           // y translation
+		// Column-Major Storage Order
+		public float M11; // X Scale		// Z Rotation
+		public float M12;                   // Z Rotation
+		public float M21;                   // Z Rotation
+		public float M22; // Y Scale		// Z Rotation
+		public float M31; // X Translation
+		public float M32; // Y Translation
 
 		#region Constructors
 		public Matrix2D(float m11, float m12, float m21, float m22, float m31, float m32)
