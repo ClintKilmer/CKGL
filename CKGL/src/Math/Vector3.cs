@@ -246,13 +246,6 @@ namespace CKGL
 			v.Z /= n;
 			return v;
 		}
-		public static Vector3 operator /(float n, Vector3 v)
-		{
-			v.X /= n;
-			v.Y /= n;
-			v.Z /= n;
-			return v;
-		}
 
 		public static Vector3 operator -(Vector3 v)
 		{

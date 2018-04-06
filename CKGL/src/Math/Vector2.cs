@@ -206,12 +206,6 @@ namespace CKGL
 			v.Y /= n;
 			return v;
 		}
-		public static Vector2 operator /(float n, Vector2 v)
-		{
-			v.X /= n;
-			v.Y /= n;
-			return v;
-		}
 
 		public static Vector2 operator -(Vector2 v)
 		{

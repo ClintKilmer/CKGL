@@ -83,12 +83,6 @@ namespace CKGL
 			p.Y /= n;
 			return p;
 		}
-		public static Point2 operator /(int n, Point2 p)
-		{
-			p.X /= n;
-			p.Y /= n;
-			return p;
-		}
 
 		public static Point2 operator -(Point2 v)
 		{

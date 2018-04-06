@@ -218,14 +218,6 @@ namespace CKGL
 			v.W /= n;
 			return v;
 		}
-		public static Vector4 operator /(float n, Vector4 v)
-		{
-			v.X /= n;
-			v.Y /= n;
-			v.Z /= n;
-			v.W /= n;
-			return v;
-		}
 
 		public static Vector4 operator -(Vector4 v)
 		{
