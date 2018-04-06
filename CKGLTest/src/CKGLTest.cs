@@ -75,7 +75,9 @@ void main()
 		Vector3 cameraPosition = new Vector3(0f, 0f, -10f);
 		Vector3 cameraLookat = Vector3.Forward;
 		Vector3 cameraScale = Vector3.One;
-		float cameraRotation = 0f;
+		float cameraRotationZ = 0f; // 2d only
+		float cameraYaw = 0f;
+		float cameraPitch = 0f;
 		Matrix cameraRotationMatrix = Matrix.Identity;
 		Matrix cameraTranslationMatrix = Matrix.Identity;
 
@@ -121,9 +123,9 @@ void main()
 
 			var speed = 0.01f;
 			if (Input.Keyboard.Down(KeyCode.Z))
-				cameraRotation -= 0.01f;
+				cameraRotationZ -= 0.01f;
 			if (Input.Keyboard.Down(KeyCode.C))
-				cameraRotation += 0.01f;
+				cameraRotationZ += 0.01f;
 			Vector3 direction = Vector3.Zero;
 			if (Input.Keyboard.Down(KeyCode.A))
 				direction += Vector3.Cross(Vector3.Up, cameraLookat).Normalized;
@@ -142,8 +144,12 @@ void main()
 
 			cameraPosition += direction.Normalized * speed * Time.DeltaTime;
 
-			cameraLookat = cameraLookat * (Matrix.CreateRotationY(Math.DegreesToRadians((Input.Mouse.Position.X - Input.Mouse.LastPosition.X) * -0.3f)) *
-										   Matrix.CreateRotationX(Math.DegreesToRadians((Input.Mouse.Position.Y - Input.Mouse.LastPosition.Y) * 0.3f)));
+			cameraYaw = Math.Clamp(cameraYaw + (Input.Mouse.Position.Y - Input.Mouse.LastPosition.Y) * 0.003f, -0.24f, 0.24f);
+			cameraPitch = cameraPitch + (Input.Mouse.Position.X - Input.Mouse.LastPosition.X) * -0.003f;
+
+			cameraLookat = Vector3.Forward *
+						   (Matrix.CreateRotationX(cameraYaw.RotationsToRadians()) *
+						   Matrix.CreateRotationY(cameraPitch.RotationsToRadians()));
 
 			//ViewMatrix = cameraRotationMatrix * cameraTranslationMatrix;
 			ViewMatrix = Matrix.CreateLookAt(cameraPosition, cameraPosition + cameraLookat, Vector3.Up);
