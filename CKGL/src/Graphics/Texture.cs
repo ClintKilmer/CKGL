@@ -8,57 +8,135 @@ using GLuint = System.UInt32;
 
 namespace CKGL
 {
-	// TODO - Remove internals?
 	public abstract class Texture
 	{
-		public static GLuint currentlyBoundTexture { get; private set; }
-
 		private struct Binding
 		{
 			public GLuint ID;
 			public TextureTarget Target;
 		}
-
 		private static Binding[] bindings = new Binding[GL.MaxTextureUnits];
-		private static HashSet<GLuint> unbind = new HashSet<GLuint>();
 
 		public static TextureFilter DefaultMinFilter = TextureFilter.Linear;
 		public static TextureFilter DefaultMagFilter = TextureFilter.Linear;
 		public static TextureWrap DefaultWrapX = TextureWrap.ClampToEdge;
 		public static TextureWrap DefaultWrapY = TextureWrap.ClampToEdge;
 
-		internal GLuint ID { get; private set; }
-		public TextureFormat Format { get; private set; }
-		internal TextureTarget BindTarget { get; private set; }
-		internal TextureTarget DataTarget { get; private set; }
-		public int Width { get; internal set; }
-		public int Height { get; internal set; }
+		private GLuint id;
 
-		internal Texture(GLuint id, TextureFormat format, TextureTarget bindTarget, TextureTarget dataTarget)
+		public int Width { get; set; }
+		public int Height { get; set; }
+		public TextureFormat Format { get; private set; }
+		public TextureTarget BindTarget { get; private set; }
+		public TextureTarget DataTarget { get; private set; }
+
+		protected Texture(TextureFormat format, TextureTarget bindTarget, TextureTarget dataTarget) : this(format, bindTarget, dataTarget, DefaultMinFilter, DefaultMagFilter, DefaultWrapX, DefaultWrapY) { }
+		protected Texture(TextureFormat format, TextureTarget bindTarget, TextureTarget dataTarget, TextureFilter filter, TextureWrap wrap) : this(format, bindTarget, dataTarget, filter, filter, wrap, wrap) { }
+		protected Texture(TextureFormat format, TextureTarget bindTarget, TextureTarget dataTarget, TextureFilter minFilter, TextureFilter magFilter, TextureWrap wrapX, TextureWrap wrapY)
 		{
-			ID = id;
+			id = GL.GenTexture();
 			Format = format;
 			BindTarget = bindTarget;
 			DataTarget = dataTarget;
+			MinFilter = minFilter;
+			MagFilter = magFilter;
+			WrapX = wrapX;
+			WrapY = wrapY;
 		}
 
 		public void Destroy()
 		{
-			GL.DeleteTexture(ID);
+			if (id != default(GLuint))
+			{
+				GL.DeleteTexture(id);
+				id = default(GLuint);
+			}
 		}
 
-		public void Bind()
+		#region Parameters
+		public TextureWrap WrapX
 		{
-			MakeCurrent();
-			currentlyBoundTexture = ID;
+			get { return (TextureWrap)GetParam(TextureParam.WrapS); }
+			set { SetParam(TextureParam.WrapS, (GLint)value); }
 		}
 
+		public TextureWrap WrapY
+		{
+			get { return (TextureWrap)GetParam(TextureParam.WrapT); }
+			set { SetParam(TextureParam.WrapT, (GLint)value); }
+		}
+
+		public void SetWrap(TextureWrap wrap)
+		{
+			WrapX = wrap;
+			WrapY = wrap;
+		}
+
+		public TextureFilter MinFilter
+		{
+			get { return (TextureFilter)GetParam(TextureParam.MinFilter); }
+			set { SetParam(TextureParam.MinFilter, (GLint)value); }
+		}
+
+		public TextureFilter MagFilter
+		{
+			get { return (TextureFilter)GetParam(TextureParam.MagFilter); }
+			set { SetParam(TextureParam.MagFilter, (GLint)value); }
+		}
+
+		public void SetFilter(TextureFilter filter)
+		{
+			MinFilter = filter;
+			MagFilter = filter;
+		}
+
+		private int GetParam(TextureParam p)
+		{
+			Bind();
+			GL.GetTexParameterI(BindTarget, p, out GLint val);
+			return val;
+		}
+
+		private void SetParam(TextureParam p, GLint val)
+		{
+			Bind();
+			GL.TexParameterI(BindTarget, p, val);
+		}
+		#endregion
+
+		// TODO
+		#region Bind
+		public bool IsBound() => IsBound(0);
+		public bool IsBound(int textureSlot) => IsBound(textureSlot, BindTarget);
+		private bool IsBound(int textureSlot, TextureTarget target)
+		{
+			return bindings[textureSlot].ID != id && bindings[textureSlot].Target != target;
+		}
+
+		public void Bind() => Bind(0, BindTarget);
+		public void Bind(int textureSlot) => Bind(textureSlot, BindTarget);
+		private void Bind(int textureSlot, TextureTarget target)
+		{
+			if (!IsBound(textureSlot, target))
+			{
+				// TODO - What does glActiveTexture do again?
+				GL.ActiveTexture(0);
+
+				GL.BindTexture(target, id);
+
+				bindings[0].ID = id;
+				bindings[0].Target = target;
+			}
+		}
+		#endregion
+
+		// TODO - refactor comp into lookup method
 		#region SetPixels
 		internal unsafe void SetPixels(byte[] pixels, int comp, PixelFormat format)
 		{
 			if (pixels != null && pixels.Length < Width * Height * comp)
 				throw new Exception("Pixels array is not large enough.");
-			MakeCurrent();
+			Bind();
 			fixed (byte* ptr = pixels)
 				GL.TexImage2D(DataTarget, 0, Format, Width, Height, 0, format, PixelType.UnsignedByte, new IntPtr(ptr));
 		}
@@ -80,6 +158,7 @@ namespace CKGL
 		}
 		#endregion
 
+		// TODO - refactor comp into lookup method
 		#region GetPixels
 		internal unsafe void GetPixels(ref byte[] pixels, int comp, PixelFormat format)
 		{
@@ -87,7 +166,7 @@ namespace CKGL
 				pixels = new byte[Width * Height * comp];
 			else if (pixels.Length < Width * Height * comp)
 				throw new Exception("Pixels array is not large enough.");
-			MakeCurrent();
+			Bind();
 			fixed (byte* ptr = pixels)
 				GL.GetTexImage(DataTarget, 0, format, PixelType.UnsignedByte, new IntPtr(ptr));
 		}
@@ -109,143 +188,33 @@ namespace CKGL
 		}
 		#endregion
 
-		#region MakeCurrent
-		internal void MakeCurrent()
-		{
-			MakeCurrent(ID, BindTarget);
-		}
-		internal static void MakeCurrent(GLuint id, TextureTarget target)
-		{
-			if (bindings[0].ID != id)
-			{
-				GL.ActiveTexture(0);
-
-				//If a texture is already binded to slot 0, unbind it
-				if (bindings[0].ID != 0 && bindings[0].Target != target)
-					GL.BindTexture(bindings[0].Target, 0);
-
-				bindings[0].ID = id;
-				bindings[0].Target = target;
-				GL.BindTexture(target, id);
-			}
-		}
-		#endregion
-
-		#region Binding
-		internal static GLuint Bind(GLuint id, TextureTarget target)
-		{
-			//If we're marked for unbinding, unmark us
-			unbind.Remove(id);
-
-			//If we're already binded, return our slot
-			for (GLuint i = 0; i < bindings.Length; ++i)
-				if (bindings[i].ID == id)
-					return i;
-
-			//If we're not already binded, bind us and return the slot
-			for (GLuint i = 0; i < bindings.Length; ++i)
-			{
-				if (bindings[i].ID == 0)
-				{
-					bindings[i].ID = id;
-					bindings[i].Target = target;
-					GL.ActiveTexture(i);
-					GL.BindTexture(target, id);
-					return i;
-				}
-			}
-
-			throw new Exception("You have exceeded the maximum amount of texture bindings: " + GL.MaxTextureUnits);
-		}
-
-		internal static void MarkAllForUnbinding()
-		{
-			for (GLuint i = 0; i < bindings.Length; ++i)
-				if (bindings[i].ID != 0)
-					unbind.Add(bindings[i].ID);
-		}
-
-		internal static void UnbindMarked()
-		{
-			for (GLuint i = 0; i < bindings.Length; ++i)
-			{
-				if (bindings[i].ID != 0 && unbind.Contains(bindings[i].ID))
-				{
-					GL.ActiveTexture(i);
-					GL.BindTexture(bindings[i].Target, 0);
-					bindings[i].ID = 0;
-				}
-			}
-			unbind.Clear();
-		}
-
-		internal static void UnbindAll()
-		{
-			unbind.Clear();
-			for (GLuint i = 0; i < bindings.Length; ++i)
-			{
-				if (bindings[i].ID != 0)
-				{
-					GL.ActiveTexture(i);
-					GL.BindTexture(bindings[i].Target, 0);
-					bindings[i].ID = 0;
-				}
-			}
-		}
-		#endregion
-
 		#region Operators
 		public static bool operator ==(Texture a, Texture b)
 		{
-			return a.ID == b.ID;
+			return a.id == b.id;
 		}
 		public static bool operator !=(Texture a, Texture b)
 		{
-			return a.ID != b.ID;
+			return a.id != b.id;
 		}
 		#endregion
 
-		// TODO - Get rid of this original code
-		// CKGL Original
+		#region Static TextureFormat Size Method
 
-		//private GLuint ID;
-		//private GLuint localBuffer = 0;
+		public static int GetTextureFormatSize(TextureFormat textureFormat)
+		{
+			// TODO?
+			//TextureFormatExt.PixelFormat()
 
-		//public OpenGLTexture()
-		//{
-		//	Bind();
-		//}
+			switch (textureFormat)
+			{
+				case TextureFormat.RGBA8:
+					return 8;
+				default:
+					throw new NotImplementedException("Unexpected value from TextureFormat");
+			}
+		}
 
-		//private void Generate()
-		//{
-		//	if (ID == default(GLuint))
-		//		ID = GL.GenTexture();
-		//}
-
-		//public void Destroy()
-		//{
-		//	if (ID != default(GLuint))
-		//	{
-		//		GL.DeleteTexture(ID);
-		//		ID = default(GLuint);
-		//	}
-		//}
-
-		//public void Bind()
-		//{
-		//	Generate();
-
-		//	if (ID != currentlyBoundTexture)
-		//	{
-		//		GL.BindTexture(TextureTarget.Texture2D, ID);
-		//		currentlyBoundTexture = ID;
-		//	}
-		//}
-
-		//public void UnBind()
-		//{
-		//	GL.BindTexture(TextureTarget.Texture2D, 0);
-		//	currentlyBoundTexture = 0;
-		//}
+		#endregion
 	}
 }

@@ -255,10 +255,10 @@ namespace CKGL
 		// TODO - Sprites - Make SetTexture private
 		public static void SetTexture(Texture2D texture)
 		{
-			if (Texture.currentlyBoundTexture != texture.ID)
+			if (!texture.IsBound())
 			{
 				Flush();
-				texture.MakeCurrent();
+				texture.Bind();
 			}
 		}
 
