@@ -9,52 +9,38 @@ namespace CKGL
 	{
 		private static GLuint currentlyBoundIndexBuffer;
 
-		private GLuint ID;
+		private GLuint id;
 
 		public int Count { get; private set; }
 		public IndexType IndexType { get; } = IndexType.UnsignedInt;
 
 		public IndexBuffer()
 		{
-			Bind();
-		}
-
-		private void Generate()
-		{
-			if (ID == default(GLuint))
-				ID = GL.GenBuffer();
+			id = GL.GenBuffer();
 		}
 
 		public void Destroy()
 		{
-			if (ID != default(GLuint))
+			if (id != default(GLuint))
 			{
-				GL.DeleteBuffer(ID);
-				ID = default(GLuint);
+				GL.DeleteBuffer(id);
+				id = default(GLuint);
 			}
 		}
 
 		public void Bind()
 		{
-			Generate();
-
-			if (ID != currentlyBoundIndexBuffer)
+			if (id != currentlyBoundIndexBuffer)
 			{
-				GL.BindBuffer(BufferTarget.ElementArray, ID);
-				currentlyBoundIndexBuffer = ID;
+				GL.BindBuffer(BufferTarget.ElementArray, id);
+				currentlyBoundIndexBuffer = id;
 			}
 		}
 
-		//public void UnBind()
-		//{
-		//	GL.BindBuffer(BufferTarget.ArElementArrayray, 0);
-		//	currentlyBoundIndexBuffer = 0;
-		//}
-
-		public void LoadData(GLint[] indices, BufferUsage bufferUsage)
+		public void LoadData(GLuint[] indices, BufferUsage bufferUsage)
 		{
 			Bind();
-			GL.BufferData(BufferTarget.ElementArray, sizeof(GLint) * indices.Length, indices, bufferUsage);
+			GL.BufferData(BufferTarget.ElementArray, sizeof(GLuint) * indices.Length, indices, bufferUsage);
 			Count = indices.Length;
 		}
 	}

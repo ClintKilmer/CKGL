@@ -9,44 +9,30 @@ namespace CKGL
 	{
 		private static GLuint currentlyBoundVertexArray;
 
-		private GLuint ID;
+		private GLuint id;
 
 		public VertexArray()
 		{
-			Bind();
-		}
-
-		private void Generate()
-		{
-			if (ID == default(GLuint))
-				ID = GL.GenVertexArray();
+			id = GL.GenVertexArray();
 		}
 
 		public void Destroy()
 		{
-			if (ID != 0)
+			if (id != default(GLuint))
 			{
-				GL.DeleteVertexArray(ID);
-				ID = default(GLuint);
+				GL.DeleteVertexArray(id);
+				id = default(GLuint);
 			}
 		}
 
 		public void Bind()
 		{
-			Generate();
-
-			if (ID != currentlyBoundVertexArray)
+			if (id != currentlyBoundVertexArray)
 			{
-				GL.BindVertexArray(ID);
-				currentlyBoundVertexArray = ID;
+				GL.BindVertexArray(id);
+				currentlyBoundVertexArray = id;
 			}
 		}
-
-		//public void UnBind()
-		//{
-		//	GL.BindVertexArray(0);
-		//	currentlyBoundVertexArray = 0;
-		//}
 
 		public void AddBuffer(VertexBuffer vertexBuffer, VertexBufferLayout vertexBufferLayout)
 		{

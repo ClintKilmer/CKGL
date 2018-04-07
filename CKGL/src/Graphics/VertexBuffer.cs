@@ -9,44 +9,30 @@ namespace CKGL
 	{
 		private static GLuint currentlyBoundVertexBuffer;
 
-		private GLuint ID;
+		private GLuint id;
 
 		public VertexBuffer()
 		{
-			Bind();
-		}
-
-		private void Generate()
-		{
-			if (ID == default(GLuint))
-				ID = GL.GenBuffer();
+			id = GL.GenBuffer();
 		}
 
 		public void Destroy()
 		{
-			if (ID != default(GLuint))
+			if (id != default(GLuint))
 			{
-				GL.DeleteBuffer(ID);
-				ID = default(GLuint);
+				GL.DeleteBuffer(id);
+				id = default(GLuint);
 			}
 		}
 
 		public void Bind()
 		{
-			Generate();
-
-			if (ID != currentlyBoundVertexBuffer)
+			if (id != currentlyBoundVertexBuffer)
 			{
-				GL.BindBuffer(BufferTarget.Array, ID);
-				currentlyBoundVertexBuffer = ID;
+				GL.BindBuffer(BufferTarget.Array, id);
+				currentlyBoundVertexBuffer = id;
 			}
 		}
-
-		//public void UnBind()
-		//{
-		//	GL.BindBuffer(BufferTarget.Array, 0);
-		//	currentlyBoundVertexBuffer = 0;
-		//}
 
 		public void LoadData<T>(GLint sizeInBytes, T[] vertices, BufferUsage bufferUsage) where T : struct
 		{
