@@ -49,6 +49,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\Matrix.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\Matrix2D.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\Point2.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Math\Quaternion.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\Random.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\RectangleI.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\Vector2.cs" />
