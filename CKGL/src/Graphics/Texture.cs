@@ -104,28 +104,25 @@ namespace CKGL
 		}
 		#endregion
 
-		// TODO
 		#region Bind
 		public bool IsBound() => IsBound(0);
-		public bool IsBound(int textureSlot) => IsBound(textureSlot, BindTarget);
-		private bool IsBound(int textureSlot, TextureTarget target)
+		public bool IsBound(GLuint textureSlot) => IsBound(textureSlot, BindTarget);
+		private bool IsBound(GLuint textureSlot, TextureTarget target)
 		{
 			return bindings[textureSlot].ID != id && bindings[textureSlot].Target != target;
 		}
 
 		public void Bind() => Bind(0, BindTarget);
-		public void Bind(int textureSlot) => Bind(textureSlot, BindTarget);
-		private void Bind(int textureSlot, TextureTarget target)
+		public void Bind(GLuint textureSlot) => Bind(textureSlot, BindTarget);
+		private void Bind(GLuint textureSlot, TextureTarget target)
 		{
 			if (!IsBound(textureSlot, target))
 			{
-				// TODO - What does glActiveTexture do again?
-				GL.ActiveTexture(0);
-
+				GL.ActiveTexture(textureSlot);
 				GL.BindTexture(target, id);
 
-				bindings[0].ID = id;
-				bindings[0].Target = target;
+				bindings[textureSlot].ID = id;
+				bindings[textureSlot].Target = target;
 			}
 		}
 		#endregion
