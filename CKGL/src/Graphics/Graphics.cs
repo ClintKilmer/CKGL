@@ -2,21 +2,11 @@
 
 using GLint = System.Int32;
 using GLuint = System.UInt32;
-//using GLfloat = float;
 
 namespace CKGL
 {
 	public static class Graphics
 	{
-		#region State
-		private class State
-		{
-			public static FrontFace FrontFaceState = FrontFace.CounterClockwise; // OpenGL Default
-			public static CullState CullState = CullState.Off; // OpenGL Default
-			public static BlendState BlendState = BlendState.None; // OpenGL Default
-		}
-		#endregion
-
 		public static void Init()
 		{
 			GL.Init();
@@ -49,6 +39,14 @@ namespace CKGL
 		#endregion
 
 		#region State
+		private class State
+		{
+			public static FrontFace FrontFaceState = FrontFace.CounterClockwise; // OpenGL Default
+			public static CullState CullState = CullState.Off; // OpenGL Default
+			public static BlendState BlendState = BlendState.None; // OpenGL Default
+			public static DepthState DepthState = DepthState.Off; // OpenGL Default - Enabled: false,  Func: Less
+		}
+
 		public static FrontFace FrontFaceState
 		{
 			get
@@ -103,6 +101,24 @@ namespace CKGL
 			}
 		}
 
+		public static DepthState DepthState
+		{
+			get
+			{
+				return State.DepthState;
+			}
+			set
+			{
+				if (value != State.DepthState)
+				{
+					if (value.On)
+						GL.Enable(EnableCap.DepthTest);
+					else
+						GL.Disable(EnableCap.DepthTest);
+					GL.DepthFunc(value.DepthFunc);
+				}
+			}
+		}
 		#endregion
 
 		#region Draw

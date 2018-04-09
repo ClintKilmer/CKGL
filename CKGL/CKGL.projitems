@@ -15,6 +15,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)lib\OpenAL-CS\src\ALC11.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)lib\OpenAL-CS\src\ALEXT.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)lib\OpenAL-CS\src\EFX.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\DepthState.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\OpenGL.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)lib\SDL2-CS\src\SDL2.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)lib\SDL2-CS\src\SDL2_image.cs" />

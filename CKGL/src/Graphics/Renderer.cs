@@ -126,6 +126,7 @@ namespace CKGL
 		private static FrontFace DefaultFrontFaceState { get; } = FrontFace.CounterClockwise;
 		private static CullState DefaultCullState { get; } = CullState.Off;
 		private static BlendState DefaultBlendState { get; } = BlendState.None;
+		private static DepthState DefaultDepthState { get; } = DepthState.Off;
 
 		// TODO - RenderTarget
 		//		public static void ResetRenderTarget()
@@ -252,6 +253,20 @@ namespace CKGL
 			SetBlendState(DefaultBlendState);
 		}
 
+		public static void SetDepthState(DepthState depthState)
+		{
+			if (Graphics.DepthState != depthState)
+			{
+				Flush();
+				Graphics.DepthState = depthState;
+			}
+		}
+
+		public static void ResetDepthState()
+		{
+			SetDepthState(DefaultDepthState);
+		}
+
 		// TODO - Sprites - Make SetTexture private
 		public static void SetTexture(Texture2D texture)
 		{
@@ -269,12 +284,6 @@ namespace CKGL
 				throw new Exception("End must be called before Begin can be called again.");
 
 			working = true;
-
-			// TODO - Render States
-			//Engine.GraphicsDevice.DepthStencilState = DepthStencilState.None;
-			//SetRasterizerState(DefaultRasterizerState);
-			//SetSamplerState(DefaultSamplerState);
-			//SetBlendState(DefaultBlendState);
 
 			vertexCount = 0;
 		}

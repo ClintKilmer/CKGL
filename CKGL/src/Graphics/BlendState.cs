@@ -2,12 +2,6 @@
 {
 	public struct BlendState
 	{
-		public static readonly BlendState None = new BlendState(false);
-		public static readonly BlendState Opaque = new BlendState(true, BlendFactor.One, BlendFactor.Zero);
-		public static readonly BlendState AlphaBlend = new BlendState(true, BlendFactor.SrcAlpha, BlendFactor.OneMinusSrcAlpha);
-		public static readonly BlendState Additive = new BlendState(true, BlendFactor.SrcAlpha, BlendFactor.One);
-		public static readonly BlendState Subtractive = new BlendState(true, BlendFactor.Zero, BlendFactor.OneMinusSrcColour);
-
 		public bool On;
 		public BlendFactor ColourSource;
 		public BlendFactor AlphaSource;
@@ -16,6 +10,15 @@
 		public BlendEquation ColourEquation;
 		public BlendEquation AlphaEquation;
 
+		#region Static Constructors
+		public static readonly BlendState None = new BlendState(false);
+		public static readonly BlendState Opaque = new BlendState(true, BlendFactor.One, BlendFactor.Zero);
+		public static readonly BlendState AlphaBlend = new BlendState(true, BlendFactor.SrcAlpha, BlendFactor.OneMinusSrcAlpha);
+		public static readonly BlendState Additive = new BlendState(true, BlendFactor.SrcAlpha, BlendFactor.One);
+		public static readonly BlendState Subtractive = new BlendState(true, BlendFactor.Zero, BlendFactor.OneMinusSrcColour);
+		#endregion
+
+		#region Constructors
 		public BlendState(
 			bool on,
 			BlendFactor colourSource,
@@ -72,12 +75,16 @@
 			BlendEquation.Add,
 			BlendEquation.Add)
 		{ }
+		#endregion
 
+		#region Overrides
 		public override string ToString()
 		{
 			return $"Not implemented yet";
 		}
+		#endregion
 
+		#region Operators
 		public static bool operator ==(BlendState a, BlendState b)
 		{
 			return a.On == b.On &&
@@ -98,5 +105,6 @@
 				   a.ColourEquation != b.ColourEquation ||
 				   a.AlphaEquation != b.AlphaEquation;
 		}
+		#endregion
 	}
 }
