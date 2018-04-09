@@ -1,4 +1,10 @@
-﻿using CKGL;
+﻿/*
+ * Original from:
+ * OpenGL.cs in the Rise Library: https://github.com/ChevyRay/Rise
+ * Modified for use in CKGL
+ */
+
+using CKGL;
 
 using System;
 using System.Diagnostics;
@@ -7,69 +13,11 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 
-using GLEnum = System.UInt32;
-using GLSizei = System.Int32;
-
-using GLint = System.Int32;
 using GLuint = System.UInt32;
+using GLint = System.Int32;
 
 namespace OpenGL
 {
-	//[StructLayout(LayoutKind.Sequential, Pack = 4)]
-	//public struct GLint
-	//{
-	//	private Int32 Value;
-	//	public GLint(Int32 value)
-	//	{
-	//		Value = value;
-	//	}
-	//	public static implicit operator Int32(GLint v)
-	//	{
-	//		return v.Value;
-	//	}
-	//	public static implicit operator GLint(Int32 v)
-	//	{
-	//		return new GLint(v);
-	//	}
-	//}
-
-	//[StructLayout(LayoutKind.Sequential, Pack = 4)]
-	//public struct GLuint
-	//{
-	//	private UInt32 Value;
-	//	public GLuint(UInt32 value)
-	//	{
-	//		Value = value;
-	//	}
-	//	public static implicit operator UInt32(GLuint v)
-	//	{
-	//		return v.Value;
-	//	}
-	//	public static implicit operator GLuint(UInt32 v)
-	//	{
-	//		return new GLuint(v);
-	//	}
-	//}
-
-	// GLfloat is same as float
-	//[StructLayout(LayoutKind.Sequential, Pack = 4)]
-	//public struct GLfloat
-	//{
-	//	private float Value;
-	//	public GLfloat(float value)
-	//	{
-	//		Value = value;
-	//	}
-	//	public static implicit operator float(GLfloat v)
-	//	{
-	//		return v.Value;
-	//	}
-	//	public static implicit operator GLfloat(float v)
-	//	{
-	//		return new GLfloat(v);
-	//	}
-	//}
-
 	public static class GL
 	{
 		static int majorVersion = 0x821B;
@@ -111,17 +59,17 @@ namespace OpenGL
 				}
 			}
 
-			GetIntegerV((GLEnum)majorVersion, out majorVersion);
-			GetIntegerV((GLEnum)minorVersion, out minorVersion);
-			GetIntegerV((GLEnum)maxColourAttachments, out maxColourAttachments);
-			GetIntegerV((GLEnum)maxCubeMapTextureSize, out maxCubeMapTextureSize);
-			GetIntegerV((GLEnum)maxDrawBuffers, out maxDrawBuffers);
-			GetIntegerV((GLEnum)maxElementIndices, out maxElementIndices);
-			GetIntegerV((GLEnum)maxElementVertices, out maxElementVertices);
-			GetIntegerV((GLEnum)maxRenderbufferSize, out maxRenderbufferSize);
-			GetIntegerV((GLEnum)maxSamples, out maxSamples);
-			GetIntegerV((GLEnum)maxTextureImageUnits, out maxTextureImageUnits);
-			GetIntegerV((GLEnum)maxTextureSize, out maxTextureSize);
+			GetIntegerV((GLuint)majorVersion, out majorVersion);
+			GetIntegerV((GLuint)minorVersion, out minorVersion);
+			GetIntegerV((GLuint)maxColourAttachments, out maxColourAttachments);
+			GetIntegerV((GLuint)maxCubeMapTextureSize, out maxCubeMapTextureSize);
+			GetIntegerV((GLuint)maxDrawBuffers, out maxDrawBuffers);
+			GetIntegerV((GLuint)maxElementIndices, out maxElementIndices);
+			GetIntegerV((GLuint)maxElementVertices, out maxElementVertices);
+			GetIntegerV((GLuint)maxRenderbufferSize, out maxRenderbufferSize);
+			GetIntegerV((GLuint)maxSamples, out maxSamples);
+			GetIntegerV((GLuint)maxTextureImageUnits, out maxTextureImageUnits);
+			GetIntegerV((GLuint)maxTextureSize, out maxTextureSize);
 		}
 
 #pragma warning disable 0649
@@ -196,9 +144,9 @@ namespace OpenGL
 			CheckError();
 		}
 
-		delegate void _glViewport(int x, int y, GLSizei width, GLSizei height);
+		delegate void _glViewport(int x, int y, GLint width, GLint height);
 		static _glViewport glViewport;
-		public static void Viewport(int x, int y, GLSizei width, GLSizei height)
+		public static void Viewport(int x, int y, GLint width, GLint height)
 		{
 			glViewport(x, y, width, height);
 			CheckError();
@@ -220,9 +168,9 @@ namespace OpenGL
 			CheckError();
 		}
 
-		unsafe delegate void _glGetIntegerv(GLEnum name, int* data);
+		unsafe delegate void _glGetIntegerv(GLuint name, int* data);
 		static _glGetIntegerv glGetIntegerv;
-		static unsafe void GetIntegerV(GLEnum name, out int val)
+		static unsafe void GetIntegerV(GLuint name, out int val)
 		{
 			fixed (int* p = &val)
 			{
@@ -264,9 +212,9 @@ namespace OpenGL
 			CheckError();
 		}
 
-		unsafe delegate void _glGenTextures(GLSizei n, uint* textures);
+		unsafe delegate void _glGenTextures(GLint n, uint* textures);
 		static _glGenTextures glGenTextures;
-		unsafe public static void GenTextures(GLSizei n, uint[] textures)
+		unsafe public static void GenTextures(GLint n, uint[] textures)
 		{
 			fixed (uint* ptr = textures) { glGenTextures(n, ptr); }
 			CheckError();
@@ -279,9 +227,9 @@ namespace OpenGL
 			return texture;
 		}
 
-		unsafe delegate void _glDeleteTextures(GLSizei n, uint* textures);
+		unsafe delegate void _glDeleteTextures(GLint n, uint* textures);
 		static _glDeleteTextures glDeleteTextures;
-		unsafe public static void DeleteTextures(GLSizei n, uint[] textures)
+		unsafe public static void DeleteTextures(GLint n, uint[] textures)
 		{
 			fixed (uint* ptr = textures) { glDeleteTextures(n, ptr); }
 			CheckError();
@@ -293,7 +241,7 @@ namespace OpenGL
 		}
 
 		public const int MaxTextureUnits = 32;
-		static GLEnum texture0 = 0x84C0;
+		static GLuint texture0 = 0x84C0;
 
 		delegate void _glActiveTexture(uint unit);
 		static _glActiveTexture glActiveTexture;
@@ -330,9 +278,9 @@ namespace OpenGL
 			CheckError();
 		}
 
-		delegate void _glTexImage2D(TextureTarget target, int level, int internalFormat, GLSizei width, GLSizei height, int border, PixelFormat format, PixelType type, IntPtr data);
+		delegate void _glTexImage2D(TextureTarget target, int level, int internalFormat, GLint width, GLint height, int border, PixelFormat format, PixelType type, IntPtr data);
 		static _glTexImage2D glTexImage2D;
-		public static void TexImage2D(TextureTarget target, int level, TextureFormat internalFormat, GLSizei width, GLSizei height, int border, PixelFormat format, PixelType type, IntPtr data)
+		public static void TexImage2D(TextureTarget target, int level, TextureFormat internalFormat, GLint width, GLint height, int border, PixelFormat format, PixelType type, IntPtr data)
 		{
 			glTexImage2D(target, level, (int)internalFormat, width, height, border, format, type, data);
 			CheckError();
@@ -379,7 +327,7 @@ namespace OpenGL
 			CheckError();
 		}
 
-		delegate void _glShaderSource(uint shader, GLSizei count, string[] source, int[] length);
+		delegate void _glShaderSource(uint shader, GLint count, string[] source, int[] length);
 		static _glShaderSource glShaderSource;
 		public static void ShaderSource(uint shader, string source)
 		{
@@ -405,7 +353,7 @@ namespace OpenGL
 			CheckError();
 		}
 
-		delegate void _glGetShaderInfoLog(uint shader, GLSizei maxLength, out GLSizei length, byte[] infoLog);
+		delegate void _glGetShaderInfoLog(uint shader, GLint maxLength, out GLint length, byte[] infoLog);
 		static _glGetShaderInfoLog glGetShaderInfoLog;
 		public static string GetShaderInfoLog(uint shader)
 		{
@@ -449,7 +397,7 @@ namespace OpenGL
 			CheckError();
 		}
 
-		delegate void _glGetProgramInfoLog(uint program, GLSizei maxLength, out GLSizei length, byte[] infoLog);
+		delegate void _glGetProgramInfoLog(uint program, GLint maxLength, out GLint length, byte[] infoLog);
 		static _glGetProgramInfoLog glGetProgramInfoLog;
 		public static string GetProgramInfoLog(uint program)
 		{
@@ -463,7 +411,7 @@ namespace OpenGL
 		static byte[] uniformName = new byte[32];
 		static UniformType[] validUniformTypes;
 
-		unsafe delegate void _glGetActiveUniform(uint program, uint index, GLSizei bufSize, out GLSizei length, out int size, out UniformType type, byte* name);
+		unsafe delegate void _glGetActiveUniform(uint program, uint index, GLint bufSize, out GLint length, out int size, out UniformType type, byte* name);
 		static _glGetActiveUniform glGetActiveUniform;
 		public static unsafe void GetActiveUniform(uint program, uint index, out int size, out UniformType type, out string name)
 		{
@@ -471,7 +419,7 @@ namespace OpenGL
 				validUniformTypes = (UniformType[])Enum.GetValues(typeof(UniformType));
 			fixed (byte* ptr = uniformName)
 			{
-				glGetActiveUniform(program, index, uniformName.Length, out GLSizei length, out size, out type, ptr);
+				glGetActiveUniform(program, index, uniformName.Length, out GLint length, out size, out type, ptr);
 				name = length > 0 ? Encoding.UTF8.GetString(ptr, length) : null;
 				if (!validUniformTypes.Contains(type))
 					size = 0;
@@ -512,14 +460,14 @@ namespace OpenGL
 			return loc;
 		}
 
-		delegate void _glVertexAttribPointer(uint index, int size, VertexType type, bool normalized, GLSizei stride, IntPtr pointer);
+		delegate void _glVertexAttribPointer(uint index, int size, VertexType type, bool normalized, GLint stride, IntPtr pointer);
 		static _glVertexAttribPointer glVertexAttribPointer;
-		public static void VertexAttribPointer(uint index, int size, VertexType type, bool normalized, GLSizei stride, IntPtr pointer)
+		public static void VertexAttribPointer(uint index, int size, VertexType type, bool normalized, GLint stride, IntPtr pointer)
 		{
 			glVertexAttribPointer(index, size, type, normalized, stride, pointer);
 			CheckError();
 		}
-		public static void VertexAttribPointer(uint index, int size, VertexType type, bool normalized, GLSizei stride, int pointer)
+		public static void VertexAttribPointer(uint index, int size, VertexType type, bool normalized, GLint stride, int pointer)
 		{
 			VertexAttribPointer(index, size, type, normalized, stride, new System.IntPtr(pointer));
 		}
@@ -540,9 +488,9 @@ namespace OpenGL
 			CheckError();
 		}
 
-		unsafe delegate void _glGenBuffers(GLSizei n, uint* buffers);
+		unsafe delegate void _glGenBuffers(GLint n, uint* buffers);
 		static _glGenBuffers glGenBuffers;
-		unsafe public static void GenBuffers(GLSizei n, uint[] buffers)
+		unsafe public static void GenBuffers(GLint n, uint[] buffers)
 		{
 			fixed (uint* ptr = buffers) { glGenBuffers(n, ptr); }
 			CheckError();
@@ -559,16 +507,16 @@ namespace OpenGL
 			return buffer;
 		}
 
-		unsafe delegate void _glDeleteBuffers(GLSizei n, uint* buffers);
+		unsafe delegate void _glDeleteBuffers(GLint n, uint* buffers);
 		static _glDeleteBuffers glDeleteBuffers;
-		unsafe public static void DeleteBuffers(GLSizei n, uint[] buffers)
+		unsafe public static void DeleteBuffers(GLint n, uint[] buffers)
 		{
 			fixed (uint* ptr = buffers) { glDeleteBuffers(n, ptr); }
 			CheckError();
 		}
 		public static void DeleteBuffers(uint[] buffers)
 		{
-			DeleteBuffers((GLSizei)buffers.Length, buffers);
+			DeleteBuffers((GLint)buffers.Length, buffers);
 		}
 		unsafe public static void DeleteBuffer(uint buffer)
 		{
@@ -584,9 +532,9 @@ namespace OpenGL
 			CheckError();
 		}
 
-		unsafe delegate void _glGenVertexArrays(GLSizei n, uint* arrays);
+		unsafe delegate void _glGenVertexArrays(GLint n, uint* arrays);
 		static _glGenVertexArrays glGenVertexArrays;
-		unsafe public static void GenVertexArrays(GLSizei n, uint[] arrays)
+		unsafe public static void GenVertexArrays(GLint n, uint[] arrays)
 		{
 			fixed (uint* ptr = arrays) { glGenVertexArrays(n, ptr); }
 			CheckError();
@@ -599,9 +547,9 @@ namespace OpenGL
 			return arr;
 		}
 
-		unsafe delegate void _glDeleteVertexArrays(GLSizei n, uint* arrays);
+		unsafe delegate void _glDeleteVertexArrays(GLint n, uint* arrays);
 		static _glDeleteVertexArrays glDeleteVertexArrays;
-		unsafe public static void DeleteVertexArrays(GLSizei n, uint[] arrays)
+		unsafe public static void DeleteVertexArrays(GLint n, uint[] arrays)
 		{
 			fixed (uint* ptr = arrays) { glDeleteVertexArrays(n, ptr); }
 			CheckError();
@@ -641,9 +589,9 @@ namespace OpenGL
 			CheckError();
 		}
 
-		unsafe delegate void _glGenFramebuffers(GLSizei n, uint* framebuffers);
+		unsafe delegate void _glGenFramebuffers(GLint n, uint* framebuffers);
 		static _glGenFramebuffers glGenFramebuffers;
-		unsafe public static void GenFramebuffers(GLSizei n, uint[] framebuffers)
+		unsafe public static void GenFramebuffers(GLint n, uint[] framebuffers)
 		{
 			fixed (uint* ptr = framebuffers) { glGenFramebuffers(n, ptr); }
 			CheckError();
@@ -656,9 +604,9 @@ namespace OpenGL
 			return fbo;
 		}
 
-		unsafe delegate void _glDeleteFramebuffers(GLSizei n, uint* framebuffers);
+		unsafe delegate void _glDeleteFramebuffers(GLint n, uint* framebuffers);
 		static _glDeleteFramebuffers glDeleteFramebuffers;
-		unsafe public static void DeleteFramebuffers(GLSizei n, uint[] framebuffers)
+		unsafe public static void DeleteFramebuffers(GLint n, uint[] framebuffers)
 		{
 			fixed (uint* ptr = framebuffers) { glDeleteFramebuffers(n, ptr); }
 			CheckError();
@@ -691,9 +639,9 @@ namespace OpenGL
 			CheckError();
 		}
 
-		unsafe delegate void _glDrawBuffers(GLSizei n, DrawBuffer* bufs);
+		unsafe delegate void _glDrawBuffers(GLint n, DrawBuffer* bufs);
 		static _glDrawBuffers glDrawBuffers;
-		unsafe public static void DrawBuffers(GLSizei n, DrawBuffer[] bufs)
+		unsafe public static void DrawBuffers(GLint n, DrawBuffer[] bufs)
 		{
 			if (n > bufs.Length)
 				throw new Exception("Not enough buffers in array.");
@@ -712,7 +660,7 @@ namespace OpenGL
 			CheckError();
 		}
 
-		unsafe delegate void _glReadPixels(int x, int y, GLSizei w, GLSizei h, PixelFormat format, PixelType type, byte* data);
+		unsafe delegate void _glReadPixels(int x, int y, GLint w, GLint h, PixelFormat format, PixelType type, byte* data);
 		static _glReadPixels glReadPixels;
 		unsafe public static void ReadPixels(RectangleI rect, byte[] data)
 		{
@@ -722,9 +670,9 @@ namespace OpenGL
 			CheckError();
 		}
 
-		unsafe delegate void _glGenRenderbuffers(GLSizei n, uint* renderbuffers);
+		unsafe delegate void _glGenRenderbuffers(GLint n, uint* renderbuffers);
 		static _glGenRenderbuffers glGenRenderbuffers;
-		unsafe public static void GenRenderbuffers(GLSizei n, uint[] renderbuffers)
+		unsafe public static void GenRenderbuffers(GLint n, uint[] renderbuffers)
 		{
 			fixed (uint* ptr = renderbuffers) { glGenFramebuffers(n, ptr); }
 			CheckError();
@@ -739,7 +687,7 @@ namespace OpenGL
 
 		const uint GL_RENDERBUFFER = 0x8D41;
 
-		unsafe delegate void _glBindRenderbuffer(GLEnum target, uint buffer);
+		unsafe delegate void _glBindRenderbuffer(GLuint target, uint buffer);
 		static _glBindRenderbuffer glBindRenderbuffer;
 		unsafe public static void BindRenderbuffer(uint buffer)
 		{
@@ -747,7 +695,7 @@ namespace OpenGL
 			CheckError();
 		}
 
-		unsafe delegate void _glRenderbufferStorage(GLEnum target, TextureFormat format, int width, int height);
+		unsafe delegate void _glRenderbufferStorage(GLuint target, TextureFormat format, int width, int height);
 		static _glRenderbufferStorage glRenderbufferStorage;
 		unsafe public static void RenderbufferStorage(TextureFormat format, int width, int height)
 		{
@@ -755,7 +703,7 @@ namespace OpenGL
 			CheckError();
 		}
 
-		unsafe delegate void _glFramebufferRenderbuffer(FramebufferTarget target, TextureAttachment attachment, GLEnum renderbufferTarget, uint renderbuffer);
+		unsafe delegate void _glFramebufferRenderbuffer(FramebufferTarget target, TextureAttachment attachment, GLuint renderbufferTarget, uint renderbuffer);
 		static _glFramebufferRenderbuffer glFramebufferRenderbuffer;
 		unsafe public static void FramebufferRenderbuffer(FramebufferTarget target, TextureAttachment attachment, uint renderbuffer)
 		{
@@ -763,22 +711,22 @@ namespace OpenGL
 			CheckError();
 		}
 
-		delegate void _glDrawArrays(DrawMode mode, GLSizei start, GLSizei count);
+		delegate void _glDrawArrays(DrawMode mode, GLint start, GLint count);
 		static _glDrawArrays glDrawArrays;
-		public static void DrawArrays(DrawMode mode, GLSizei start, GLSizei count)
+		public static void DrawArrays(DrawMode mode, GLint start, GLint count)
 		{
 			glDrawArrays(mode, start, count);
 			CheckError();
 		}
 
-		delegate void _glDrawElements(DrawMode mode, GLSizei count, IndexType type, IntPtr offset);
+		delegate void _glDrawElements(DrawMode mode, GLint count, IndexType type, IntPtr offset);
 		static _glDrawElements glDrawElements;
-		public static void DrawElements(DrawMode mode, GLSizei count, IndexType type, IntPtr offset)
+		public static void DrawElements(DrawMode mode, GLint count, IndexType type, IntPtr offset)
 		{
 			glDrawElements(mode, count, type, offset);
 			CheckError();
 		}
-		public static void DrawElements(DrawMode mode, GLSizei count, IndexType type, GLSizei offset)
+		public static void DrawElements(DrawMode mode, GLint count, IndexType type, GLint offset)
 		{
 			DrawElements(mode, count, type, new IntPtr(offset));
 		}
@@ -804,10 +752,10 @@ namespace OpenGL
 		delegate void _glUniform2f(int location, float v0, float v1);
 		delegate void _glUniform3f(int location, float v0, float v1, float v2);
 		delegate void _glUniform4f(int location, float v0, float v1, float v2, float v3);
-		delegate void _glUniform1fv(int location, GLSizei count, float[] value);
-		delegate void _glUniform2fv(int location, GLSizei count, float[] value);
-		delegate void _glUniform3fv(int location, GLSizei count, float[] value);
-		delegate void _glUniform4fv(int location, GLSizei count, float[] value);
+		delegate void _glUniform1fv(int location, GLint count, float[] value);
+		delegate void _glUniform2fv(int location, GLint count, float[] value);
+		delegate void _glUniform3fv(int location, GLint count, float[] value);
+		delegate void _glUniform4fv(int location, GLint count, float[] value);
 		static _glUniform1f glUniform1f;
 		static _glUniform2f glUniform2f;
 		static _glUniform3f glUniform3f;
@@ -836,22 +784,22 @@ namespace OpenGL
 			glUniform4f(location, v0, v1, v2, v3);
 			CheckError();
 		}
-		public static void Uniform1FV(int location, GLSizei count, float[] value)
+		public static void Uniform1FV(int location, GLint count, float[] value)
 		{
 			glUniform1fv(location, count, value);
 			CheckError();
 		}
-		public static void Uniform2FV(int location, GLSizei count, float[] value)
+		public static void Uniform2FV(int location, GLint count, float[] value)
 		{
 			glUniform2fv(location, count, value);
 			CheckError();
 		}
-		public static void Uniform3FV(int location, GLSizei count, float[] value)
+		public static void Uniform3FV(int location, GLint count, float[] value)
 		{
 			glUniform3fv(location, count, value);
 			CheckError();
 		}
-		public static void Uniform4FV(int location, GLSizei count, float[] value)
+		public static void Uniform4FV(int location, GLint count, float[] value)
 		{
 			glUniform4fv(location, count, value);
 			CheckError();
@@ -861,10 +809,10 @@ namespace OpenGL
 		delegate void _glUniform2i(int location, int v0, int v1);
 		delegate void _glUniform3i(int location, int v0, int v1, int v2);
 		delegate void _glUniform4i(int location, int v0, int v1, int v2, int v3);
-		delegate void _glUniform1iv(int location, GLSizei count, int[] value);
-		delegate void _glUniform2iv(int location, GLSizei count, int[] value);
-		delegate void _glUniform3iv(int location, GLSizei count, int[] value);
-		delegate void _glUniform4iv(int location, GLSizei count, int[] value);
+		delegate void _glUniform1iv(int location, GLint count, int[] value);
+		delegate void _glUniform2iv(int location, GLint count, int[] value);
+		delegate void _glUniform3iv(int location, GLint count, int[] value);
+		delegate void _glUniform4iv(int location, GLint count, int[] value);
 		static _glUniform1i glUniform1i;
 		static _glUniform2i glUniform2i;
 		static _glUniform3i glUniform3i;
@@ -893,22 +841,22 @@ namespace OpenGL
 			glUniform4i(location, v0, v1, v2, v3);
 			CheckError();
 		}
-		public static void Uniform1IV(int location, GLSizei count, int[] value)
+		public static void Uniform1IV(int location, GLint count, int[] value)
 		{
 			glUniform1iv(location, count, value);
 			CheckError();
 		}
-		public static void Uniform2IV(int location, GLSizei count, int[] value)
+		public static void Uniform2IV(int location, GLint count, int[] value)
 		{
 			glUniform2iv(location, count, value);
 			CheckError();
 		}
-		public static void Uniform3IV(int location, GLSizei count, int[] value)
+		public static void Uniform3IV(int location, GLint count, int[] value)
 		{
 			glUniform3iv(location, count, value);
 			CheckError();
 		}
-		public static void Uniform4IV(int location, GLSizei count, int[] value)
+		public static void Uniform4IV(int location, GLint count, int[] value)
 		{
 			glUniform4iv(location, count, value);
 			CheckError();
@@ -918,10 +866,10 @@ namespace OpenGL
 		delegate void _glUniform2ui(int location, uint v0, uint v1);
 		delegate void _glUniform3ui(int location, uint v0, uint v1, uint v2);
 		delegate void _glUniform4ui(int location, uint v0, uint v1, uint v2, uint v3);
-		delegate void _glUniform1uiv(int location, GLSizei count, uint[] value);
-		delegate void _glUniform2uiv(int location, GLSizei count, uint[] value);
-		delegate void _glUniform3uiv(int location, GLSizei count, uint[] value);
-		delegate void _glUniform4uiv(int location, GLSizei count, uint[] value);
+		delegate void _glUniform1uiv(int location, GLint count, uint[] value);
+		delegate void _glUniform2uiv(int location, GLint count, uint[] value);
+		delegate void _glUniform3uiv(int location, GLint count, uint[] value);
+		delegate void _glUniform4uiv(int location, GLint count, uint[] value);
 		static _glUniform1ui glUniform1ui;
 		static _glUniform2ui glUniform2ui;
 		static _glUniform3ui glUniform3ui;
@@ -950,112 +898,112 @@ namespace OpenGL
 			glUniform4ui(location, v0, v1, v2, v3);
 			CheckError();
 		}
-		public static void Uniform1UIV(int location, GLSizei count, uint[] value)
+		public static void Uniform1UIV(int location, GLint count, uint[] value)
 		{
 			glUniform1uiv(location, count, value);
 			CheckError();
 		}
-		public static void Uniform2UIV(int location, GLSizei count, uint[] value)
+		public static void Uniform2UIV(int location, GLint count, uint[] value)
 		{
 			glUniform2uiv(location, count, value);
 			CheckError();
 		}
-		public static void Uniform3UIV(int location, GLSizei count, uint[] value)
+		public static void Uniform3UIV(int location, GLint count, uint[] value)
 		{
 			glUniform3uiv(location, count, value);
 			CheckError();
 		}
-		public static void Uniform4UIV(int location, GLSizei count, uint[] value)
+		public static void Uniform4UIV(int location, GLint count, uint[] value)
 		{
 			glUniform4uiv(location, count, value);
 			CheckError();
 		}
 
-		delegate void _glUniformMatrix2fv(int location, GLSizei count, bool transpose, float[] value);
+		delegate void _glUniformMatrix2fv(int location, GLint count, bool transpose, float[] value);
 		static _glUniformMatrix2fv glUniformMatrix2fv;
-		public static void UniformMatrix2FV(int location, GLSizei count, bool transpose, float[] value)
+		public static void UniformMatrix2FV(int location, GLint count, bool transpose, float[] value)
 		{
 			glUniformMatrix2fv(location, count, transpose, value);
 			CheckError();
 		}
 
-		delegate void _glUniformMatrix3fv(int location, GLSizei count, bool transpose, float[] value);
+		delegate void _glUniformMatrix3fv(int location, GLint count, bool transpose, float[] value);
 		static _glUniformMatrix3fv glUniformMatrix3fv;
-		public static void UniformMatrix3FV(int location, GLSizei count, bool transpose, float[] value)
+		public static void UniformMatrix3FV(int location, GLint count, bool transpose, float[] value)
 		{
 			glUniformMatrix3fv(location, count, transpose, value);
 			CheckError();
 		}
 
-		unsafe delegate void _glUniformMatrix4fv(int location, GLSizei count, bool transpose, float* value);
+		unsafe delegate void _glUniformMatrix4fv(int location, GLint count, bool transpose, float* value);
 		static _glUniformMatrix4fv glUniformMatrix4fv;
-		public static unsafe void UniformMatrix4FV(int location, GLSizei count, bool transpose, float* value)
+		public static unsafe void UniformMatrix4FV(int location, GLint count, bool transpose, float* value)
 		{
 			glUniformMatrix4fv(location, count, transpose, value);
 			CheckError();
 		}
-		public static unsafe void UniformMatrix4FV(int location, GLSizei count, bool transpose, float[] value)
+		public static unsafe void UniformMatrix4FV(int location, GLint count, bool transpose, float[] value)
 		{
 			fixed (float* ptr = value) { glUniformMatrix4fv(location, count, transpose, ptr); }
 			CheckError();
 		}
 
-		delegate void _glUniformMatrix2x3fv(int location, GLSizei count, bool transpose, float[] value);
+		delegate void _glUniformMatrix2x3fv(int location, GLint count, bool transpose, float[] value);
 		static _glUniformMatrix2x3fv glUniformMatrix2x3fv;
-		public static void UniformMatrix2x3FV(int location, GLSizei count, bool transpose, float[] value)
+		public static void UniformMatrix2x3FV(int location, GLint count, bool transpose, float[] value)
 		{
 			glUniformMatrix2x3fv(location, count, transpose, value);
 			CheckError();
 		}
 
-		unsafe delegate void _glUniformMatrix3x2fv(int location, GLSizei count, bool transpose, float* value);
+		unsafe delegate void _glUniformMatrix3x2fv(int location, GLint count, bool transpose, float* value);
 		static _glUniformMatrix3x2fv glUniformMatrix3x2fv;
-		public static unsafe void UniformMatrix3x2FV(int location, GLSizei count, bool transpose, float* value)
+		public static unsafe void UniformMatrix3x2FV(int location, GLint count, bool transpose, float* value)
 		{
 			glUniformMatrix3x2fv(location, count, transpose, value);
 			CheckError();
 		}
-		public static unsafe void UniformMatrix3x2FV(int location, GLSizei count, bool transpose, float[] value)
+		public static unsafe void UniformMatrix3x2FV(int location, GLint count, bool transpose, float[] value)
 		{
 			fixed (float* ptr = value) { glUniformMatrix3x2fv(location, count, transpose, ptr); }
 			CheckError();
 		}
 
-		delegate void _glUniformMatrix2x4fv(int location, GLSizei count, bool transpose, float[] value);
+		delegate void _glUniformMatrix2x4fv(int location, GLint count, bool transpose, float[] value);
 		static _glUniformMatrix2x4fv glUniformMatrix2x4fv;
-		public static void UniformMatrix2x4FV(int location, GLSizei count, bool transpose, float[] value)
+		public static void UniformMatrix2x4FV(int location, GLint count, bool transpose, float[] value)
 		{
 			glUniformMatrix2x4fv(location, count, transpose, value);
 			CheckError();
 		}
 
-		delegate void _glUniformMatrix4x2fv(int location, GLSizei count, bool transpose, float[] value);
+		delegate void _glUniformMatrix4x2fv(int location, GLint count, bool transpose, float[] value);
 		static _glUniformMatrix4x2fv glUniformMatrix4x2fv;
-		public static void UniformMatrix4x2FV(int location, GLSizei count, bool transpose, float[] value)
+		public static void UniformMatrix4x2FV(int location, GLint count, bool transpose, float[] value)
 		{
 			glUniformMatrix4x2fv(location, count, transpose, value);
 			CheckError();
 		}
 
-		delegate void _glUniformMatrix3x4fv(int location, GLSizei count, bool transpose, float[] value);
+		delegate void _glUniformMatrix3x4fv(int location, GLint count, bool transpose, float[] value);
 		static _glUniformMatrix3x4fv glUniformMatrix3x4fv;
-		public static void UniformMatrix3x4FV(int location, GLSizei count, bool transpose, float[] value)
+		public static void UniformMatrix3x4FV(int location, GLint count, bool transpose, float[] value)
 		{
 			glUniformMatrix3x4fv(location, count, transpose, value);
 			CheckError();
 		}
 
-		delegate void _glUniformMatrix4x3fv(int location, GLSizei count, bool transpose, float[] value);
+		delegate void _glUniformMatrix4x3fv(int location, GLint count, bool transpose, float[] value);
 		static _glUniformMatrix4x3fv glUniformMatrix4x3fv;
-		public static void UniformMatrix4x3FV(int location, GLSizei count, bool transpose, float[] value)
+		public static void UniformMatrix4x3FV(int location, GLint count, bool transpose, float[] value)
 		{
 			glUniformMatrix4x3fv(location, count, transpose, value);
 			CheckError();
 		}
 
-		delegate void _glScissor(int x, int y, GLSizei width, GLSizei height);
+		delegate void _glScissor(int x, int y, GLint width, GLint height);
 		static _glScissor glScissor;
-		public static void Scissor(int x, int y, GLSizei width, GLSizei height)
+		public static void Scissor(int x, int y, GLint width, GLint height)
 		{
 			glScissor(x, y, width, height);
 			CheckError();
@@ -1107,7 +1055,7 @@ namespace OpenGL
 		OutOfMemory = 0x0505
 	}
 
-	public enum EnableCap : GLEnum
+	public enum EnableCap : GLuint
 	{
 		Blend = 0x0BE2,
 		CullFace = 0x0B44,
@@ -1122,13 +1070,13 @@ namespace OpenGL
 	}
 
 	[Flags]
-	public enum BufferBit : GLEnum
+	public enum BufferBit : GLuint
 	{
 		Depth = 0x00000100,
 		Colour = 0x00004000
 	}
 
-	public enum TextureTarget : GLEnum
+	public enum TextureTarget : GLuint
 	{
 		Texture2D = 0x0DE1,
 		Texture3D = 0x806F,
@@ -1142,7 +1090,7 @@ namespace OpenGL
 		TextureCubeMapNegZ = 0x851A,
 	}
 
-	public enum TextureParam : GLEnum
+	public enum TextureParam : GLuint
 	{
 		BaseLevel = 0x813C,
 		CompareFunc = 0x884D,
@@ -1169,13 +1117,13 @@ namespace OpenGL
 		Luminance = 0x1909
 	}
 
-	public enum ShaderType : GLEnum
+	public enum ShaderType : GLuint
 	{
 		Vertex = 0x8B31,
 		Fragment = 0x8B30
 	}
 
-	public enum ShaderParam : GLEnum
+	public enum ShaderParam : GLuint
 	{
 		ShaderType = 0x8B4F,
 		DeleteStatus = 0x8B80,
@@ -1184,7 +1132,7 @@ namespace OpenGL
 		ShaderSourceLength = 0x8B88
 	}
 
-	public enum ProgramParam : GLEnum
+	public enum ProgramParam : GLuint
 	{
 		DeleteStatus = 0x8B80,
 		LinkStatus = 0x8B82,
@@ -1197,14 +1145,14 @@ namespace OpenGL
 		ActiveUniformMaxLength = 0x8B87
 	}
 
-	public enum IndexType : GLEnum
+	public enum IndexType : GLuint
 	{
 		UnsignedByte = 0x1401,
 		UnsignedShort = 0x1403,
 		UnsignedInt = 0x1405,
 	}
 
-	public enum BufferTarget : GLEnum
+	public enum BufferTarget : GLuint
 	{
 		Array = 0x8892,
 		ElementArray = 0x8893,
@@ -1216,14 +1164,14 @@ namespace OpenGL
 		Uniform = 0x8A11
 	}
 
-	public enum FramebufferTarget : GLEnum
+	public enum FramebufferTarget : GLuint
 	{
 		Framebuffer = 0x8D40,
 		Draw = 0x8CA9,
 		Read = 0x8CA8,
 	}
 
-	public enum UniformType : GLEnum
+	public enum UniformType : GLuint
 	{
 		Bool = 0x8B56,
 		Int = 0x1404,
@@ -1237,7 +1185,7 @@ namespace OpenGL
 		SamplerCube = 0x8B60,
 	}
 
-	public enum DrawBuffer : GLEnum
+	public enum DrawBuffer : GLuint
 	{
 		None = 0,
 		Back = 0x0405,
@@ -1259,7 +1207,7 @@ namespace OpenGL
 		Colour15,
 	}
 
-	public enum ReadBuffer : GLEnum
+	public enum ReadBuffer : GLuint
 	{
 		Depth = 0x8D00,
 		Colour0 = 0x8CE0,
@@ -1280,7 +1228,7 @@ namespace OpenGL
 		Colour15,
 	}
 
-	public enum TextureAttachment : GLEnum
+	public enum TextureAttachment : GLuint
 	{
 		//Depth = 0x8D00,
 		Depth = 0x8D00,
@@ -1306,7 +1254,7 @@ namespace OpenGL
 
 namespace CKGL
 {
-	public enum BufferUsage : GLEnum
+	public enum BufferUsage : GLuint
 	{
 		StreamDraw = 0x88E0,
 		StreamRead = 0x88E1,
@@ -1319,7 +1267,7 @@ namespace CKGL
 		DynamicCopy = 0x88EA
 	}
 
-	public enum DrawMode : GLEnum
+	public enum DrawMode : GLuint
 	{
 		PointList = 0x0000,
 		LineList = 0x0001,
@@ -1330,7 +1278,7 @@ namespace CKGL
 		TriangleFan = 0x0006
 	}
 
-	public enum TextureFilter : GLEnum
+	public enum TextureFilter : GLuint
 	{
 		Nearest = 0x2600,
 		Linear = 0x2601,
@@ -1340,20 +1288,20 @@ namespace CKGL
 		LinearMipmapLinear = 0x2703
 	}
 
-	public enum TextureWrap : GLEnum
+	public enum TextureWrap : GLuint
 	{
 		Repeat = 0x2901,
 		ClampToEdge = 0x812F,
 		MirroredRepeat = 0x8370
 	}
 
-	public enum BlitFilter : GLEnum
+	public enum BlitFilter : GLuint
 	{
 		Nearest = 0x2600,
 		Linear = 0x2601
 	}
 
-	public enum MinFilter : GLEnum
+	public enum MinFilter : GLuint
 	{
 		Nearest = 0x2600,
 		Linear = 0x2601,
@@ -1363,13 +1311,13 @@ namespace CKGL
 		LinearMipmapLinear = 0x2703
 	}
 
-	public enum MagFilter : GLEnum
+	public enum MagFilter : GLuint
 	{
 		Nearest = 0x2600,
 		Linear = 0x2601
 	}
 
-	public enum BlendEquation : GLEnum
+	public enum BlendEquation : GLuint
 	{
 		Add = 32774,
 		Subtract = 32778,
@@ -1378,7 +1326,7 @@ namespace CKGL
 		Min = 32775
 	}
 
-	public enum BlendFactor : GLEnum
+	public enum BlendFactor : GLuint
 	{
 		Zero = 0,
 		One = 1,
@@ -1470,7 +1418,7 @@ namespace CKGL
 		RGB10A2UI = 0x906F,
 	}
 
-	public enum PixelFormat : GLEnum
+	public enum PixelFormat : GLuint
 	{
 		R = 0x1903,
 		RG = 0x8227,
@@ -1624,7 +1572,7 @@ namespace CKGL
         }*/
 	}
 
-	public enum PixelType : GLEnum
+	public enum PixelType : GLuint
 	{
 		Byte = 0x1400,
 		UnsignedByte = 0x1401,
@@ -1635,7 +1583,7 @@ namespace CKGL
 		Float = 0x1406
 	}
 
-	public enum VertexType : GLEnum
+	public enum VertexType : GLuint
 	{
 		Byte = 0x1400,
 		UnsignedByte = 0x1401,
@@ -1646,14 +1594,14 @@ namespace CKGL
 		Float = 0x1406
 	}
 
-	public enum CullFace : GLEnum
+	public enum CullFace : GLuint
 	{
 		Front = 0x0404,
 		Back = 0x0405,
 		FrontAndBack = 0x0408
 	}
 
-	public enum FrontFace : GLEnum
+	public enum FrontFace : GLuint
 	{
 		Clockwise = 0x0900,
 		CounterClockwise = 0x0901
