@@ -3,7 +3,6 @@
 - Vector 2/3 rotate around
 - Instead of giving Renderer.Draw_() a rotation, give it a transform (A Model Matrix)
 - Hard Coded uniforms in shaders via inheritance
-- Quaternions? - enable in Matrix class
 - Max Framerate
 - Mim Framerate before game slowdown
 - Figure out how to proccess Vertex into buffer data
