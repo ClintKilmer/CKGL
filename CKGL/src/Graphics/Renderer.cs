@@ -110,7 +110,6 @@ namespace CKGL
 		//		{
 		//			CullMode = CullMode.None,
 		//			FillMode = FillMode.Solid,
-		//			DepthBias = 0,
 		//			MultiSampleAntiAlias = false,
 		//			ScissorTestEnable = false,
 		//			SlopeScaleDepthBias = 0,
@@ -120,13 +119,6 @@ namespace CKGL
 		//			DepthClipEnable = true
 		//#endif
 		//		};
-
-		//		private static SamplerState DefaultSamplerState { get; } = SamplerState.PointClamp;
-
-		private static FrontFace DefaultFrontFaceState { get; } = FrontFace.CounterClockwise;
-		private static CullState DefaultCullState { get; } = CullState.Off;
-		private static BlendState DefaultBlendState { get; } = BlendState.None;
-		private static DepthState DefaultDepthState { get; } = DepthState.Off;
 
 		// TODO - RenderTarget
 		//		public static void ResetRenderTarget()
@@ -152,8 +144,7 @@ namespace CKGL
 		//	}
 		//}
 
-		// TODO - API decision
-		// Do I really need these here since they're in Graphics?
+		#region Clear
 		public static void Clear(Colour colour, float depth)
 		{
 			Graphics.Clear(colour, depth);
@@ -166,7 +157,9 @@ namespace CKGL
 		{
 			Graphics.Clear(depth);
 		}
+		#endregion
 
+		#region State
 		public static void SetShader(Shader shader)
 		{
 			if (currentShader != shader)
@@ -182,36 +175,7 @@ namespace CKGL
 			SetShader(DefaultShader);
 		}
 
-		// TODO - Render States
-		//public static void SetRasterizerState(RasterizerState rasterizerState)
-		//{
-		//	if (Engine.GraphicsDevice.RasterizerState != rasterizerState)
-		//	{
-		//		Flush();
-		//		Engine.GraphicsDevice.RasterizerState = rasterizerState;
-		//	}
-		//}
-
-		//public static void ResetRasterizerState()
-		//{
-		//	SetRasterizerState(DefaultRasterizerState);
-		//}
-
-		//public static void SetSamplerState(SamplerState samplerState)
-		//{
-		//	if (Engine.GraphicsDevice.SamplerStates[0] != samplerState)
-		//	{
-		//		Flush();
-		//		Engine.GraphicsDevice.SamplerStates[0] = samplerState;
-		//	}
-		//}
-
-		//public static void ResetSamplerState()
-		//{
-		//	SetSamplerState(DefaultSamplerState);
-		//}
-
-		public static void SetFrontFaceState(FrontFace frontFaceState)
+		public static void SetFrontFaceState(FrontFaceState frontFaceState)
 		{
 			if (Graphics.FrontFaceState != frontFaceState)
 			{
@@ -222,7 +186,7 @@ namespace CKGL
 
 		public static void ResetFrontFaceState()
 		{
-			SetFrontFaceState(DefaultFrontFaceState);
+			SetFrontFaceState(FrontFaceState.Default);
 		}
 
 		public static void SetCullState(CullState cullState)
@@ -236,7 +200,7 @@ namespace CKGL
 
 		public static void ResetCullState()
 		{
-			SetCullState(DefaultCullState);
+			SetCullState(CullState.Default);
 		}
 
 		public static void SetBlendState(BlendState blendState)
@@ -250,7 +214,7 @@ namespace CKGL
 
 		public static void ResetBlendState()
 		{
-			SetBlendState(DefaultBlendState);
+			SetBlendState(BlendState.Default);
 		}
 
 		public static void SetDepthState(DepthState depthState)
@@ -264,7 +228,7 @@ namespace CKGL
 
 		public static void ResetDepthState()
 		{
-			SetDepthState(DefaultDepthState);
+			SetDepthState(DepthState.Default);
 		}
 
 		// TODO - Sprites - Make SetTexture private
@@ -276,6 +240,7 @@ namespace CKGL
 				texture.Bind();
 			}
 		}
+		#endregion
 
 		// TODO - Remove Renderer.Start(), useless method
 		public static void Start()
