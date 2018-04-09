@@ -38,16 +38,17 @@ namespace CKGL
 		}
 		#endregion
 
+		// TODO - ScissorState
 		#region State
 		private class State
 		{
-			public static FrontFace FrontFaceState = FrontFace.CounterClockwise; // OpenGL Default
-			public static CullState CullState = CullState.Off; // OpenGL Default
-			public static BlendState BlendState = BlendState.None; // OpenGL Default
-			public static DepthState DepthState = DepthState.Off; // OpenGL Default - Enabled: false,  Func: Less
+			public static FrontFaceState FrontFaceState = FrontFaceState.Default;
+			public static CullState CullState = CullState.Default;
+			public static BlendState BlendState = BlendState.Default;
+			public static DepthState DepthState = DepthState.Default;
 		}
 
-		public static FrontFace FrontFaceState
+		public static FrontFaceState FrontFaceState
 		{
 			get
 			{
@@ -57,7 +58,7 @@ namespace CKGL
 			{
 				if (value != State.FrontFaceState)
 				{
-					GL.FrontFace(value);
+					GL.FrontFace(value.FrontFace);
 				}
 			}
 		}

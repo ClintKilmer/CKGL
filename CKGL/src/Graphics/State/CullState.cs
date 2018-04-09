@@ -6,6 +6,7 @@
 		public CullFace CullFace;
 
 		#region Static Constructors
+		public static readonly CullState Default = Off;
 		public static readonly CullState Off = new CullState(false, CullFace.Back);
 		public static readonly CullState Back = new CullState(true, CullFace.Back);
 		public static readonly CullState Front = new CullState(true, CullFace.Front);

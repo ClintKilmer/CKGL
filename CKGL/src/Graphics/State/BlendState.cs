@@ -11,6 +11,7 @@
 		public BlendEquation AlphaEquation;
 
 		#region Static Constructors
+		public static readonly BlendState Default = None;
 		public static readonly BlendState None = new BlendState(false);
 		public static readonly BlendState Opaque = new BlendState(true, BlendFactor.One, BlendFactor.Zero);
 		public static readonly BlendState AlphaBlend = new BlendState(true, BlendFactor.SrcAlpha, BlendFactor.OneMinusSrcAlpha);

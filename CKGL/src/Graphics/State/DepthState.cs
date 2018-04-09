@@ -8,9 +8,10 @@ namespace CKGL
 		public DepthFunc DepthFunc;
 
 		#region Static Constructors
+		public static readonly DepthState Default = Off;
 		public static readonly DepthState Off = new DepthState(false);
 		public static readonly DepthState Never = new DepthState(true, DepthFunc.Never);
-		public static readonly DepthState Less = new DepthState(true, DepthFunc.Less); // OpenGL Default
+		public static readonly DepthState Less = new DepthState(true, DepthFunc.Less);
 		public static readonly DepthState Equal = new DepthState(true, DepthFunc.Equal);
 		public static readonly DepthState LessEqual = new DepthState(true, DepthFunc.LessEqual);
 		public static readonly DepthState Greater = new DepthState(true, DepthFunc.Greater);
