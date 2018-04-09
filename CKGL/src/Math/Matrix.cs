@@ -48,6 +48,10 @@ namespace CKGL
 
 		#region Static Constructors
 		public static readonly Matrix Identity = new Matrix(1f, 0f, 0f, 0f, 0f, 1f, 0f, 0f, 0f, 0f, 1f, 0f, 0f, 0f, 0f, 1f);
+
+		// Preferred left-handed coordinate systems
+		public static readonly Matrix Model3D = new Matrix(-1f, 0f, 0f, 0f, 0f, 1f, 0f, 0f, 0f, 0f, -1f, 0f, 0f, 0f, 0f, 1f);
+		public static readonly Matrix Model2D = new Matrix(-1f, 0f, 0f, 0f, 0f, -1f, 0f, 0f, 0f, 0f, -1f, 0f, 0f, 0f, 0f, 1f);
 		#endregion
 
 		#region Properties

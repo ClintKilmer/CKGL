@@ -81,7 +81,6 @@ void main()
 		Matrix cameraRotationMatrix = Matrix.Identity;
 		Matrix cameraTranslationMatrix = Matrix.Identity;
 
-		Matrix WorldMatrix = Matrix.CreateWorld(Vector3.Zero, Vector3.Forward, Vector3.Up);
 		Matrix ViewMatrix = Matrix.Identity;
 		Matrix ProjectionMatrix = Matrix.Identity;
 
@@ -91,7 +90,7 @@ void main()
 			//Platform.ScreensaverAllowed = true; // Default false
 
 			//ProjectionMatrix = Matrix.CreateOrthographic(Window.Size, -10000f, 10000f);
-			ProjectionMatrix = Matrix.CreatePerspectiveFieldOfView(Math.DegreesToRadians(75f), Window.AspectRatio, 1f, 10000f);
+			ProjectionMatrix = Matrix.CreatePerspectiveFieldOfView(Math.DegreesToRadians(75f), Window.AspectRatio, 0.1f, 1000f);
 		}
 
 		public override void Update()
@@ -168,7 +167,7 @@ void main()
 			//shader.SetUniform("offset", Time.TotalMilliseconds * 0.0016f, Time.TotalMilliseconds * 0.002f, Time.TotalMilliseconds * 0.0023f);
 
 			Renderer.Start();
-			CKGL.Shaders.Renderer.SetUniform("MVP", WorldMatrix * ViewMatrix * ProjectionMatrix);
+			CKGL.Shaders.Renderer.SetUniform("MVP", Matrix.Model3D * ViewMatrix * ProjectionMatrix);
 			//Renderer.ResetShader();
 			//Renderer.SetFrontFaceState(FrontFace.Clockwise);
 			//Renderer.SetCullState(CullState.Back);
@@ -200,7 +199,9 @@ void main()
 									new Vector2(0f, 0f),
 									new Vector2(1f, 0f),
 									new Vector2(0f, 1f),
-									new Vector2(1f, 1f));
+									new Vector2(1f, 1f),
+									-Time.TotalSeconds * 0.5f,
+									new Vector2(2.5f, 1.5f));
 
 			//Renderer.Draw.TriangleStrip.Begin();
 			////int ii = Random.Range(1000, 10000);
@@ -238,7 +239,7 @@ void main()
 		public override void OnWindowResized()
 		{
 			//ProjectionMatrix = Matrix.CreateOrthographic(Window.Size, -10000f, 10000f);
-			ProjectionMatrix = Matrix.CreatePerspectiveFieldOfView(Math.DegreesToRadians(75f), Window.AspectRatio, 1f, 10000f);
+			ProjectionMatrix = Matrix.CreatePerspectiveFieldOfView(Math.DegreesToRadians(75f), Window.AspectRatio, 0.1f, 1000f);
 		}
 	}
 }
