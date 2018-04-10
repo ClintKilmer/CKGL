@@ -51,9 +51,26 @@ void main()
 	#endregion
 
 	#region Sprites
+	public static class SpriteSheets
+	{
+		public static SpriteSheet SpriteSheet = new SpriteSheet(128);
+	}
+
+	public static class SpriteFonts
+	{
+		public static SpriteFont Font = new SpriteFont(SpriteSheets.SpriteSheet, "Sprites/font[5x7].png", 5, 7, '!', '~', 1, 3, 7, true);
+	}
+
 	public static class Sprites
 	{
-		public static Texture2D test1 = Texture2D.LoadTexture2DFromStream("Textures/Character1.png", TextureFilter.Nearest);
+		public static Sprite Test1 = SpriteSheets.SpriteSheet.AddSprite(Texture2D.LoadTexture2DFromStream($"Sprites/Character1.png"));
+		public static Sprite Test2 = SpriteSheets.SpriteSheet.AddSprite(Texture2D.LoadTexture2DFromStream($"Sprites/Character2.png"));
+		public static Sprite Test3 = SpriteSheets.SpriteSheet.AddSprite(Texture2D.LoadTexture2DFromStream($"Sprites/Character3.png"));
+	}
+
+	public static class Textures
+	{
+		public static Texture2D Test = Texture2D.LoadTexture2DFromStream("Sprites/Character1.png");
 	}
 	#endregion
 
@@ -91,6 +108,13 @@ void main()
 
 			//ProjectionMatrix = Matrix.CreateOrthographic(Window.Size, -10000f, 10000f);
 			ProjectionMatrix = Matrix.CreatePerspectiveFieldOfView(Math.DegreesToRadians(75f), Window.AspectRatio, 0.1f, 1000f);
+
+			// Debug, test spritesheet
+			using (System.IO.Stream stream = System.IO.File.Create($@"{System.IO.Directory.GetCurrentDirectory()}/SpriteSheet.png"))
+				SpriteSheets.SpriteSheet.Texture.SavePNG(stream, SpriteSheets.SpriteSheet.Texture.Width, SpriteSheets.SpriteSheet.Texture.Height);
+			// TODO - Platform.SaveJPG broken
+			//using (System.IO.Stream stream = System.IO.File.Create($@"{System.IO.Directory.GetCurrentDirectory()}/SpriteSheet.jpg"))
+			//	SpriteSheets.SpriteSheet.Texture.SaveJPG(stream, SpriteSheets.SpriteSheet.Texture.Width, SpriteSheets.SpriteSheet.Texture.Height);
 		}
 
 		public override void Update()
@@ -188,7 +212,7 @@ void main()
 								   Time.TotalSeconds * 0.5f,
 								   Vector2.Zero);
 
-			Renderer.SetTexture(Sprites.test1);
+			Renderer.SetTexture(Textures.Test);
 			Renderer.Draw.Rectangle(2f,
 									1f,
 									1f,
@@ -205,6 +229,19 @@ void main()
 									//-Time.TotalSeconds * 0.5f,
 									0f,
 									new Vector2(2.5f, 1.5f));
+
+			Renderer.Draw.Sprite(Sprites.Test1,
+								 new Vector2(5f, 0.5f),
+								 Vector2.One / 8f,
+								 Colour.White);
+
+			Renderer.Draw.Text(SpriteFonts.Font,
+							   "|:shadow=0,1,0,1,0,0.5:|ABCDEFGHIJKLMNOPQRSTUVWXYZ\nabcdefghijklmnopqrstuvwxyz\n1234567890\n_-+=(){}[]<>\\|/;:'\"?.,!@#$%^&*~`",
+							   new Vector2(0f, 4f),
+							   Vector2.One / 7f,
+							   Colour.White,
+							   HAlign.Center,
+							   VAlign.Top);
 
 			//Renderer.Draw.TriangleListStrip.Begin();
 			////int ii = Random.Range(1000, 10000);

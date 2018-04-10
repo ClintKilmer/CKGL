@@ -222,8 +222,7 @@ namespace CKGL
 			SetDepthState(DepthState.Default);
 		}
 
-		// TODO - Sprites - Make SetTexture private
-		public static void SetTexture(Texture2D texture)
+		public static void SetTexture(Texture texture)
 		{
 			if (!texture.IsBound())
 			{
@@ -460,195 +459,194 @@ namespace CKGL
 				}
 			}
 
-			// TODO - Sprites
 			// Sprites
-			//public static void Sprite(Sprite sprite, Vector2 position, Colour colour)
-			//{
-			//	SetTexture(sprite.SpriteSheet.Texture);
-			//	Rectangle(position.X, position.Y, sprite.Width, sprite.Height, colour, colour, colour, colour, true, sprite.UVs[0], sprite.UVs[1], sprite.UVs[2], sprite.UVs[3]);
-			//}
-			//public static void Sprite(Sprite sprite, Vector2 position, Vector2 scale, Colour colour)
-			//{
-			//	SetTexture(sprite.SpriteSheet.Texture);
-			//	Rectangle(position.X, position.Y, sprite.Width * scale.X, sprite.Height * scale.Y, colour, colour, colour, colour, true, sprite.UVs[0], sprite.UVs[1], sprite.UVs[2], sprite.UVs[3]);
-			//}
-			//public static void Sprite(Sprite sprite, Vector2 position, Colour colour, float rotation, Vector2 origin)
-			//{
-			//	SetTexture(sprite.SpriteSheet.Texture);
-			//	Rectangle(position.X, position.Y, sprite.Width, sprite.Height, colour, colour, colour, colour, true, sprite.UVs[0], sprite.UVs[1], sprite.UVs[2], sprite.UVs[3], rotation, origin);
-			//}
-			//public static void Sprite(Sprite sprite, Vector2 position, Vector2 scale, Colour colour, float rotation, Vector2 origin)
-			//{
-			//	SetTexture(sprite.SpriteSheet.Texture);
-			//	Rectangle(position.X, position.Y, sprite.Width * scale.X, sprite.Height * scale.Y, colour, colour, colour, colour, true, sprite.UVs[0], sprite.UVs[1], sprite.UVs[2], sprite.UVs[3], rotation, origin);
-			//}
+			public static void Sprite(Sprite sprite, Vector2 position, Colour colour)
+			{
+				SetTexture(sprite.SpriteSheet.Texture);
+				Rectangle(position.X, position.Y, sprite.Width, sprite.Height, colour, colour, colour, colour, true, sprite.UVs[0], sprite.UVs[1], sprite.UVs[2], sprite.UVs[3]);
+			}
+			public static void Sprite(Sprite sprite, Vector2 position, Vector2 scale, Colour colour)
+			{
+				SetTexture(sprite.SpriteSheet.Texture);
+				Rectangle(position.X, position.Y, sprite.Width * scale.X, sprite.Height * scale.Y, colour, colour, colour, colour, true, sprite.UVs[0], sprite.UVs[1], sprite.UVs[2], sprite.UVs[3]);
+			}
+			public static void Sprite(Sprite sprite, Vector2 position, Colour colour, float rotation, Vector2 origin)
+			{
+				SetTexture(sprite.SpriteSheet.Texture);
+				Rectangle(position.X, position.Y, sprite.Width, sprite.Height, colour, colour, colour, colour, true, sprite.UVs[0], sprite.UVs[1], sprite.UVs[2], sprite.UVs[3], rotation, origin);
+			}
+			public static void Sprite(Sprite sprite, Vector2 position, Vector2 scale, Colour colour, float rotation, Vector2 origin)
+			{
+				SetTexture(sprite.SpriteSheet.Texture);
+				Rectangle(position.X, position.Y, sprite.Width * scale.X, sprite.Height * scale.Y, colour, colour, colour, colour, true, sprite.UVs[0], sprite.UVs[1], sprite.UVs[2], sprite.UVs[3], rotation, origin);
+			}
 
-			//// Strings
-			//public static void Text(SpriteFont font, string text, Vector2 position, Vector2 scale, Colour colour, HAlign hAlign = HAlign.Left, VAlign vAlign = VAlign.Top)
-			//{
-			//	SetTexture(font.SpriteSheet.Texture);
+			// Strings
+			public static void Text(SpriteFont font, string text, Vector2 position, Vector2 scale, Colour colour, HAlign hAlign = HAlign.Left, VAlign vAlign = VAlign.Top)
+			{
+				SetTexture(font.SpriteSheet.Texture);
 
-			//	float offsetX = 0;
-			//	float offsetY = 0;
+				float offsetX = 0;
+				float offsetY = 0;
 
-			//	float offsetHAlign = 0;
-			//	if (hAlign == HAlign.Center)
-			//		offsetHAlign = 0.5f;
-			//	else if (hAlign == HAlign.Right)
-			//		offsetHAlign = 1f;
+				float offsetHAlign = 0;
+				if (hAlign == HAlign.Center)
+					offsetHAlign = 0.5f;
+				else if (hAlign == HAlign.Right)
+					offsetHAlign = 1f;
 
-			//	float offsetVAlign = 0;
-			//	if (vAlign == VAlign.Middle)
-			//		offsetVAlign = 0.5f;
-			//	else if (vAlign == VAlign.Bottom)
-			//		offsetVAlign = 1f;
+				float offsetVAlign = 0;
+				if (vAlign == VAlign.Middle)
+					offsetVAlign = 0.5f;
+				else if (vAlign == VAlign.Bottom)
+					offsetVAlign = 1f;
 
-			//	string[] lines = text.Replace("|:", "\a").Replace(":|", "\a").Split('\n');
+				string[] lines = text.Replace("|:", "\a").Replace(":|", "\a").Split('\n');
 
-			//	float totalHeight = font.LineHeight * lines.Length;
+				float totalHeight = lines.Length * font.LineHeight;
 
-			//	bool mod = false;
-			//	string modData = "";
-			//	bool modShadow = false;
-			//	Vector2 modShadowOffset = Vector2.Zero;
-			//	Colour modShadowColour = Colour.White;
+				bool mod = false;
+				string modData = "";
+				bool modShadow = false;
+				Vector2 modShadowOffset = Vector2.Zero;
+				Colour modShadowColour = Colour.White;
 
-			//	foreach (string line in lines)
-			//	{
-			//		float lineWidth = 0;
+				foreach (string line in lines)
+				{
+					float lineWidth = 0;
 
-			//		foreach (char c in line)
-			//		{
-			//			if (mod)
-			//			{
-			//				if (c == '\a')
-			//					mod = false;
-			//			}
-			//			else
-			//			{
-			//				if (c == ' ')
-			//					lineWidth += font.SpaceWidth;
-			//				else if (c == '\a')
-			//					mod = true;
-			//				else
-			//					lineWidth += font.Glyph(c).Width * scale.X + font.CharSpacing;
-			//			}
-			//		}
+					foreach (char c in line)
+					{
+						if (mod)
+						{
+							if (c == '\a')
+								mod = false;
+						}
+						else
+						{
+							if (c == ' ')
+								lineWidth += font.SpaceWidth;
+							else if (c == '\a')
+								mod = true;
+							else
+								lineWidth += font.Glyph(c).Width + font.CharSpacing;
+						}
+					}
 
-			//		foreach (char c in line)
-			//		{
-			//			if (mod)
-			//			{
-			//				if (c == '\a')
-			//				{
-			//					string[] tag = modData.Split('=');
+					foreach (char c in line)
+					{
+						if (mod)
+						{
+							if (c == '\a')
+							{
+								string[] tag = modData.Split('=');
 
-			//					if (tag.Length == 2)
-			//					{
-			//						if (tag[0] == "colour" || tag[0] == "colour")
-			//						{
-			//							string[] value = tag[1].Split(',');
+								if (tag.Length == 2)
+								{
+									if (tag[0] == "colour" || tag[0] == "colour")
+									{
+										string[] value = tag[1].Split(',');
 
-			//							if (value.Length == 4)
-			//							{
-			//								try
-			//								{
-			//									colour = new Colour(float.Parse(value[0]), float.Parse(value[1]), float.Parse(value[2]), float.Parse(value[3]));
-			//								}
-			//								catch
-			//								{
-			//									throw new Exception("Text modifier value parse error.");
-			//								}
-			//							}
-			//							else
-			//							{
-			//								throw new Exception("Unrecognized text modifier value.");
-			//							}
-			//						}
-			//						else if (tag[0] == "shadow")
-			//						{
-			//							string[] value = tag[1].Split(',');
+										if (value.Length == 4)
+										{
+											try
+											{
+												colour = new Colour(float.Parse(value[0]), float.Parse(value[1]), float.Parse(value[2]), float.Parse(value[3]));
+											}
+											catch
+											{
+												throw new Exception("Text modifier value parse error.");
+											}
+										}
+										else
+										{
+											throw new Exception("Unrecognized text modifier value.");
+										}
+									}
+									else if (tag[0] == "shadow")
+									{
+										string[] value = tag[1].Split(',');
 
-			//							if (value.Length == 6)
-			//							{
-			//								try
-			//								{
-			//									modShadow = true;
-			//									modShadowOffset = new Vector2(float.Parse(value[0]), float.Parse(value[1]));
-			//									modShadowColour = new Colour(float.Parse(value[2]), float.Parse(value[3]), float.Parse(value[4]), float.Parse(value[5]));
-			//								}
-			//								catch
-			//								{
-			//									throw new Exception("Text modifier value parse error.");
-			//								}
-			//							}
-			//							else if (value.Length == 1 && (value[0] == "disable" || value[0] == "off"))
-			//							{
-			//								modShadow = false;
-			//							}
-			//							else
-			//							{
-			//								throw new Exception("Unrecognized text modifier value.");
-			//							}
-			//						}
-			//						else
-			//						{
-			//							throw new Exception("Unrecognized text modifier key.");
-			//						}
-			//					}
-			//					else
-			//					{
-			//						throw new Exception("Text modifier parse error.");
-			//					}
+										if (value.Length == 6)
+										{
+											try
+											{
+												modShadow = true;
+												modShadowOffset = new Vector2(float.Parse(value[0]), float.Parse(value[1])) * scale;
+												modShadowColour = new Colour(float.Parse(value[2]), float.Parse(value[3]), float.Parse(value[4]), float.Parse(value[5]));
+											}
+											catch
+											{
+												throw new Exception("Text modifier value parse error.");
+											}
+										}
+										else if (value.Length == 1 && (value[0] == "disable" || value[0] == "off"))
+										{
+											modShadow = false;
+										}
+										else
+										{
+											throw new Exception("Unrecognized text modifier value.");
+										}
+									}
+									else
+									{
+										throw new Exception("Unrecognized text modifier key.");
+									}
+								}
+								else
+								{
+									throw new Exception("Text modifier parse error.");
+								}
 
-			//					mod = false;
-			//					modData = "";
-			//				}
-			//				else
-			//				{
-			//					modData += c;
-			//				}
-			//			}
-			//			else
-			//			{
-			//				if (c == ' ')
-			//				{
-			//					offsetX += font.SpaceWidth;
-			//				}
-			//				else if (c == '\a')
-			//				{
-			//					mod = true;
-			//				}
-			//				else
-			//				{
-			//					Sprite sprite = font.Glyph(c);
+								mod = false;
+								modData = "";
+							}
+							else
+							{
+								modData += c;
+							}
+						}
+						else
+						{
+							if (c == ' ')
+							{
+								offsetX += font.SpaceWidth * scale.X;
+							}
+							else if (c == '\a')
+							{
+								mod = true;
+							}
+							else
+							{
+								Sprite sprite = font.Glyph(c);
 
-			//					if (modShadow)
-			//					{
-			//						Rectangle(position.X + offsetX - lineWidth * offsetHAlign + modShadowOffset.X,
-			//								  position.Y + offsetY - totalHeight * offsetVAlign + modShadowOffset.Y,
-			//								  sprite.Width * scale.X,
-			//								  sprite.Height * scale.Y,
-			//								  modShadowColour, modShadowColour, modShadowColour, modShadowColour,
-			//								  true, sprite.UVs[0], sprite.UVs[1], sprite.UVs[2], sprite.UVs[3]);
-			//					}
+								if (modShadow)
+								{
+									Rectangle(position.X + offsetX * scale.X - lineWidth * scale.X * offsetHAlign + modShadowOffset.X,
+											  position.Y + offsetY * scale.Y - totalHeight * scale.Y * offsetVAlign + modShadowOffset.Y,
+											  sprite.Width * scale.X,
+											  sprite.Height * scale.Y,
+											  modShadowColour, modShadowColour, modShadowColour, modShadowColour,
+											  true, sprite.UVs[0], sprite.UVs[1], sprite.UVs[2], sprite.UVs[3]);
+								}
 
-			//					Rectangle(position.X + offsetX - lineWidth * offsetHAlign,
-			//							  position.Y + offsetY - totalHeight * offsetVAlign,
-			//							  sprite.Width * scale.X,
-			//							  sprite.Height * scale.Y,
-			//							  colour, colour, colour, colour,
-			//							  true, sprite.UVs[0], sprite.UVs[1], sprite.UVs[2], sprite.UVs[3]);
+								Rectangle(position.X + offsetX * scale.X - lineWidth * scale.X * offsetHAlign,
+										  position.Y + offsetY * scale.Y - totalHeight * scale.Y * offsetVAlign,
+										  sprite.Width * scale.X,
+										  sprite.Height * scale.Y,
+										  colour, colour, colour, colour,
+										  true, sprite.UVs[0], sprite.UVs[1], sprite.UVs[2], sprite.UVs[3]);
 
-			//					offsetX += sprite.Width * scale.X + font.CharSpacing;
-			//				}
-			//			}
-			//		}
+								offsetX += sprite.Width + font.CharSpacing;
+							}
+						}
+					}
 
-			//		offsetX = 0;
-			//		offsetY += font.LineHeight;
-			//	}
-			//}
+					offsetX = 0;
+					offsetY += font.LineHeight;
+				}
+			}
 
 			// TODO - RenderTargets
 			// RenderTargets

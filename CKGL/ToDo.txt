@@ -1,5 +1,7 @@
 ﻿CKGL TODO List:
 
+- remove Sprite uv offset epsilon if unneeded - not on laptop, check on desktop
+- Platform.SaveJPG is broken
 - ScissorState
 - State - move all state logic out of renderer and have dirty state flag
 - Renderer - add lineloop and any fixgure out all DrawModes

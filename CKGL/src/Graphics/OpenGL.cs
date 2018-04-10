@@ -1448,18 +1448,54 @@ namespace CKGL
 
 	public enum PixelFormat : GLuint
 	{
+		Depth = 0x1902,
+		DepthStencil = 0x84F9,
 		R = 0x1903,
 		RG = 0x8227,
 		RGB = 0x1907,
 		RGBA = 0x1908,
-		Depth = 0x1902,
+	}
+
+	public static class PixelFormatExt
+	{
+		public static GLint Components(this PixelFormat pixelFormat)
+		{
+			switch (pixelFormat)
+			{
+				case PixelFormat.Depth:
+					return 1;
+				case PixelFormat.DepthStencil:
+					return 2;
+				case PixelFormat.R:
+					return 1;
+				case PixelFormat.RG:
+					return 2;
+				case PixelFormat.RGB:
+					return 3;
+				case PixelFormat.RGBA:
+					return 4;
+				default:
+					throw new NotImplementedException();
+			}
+		}
 	}
 
 	public static class TextureFormatExt
 	{
-		public static PixelFormat PixelFormat(this TextureFormat format)
+		public static int Size(this TextureFormat textureFormat)
 		{
-			switch (format)
+			switch (textureFormat)
+			{
+				case TextureFormat.RGBA8:
+					return 8;
+				default:
+					throw new NotImplementedException("Unexpected value from TextureFormat");
+			}
+		}
+
+		public static PixelFormat PixelFormat(this TextureFormat textureFormat)
+		{
+			switch (textureFormat)
 			{
 				case TextureFormat.Depth:
 				case TextureFormat.Depth16:

@@ -17,7 +17,8 @@ namespace CKGL
 		public SpriteSheet(int size) : this(size, size) { }
 		public SpriteSheet(int width, int height)
 		{
-			Texture = new Texture2D(width, height, TextureFormat.RGBA);
+			Texture = new Texture2D(width, height, TextureFormat.RGBA8);
+			System.Console.WriteLine("Spritesheet: " + Texture.ToString());
 			data = new Colour[Texture.Width, Texture.Height];
 
 			// Clear Texture
@@ -32,8 +33,8 @@ namespace CKGL
 		}
 		public Sprite AddSprite(Texture2D texture, RectangleI source)
 		{
-			Colour[,] spriteData = new Colour[texture.Width, texture.Height];
-			texture.GetData2D(spriteData);
+			Colour[,] spriteData = texture.GetData2D();
+			texture.Destroy();
 
 #if DEBUG
 			Point2 offset = GetValidPlacementNaive(source.W, source.H);
@@ -59,8 +60,7 @@ namespace CKGL
 		}
 		public Sprite AddSpriteFontGlyph(Texture2D texture, RectangleI source, bool xtrim = false)
 		{
-			Colour[,] spriteData = new Colour[texture.Width, texture.Height];
-			texture.GetData2D(spriteData);
+			Colour[,] spriteData = texture.GetData2D();
 
 			int spriteOffsetX = 0;
 			int spriteWidth = source.W;

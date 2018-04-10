@@ -329,15 +329,7 @@ namespace CKGL
 		}
 
 		#region Image I/O Methods | From FNA SDL2_FNAPlatform.cs https://github.com/FNA-XNA/FNA
-		public static void TextureDataFromStream(
-			Stream stream,
-			out int width,
-			out int height,
-			out byte[] pixels,
-			int reqWidth = -1,
-			int reqHeight = -1,
-			bool zoom = false
-		)
+		public static void TextureDataFromStream(Stream stream, out int width, out int height, out byte[] data)
 		{
 			// Load the SDL_Surface* from RWops, get the image data
 			FakeRWops reader = new FakeRWops(stream);
@@ -349,109 +341,10 @@ namespace CKGL
 				Console.WriteLine($"TextureDataFromStream: {SDL_GetError()}");
 				width = 0;
 				height = 0;
-				pixels = null;
+				data = null;
 				return;
 			}
 			surface = INTERNAL_convertSurfaceFormat(surface);
-
-			// Image scaling, if applicable
-			if (reqWidth != -1 && reqHeight != -1)
-			{
-				// Get the file surface dimensions now...
-				int rw;
-				int rh;
-				unsafe
-				{
-					SDL_Surface* surPtr = (SDL_Surface*)surface;
-					rw = surPtr->w;
-					rh = surPtr->h;
-				}
-
-				// Calculate the image scale factor
-				bool scaleWidth;
-				if (zoom)
-				{
-					scaleWidth = rw < rh;
-				}
-				else
-				{
-					scaleWidth = rw > rh;
-				}
-				float scale;
-				if (scaleWidth)
-				{
-					scale = reqWidth / (float)rw;
-				}
-				else
-				{
-					scale = reqHeight / (float)rh;
-				}
-
-				// Calculate the scaled image size, crop if zoomed
-				int resultWidth;
-				int resultHeight;
-				SDL_Rect crop = new SDL_Rect();
-				if (zoom)
-				{
-					resultWidth = reqWidth;
-					resultHeight = reqHeight;
-					if (scaleWidth)
-					{
-						crop.x = 0;
-						crop.w = rw;
-						crop.y = (int)(rh / 2 - (reqHeight / scale) / 2);
-						crop.h = (int)(reqHeight / scale);
-					}
-					else
-					{
-						crop.y = 0;
-						crop.h = rh;
-						crop.x = (int)(rw / 2 - (reqWidth / scale) / 2);
-						crop.w = (int)(reqWidth / scale);
-					}
-				}
-				else
-				{
-					resultWidth = (int)(rw * scale);
-					resultHeight = (int)(rh * scale);
-				}
-
-				// Alloc surface, blit!
-				IntPtr newSurface = SDL_CreateRGBSurface(
-					0,
-					resultWidth,
-					resultHeight,
-					32,
-					0x000000FF,
-					0x0000FF00,
-					0x00FF0000,
-					0xFF000000
-				);
-				SDL_SetSurfaceBlendMode(
-					surface,
-					SDL_BlendMode.SDL_BLENDMODE_NONE
-				);
-				if (zoom)
-				{
-					SDL_BlitScaled(
-						surface,
-						ref crop,
-						newSurface,
-						IntPtr.Zero
-					);
-				}
-				else
-				{
-					SDL_BlitScaled(
-						surface,
-						IntPtr.Zero,
-						newSurface,
-						IntPtr.Zero
-					);
-				}
-				SDL_FreeSurface(surface);
-				surface = newSurface;
-			}
 
 			// Copy surface data to output managed byte array
 			unsafe
@@ -459,8 +352,8 @@ namespace CKGL
 				SDL_Surface* surPtr = (SDL_Surface*)surface;
 				width = surPtr->w;
 				height = surPtr->h;
-				pixels = new byte[width * height * 4]; // MUST be SurfaceFormat.Color!
-				Marshal.Copy(surPtr->pixels, pixels, 0, pixels.Length);
+				data = new byte[width * height * 4]; // MUST be SurfaceFormat.Color!
+				Marshal.Copy(surPtr->pixels, data, 0, data.Length);
 			}
 			SDL_FreeSurface(surface);
 
@@ -469,37 +362,15 @@ namespace CKGL
 			 * almost certainly even stupider.
 			 * -flibit
 			 */
-			for (int i = 0; i < pixels.Length; i += 4)
+			for (int i = 0; i < data.Length; i += 4)
 			{
-				if (pixels[i + 3] == 0)
+				if (data[i + 3] == 0)
 				{
-					pixels[i] = 0;
-					pixels[i + 1] = 0;
-					pixels[i + 2] = 0;
+					data[i] = 0;
+					data[i + 1] = 0;
+					data[i + 2] = 0;
 				}
 			}
-		}
-
-		public static void SavePNG(
-			Stream stream,
-			int width,
-			int height,
-			int imgWidth,
-			int imgHeight,
-			byte[] data
-		)
-		{
-			IntPtr surface = INTERNAL_getScaledSurface(
-				data,
-				imgWidth,
-				imgHeight,
-				width,
-				height
-			);
-			FakeRWops writer = new FakeRWops(stream);
-			SDL_image.IMG_SavePNG_RW(surface, writer.rwops, 0);
-			writer.Free();
-			SDL_FreeSurface(surface);
 		}
 
 		public static void SaveJPG(
@@ -537,7 +408,29 @@ namespace CKGL
 			SDL_FreeSurface(surface);
 		}
 
-		public static IntPtr INTERNAL_getScaledSurface(
+		public static void SavePNG(
+			Stream stream,
+			int width,
+			int height,
+			int imgWidth,
+			int imgHeight,
+			byte[] data
+		)
+		{
+			IntPtr surface = INTERNAL_getScaledSurface(
+				data,
+				imgWidth,
+				imgHeight,
+				width,
+				height
+			);
+			FakeRWops writer = new FakeRWops(stream);
+			SDL_image.IMG_SavePNG_RW(surface, writer.rwops, 0);
+			writer.Free();
+			SDL_FreeSurface(surface);
+		}
+
+		private static IntPtr INTERNAL_getScaledSurface(
 			byte[] data,
 			int srcW,
 			int srcH,
@@ -618,6 +511,7 @@ namespace CKGL
 			return result;
 		}
 
+#pragma warning disable IDE1006 // Naming Styles
 		private class FakeRWops
 		{
 			[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -697,7 +591,7 @@ namespace CKGL
 				temp = null;
 			}
 
-			private byte[] GetTemp(int len)
+			private byte[] getTemp(int len)
 			{
 				if (len > temp.Length)
 				{
@@ -726,7 +620,7 @@ namespace CKGL
 			{
 				int len = size.ToInt32() * maxnum.ToInt32();
 				len = stream.Read(
-					GetTemp(len),
+					getTemp(len),
 					0,
 					len
 				);
@@ -744,7 +638,7 @@ namespace CKGL
 				int len = size.ToInt32() * num.ToInt32();
 				Marshal.Copy(
 					ptr,
-					GetTemp(len),
+					getTemp(len),
 					0,
 					len
 				);
@@ -752,6 +646,7 @@ namespace CKGL
 				return (IntPtr)len;
 			}
 		}
+#pragma warning restore IDE1006 // Naming Styles
 		#endregion
 
 		// TODO - Win32 WM_PAINT Interop
