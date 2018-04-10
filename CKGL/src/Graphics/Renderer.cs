@@ -714,144 +714,146 @@ namespace CKGL
 				Rectangle(vector, vector + Vector2.One, colour);
 			}
 
-			//
 			// Circles
-			//public static void Circle(Vector2 center, float radius, Colour colour, int circleSegments = 16)
-			//{
-			//	Circle(center, radius, colour, colour, circleSegments);
-			//}
-			//public static void Circle(Vector2 center, float radius, Colour c1, Colour c2, int circleSegments = 16)
-			//{
-			//	var increment = MathHelper.Pi * 2.0f / circleSegments;
-			//	var theta = 0.0f;
-
-			//	var v0 = center;
-			//	theta += increment;
-
-			//	for (int i = 0; i < circleSegments; i++)
-			//	{
-			//		var v1 = center + radius * new Vector2(Mathf.cos(theta), Mathf.sin(theta));
-			//		var v2 = center + radius * new Vector2(Mathf.cos(theta + increment), Mathf.sin(theta + increment));
-
-			//		AddVertex(DrawMode.TriangleList, v0, c1);
-			//		AddVertex(DrawMode.TriangleList, v1, c2);
-			//		AddVertex(DrawMode.TriangleList, v2, c2);
-
-			//		theta += increment;
-			//	}
-			//}
-
-			// Lines
-			public static void Line(float x1, float y1, float x2, float y2, Colour colour)
+			public static void Circle(Vector2 center, float radius, Colour colour, int circleSegments = 16)
 			{
-				Line(x1, y1, x2, y2, colour, colour, 1f);
+				Circle(center, radius, colour, colour, circleSegments);
 			}
-			public static void Line(float x1, float y1, float x2, float y2, Colour colour, float width)
+			public static void Circle(Vector2 center, float radius, Colour c1, Colour c2, int circleSegments = 16)
 			{
-				Line(x1, y1, x2, y2, colour, colour, width);
-			}
+				var increment = Math.PI * 2.0f / circleSegments;
+				var theta = 0.0f;
 
-			public static void Line(float x1, float y1, float x2, float y2, Colour c1, Colour c2)
-			{
-				Line(x1, y1, x2, y2, c1, c2, 1f);
-			}
-			public static void Line(float x1, float y1, float x2, float y2, Colour c1, Colour c2, float width)
-			{
-				Line(new Vector2(x1, y1), new Vector2(x2, y2), c1, c2, width);
-			}
+				var v0 = center;
+				theta += increment;
 
-			public static void Line(Vector2 v1, Vector2 v2, Colour colour)
-			{
-				Line(v1, v2, colour, colour, 1f);
-			}
-			public static void Line(Vector2 v1, Vector2 v2, Colour colour, float width)
-			{
-				Line(v1, v2, colour, colour, width);
-			}
-
-			public static void Line(Vector2 v1, Vector2 v2, Colour c1, Colour c2)
-			{
-				Line(v1, v2, c1, c2, 1f);
-			}
-			public static void Line(Vector2 v1, Vector2 v2, Colour c1, Colour c2, float width)
-			{
-				float a = 0.5f - width * 0.5f;
-				float w = 0.5f + width * 0.5f;
-
-				Vector2 v1_tl = new Vector2(v1.X + a, v1.Y + a);
-				Vector2 v1_tr = new Vector2(v1.X + w, v1.Y + a);
-				Vector2 v1_bl = new Vector2(v1.X + a, v1.Y + w);
-				Vector2 v1_br = new Vector2(v1.X + w, v1.Y + w);
-				Vector2 v2_tl = new Vector2(v2.X + a, v2.Y + a);
-				Vector2 v2_tr = new Vector2(v2.X + w, v2.Y + a);
-				Vector2 v2_bl = new Vector2(v2.X + a, v2.Y + w);
-				Vector2 v2_br = new Vector2(v2.X + w, v2.Y + w);
-
-				// Cross Side to Side
-				if (v1.X < v2.X && v1.Y >= v2.Y)
+				for (int i = 0; i < circleSegments; i++)
 				{
-					//if(v1.Y > v2.Y)
-					//{
-					//	v1_tl.Y -= width;
-					//	v1_tr.Y -= width;
-					//	v1_bl.Y -= width;
-					//	v1_br.Y -= width;
-					//}
-					//v2_tl.X -= width;
-					//v2_tr.X -= width;
-					//v2_bl.X -= width;
-					//v2_br.X -= width;
-					LineQuad(v1_bl, v1_br, v2_tr, v2_br, c1, c2);
-					LineQuad(v1_tl, v1_bl, v2_tl, v2_tr, c1, c2);
+					var v1 = center + radius * new Vector2(Math.Cos(theta), Math.Sin(theta));
+					var v2 = center + radius * new Vector2(Math.Cos(theta + increment), Math.Sin(theta + increment));
+
+					AddVertex(DrawMode.TriangleList, v0, c1);
+					AddVertex(DrawMode.TriangleList, v1, c2);
+					AddVertex(DrawMode.TriangleList, v2, c2);
+
+					theta += increment;
 				}
-				else if (v1.X >= v2.X && v1.Y < v2.Y)
+			}
+
+			// PolyLines
+			public static class PolyLines
+			{
+				public static void Line(float x1, float y1, float x2, float y2, Colour colour)
 				{
-					//v1_tl.X -= width;
-					//v1_tr.X -= width;
-					//v1_bl.X -= width;
-					//v1_br.X -= width;
-					//v2_tl.Y -= width;
-					//v2_tr.Y -= width;
-					//v2_bl.Y -= width;
-					//v2_br.Y -= width;
-					LineQuad(v1_tr, v1_br, v2_bl, v2_br, c1, c2);
-					LineQuad(v1_tl, v1_tr, v2_tl, v2_bl, c1, c2);
+					Line(x1, y1, x2, y2, colour, colour, 1f);
 				}
-				else if (v1.X < v2.X && v1.Y < v2.Y)
+				public static void Line(float x1, float y1, float x2, float y2, Colour colour, float width)
 				{
-					//v2_tl -= new Vector2(width, width);
-					//v2_tr -= new Vector2(width, width);
-					//v2_bl -= new Vector2(width, width);
-					//v2_br -= new Vector2(width, width);
-					LineQuad(v1_tl, v1_tr, v2_br, v2_tr, c1, c2);
-					LineQuad(v1_tl, v1_bl, v2_br, v2_bl, c1, c2);
-				}
-				else if (v1.X >= v2.X && v1.Y >= v2.Y)
-				{
-					//v1_tl -= new Vector2(width, width);
-					//v1_tr -= new Vector2(width, width);
-					//v1_bl -= new Vector2(width, width);
-					//v1_br -= new Vector2(width, width);
-					LineQuad(v1_tr, v1_br, v2_tr, v2_tl, c1, c2);
-					LineQuad(v1_bl, v1_br, v2_bl, v2_tl, c1, c2);
+					Line(x1, y1, x2, y2, colour, colour, width);
 				}
 
-				// Side to Side
-				//LineQuad(v1_tl, v1_tr, v2_tl, v2_tr, c1, c2);
-				//LineQuad(v1_bl, v1_br, v2_bl, v2_br, c1, c2);
-				//LineQuad(v1_tl, v1_bl, v2_tl, v2_bl, c1, c2);
-				//LineQuad(v1_tr, v1_br, v2_tr, v2_br, c1, c2);
+				public static void Line(float x1, float y1, float x2, float y2, Colour c1, Colour c2)
+				{
+					Line(x1, y1, x2, y2, c1, c2, 1f);
+				}
+				public static void Line(float x1, float y1, float x2, float y2, Colour c1, Colour c2, float width)
+				{
+					Line(new Vector2(x1, y1), new Vector2(x2, y2), c1, c2, width);
+				}
 
-				// Cross
-				//if ((v1.X >= v2.X && v1.Y < v2.Y) || (v1.X < v2.X && v1.Y >= v2.Y))
-				//	LineQuad(v1_tl, v1_br, v2_tl, v2_br, c1, c2);
-				//if ((v1.X >= v2.X && v1.Y >= v2.Y) || (v1.X < v2.X && v1.Y < v2.Y))
-				//	LineQuad(v1_bl, v1_tr, v2_bl, v2_tr, c1, c2);
-			}
-			private static void LineQuad(Vector2 v1a, Vector2 v1b, Vector2 v2a, Vector2 v2b, Colour c1, Colour c2)
-			{
-				Triangle(v1a, v1b, v2a, c1, c1, c2);
-				Triangle(v2a, v1b, v2b, c2, c1, c2);
+				public static void Line(Vector2 v1, Vector2 v2, Colour colour)
+				{
+					Line(v1, v2, colour, colour, 1f);
+				}
+				public static void Line(Vector2 v1, Vector2 v2, Colour colour, float width)
+				{
+					Line(v1, v2, colour, colour, width);
+				}
+
+				public static void Line(Vector2 v1, Vector2 v2, Colour c1, Colour c2)
+				{
+					Line(v1, v2, c1, c2, 1f);
+				}
+				public static void Line(Vector2 v1, Vector2 v2, Colour c1, Colour c2, float width)
+				{
+					float a = 0.5f - width * 0.5f;
+					float w = 0.5f + width * 0.5f;
+
+					Vector2 v1_tl = new Vector2(v1.X + a, v1.Y + a);
+					Vector2 v1_tr = new Vector2(v1.X + w, v1.Y + a);
+					Vector2 v1_bl = new Vector2(v1.X + a, v1.Y + w);
+					Vector2 v1_br = new Vector2(v1.X + w, v1.Y + w);
+					Vector2 v2_tl = new Vector2(v2.X + a, v2.Y + a);
+					Vector2 v2_tr = new Vector2(v2.X + w, v2.Y + a);
+					Vector2 v2_bl = new Vector2(v2.X + a, v2.Y + w);
+					Vector2 v2_br = new Vector2(v2.X + w, v2.Y + w);
+
+					// Cross Side to Side
+					if (v1.X < v2.X && v1.Y >= v2.Y)
+					{
+						//if(v1.Y > v2.Y)
+						//{
+						//	v1_tl.Y -= width;
+						//	v1_tr.Y -= width;
+						//	v1_bl.Y -= width;
+						//	v1_br.Y -= width;
+						//}
+						//v2_tl.X -= width;
+						//v2_tr.X -= width;
+						//v2_bl.X -= width;
+						//v2_br.X -= width;
+						LineQuad(v1_bl, v1_br, v2_tr, v2_br, c1, c2);
+						LineQuad(v1_tl, v1_bl, v2_tl, v2_tr, c1, c2);
+					}
+					else if (v1.X >= v2.X && v1.Y < v2.Y)
+					{
+						//v1_tl.X -= width;
+						//v1_tr.X -= width;
+						//v1_bl.X -= width;
+						//v1_br.X -= width;
+						//v2_tl.Y -= width;
+						//v2_tr.Y -= width;
+						//v2_bl.Y -= width;
+						//v2_br.Y -= width;
+						LineQuad(v1_tr, v1_br, v2_bl, v2_br, c1, c2);
+						LineQuad(v1_tl, v1_tr, v2_tl, v2_bl, c1, c2);
+					}
+					else if (v1.X < v2.X && v1.Y < v2.Y)
+					{
+						//v2_tl -= new Vector2(width, width);
+						//v2_tr -= new Vector2(width, width);
+						//v2_bl -= new Vector2(width, width);
+						//v2_br -= new Vector2(width, width);
+						LineQuad(v1_tl, v1_tr, v2_br, v2_tr, c1, c2);
+						LineQuad(v1_tl, v1_bl, v2_br, v2_bl, c1, c2);
+					}
+					else if (v1.X >= v2.X && v1.Y >= v2.Y)
+					{
+						//v1_tl -= new Vector2(width, width);
+						//v1_tr -= new Vector2(width, width);
+						//v1_bl -= new Vector2(width, width);
+						//v1_br -= new Vector2(width, width);
+						LineQuad(v1_tr, v1_br, v2_tr, v2_tl, c1, c2);
+						LineQuad(v1_bl, v1_br, v2_bl, v2_tl, c1, c2);
+					}
+
+					// Side to Side
+					//LineQuad(v1_tl, v1_tr, v2_tl, v2_tr, c1, c2);
+					//LineQuad(v1_bl, v1_br, v2_bl, v2_br, c1, c2);
+					//LineQuad(v1_tl, v1_bl, v2_tl, v2_bl, c1, c2);
+					//LineQuad(v1_tr, v1_br, v2_tr, v2_br, c1, c2);
+
+					// Cross
+					//if ((v1.X >= v2.X && v1.Y < v2.Y) || (v1.X < v2.X && v1.Y >= v2.Y))
+					//	LineQuad(v1_tl, v1_br, v2_tl, v2_br, c1, c2);
+					//if ((v1.X >= v2.X && v1.Y >= v2.Y) || (v1.X < v2.X && v1.Y < v2.Y))
+					//	LineQuad(v1_bl, v1_tr, v2_bl, v2_tr, c1, c2);
+				}
+				private static void LineQuad(Vector2 v1a, Vector2 v1b, Vector2 v2a, Vector2 v2b, Colour c1, Colour c2)
+				{
+					Triangle(v1a, v1b, v2a, c1, c1, c2);
+					Triangle(v2a, v1b, v2b, c2, c1, c2);
+				}
 			}
 
 			public static class Lines
@@ -883,7 +885,7 @@ namespace CKGL
 				}
 			}
 
-			public static class LineStrip
+			public static class LineListStrip
 			{
 				private static bool working = false;
 				private static Vertex? lastVertex = null;
@@ -933,7 +935,27 @@ namespace CKGL
 				}
 			}
 
-			public static class TriangleStrip
+			public static class LineStrip
+			{
+				public static void AddVertex(Vector2 position, Colour colour)
+				{
+					Renderer.AddVertex(DrawMode.LineStrip, position, colour);
+				}
+				public static void AddVertex(Vector2 position, Colour colour, bool textured)
+				{
+					Renderer.AddVertex(DrawMode.LineStrip, position, colour, textured);
+				}
+				public static void AddVertex(Vector2 position, Colour colour, bool textured, Vector2 uv)
+				{
+					Renderer.AddVertex(DrawMode.LineStrip, position, colour, textured, uv);
+				}
+				public static void AddVertex(Vector2 position, Colour colour, bool textured, Vector2 uv, float rotation, Vector2 origin)
+				{
+					Renderer.AddVertex(DrawMode.LineStrip, position, colour, textured, uv, rotation, origin);
+				}
+			}
+
+			public static class TriangleListStrip
 			{
 				private static bool working = false;
 				private static Vertex? lastVertex = null;
@@ -992,45 +1014,25 @@ namespace CKGL
 				}
 			}
 
-			//public static class LineStrip
-			//{
-			//	public static void AddVertex(Vector2 position, Colour colour)
-			//	{
-			//		Renderer.AddVertex(DrawMode.LineStrip, position, colour);
-			//	}
-			//	public static void AddVertex(Vector2 position, Colour colour, bool textured)
-			//	{
-			//		Renderer.AddVertex(DrawMode.LineStrip, position, colour, textured);
-			//	}
-			//	public static void AddVertex(Vector2 position, Colour colour, bool textured, Vector2 uv)
-			//	{
-			//		Renderer.AddVertex(DrawMode.LineStrip, position, colour, textured, uv);
-			//	}
-			//	public static void AddVertex(Vector2 position, Colour colour, bool textured, Vector2 uv, float rotation, Vector2 origin)
-			//	{
-			//		Renderer.AddVertex(DrawMode.LineStrip, position, colour, textured, uv, rotation, origin);
-			//	}
-			//}
-
-			//public static class TriangleStrip
-			//{
-			//	public static void AddVertex(Vector2 position, Colour colour)
-			//	{
-			//		Renderer.AddVertex(DrawMode.TriangleStrip, position, colour);
-			//	}
-			//	public static void AddVertex(Vector2 position, Colour colour, bool textured)
-			//	{
-			//		Renderer.AddVertex(DrawMode.TriangleStrip, position, colour, textured);
-			//	}
-			//	public static void AddVertex(Vector2 position, Colour colour, bool textured, Vector2 uv)
-			//	{
-			//		Renderer.AddVertex(DrawMode.TriangleStrip, position, colour, textured, uv);
-			//	}
-			//	public static void AddVertex(Vector2 position, Colour colour, bool textured, Vector2 uv, float rotation, Vector2 origin)
-			//	{
-			//		Renderer.AddVertex(DrawMode.TriangleStrip, position, colour, textured, uv, rotation, origin);
-			//	}
-			//}
+			public static class TriangleStrip
+			{
+				public static void AddVertex(Vector2 position, Colour colour)
+				{
+					Renderer.AddVertex(DrawMode.TriangleStrip, position, colour);
+				}
+				public static void AddVertex(Vector2 position, Colour colour, bool textured)
+				{
+					Renderer.AddVertex(DrawMode.TriangleStrip, position, colour, textured);
+				}
+				public static void AddVertex(Vector2 position, Colour colour, bool textured, Vector2 uv)
+				{
+					Renderer.AddVertex(DrawMode.TriangleStrip, position, colour, textured, uv);
+				}
+				public static void AddVertex(Vector2 position, Colour colour, bool textured, Vector2 uv, float rotation, Vector2 origin)
+				{
+					Renderer.AddVertex(DrawMode.TriangleStrip, position, colour, textured, uv, rotation, origin);
+				}
+			}
 		}
 	}
 }
