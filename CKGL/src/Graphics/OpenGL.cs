@@ -152,9 +152,9 @@ namespace OpenGL
 			CheckError();
 		}
 
-		delegate void _glCullFace(CullFace face);
+		delegate void _glCullFace(Face face);
 		static _glCullFace glCullFace;
-		public static void CullFace(CullFace face)
+		public static void CullFace(Face face)
 		{
 			glCullFace(face);
 			CheckError();
@@ -165,6 +165,14 @@ namespace OpenGL
 		public static void FrontFace(FrontFace face)
 		{
 			glFrontFace(face);
+			CheckError();
+		}
+
+		delegate void _glPolygonMode(Face face, PolygonMode polygonMode);
+		static _glPolygonMode glPolygonMode;
+		public static void PolygonMode(Face face, PolygonMode polygonMode)
+		{
+			glPolygonMode(face, polygonMode);
 			CheckError();
 		}
 
@@ -1033,6 +1041,26 @@ namespace OpenGL
 		IncompleteLayerTargets = 0x8DA8
 	}
 
+	public enum Face : GLuint
+	{
+		Front = 0x0404,
+		Back = 0x0405,
+		FrontAndBack = 0x0408
+	}
+
+	public enum FrontFace : GLuint
+	{
+		Clockwise = 0x0900,
+		CounterClockwise = 0x0901
+	}
+
+	public enum PolygonMode : GLuint
+	{
+		Point = 0x1B00,
+		Line = 0x1B01,
+		Fill = 0x1B02
+	}
+
 	public enum DepthFunc
 	{
 		Never = 0x0200,
@@ -1592,18 +1620,5 @@ namespace CKGL
 		Int = 0x1404,
 		UnsignedInt = 0x1405,
 		Float = 0x1406
-	}
-
-	public enum CullFace : GLuint
-	{
-		Front = 0x0404,
-		Back = 0x0405,
-		FrontAndBack = 0x0408
-	}
-
-	public enum FrontFace : GLuint
-	{
-		Clockwise = 0x0900,
-		CounterClockwise = 0x0901
 	}
 }

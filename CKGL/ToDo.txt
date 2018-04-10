@@ -1,5 +1,6 @@
 ﻿CKGL TODO List:
 
+- ScissorState
 - State - move all state logic out of renderer and have dirty state flag
 - Vector 2/3 rotate around
 - Instead of giving Renderer.Draw_() a rotation, give it a transform (A Model Matrix)

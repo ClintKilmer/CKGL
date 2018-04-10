@@ -4,8 +4,8 @@ namespace CKGL
 {
 	public struct DepthState
 	{
-		public bool On;
-		public DepthFunc DepthFunc;
+		public readonly bool On;
+		public readonly DepthFunc DepthFunc;
 
 		#region Static Constructors
 		public static readonly DepthState Default = Off;

@@ -1,8 +1,10 @@
-﻿namespace CKGL
+﻿using OpenGL;
+
+namespace CKGL
 {
 	public struct FrontFaceState
 	{
-		public FrontFace FrontFace;
+		public readonly FrontFace FrontFace;
 
 		#region Static Constructors
 		public static readonly FrontFaceState Default = CounterClockwise;

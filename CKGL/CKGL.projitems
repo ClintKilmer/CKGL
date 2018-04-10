@@ -15,6 +15,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)lib\OpenAL-CS\src\ALC11.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)lib\OpenAL-CS\src\ALEXT.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)lib\OpenAL-CS\src\EFX.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\State\PolygonModeState.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\State\FrontFaceState.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\State\DepthState.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\OpenGL.cs" />

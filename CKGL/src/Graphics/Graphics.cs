@@ -38,12 +38,12 @@ namespace CKGL
 		}
 		#endregion
 
-		// TODO - ScissorState
 		#region State
 		private class State
 		{
 			public static FrontFaceState FrontFaceState = FrontFaceState.Default;
 			public static CullState CullState = CullState.Default;
+			public static PolygonModeState PolygonModeState = PolygonModeState.Default;
 			public static BlendState BlendState = BlendState.Default;
 			public static DepthState DepthState = DepthState.Default;
 		}
@@ -77,7 +77,30 @@ namespace CKGL
 						GL.Enable(EnableCap.CullFace);
 					else
 						GL.Disable(EnableCap.CullFace);
-					GL.CullFace(value.CullFace);
+					GL.CullFace(value.Face);
+				}
+			}
+		}
+
+		public static PolygonModeState PolygonModeState
+		{
+			get
+			{
+				return State.PolygonModeState;
+			}
+			set
+			{
+				if (value != State.PolygonModeState)
+				{
+					if (value.FrontAndBack)
+					{
+						GL.PolygonMode(Face.FrontAndBack, value.BackPolygonMode);
+					}
+					else
+					{
+						GL.PolygonMode(Face.Front, value.FrontPolygonMode);
+						GL.PolygonMode(Face.Back, value.BackPolygonMode);
+					}
 				}
 			}
 		}

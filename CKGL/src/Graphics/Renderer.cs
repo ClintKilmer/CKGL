@@ -169,7 +169,6 @@ namespace CKGL
 				currentShader = shader;
 			}
 		}
-
 		public static void ResetShader()
 		{
 			SetShader(DefaultShader);
@@ -183,7 +182,6 @@ namespace CKGL
 				Graphics.FrontFaceState = frontFaceState;
 			}
 		}
-
 		public static void ResetFrontFaceState()
 		{
 			SetFrontFaceState(FrontFaceState.Default);
@@ -197,10 +195,22 @@ namespace CKGL
 				Graphics.CullState = cullState;
 			}
 		}
-
 		public static void ResetCullState()
 		{
 			SetCullState(CullState.Default);
+		}
+
+		public static void SetPolygonModeState(PolygonModeState polygonModeState)
+		{
+			if (Graphics.PolygonModeState != polygonModeState)
+			{
+				Flush();
+				Graphics.PolygonModeState = polygonModeState;
+			}
+		}
+		public static void ResetPolygonModeState()
+		{
+			SetPolygonModeState(PolygonModeState.Default);
 		}
 
 		public static void SetBlendState(BlendState blendState)
@@ -211,7 +221,6 @@ namespace CKGL
 				Graphics.BlendState = blendState;
 			}
 		}
-
 		public static void ResetBlendState()
 		{
 			SetBlendState(BlendState.Default);
@@ -225,7 +234,6 @@ namespace CKGL
 				Graphics.DepthState = depthState;
 			}
 		}
-
 		public static void ResetDepthState()
 		{
 			SetDepthState(DepthState.Default);
@@ -391,6 +399,7 @@ namespace CKGL
 			{
 				Rectangle(new Vector2(x, y), new Vector2(x + width, y), new Vector2(x, y + height), new Vector2(x + width, y + height), c1, c2, c3, c4, textured, uv1, uv2, uv3, uv4, rotation, origin);
 			}
+			// TODO - previously commented out
 			//public static void Rectangle(float x, float y, float width, float height, Colour c1, Colour c2, Colour c3, Colour c4, Vector2 uv1, Vector2 uv2, Vector2 uv3, Vector2 uv4, bool outline = false, float outlineWidth = 1f)
 			//{
 			//	if (outline)

@@ -167,11 +167,14 @@ void main()
 			//shader.SetUniform("offset", Time.TotalMilliseconds * 0.0016f, Time.TotalMilliseconds * 0.002f, Time.TotalMilliseconds * 0.0023f);
 
 			Renderer.Start();
+
 			CKGL.Shaders.Renderer.SetUniform("MVP", Matrix.Model3D * ViewMatrix * ProjectionMatrix);
 			//Renderer.ResetShader();
+
 			//Renderer.SetFrontFaceState(FrontFace.Clockwise);
 			//Renderer.SetCullState(CullState.Back);
 			//Renderer.SetBlendState(BlendState.AlphaBlend);
+			Renderer.SetPolygonModeState(PolygonModeState.FrontFillBackLine);
 
 			Renderer.Draw.Triangle(new Vector2(0f, 1f),
 								   new Vector2(0f, 1f) * Matrix2D.CreateRotationZ(Math.RotationsToRadians(0.66666f)),
@@ -200,25 +203,27 @@ void main()
 									new Vector2(1f, 0f),
 									new Vector2(0f, 1f),
 									new Vector2(1f, 1f),
-									-Time.TotalSeconds * 0.5f,
+									//-Time.TotalSeconds * 0.5f,
+									0f,
 									new Vector2(2.5f, 1.5f));
 
-			//Renderer.Draw.TriangleStrip.Begin();
+			//Renderer.Draw.TriangleListStrip.Begin();
 			////int ii = Random.Range(1000, 10000);
 			//for (int i = 0; i < 10000; i++)
-			//	Renderer.Draw.TriangleStrip.AddVertex(new Vector3(Random.Range(-1f, 1f), Random.Range(10;, 1f), 0.0f),
+			//	Renderer.Draw.TriangleListStrip.AddVertex(new Vector3(Random.Range(-100f, 100f), Random.Range(-100f, 100f), 0.0f),
 			//										  new Colour(Random.Range(1f), Random.Range(1f), Random.Range(1f), Random.Range(1f)));
-			//Renderer.Draw.TriangleStrip.End();
+			//Renderer.Draw.TriangleListStrip.End();
 
-			//Renderer.Draw.LineStrip.Begin();
-			//for (int i = 0; i < 10; i++)
-			//	Renderer.Draw.LineStrip.AddVertex(new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0.0f),
-			//									  new Colour(Random.Range(1f), Random.Range(1f), Random.Range(1f), Random.Range(1f)));
-			//Renderer.Draw.LineStrip.End();
+			Renderer.Draw.LineListStrip.Begin();
+			for (int i = 0; i < 10; i++)
+				Renderer.Draw.LineListStrip.AddVertex(new Vector3(Random.Range(-6f, -2f), Random.Range(-2f, 2f), 0.0f),
+												  new Colour(Random.Range(1f), Random.Range(1f), Random.Range(1f), Random.Range(1f)));
+			Renderer.Draw.LineListStrip.End();
 
 			//for (int i = 0; i < 100; i++)
-			//	Renderer.Draw.Pixel(new Vector3(Random.Range(-400f, 400f), Random.Range(-200f, 200f), 0.0f),
+			//	Renderer.Draw.Pixel(new Vector3(Random.Range(-40f, 40f), Random.Range(-20f, 20f), 0.0f),
 			//						new Colour(Random.Range(1f), Random.Range(1f), Random.Range(1f), 1f));
+
 			Renderer.End();
 		}
 
