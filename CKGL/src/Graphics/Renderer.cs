@@ -3,23 +3,6 @@ using System.Runtime.InteropServices;
 
 namespace CKGL
 {
-	// TODO - Move these to SpriteFont.cs
-	#region Font enums
-	public enum HAlign
-	{
-		Left,
-		Center,
-		Right
-	}
-
-	public enum VAlign
-	{
-		Top,
-		Middle,
-		Bottom
-	}
-	#endregion
-
 	public static class Renderer
 	{
 		//	  code crab...

@@ -168,13 +168,12 @@ void main()
 
 			Renderer.Start();
 
-			CKGL.Shaders.Renderer.SetUniform("MVP", Matrix.Model3D * ViewMatrix * ProjectionMatrix);
-			//Renderer.ResetShader();
-
 			//Renderer.SetFrontFaceState(FrontFace.Clockwise);
 			//Renderer.SetCullState(CullState.Back);
 			//Renderer.SetBlendState(BlendState.AlphaBlend);
 			Renderer.SetPolygonModeState(PolygonModeState.FrontFillBackLine);
+
+			CKGL.Shaders.Renderer.SetUniform("MVP", Matrix.Model3D * ViewMatrix * ProjectionMatrix);
 
 			Renderer.Draw.Triangle(new Vector2(0f, 1f),
 								   new Vector2(0f, 1f) * Matrix2D.CreateRotationZ(Math.RotationsToRadians(0.66666f)),
