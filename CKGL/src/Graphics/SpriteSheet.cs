@@ -17,13 +17,12 @@ namespace CKGL
 		public SpriteSheet(int size) : this(size, size) { }
 		public SpriteSheet(int width, int height)
 		{
-			Texture = new Texture2D(width, height, TextureFormat.RGBA8);
-			System.Console.WriteLine("Spritesheet: " + Texture.ToString());
+			Texture = new Texture2D(width, height, TextureFormat.RGBA8, TextureFilter.Nearest, TextureWrap.Clamp);
 			data = new Colour[Texture.Width, Texture.Height];
 
 			// Clear Texture
-			for (int y = 0; y < Texture.Height - height; y++)
-				for (int x = 0; x < Texture.Width - width; x++)
+			for (int y = 0; y < Texture.Height; y++)
+				for (int x = 0; x < Texture.Width; x++)
 					data[x, y] = Colour.Transparent;
 		}
 

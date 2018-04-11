@@ -1115,7 +1115,7 @@ namespace OpenGL
 		TextureCubeMapPosY = 0x8517,
 		TextureCubeMapNegY = 0x8518,
 		TextureCubeMapPosZ = 0x8519,
-		TextureCubeMapNegZ = 0x851A,
+		TextureCubeMapNegZ = 0x851A
 	}
 
 	public enum TextureParam : GLuint
@@ -1177,7 +1177,7 @@ namespace OpenGL
 	{
 		UnsignedByte = 0x1401,
 		UnsignedShort = 0x1403,
-		UnsignedInt = 0x1405,
+		UnsignedInt = 0x1405
 	}
 
 	public enum BufferTarget : GLuint
@@ -1196,7 +1196,7 @@ namespace OpenGL
 	{
 		Framebuffer = 0x8D40,
 		Draw = 0x8CA9,
-		Read = 0x8CA8,
+		Read = 0x8CA8
 	}
 
 	public enum UniformType : GLuint
@@ -1210,7 +1210,7 @@ namespace OpenGL
 		Mat3x2 = 0x8B67,
 		Mat4 = 0x8B5C,
 		Sampler2D = 0x8B5E,
-		SamplerCube = 0x8B60,
+		SamplerCube = 0x8B60
 	}
 
 	public enum DrawBuffer : GLuint
@@ -1232,7 +1232,7 @@ namespace OpenGL
 		Colour12,
 		Colour13,
 		Colour14,
-		Colour15,
+		Colour15
 	}
 
 	public enum ReadBuffer : GLuint
@@ -1253,7 +1253,7 @@ namespace OpenGL
 		Colour12,
 		Colour13,
 		Colour14,
-		Colour15,
+		Colour15
 	}
 
 	public enum TextureAttachment : GLuint
@@ -1276,7 +1276,7 @@ namespace OpenGL
 		Colour12,
 		Colour13,
 		Colour14,
-		Colour15,
+		Colour15
 	}
 }
 
@@ -1318,8 +1318,8 @@ namespace CKGL
 
 	public enum TextureWrap : GLuint
 	{
+		Clamp = 0x812F,
 		Repeat = 0x2901,
-		ClampToEdge = 0x812F,
 		MirroredRepeat = 0x8370
 	}
 
@@ -1443,43 +1443,9 @@ namespace CKGL
 		RGBA4 = 0x8056,
 		RGB5A1 = 0x8057,
 		RGB10A2 = 0x8059,
-		RGB10A2UI = 0x906F,
+		RGB10A2UI = 0x906F
 	}
-
-	public enum PixelFormat : GLuint
-	{
-		Depth = 0x1902,
-		DepthStencil = 0x84F9,
-		R = 0x1903,
-		RG = 0x8227,
-		RGB = 0x1907,
-		RGBA = 0x1908,
-	}
-
-	public static class PixelFormatExt
-	{
-		public static GLint Components(this PixelFormat pixelFormat)
-		{
-			switch (pixelFormat)
-			{
-				case PixelFormat.Depth:
-					return 1;
-				case PixelFormat.DepthStencil:
-					return 2;
-				case PixelFormat.R:
-					return 1;
-				case PixelFormat.RG:
-					return 2;
-				case PixelFormat.RGB:
-					return 3;
-				case PixelFormat.RGBA:
-					return 4;
-				default:
-					throw new NotImplementedException();
-			}
-		}
-	}
-
+	#region TextureFormat Extensions
 	public static class TextureFormatExt
 	{
 		public static int Size(this TextureFormat textureFormat)
@@ -1563,78 +1529,43 @@ namespace CKGL
 					throw new Exception("Unexpected pixel format.");
 			}
 		}
-
-		/*public static PixelType PixelType(this TextureFormat format)
-        {
-            switch (format)
-            {
-                case TextureFormat.Depth:
-                case TextureFormat.Depth16:
-                case TextureFormat.Depth24:
-                case TextureFormat.Depth32:
-                case TextureFormat.Depth32F:
-                    return PixelType.Float;
-                case TextureFormat.R:
-                case TextureFormat.R8:
-                case TextureFormat.R8SNorm:
-                case TextureFormat.R8I:
-                case TextureFormat.R8UI:
-                case TextureFormat.R16I:
-                case TextureFormat.R16UI:
-                case TextureFormat.R16F:
-                case TextureFormat.R32I:
-                case TextureFormat.R32UI:
-                case TextureFormat.R32F:
-                    return CKGL.PixelFormat.R;
-                case TextureFormat.RG:
-                case TextureFormat.RG8:
-                case TextureFormat.RG8SNorm:
-                case TextureFormat.RG8I:
-                case TextureFormat.RG8UI:
-                case TextureFormat.RG16I:
-                case TextureFormat.RG16UI:
-                case TextureFormat.RG16F:
-                case TextureFormat.RG32I:
-                case TextureFormat.RG32UI:
-                case TextureFormat.RG32F:
-                    return CKGL.PixelFormat.RG;
-                case TextureFormat.RGB:
-                case TextureFormat.RGB8:
-                case TextureFormat.RGB8SNorm:
-                case TextureFormat.RGB8I:
-                case TextureFormat.RGB8UI:
-                case TextureFormat.RGB16I:
-                case TextureFormat.RGB16UI:
-                case TextureFormat.RGB16F:
-                case TextureFormat.RGB32I:
-                case TextureFormat.RGB32UI:
-                case TextureFormat.RGB32F:
-                case TextureFormat.R3G3B2:
-                case TextureFormat.R5G6B5:
-                case TextureFormat.R11G11B10F:
-                    return CKGL.PixelFormat.RGB;
-                case TextureFormat.RGBA:
-                case TextureFormat.RGBA8:
-                case TextureFormat.RGBA8SNorm:
-                case TextureFormat.RGBA16F:
-                case TextureFormat.RGBA32F:
-                case TextureFormat.RGBA8I:
-                case TextureFormat.RGBA8UI:
-                case TextureFormat.RGBA16I:
-                case TextureFormat.RGBA16UI:
-                case TextureFormat.RGBA32I:
-                case TextureFormat.RGBA32UI:
-                case TextureFormat.RGBA2:
-                case TextureFormat.RGBA4:
-                case TextureFormat.RGB5A1:
-                case TextureFormat.RGB10A2:
-                case TextureFormat.RGB10A2UI:
-                    return CKGL.PixelFormat.RGBA;
-                default:
-                    throw new Exception("Unexpected pixel format.");
-            }
-        }*/
 	}
+	#endregion
+
+	public enum PixelFormat : GLuint
+	{
+		Depth = 0x1902,
+		DepthStencil = 0x84F9,
+		R = 0x1903,
+		RG = 0x8227,
+		RGB = 0x1907,
+		RGBA = 0x1908
+	}
+	#region PixelFormat Extensions
+	public static class PixelFormatExt
+	{
+		public static GLint Components(this PixelFormat pixelFormat)
+		{
+			switch (pixelFormat)
+			{
+				case PixelFormat.Depth:
+					return 1;
+				case PixelFormat.DepthStencil:
+					return 2;
+				case PixelFormat.R:
+					return 1;
+				case PixelFormat.RG:
+					return 2;
+				case PixelFormat.RGB:
+					return 3;
+				case PixelFormat.RGBA:
+					return 4;
+				default:
+					throw new NotImplementedException();
+			}
+		}
+	}
+	#endregion
 
 	public enum PixelType : GLuint
 	{

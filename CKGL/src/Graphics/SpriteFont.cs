@@ -41,7 +41,7 @@
 
 			for (int i = start; i <= end; i++)
 			{
-				Texture2D texture = Texture2D.LoadTexture2DFromStream(path);
+				Texture2D texture = Texture2D.CreateFromFile(path);
 				glyphs[i] = spriteSheet.AddSpriteFontGlyph(texture, new RectangleI(glyphWidth * (i - start), 0, glyphWidth, glyphHeight), xtrim);
 				texture.Destroy();
 			}

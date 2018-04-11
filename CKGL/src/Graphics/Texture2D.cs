@@ -10,17 +10,53 @@ namespace CKGL
 {
 	public class Texture2D : Texture
 	{
-		public Texture2D(int width, int height, TextureFormat textureFormat)
-			: this(width, height, textureFormat, DefaultMinFilter, DefaultMagFilter, DefaultWrapX, DefaultWrapY) { }
+		#region Constructors
+		public Texture2D(int width, int height, TextureFormat textureFormat) : this(width, height, textureFormat, TextureFilter.Nearest, TextureWrap.Clamp) { }
 		public Texture2D(int width, int height, TextureFormat textureFormat, TextureFilter filter, TextureWrap wrap)
-			: this(width, height, textureFormat, filter, filter, wrap, wrap) { }
-		public Texture2D(int width, int height, TextureFormat textureFormat, TextureFilter minFilter, TextureFilter magFilter, TextureWrap wrapX, TextureWrap wrapY)
-			: base(textureFormat, TextureTarget.Texture2D, TextureTarget.Texture2D, minFilter, magFilter, wrapX, wrapY)
+			: base(textureFormat, TextureTarget.Texture2D, TextureTarget.Texture2D, filter, filter, wrap, wrap)
 		{
 			Width = width;
 			Height = height;
 			SetData(null as byte[], textureFormat.PixelFormat());
 		}
+
+		public Texture2D(byte[] data, int width, int height, TextureFormat textureFormat) : this(data, width, height, textureFormat, TextureFilter.Nearest, TextureWrap.Clamp) { }
+		public Texture2D(byte[] data, int width, int height, TextureFormat textureFormat, TextureFilter filter, TextureWrap wrap)
+			: base(textureFormat, TextureTarget.Texture2D, TextureTarget.Texture2D, filter, filter, wrap, wrap)
+		{
+			Width = width;
+			Height = height;
+			SetData(data, textureFormat.PixelFormat());
+		}
+
+		public Texture2D(Colour[] data, int width, int height, TextureFormat textureFormat) : this(data, width, height, textureFormat, TextureFilter.Nearest, TextureWrap.Clamp) { }
+		public Texture2D(Colour[] data, int width, int height, TextureFormat textureFormat, TextureFilter filter, TextureWrap wrap)
+			: base(textureFormat, TextureTarget.Texture2D, TextureTarget.Texture2D, filter, filter, wrap, wrap)
+		{
+			Width = width;
+			Height = height;
+			SetData(data);
+		}
+
+		public Texture2D(Colour[,] data, int width, int height, TextureFormat textureFormat) : this(data, width, height, textureFormat, TextureFilter.Nearest, TextureWrap.Clamp) { }
+		public Texture2D(Colour[,] data, int width, int height, TextureFormat textureFormat, TextureFilter filter, TextureWrap wrap)
+			: base(textureFormat, TextureTarget.Texture2D, TextureTarget.Texture2D, filter, filter, wrap, wrap)
+		{
+			Width = width;
+			Height = height;
+			SetData2D(data);
+		}
+		#endregion
+
+		#region Static Constructors
+		public static Texture2D CreateFromFile(string file) => CreateFromFile(file, TextureFilter.Nearest, TextureWrap.Clamp);
+		public static Texture2D CreateFromFile(string file, TextureFilter textureFilter, TextureWrap textureWrap)
+		{
+			Platform.GetImageData(file, out int width, out int height, out byte[] data);
+			Texture2D result = new Texture2D(data, width, height, TextureFormat.RGBA8, textureFilter, textureWrap);
+			return result;
+		}
+		#endregion
 
 		#region SetData
 		public void SetData2D(Colour[,] data)
@@ -92,43 +128,16 @@ namespace CKGL
 		#endregion
 
 		#region Public Texture2D Save Methods
-		public void SaveJPG(Stream stream) => SaveJPG(stream, Width, Height);
-		public void SaveJPG(Stream stream, int width, int height)
+		public void SavePNG(string file) => SavePNG(file, Width, Height);
+		public void SavePNG(string file, int width, int height)
 		{
-			Platform.SaveJPG(stream, width, height, Width, Height, GetData(PixelFormat.RGBA));
+			Platform.SavePNG(file, width, height, Width, Height, GetData(PixelFormat.RGBA));
 		}
 
-		public void SavePNG(Stream stream) => SavePNG(stream, Width, Height);
-		public void SavePNG(Stream stream, int width, int height)
+		public void SaveJPG(string file) => SaveJPG(file, Width, Height);
+		public void SaveJPG(string file, int width, int height)
 		{
-			Platform.SavePNG(stream, width, height, Width, Height, GetData(PixelFormat.RGBA));
-		}
-		#endregion
-
-		#region Public Static Texture2D Load Methods
-		public static Texture2D LoadTexture2DFromStream(string file, TextureFilter textureFilter, TextureWrap textureWrap)
-		{
-			Texture2D texture = LoadTexture2DFromStream(file);
-			texture.SetFilter(textureFilter);
-			texture.SetWrap(textureWrap);
-			return texture;
-		}
-		public static Texture2D LoadTexture2DFromStream(string file)
-		{
-			Texture2D texture;
-			using (var fileStream = new System.IO.FileStream(file, System.IO.FileMode.Open))
-				texture = FromStream(fileStream);
-			return texture;
-		}
-		public static Texture2D FromStream(Stream stream)
-		{
-			// Read the image data from the stream
-			Platform.TextureDataFromStream(stream, out int width, out int height, out byte[] data);
-
-			// Create the Texture2D from the raw pixel data
-			Texture2D result = new Texture2D(width, height, TextureFormat.RGBA8);
-			result.SetData(data, PixelFormat.RGBA);
-			return result;
+			Platform.SaveJPG(file, width, height, Width, Height, GetData(PixelFormat.RGBA));
 		}
 		#endregion
 	}

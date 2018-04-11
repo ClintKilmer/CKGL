@@ -328,40 +328,24 @@ namespace CKGL
 			SDL_Delay(ms); //release the thread
 		}
 
-		#region Image I/O Methods | From FNA SDL2_FNAPlatform.cs https://github.com/FNA-XNA/FNA
-		public static void TextureDataFromStream(Stream stream, out int width, out int height, out byte[] data)
+		#region Texture<->Image Load/Save Methods | Derived From FNA - SDL2_FNAPlatform.cs - https://github.com/FNA-XNA/FNA
+		public static void GetImageData(string file, out int width, out int height, out byte[] data)
 		{
-			// Load the SDL_Surface* from RWops, get the image data
-			FakeRWops reader = new FakeRWops(stream);
-			IntPtr surface = SDL_image.IMG_Load_RW(reader.rwops, 0);
-			reader.Free();
-			if (surface == IntPtr.Zero)
-			{
-				// File not found, supported, etc.
-				Console.WriteLine($"TextureDataFromStream: {SDL_GetError()}");
-				width = 0;
-				height = 0;
-				data = null;
-				return;
-			}
-			surface = INTERNAL_convertSurfaceFormat(surface);
+			IntPtr surfaceID = SDL_image.IMG_Load(file);
+			if (surfaceID == IntPtr.Zero)
+				throw new FileNotFoundException($"TextureDataFromStream: {SDL_GetError()}", file);
 
-			// Copy surface data to output managed byte array
 			unsafe
 			{
-				SDL_Surface* surPtr = (SDL_Surface*)surface;
-				width = surPtr->w;
-				height = surPtr->h;
-				data = new byte[width * height * 4]; // MUST be SurfaceFormat.Color!
-				Marshal.Copy(surPtr->pixels, data, 0, data.Length);
+				SDL_Surface* surface = (SDL_Surface*)surfaceID;
+				width = surface->w;
+				height = surface->h;
+				data = new byte[width * height * PixelFormat.RGBA.Components()];
+				Marshal.Copy(surface->pixels, data, 0, data.Length);
 			}
-			SDL_FreeSurface(surface);
+			SDL_FreeSurface(surfaceID);
 
-			/* Ensure that the alpha pixels are... well, actual alpha.
-			 * You think this looks stupid, but be assured: Your paint program is
-			 * almost certainly even stupider.
-			 * -flibit
-			 */
+			// Enforce alpha
 			for (int i = 0; i < data.Length; i += 4)
 			{
 				if (data[i + 3] == 0)
@@ -373,70 +357,39 @@ namespace CKGL
 			}
 		}
 
-		public static void SaveJPG(
-			Stream stream,
-			int width,
-			int height,
-			int imgWidth,
-			int imgHeight,
-			byte[] data
-		)
+		public static void SavePNG(string file, int destinationWidth, int destinationHeight, int sourceWidth, int sourceHeight, byte[] data)
 		{
-			// FIXME: What does XNA pick for this? -flibit
-			const int quality = 100;
-
 			IntPtr surface = INTERNAL_getScaledSurface(
 				data,
-				imgWidth,
-				imgHeight,
-				width,
-				height
+				sourceWidth,
+				sourceHeight,
+				destinationWidth,
+				destinationHeight
+			);
+			SDL_image.IMG_SavePNG(surface, file);
+			SDL_FreeSurface(surface);
+		}
+
+		public static void SaveJPG(string file, int destinationWidth, int destinationHeight, int sourceWidth, int sourceHeight, byte[] data)
+		{
+			IntPtr surface = INTERNAL_getScaledSurface(
+				data,
+				sourceWidth,
+				sourceHeight,
+				destinationWidth,
+				destinationHeight
 			);
 
-			// FIXME: Hack for Bugzilla #3972
-			IntPtr temp = SDL_ConvertSurfaceFormat(
-				surface,
-				SDL_PIXELFORMAT_RGB24,
-				0
-			);
+			//FIXME: Hack for Bugzilla #3972
+			IntPtr temp = SDL_ConvertSurfaceFormat(surface, SDL_PIXELFORMAT_RGB24, 0);
 			SDL_FreeSurface(surface);
 			surface = temp;
 
-			FakeRWops writer = new FakeRWops(stream);
-			SDL_image.IMG_SaveJPG_RW(surface, writer.rwops, 0, quality);
-			writer.Free();
+			SDL_image.IMG_SaveJPG(surface, file, 100);
 			SDL_FreeSurface(surface);
 		}
 
-		public static void SavePNG(
-			Stream stream,
-			int width,
-			int height,
-			int imgWidth,
-			int imgHeight,
-			byte[] data
-		)
-		{
-			IntPtr surface = INTERNAL_getScaledSurface(
-				data,
-				imgWidth,
-				imgHeight,
-				width,
-				height
-			);
-			FakeRWops writer = new FakeRWops(stream);
-			SDL_image.IMG_SavePNG_RW(surface, writer.rwops, 0);
-			writer.Free();
-			SDL_FreeSurface(surface);
-		}
-
-		private static IntPtr INTERNAL_getScaledSurface(
-			byte[] data,
-			int srcW,
-			int srcH,
-			int dstW,
-			int dstH
-		)
+		private static IntPtr INTERNAL_getScaledSurface(byte[] data, int srcW, int srcH, int dstW, int dstH)
 		{
 			// Create an SDL_Surface*, write the pixel data
 			IntPtr surface = SDL_CreateRGBSurface(
@@ -453,12 +406,7 @@ namespace CKGL
 			unsafe
 			{
 				SDL_Surface* surPtr = (SDL_Surface*)surface;
-				Marshal.Copy(
-					data,
-					0,
-					surPtr->pixels,
-					data.Length
-				);
+				Marshal.Copy(data, 0, surPtr->pixels, data.Length);
 			}
 			SDL_UnlockSurface(surface);
 
@@ -475,16 +423,8 @@ namespace CKGL
 					0x00FF0000,
 					0xFF000000
 				);
-				SDL_SetSurfaceBlendMode(
-					surface,
-					SDL_BlendMode.SDL_BLENDMODE_NONE
-				);
-				SDL_BlitScaled(
-					surface,
-					IntPtr.Zero,
-					scaledSurface,
-					IntPtr.Zero
-				);
+				SDL_SetSurfaceBlendMode(surface, SDL_BlendMode.SDL_BLENDMODE_NONE);
+				SDL_BlitScaled(surface, IntPtr.Zero, scaledSurface, IntPtr.Zero);
 				SDL_FreeSurface(surface);
 				surface = scaledSurface;
 			}
@@ -510,143 +450,6 @@ namespace CKGL
 			}
 			return result;
 		}
-
-#pragma warning disable IDE1006 // Naming Styles
-		private class FakeRWops
-		{
-			[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-			private delegate long SizeFunc(IntPtr context);
-
-			[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-			private delegate long SeekFunc(
-				IntPtr context,
-				long offset,
-				int whence
-			);
-
-			[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-			private delegate IntPtr ReadFunc(
-				IntPtr context,
-				IntPtr ptr,
-				IntPtr size,
-				IntPtr maxnum
-			);
-
-			[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-			private delegate IntPtr WriteFunc(
-				IntPtr context,
-				IntPtr ptr,
-				IntPtr size,
-				IntPtr num
-			);
-
-			[StructLayout(LayoutKind.Sequential)]
-			private struct PartialRWops
-			{
-				public IntPtr size;
-				public IntPtr seek;
-				public IntPtr read;
-				public IntPtr write;
-			}
-
-			[DllImport("SDL2.dll", CallingConvention = CallingConvention.Cdecl)]
-			private static extern IntPtr SDL_AllocRW();
-
-			[DllImport("SDL2.dll", CallingConvention = CallingConvention.Cdecl)]
-			private static extern void SDL_FreeRW(IntPtr area);
-
-			public readonly IntPtr rwops;
-			private Stream stream;
-			private byte[] temp;
-
-			private SizeFunc sizeFunc;
-			private SeekFunc seekFunc;
-			private ReadFunc readFunc;
-			private WriteFunc writeFunc;
-
-			public FakeRWops(Stream stream)
-			{
-				this.stream = stream;
-				rwops = SDL_AllocRW();
-				temp = new byte[8192]; // Based on PNG_ZBUF_SIZE default
-
-				sizeFunc = size;
-				seekFunc = seek;
-				readFunc = read;
-				writeFunc = write;
-				unsafe
-				{
-					PartialRWops* p = (PartialRWops*)rwops;
-					p->size = Marshal.GetFunctionPointerForDelegate(sizeFunc);
-					p->seek = Marshal.GetFunctionPointerForDelegate(seekFunc);
-					p->read = Marshal.GetFunctionPointerForDelegate(readFunc);
-					p->write = Marshal.GetFunctionPointerForDelegate(writeFunc);
-				}
-			}
-
-			public void Free()
-			{
-				SDL_FreeRW(rwops);
-				stream = null;
-				temp = null;
-			}
-
-			private byte[] getTemp(int len)
-			{
-				if (len > temp.Length)
-				{
-					temp = new byte[len];
-				}
-				return temp;
-			}
-
-			private long size(IntPtr context)
-			{
-				return -1;
-			}
-
-			private long seek(IntPtr context, long offset, int whence)
-			{
-				stream.Seek(offset, (SeekOrigin)whence);
-				return stream.Position;
-			}
-
-			private IntPtr read(
-				IntPtr context,
-				IntPtr ptr,
-				IntPtr size,
-				IntPtr maxnum
-			)
-			{
-				int len = size.ToInt32() * maxnum.ToInt32();
-				len = stream.Read(
-					getTemp(len),
-					0,
-					len
-				);
-				Marshal.Copy(temp, 0, ptr, len);
-				return (IntPtr)len;
-			}
-
-			private IntPtr write(
-				IntPtr context,
-				IntPtr ptr,
-				IntPtr size,
-				IntPtr num
-			)
-			{
-				int len = size.ToInt32() * num.ToInt32();
-				Marshal.Copy(
-					ptr,
-					getTemp(len),
-					0,
-					len
-				);
-				stream.Write(temp, 0, len);
-				return (IntPtr)len;
-			}
-		}
-#pragma warning restore IDE1006 // Naming Styles
 		#endregion
 
 		// TODO - Win32 WM_PAINT Interop

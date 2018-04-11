@@ -16,8 +16,8 @@ namespace CKGL
 
 		public static TextureFilter DefaultMinFilter = TextureFilter.Nearest;
 		public static TextureFilter DefaultMagFilter = TextureFilter.Nearest;
-		public static TextureWrap DefaultWrapX = TextureWrap.ClampToEdge;
-		public static TextureWrap DefaultWrapY = TextureWrap.ClampToEdge;
+		public static TextureWrap DefaultWrapX = TextureWrap.Clamp;
+		public static TextureWrap DefaultWrapY = TextureWrap.Clamp;
 
 		private GLuint id;
 
@@ -79,7 +79,22 @@ namespace CKGL
 		public TextureFilter MagFilter
 		{
 			get { return (TextureFilter)GetParam(TextureParam.MagFilter); }
-			set { SetParam(TextureParam.MagFilter, (GLint)value); }
+			set
+			{
+				switch (value)
+				{
+					case TextureFilter.Linear:
+					case TextureFilter.LinearMipmapLinear:
+					case TextureFilter.LinearMipmapNearest:
+						SetParam(TextureParam.MagFilter, (GLint)TextureFilter.Linear);
+						break;
+					case TextureFilter.Nearest:
+					case TextureFilter.NearestMipmapLinear:
+					case TextureFilter.NearestMipmapNearest:
+						SetParam(TextureParam.MagFilter, (GLint)TextureFilter.Nearest);
+						break;
+				}
+			}
 		}
 
 		public void SetFilter(TextureFilter filter)
