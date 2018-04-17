@@ -9,7 +9,7 @@ namespace CKGL
 {
 	public class RenderTarget
 	{
-		private static GLuint currentlyBoundRenderTarget = 0;
+		public static RenderTarget Current { get; private set; } = null;
 
 		public int Width { get; private set; }
 		public int Height { get; private set; }
@@ -23,14 +23,14 @@ namespace CKGL
 			if (!(textureDepthFormat.PixelFormat() == PixelFormat.Depth || textureDepthFormat.PixelFormat() == PixelFormat.DepthStencil))
 				throw new Exception("textureDepthFormat is not a depth(stencil) texture.");
 
-			GLuint originalBoundRenderTarget = currentlyBoundRenderTarget;
+			RenderTarget originalRenderTarget = Current;
 			Bind();
 
 			depthTexture = new Texture2D(Width, Height, textureDepthFormat);
 			GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, textureDepthFormat.TextureAttachment(), depthTexture.BindTarget, depthTexture.ID, 0);
 			CheckStatus();
 
-			Bind(originalBoundRenderTarget);
+			Bind(originalRenderTarget);
 		}
 		public RenderTarget(int width, int height, GLint colourTextures, TextureFormat textureColourFormat)
 		{
@@ -45,7 +45,7 @@ namespace CKGL
 			Height = height;
 			id = GL.GenFramebuffer();
 
-			GLuint originalBoundRenderTarget = currentlyBoundRenderTarget;
+			RenderTarget originalRenderTarget = Current;
 			Bind();
 
 			textures = new Texture2D[colourTextures];
@@ -60,20 +60,18 @@ namespace CKGL
 			GL.DrawBuffers(colourTextures, drawBuffers);
 			CheckStatus();
 
-			Bind(originalBoundRenderTarget);
+			Bind(originalRenderTarget);
 		}
 
 		public void Destroy()
 		{
 			for (int i = textures.Length; i == 0; i--)
 			{
-				if (textures[i] != null)
-					textures[i].Destroy();
+				textures[i]?.Destroy();
 				textures[i] = null;
 			}
 
-			if (depthTexture != null)
-				depthTexture.Destroy();
+			depthTexture?.Destroy();
 			depthTexture = null;
 
 			if (id != default(GLuint))
@@ -86,25 +84,22 @@ namespace CKGL
 		#region Bind
 		public bool IsBound()
 		{
-			return currentlyBoundRenderTarget == id;
+			return (Current?.id ?? 0) == id;
 		}
 
 		public static bool IsBound(RenderTarget renderTarget)
 		{
-			if (renderTarget is null)
-				return currentlyBoundRenderTarget == 0;
-
-			return currentlyBoundRenderTarget == renderTarget.id;
+			return (Current?.id ?? 0) == (renderTarget?.id ?? 0);
 		}
 
-		public void Bind() => Bind(id);
-		public static void BindDefault() => Bind(0);
-		public static void Bind(GLuint id)
+		public void Bind() => Bind(this);
+		public static void Bind(RenderTarget renderTarget)
 		{
-			if (id != currentlyBoundRenderTarget)
+			GLuint id = renderTarget?.id ?? 0;
+			if (id != (Current?.id ?? 0))
 			{
 				GL.BindFramebuffer(FramebufferTarget.Framebuffer, id);
-				currentlyBoundRenderTarget = id;
+				Current = renderTarget;
 			}
 		}
 		#endregion
@@ -117,7 +112,7 @@ namespace CKGL
 				throw new Exception("RenderTarget does not have a texture in slot: " + textureNum);
 
 			GL.BindFramebuffer(FramebufferTarget.Read, id);
-			GL.BindFramebuffer(FramebufferTarget.Draw, target != null ? target.id : 0);
+			GL.BindFramebuffer(FramebufferTarget.Draw, target?.id ?? 0);
 			GL.ReadBuffer((ReadBuffer)((uint)ReadBuffer.Colour0 + textureNum));
 			GL.BlitFramebuffer(new RectangleI(Width, Height), rect, BufferBit.Colour, filter);
 		}

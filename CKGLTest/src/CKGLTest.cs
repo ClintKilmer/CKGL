@@ -127,7 +127,7 @@ void main()
 
 			// Debug, test spritesheet
 			//SpriteSheets.SpriteSheet.Texture.SavePNG($@"{System.IO.Directory.GetCurrentDirectory()}/SpriteSheet.png");
-			SpriteSheets.SpriteSheet.Texture.SavePNG("SpriteSheet.png");
+			//SpriteSheets.SpriteSheet.Texture.SavePNG("SpriteSheet.png");
 
 			surface = new RenderTarget(100, 100, 1, TextureFormat.RGBA8);
 		}
@@ -207,7 +207,7 @@ void main()
 			{ }
 			//Graphics.Clear(Colour.Grey * 0.25f);
 			else
-				Renderer.Clear(Colour.Cyan);
+				Renderer.Clear(Colour.Black);
 
 			//Renderer.SetFrontFaceState(FrontFace.Clockwise);
 			//Renderer.SetCullState(CullState.Back);
@@ -284,7 +284,7 @@ void main()
 
 			Renderer.End();
 
-			RenderTarget.BindDefault();
+			RenderTarget.Bind(null);
 			Graphics.Clear(Colour.Magenta);
 			surface.BlitTextureTo(null, 0, BlitFilter.Nearest, new RectangleI(100, 100, Window.Width - 200, Window.Height - 200));
 			//surface.textures[0].SavePNG("RenderTarget.png");

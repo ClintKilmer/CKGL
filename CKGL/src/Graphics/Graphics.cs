@@ -17,6 +17,22 @@ namespace CKGL
 			};
 		}
 
+		#region Viewport
+		public static void SetViewport() => SetViewport(RenderTarget.Current);
+		public static void SetViewport(RenderTarget renderTarget)
+		{
+			if (renderTarget is null)
+				SetViewport(0, 0, Window.Width, Window.Height);
+			else
+				SetViewport(0, 0, renderTarget.Width, renderTarget.Height);
+		}
+
+		public static void SetViewport(GLint x, GLint y, GLint width, GLint height)
+		{
+			GL.Viewport(x, y, width, height);
+		}
+		#endregion
+
 		#region Clear
 		public static void Clear(Colour colour, float depth)
 		{

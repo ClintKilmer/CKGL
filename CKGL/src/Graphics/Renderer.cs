@@ -125,9 +125,11 @@ namespace CKGL
 			{
 				Flush();
 				if (renderTarget is null)
-					RenderTarget.BindDefault();
+					RenderTarget.Bind(null);
 				else
 					renderTarget.Bind();
+
+				Graphics.SetViewport(renderTarget);
 			}
 		}
 
