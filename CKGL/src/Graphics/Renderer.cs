@@ -103,30 +103,6 @@ namespace CKGL
 		//#endif
 		//		};
 
-		// TODO - RenderTarget
-		//		public static void ResetRenderTarget()
-		//		{
-		//			SetRenderTarget(null);
-		//		}
-
-		// TODO - RenderTarget
-		//public static void SetRenderTarget(RenderTarget2D renderTarget2D)
-		//{
-		//	if ((
-		//			renderTarget2D != null &&
-		//			Engine.GraphicsDevice.GetRenderTargets().Length == 0
-		//		)
-		//		||
-		//		(
-		//			Engine.GraphicsDevice.GetRenderTargets().Length > 0 &&
-		//			Engine.GraphicsDevice.GetRenderTargets()[0].RenderTarget != renderTarget2D)
-		//		)
-		//	{
-		//		Flush();
-		//		Engine.GraphicsDevice.SetRenderTarget(renderTarget2D);
-		//	}
-		//}
-
 		#region Clear
 		public static void Clear(Colour colour, float depth)
 		{
@@ -143,6 +119,23 @@ namespace CKGL
 		#endregion
 
 		#region State
+		public static void SetRenderTarget(RenderTarget renderTarget)
+		{
+			if ((renderTarget is null && !RenderTarget.IsBound(null)) || !renderTarget.IsBound())
+			{
+				Flush();
+				if (renderTarget is null)
+					RenderTarget.BindDefault();
+				else
+					renderTarget.Bind();
+			}
+		}
+
+		public static void ResetRenderTarget()
+		{
+			SetRenderTarget(null);
+		}
+
 		public static void SetShader(Shader shader)
 		{
 			if (currentShader != shader)
@@ -648,38 +641,37 @@ namespace CKGL
 				}
 			}
 
-			// TODO - RenderTargets
 			// RenderTargets
-			//public static void RenderTarget2D(RenderTarget2D renderTarget2D, float x, float y, Colour colour)
-			//{
-			//	SetTexture(renderTarget2D);
-			//	Rectangle(x, y, renderTarget2D.Width, renderTarget2D.Height, colour, colour, colour, colour, true, uvFull1, uvFull2, uvFull3, uvFull4);
-			//}
-			//public static void RenderTarget2D(RenderTarget2D renderTarget2D, float x, float y, float rotation, Vector2 origin, Colour colour)
-			//{
-			//	SetTexture(renderTarget2D);
-			//	Rectangle(x, y, renderTarget2D.Width, renderTarget2D.Height, colour, colour, colour, colour, true, uvFull1, uvFull2, uvFull3, uvFull4, rotation, origin);
-			//}
-			//public static void RenderTarget2D(RenderTarget2D renderTarget2D, float x, float y, float scale, Colour colour)
-			//{
-			//	SetTexture(renderTarget2D);
-			//	Rectangle(x, y, renderTarget2D.Width * scale, renderTarget2D.Height * scale, colour, colour, colour, colour, true, uvFull1, uvFull2, uvFull3, uvFull4);
-			//}
-			//public static void RenderTarget2D(RenderTarget2D renderTarget2D, float x, float y, float scale, float rotation, Vector2 origin, Colour colour)
-			//{
-			//	SetTexture(renderTarget2D);
-			//	Rectangle(x, y, renderTarget2D.Width * scale, renderTarget2D.Height * scale, colour, colour, colour, colour, true, uvFull1, uvFull2, uvFull3, uvFull4, rotation, origin);
-			//}
-			//public static void RenderTarget2D(RenderTarget2D renderTarget2D, float x, float y, float width, float height, Colour colour)
-			//{
-			//	SetTexture(renderTarget2D);
-			//	Rectangle(x, y, width, height, colour, colour, colour, colour, true, uvFull1, uvFull2, uvFull3, uvFull4);
-			//}
-			//public static void RenderTarget2D(RenderTarget2D renderTarget2D, Vector2 v1, Vector2 v2, Colour colour)
-			//{
-			//	SetTexture(renderTarget2D);
-			//	Rectangle(new Vector2(v1.X, v1.Y), new Vector2(v2.X, v2.Y), colour, colour, colour, colour, true, uvFull1, uvFull2, uvFull3, uvFull4);
-			//}
+			public static void RenderTarget(RenderTarget renderTarget, int texture, float x, float y, Colour colour)
+			{
+				SetTexture(renderTarget.textures[texture]);
+				Rectangle(x, y, renderTarget.Width, renderTarget.Height, colour, colour, colour, colour, true, uvFull1, uvFull2, uvFull3, uvFull4);
+			}
+			public static void RenderTarget(RenderTarget renderTarget, int texture, float x, float y, float rotation, Vector2 origin, Colour colour)
+			{
+				SetTexture(renderTarget.textures[texture]);
+				Rectangle(x, y, renderTarget.Width, renderTarget.Height, colour, colour, colour, colour, true, uvFull1, uvFull2, uvFull3, uvFull4, rotation, origin);
+			}
+			public static void RenderTarget(RenderTarget renderTarget, int texture, float x, float y, float scale, Colour colour)
+			{
+				SetTexture(renderTarget.textures[texture]);
+				Rectangle(x, y, renderTarget.Width * scale, renderTarget.Height * scale, colour, colour, colour, colour, true, uvFull1, uvFull2, uvFull3, uvFull4);
+			}
+			public static void RenderTarget(RenderTarget renderTarget, int texture, float x, float y, float scale, float rotation, Vector2 origin, Colour colour)
+			{
+				SetTexture(renderTarget.textures[texture]);
+				Rectangle(x, y, renderTarget.Width * scale, renderTarget.Height * scale, colour, colour, colour, colour, true, uvFull1, uvFull2, uvFull3, uvFull4, rotation, origin);
+			}
+			public static void RenderTarget(RenderTarget renderTarget, int texture, float x, float y, float width, float height, Colour colour)
+			{
+				SetTexture(renderTarget.textures[texture]);
+				Rectangle(x, y, width, height, colour, colour, colour, colour, true, uvFull1, uvFull2, uvFull3, uvFull4);
+			}
+			public static void RenderTarget(RenderTarget renderTarget, int texture, Vector2 v1, Vector2 v2, Colour colour)
+			{
+				SetTexture(renderTarget.textures[texture]);
+				Rectangle(new Vector2(v1.X, v1.Y), new Vector2(v2.X, v2.Y), colour, colour, colour, colour, true, uvFull1, uvFull2, uvFull3, uvFull4);
+			}
 
 			// Pixels
 			public static void Pixel(int x, int y, Colour colour)

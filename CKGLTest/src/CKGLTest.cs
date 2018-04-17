@@ -107,6 +107,8 @@ void main()
 		Matrix ViewMatrix = Matrix.Identity;
 		Matrix ProjectionMatrix = Matrix.Identity;
 
+		RenderTarget surface;
+
 		public override void Init()
 		{
 			//Platform.ShowCursor = false; // Default true
@@ -126,6 +128,8 @@ void main()
 			// Debug, test spritesheet
 			//SpriteSheets.SpriteSheet.Texture.SavePNG($@"{System.IO.Directory.GetCurrentDirectory()}/SpriteSheet.png");
 			SpriteSheets.SpriteSheet.Texture.SavePNG("SpriteSheet.png");
+
+			surface = new RenderTarget(100, 100, 1, TextureFormat.RGBA8);
 		}
 
 		public override void Update()
@@ -191,17 +195,19 @@ void main()
 
 		public override void Draw()
 		{
+			Renderer.Start();
+
+			// Set Shader uniforms
+			//shader.SetUniform("offset", Time.TotalMilliseconds * 0.0016f, Time.TotalMilliseconds * 0.002f, Time.TotalMilliseconds * 0.0023f);
+
+			Renderer.SetRenderTarget(surface);
+
 			// Clear the screen
 			if (Input.Keyboard.Down(KeyCode.Space))
 			{ }
 			//Graphics.Clear(Colour.Grey * 0.25f);
 			else
-				Graphics.Clear(Colour.Black);
-
-			// Set Shader uniforms
-			//shader.SetUniform("offset", Time.TotalMilliseconds * 0.0016f, Time.TotalMilliseconds * 0.002f, Time.TotalMilliseconds * 0.0023f);
-
-			Renderer.Start();
+				Renderer.Clear(Colour.Cyan);
 
 			//Renderer.SetFrontFaceState(FrontFace.Clockwise);
 			//Renderer.SetCullState(CullState.Back);
@@ -271,7 +277,17 @@ void main()
 			//	Renderer.Draw.Pixel(new Vector3(Random.Range(-40f, 40f), Random.Range(-20f, 20f), 0.0f),
 			//						new Colour(Random.Range(1f), Random.Range(1f), Random.Range(1f), 1f));
 
+			//Renderer.ResetRenderTarget();
+			//Renderer.Draw.RenderTarget(surface, 0,
+			//						   -5f, 5f, 0.1f,
+			//						   Colour.White);
+
 			Renderer.End();
+
+			RenderTarget.BindDefault();
+			Graphics.Clear(Colour.Magenta);
+			surface.BlitTextureTo(null, 0, BlitFilter.Nearest, new RectangleI(100, 100, Window.Width - 200, Window.Height - 200));
+			//surface.textures[0].SavePNG("RenderTarget.png");
 		}
 
 		public override void Destroy()

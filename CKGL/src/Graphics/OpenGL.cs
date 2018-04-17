@@ -1255,29 +1255,6 @@ namespace OpenGL
 		Colour14,
 		Colour15
 	}
-
-	public enum TextureAttachment : GLuint
-	{
-		//Depth = 0x8D00,
-		Depth = 0x8D00,
-		DepthStencil = 0x821A,
-		Colour0 = 0x8CE0,
-		Colour1,
-		Colour2,
-		Colour3,
-		Colour4,
-		Colour5,
-		Colour6,
-		Colour7,
-		Colour8,
-		Colour9,
-		Colour10,
-		Colour11,
-		Colour12,
-		Colour13,
-		Colour14,
-		Colour15
-	}
 }
 
 namespace CKGL
@@ -1371,6 +1348,28 @@ namespace CKGL
 		OneMinusConstantColour,
 		ConstantAlpha,
 		OneMinusConstantAlpha
+	}
+
+	public enum TextureAttachment : GLuint
+	{
+		Depth = 0x8D00,
+		DepthStencil = 0x821A,
+		Colour0 = 0x8CE0,
+		Colour1,
+		Colour2,
+		Colour3,
+		Colour4,
+		Colour5,
+		Colour6,
+		Colour7,
+		Colour8,
+		Colour9,
+		Colour10,
+		Colour11,
+		Colour12,
+		Colour13,
+		Colour14,
+		Colour15
 	}
 
 	public enum TextureFormat
@@ -1469,6 +1468,9 @@ namespace CKGL
 				case TextureFormat.Depth32:
 				case TextureFormat.Depth32F:
 					return CKGL.PixelFormat.Depth;
+				case TextureFormat.DepthStencil:
+				case TextureFormat.Depth24Stencil8:
+					return CKGL.PixelFormat.DepthStencil;
 				case TextureFormat.R:
 				case TextureFormat.R8:
 				case TextureFormat.R8SNorm:
@@ -1527,6 +1529,24 @@ namespace CKGL
 					return CKGL.PixelFormat.RGBA;
 				default:
 					throw new Exception("Unexpected pixel format.");
+			}
+		}
+
+		public static TextureAttachment TextureAttachment(this TextureFormat textureFormat)
+		{
+			switch (textureFormat)
+			{
+				case TextureFormat.Depth:
+				case TextureFormat.Depth16:
+				case TextureFormat.Depth24:
+				case TextureFormat.Depth32:
+				case TextureFormat.Depth32F:
+					return CKGL.TextureAttachment.Depth;
+				case TextureFormat.DepthStencil:
+				case TextureFormat.Depth24Stencil8:
+					return CKGL.TextureAttachment.DepthStencil;
+				default:
+					throw new Exception("Unexpected texture attachment format.");
 			}
 		}
 	}
