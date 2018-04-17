@@ -48,14 +48,14 @@ namespace CKGL
 						repeatedKeyCode.Add(keycode);
 						repeatedScanCode.Add(scancode);
 
-						//System.Console.WriteLine("repeated: " + keycode);
+						//Output.WriteLine("repeated: " + keycode);
 					}
 					else
 					{
 						pressedKeyCode.Add(keycode);
 						pressedScanCode.Add(scancode);
 
-						//System.Console.WriteLine("pressed:  " + keycode);
+						//Output.WriteLine("pressed:  " + keycode);
 					}
 				};
 
@@ -69,13 +69,13 @@ namespace CKGL
 					releasedScanCode.Add(scancode);
 					repeatedScanCode.Add(scancode);
 
-					//System.Console.WriteLine("released: " + keycode);
+					//Output.WriteLine("released: " + keycode);
 				};
 			}
 
 			internal static void Clear()
 			{
-				//System.Console.WriteLine("down:     " + string.Join(", ", downKeyCode));
+				//Output.WriteLine("down:     " + string.Join(", ", downKeyCode));
 
 				pressedKeyCode.Clear();
 				releasedKeyCode.Clear();

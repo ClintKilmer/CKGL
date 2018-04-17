@@ -147,7 +147,7 @@ namespace CKGL
 						{
 							arrName = $"{name}[{n}]";
 							int loc = GL.GetUniformLocation(id, arrName);
-							//Console.WriteLine("index:{0} name:{1} type:{2} loc:{3} count:{4}", i, arrName, type, loc, count);
+							//Output.WriteLine("index:{0} name:{1} type:{2} loc:{3} count:{4}", i, arrName, type, loc, count);
 							var uniform = new Uniform(i, arrName, type, loc);
 							uniforms.Add(arrName, uniform);
 						}
@@ -155,7 +155,7 @@ namespace CKGL
 					else
 					{
 						GLint loc = GL.GetUniformLocation(id, name);
-						//Console.WriteLine("index:{0} name:{1} type:{2} loc:{3} count:{4}", i, name, type, loc, count);
+						//Output.WriteLine("index:{0} name:{1} type:{2} loc:{3} count:{4}", i, name, type, loc, count);
 						var uniform = new Uniform(i, name, type, loc);
 						uniforms.Add(name, uniform);
 					}

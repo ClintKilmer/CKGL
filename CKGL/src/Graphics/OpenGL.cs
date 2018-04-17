@@ -70,6 +70,17 @@ namespace OpenGL
 			GetIntegerV((GLuint)maxSamples, out maxSamples);
 			GetIntegerV((GLuint)maxTextureImageUnits, out maxTextureImageUnits);
 			GetIntegerV((GLuint)maxTextureSize, out maxTextureSize);
+
+			Output.WriteLine($"OpenGL Version: {MajorVersion}.{MinorVersion}");
+			Output.WriteLine($"OpenGL MaxColourAttachments: {MaxColourAttachments}");
+			Output.WriteLine($"OpenGL MaxCubeMapTextureSize: {MaxCubeMapTextureSize}");
+			Output.WriteLine($"OpenGL MaxDrawBuffers: {MaxDrawBuffers}");
+			Output.WriteLine($"OpenGL MaxElementIndices: {MaxElementIndices}");
+			Output.WriteLine($"OpenGL MaxElementVertices: {MaxElementVertices}");
+			Output.WriteLine($"OpenGL MaxRenderbufferSize: {MaxRenderbufferSize}");
+			Output.WriteLine($"OpenGL MaxSamples: {MaxSamples}");
+			Output.WriteLine($"OpenGL MaxTextureImageUnits: {MaxTextureImageUnits}");
+			Output.WriteLine($"OpenGL MaxTextureSize: {MaxTextureSize}");
 		}
 
 #pragma warning disable 0649

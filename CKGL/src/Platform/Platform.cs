@@ -110,11 +110,11 @@ namespace CKGL
 			// Missing libs?
 			try
 			{
-				Console.WriteLine($"Platform: {OS}");
+				Output.WriteLine($"Platform: {OS}");
 			}
 			catch (Exception e)
 			{
-				Console.WriteLine("SDL2 was not found! Do you have fnalibs?");
+				Output.WriteLine("SDL2 was not found! Do you have fnalibs?");
 				throw e;
 			}
 
@@ -207,7 +207,7 @@ namespace CKGL
 		{
 			while (SDL_PollEvent(out Event) != 0)
 			{
-				//Console.WriteLine(Event.type.ToString());
+				//Output.WriteLine(Event.type.ToString());
 				switch (Event.type)
 				{
 					case SDL_EventType.SDL_QUIT:
@@ -256,7 +256,7 @@ namespace CKGL
 					case SDL_EventType.SDL_WINDOWEVENT:
 						if (Event.window.windowID == Window.ID)
 						{
-							//Console.WriteLine(Event.window.windowEvent.ToString());
+							//Output.WriteLine(Event.window.windowEvent.ToString());
 							switch (Event.window.windowEvent)
 							{
 								case SDL_WindowEventID.SDL_WINDOWEVENT_CLOSE:
