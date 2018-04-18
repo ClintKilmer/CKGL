@@ -258,7 +258,7 @@ namespace CKGL
 				currentShader.Bind();
 
 				OpenGL.GL.Enable(OpenGL.EnableCap.ScissorTest);
-				OpenGL.GL.Scissor(0, 0, Current?.Width ?? Window.Width, Current?.Height ?? Window.Height);
+				OpenGL.GL.Scissor(0, 0, RenderTarget.Current?.Width ?? Window.Width, RenderTarget.Current?.Height ?? Window.Height);
 
 				vao.Bind();
 				vbo.LoadData(Vertex.GetVBO(vertices), BufferUsage.DynamicDraw);
