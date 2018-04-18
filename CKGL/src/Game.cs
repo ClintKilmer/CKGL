@@ -62,10 +62,5 @@
 			Audio.Destroy();
 			Platform.Destroy();
 		}
-
-		public void Debug(string message)
-		{
-			System.Console.WriteLine(message);
-		}
 	}
 }
