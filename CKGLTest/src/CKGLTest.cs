@@ -290,6 +290,22 @@ void main()
 			Renderer.End();
 
 			surface.BlitTextureTo(null, 0, BlitFilter.Nearest, new RectangleI(0, 0, Window.Width, Window.Height));
+
+			// Screenshot
+			if (Input.Keyboard.Pressed(KeyCode.F9))
+			{
+				string s = @"X:\Dropbox\Clint\Gamedev\2018-03-22 CKGL\screenshots\";
+
+				int sequentialNumber = 1;
+				while (System.IO.File.Exists($@"{s}{System.DateTime.Now.ToString("yyyy-MM-dd HH.mm.ss")}-{sequentialNumber} [CKGL].png"))
+				{
+					sequentialNumber++;
+				}
+
+				surface.textures[0].SavePNG($@"{s}{System.DateTime.Now.ToString("yyyy-MM-dd HH.mm.ss")}-{sequentialNumber} [CKGL].png");
+
+				//System.GC.Collect();
+			}
 		}
 
 		public override void Destroy()
