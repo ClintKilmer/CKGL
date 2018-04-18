@@ -11,10 +11,10 @@ namespace CKGL
 		{
 			GL.Init();
 
-			Platform.OnWinResized += () =>
-			{
-				GL.Viewport(0, 0, Window.Width, Window.Height);
-			};
+			//Platform.OnWinResized += () =>
+			//{
+			//	GL.Viewport(0, 0, Window.Width, Window.Height);
+			//};
 		}
 
 		#region Viewport
