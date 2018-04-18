@@ -458,22 +458,22 @@ namespace CKGL
 			public static void Sprite(Sprite sprite, Vector2 position, Colour colour)
 			{
 				SetTexture(sprite.SpriteSheet.Texture);
-				Rectangle(position.X, position.Y, sprite.Width, sprite.Height, colour, colour, colour, colour, true, sprite.UVs[0], sprite.UVs[1], sprite.UVs[2], sprite.UVs[3]);
+				Rectangle(position.X, position.Y, sprite.Width, sprite.Height, colour, colour, colour, colour, true, sprite.UV_BL, sprite.UV_BR, sprite.UV_TL, sprite.UV_TR);
 			}
 			public static void Sprite(Sprite sprite, Vector2 position, Vector2 scale, Colour colour)
 			{
 				SetTexture(sprite.SpriteSheet.Texture);
-				Rectangle(position.X, position.Y, sprite.Width * scale.X, sprite.Height * scale.Y, colour, colour, colour, colour, true, sprite.UVs[0], sprite.UVs[1], sprite.UVs[2], sprite.UVs[3]);
+				Rectangle(position.X, position.Y, sprite.Width * scale.X, sprite.Height * scale.Y, colour, colour, colour, colour, true, sprite.UV_BL, sprite.UV_BR, sprite.UV_TL, sprite.UV_TR);
 			}
 			public static void Sprite(Sprite sprite, Vector2 position, Colour colour, float rotation, Vector2 origin)
 			{
 				SetTexture(sprite.SpriteSheet.Texture);
-				Rectangle(position.X, position.Y, sprite.Width, sprite.Height, colour, colour, colour, colour, true, sprite.UVs[0], sprite.UVs[1], sprite.UVs[2], sprite.UVs[3], rotation, origin);
+				Rectangle(position.X, position.Y, sprite.Width, sprite.Height, colour, colour, colour, colour, true, sprite.UV_BL, sprite.UV_BR, sprite.UV_TL, sprite.UV_TR, rotation, origin);
 			}
 			public static void Sprite(Sprite sprite, Vector2 position, Vector2 scale, Colour colour, float rotation, Vector2 origin)
 			{
 				SetTexture(sprite.SpriteSheet.Texture);
-				Rectangle(position.X, position.Y, sprite.Width * scale.X, sprite.Height * scale.Y, colour, colour, colour, colour, true, sprite.UVs[0], sprite.UVs[1], sprite.UVs[2], sprite.UVs[3], rotation, origin);
+				Rectangle(position.X, position.Y, sprite.Width * scale.X, sprite.Height * scale.Y, colour, colour, colour, colour, true, sprite.UV_BL, sprite.UV_BR, sprite.UV_TL, sprite.UV_TR, rotation, origin);
 			}
 
 			// Strings
@@ -493,7 +493,7 @@ namespace CKGL
 				float offsetVAlign = 0;
 				if (vAlign == VAlign.Middle)
 					offsetVAlign = 0.5f;
-				else if (vAlign == VAlign.Bottom)
+				else if (vAlign == VAlign.Top)
 					offsetVAlign = 1f;
 
 				string[] lines = text.Replace("|:", "\a").Replace(":|", "\a").Split('\n');
@@ -623,7 +623,7 @@ namespace CKGL
 											  sprite.Width * scale.X,
 											  sprite.Height * scale.Y,
 											  modShadowColour, modShadowColour, modShadowColour, modShadowColour,
-											  true, sprite.UVs[0], sprite.UVs[1], sprite.UVs[2], sprite.UVs[3]);
+											  true, sprite.UV_BL, sprite.UV_BR, sprite.UV_TL, sprite.UV_TR);
 								}
 
 								Rectangle(position.X + offsetX * scale.X - lineWidth * scale.X * offsetHAlign,
@@ -631,7 +631,7 @@ namespace CKGL
 										  sprite.Width * scale.X,
 										  sprite.Height * scale.Y,
 										  colour, colour, colour, colour,
-										  true, sprite.UVs[0], sprite.UVs[1], sprite.UVs[2], sprite.UVs[3]);
+										  true, sprite.UV_BL, sprite.UV_BR, sprite.UV_TL, sprite.UV_TR);
 
 								offsetX += sprite.Width + font.CharSpacing;
 							}
@@ -639,7 +639,7 @@ namespace CKGL
 					}
 
 					offsetX = 0;
-					offsetY += font.LineHeight;
+					offsetY -= font.LineHeight;
 				}
 			}
 

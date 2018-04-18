@@ -329,6 +329,22 @@ namespace CKGL
 		}
 
 		#region Texture<->Image Load/Save Methods | Derived From FNA - SDL2_FNAPlatform.cs - https://github.com/FNA-XNA/FNA
+		private static byte[] FlipImageData(int width, int height, PixelFormat pixelFormat, byte[] data)
+		{
+			byte[] result = new byte[data.Length];
+
+			int stride = width * pixelFormat.Components();
+			for (int y = 0; y < height; y++)
+			{
+				for (int x = 0; x < stride; x++)
+				{
+					result[x + y * stride] = data[x + (height - y - 1) * stride];
+				}
+			}
+
+			return result;
+		}
+
 		public static void GetImageData(string file, out int width, out int height, out byte[] data)
 		{
 			IntPtr surfaceID = SDL_image.IMG_Load(file);
@@ -355,12 +371,14 @@ namespace CKGL
 					data[i + 2] = 0;
 				}
 			}
+
+			data = FlipImageData(width, height, PixelFormat.RGBA, data);
 		}
 
 		public static void SavePNG(string file, int destinationWidth, int destinationHeight, int sourceWidth, int sourceHeight, byte[] data)
 		{
 			IntPtr surface = INTERNAL_getScaledSurface(
-				data,
+				FlipImageData(sourceWidth, sourceHeight, PixelFormat.RGBA, data),
 				sourceWidth,
 				sourceHeight,
 				destinationWidth,
@@ -373,7 +391,7 @@ namespace CKGL
 		public static void SaveJPG(string file, int destinationWidth, int destinationHeight, int sourceWidth, int sourceHeight, byte[] data)
 		{
 			IntPtr surface = INTERNAL_getScaledSurface(
-				data,
+				FlipImageData(sourceWidth, sourceHeight, PixelFormat.RGBA, data),
 				sourceWidth,
 				sourceHeight,
 				destinationWidth,

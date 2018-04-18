@@ -129,7 +129,7 @@ void main()
 			//SpriteSheets.SpriteSheet.Texture.SavePNG($@"{System.IO.Directory.GetCurrentDirectory()}/SpriteSheet.png");
 			//SpriteSheets.SpriteSheet.Texture.SavePNG("SpriteSheet.png");
 
-			surface = new RenderTarget(100, 100, 1, TextureFormat.RGBA8);
+			surface = new RenderTarget(320, 180, 1, TextureFormat.RGBA8);
 		}
 
 		public override void Update()
@@ -176,9 +176,11 @@ void main()
 				direction -= cameraLookatNoVertical;
 			//cameraTranslationMatrix = Matrix.CreateTranslation(-cameraPosition);
 			if (Input.Keyboard.Down(KeyCode.Q))
-				cameraScale -= 0.03f * cameraScale;
+				direction += Vector3.Down;
+			//cameraScale -= 0.03f * cameraScale;
 			if (Input.Keyboard.Down(KeyCode.E))
-				cameraScale += 0.03f * cameraScale;
+				direction += Vector3.Up;
+			//cameraScale += 0.03f * cameraScale;
 
 			cameraPosition += direction.Normalized * speed * Time.DeltaTime;
 
@@ -195,6 +197,9 @@ void main()
 
 		public override void Draw()
 		{
+			RenderTarget.Bind(null);
+			Graphics.Clear(Colour.Magenta);
+
 			Renderer.Start();
 
 			// Set Shader uniforms
@@ -211,10 +216,10 @@ void main()
 
 			//Renderer.SetFrontFaceState(FrontFace.Clockwise);
 			//Renderer.SetCullState(CullState.Back);
-			//Renderer.SetBlendState(BlendState.AlphaBlend);
+			Renderer.SetBlendState(BlendState.AlphaBlend);
 			Renderer.SetPolygonModeState(PolygonModeState.FrontFillBackLine);
 
-			CKGL.Shaders.Renderer.SetUniform("MVP", Matrix.Model3D * ViewMatrix * ProjectionMatrix);
+			CKGL.Shaders.Renderer.SetUniform("MVP", Matrix.Model * ViewMatrix * ProjectionMatrix);
 
 			Renderer.Draw.Triangle(new Vector2(0f, 1f),
 								   new Vector2(0f, 1f) * Matrix2D.CreateRotationZ(Math.RotationsToRadians(0.66666f)),
@@ -230,8 +235,8 @@ void main()
 								   Vector2.Zero);
 
 			Renderer.SetTexture(Textures.Test);
-			Renderer.Draw.Rectangle(2f,
-									1f,
+			Renderer.Draw.Rectangle(4f,
+									-1f,
 									1f,
 									1f,
 									Colour.White,
@@ -245,20 +250,20 @@ void main()
 									new Vector2(1f, 1f),
 									//-Time.TotalSeconds * 0.5f,
 									0f,
-									new Vector2(2.5f, 1.5f));
+									new Vector2(4.5f, -0.5f));
 
 			Renderer.Draw.Sprite(Sprites.Test1,
-								 new Vector2(5f, 0.5f),
+								 new Vector2(2f, -1f),
 								 Vector2.One / 8f,
 								 Colour.White);
 
 			Renderer.Draw.Text(SpriteFonts.Font,
-							   "|:shadow=0,1,0,1,0,0.5:|ABCDEFGHIJKLMNOPQRSTUVWXYZ\nabcdefghijklmnopqrstuvwxyz\n1234567890\n_-+=(){}[]<>\\|/;:'\"?.,!@#$%^&*~`",
+							   "|:shadow=0,-1,1,1,1,0.5:|ABCDEFGHIJKLMNOPQRSTUVWXYZ\nabcdefghijklmnopqrstuvwxyz\n1234567890\n_-+=(){}[]<>\\|/;:'\"?.,!@#$%^&*~`",
 							   new Vector2(0f, 4f),
 							   Vector2.One / 7f,
 							   Colour.White,
 							   HAlign.Center,
-							   VAlign.Top);
+							   VAlign.Bottom);
 
 			//Renderer.Draw.TriangleListStrip.Begin();
 			////int ii = Random.Range(1000, 10000);
@@ -284,10 +289,7 @@ void main()
 
 			Renderer.End();
 
-			RenderTarget.Bind(null);
-			Graphics.Clear(Colour.Magenta);
-			surface.BlitTextureTo(null, 0, BlitFilter.Nearest, new RectangleI(100, 100, Window.Width - 200, Window.Height - 200));
-			//surface.textures[0].SavePNG("RenderTarget.png");
+			surface.BlitTextureTo(null, 0, BlitFilter.Nearest, new RectangleI(0, 0, Window.Width, Window.Height));
 		}
 
 		public override void Destroy()
