@@ -26,10 +26,22 @@
 			Init();
 			while (Platform.Running)
 			{
-				PreUpdate();
-				Update();
-				Draw();
-				Window.SwapBuffers();
+				Time.Tick();
+
+				while (Time.DoUpdate)
+				{
+					PreUpdate();
+					Update();
+					Time.Update();
+				}
+
+				if (Window.VSync || Time.DoDraw)
+				{
+					Draw();
+					Window.SwapBuffers();
+					Time.Draw();
+					//Platform.Delay(1);
+				}
 			}
 			Destroy();
 			PostDestroy();
@@ -39,7 +51,6 @@
 
 		private void PreUpdate()
 		{
-			Time.Update();
 			Input.Clear();
 			Platform.PollEvents();
 			Input.Update();

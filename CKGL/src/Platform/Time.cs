@@ -2,29 +2,84 @@
 {
 	public static class Time
 	{
-		private static ulong previous;
-		private static ulong current;
+		private static double t = 0.0;
+		public static float TotalSeconds { get { return (float)t; } }
+		public static float TotalMilliseconds { get { return (float)(t * 1000.0); } }
 
-		public static ulong TotalMilliseconds
+		private static double updateHz = 60.0;
+		private static double dt = 1.0 / updateHz;
+		public static float DeltaTime { get { return (float)dt; } }
+
+		public static bool UseMinimumUPS = false;
+		public static double MinimumUPS { get; private set; } = 30.0;
+		public static double MinimumSPU { get; private set; } = 1.0 / MinimumUPS;
+
+		public static float UPS { get; private set; } = (float)(1.0 / dt);
+		public static float SPU { get; private set; } = (float)dt;
+		public static float FPS { get; private set; } = (float)(1.0 / dt);
+		public static float SPF { get; private set; } = (float)dt;
+
+		private static double accumulator = 0.0;
+		public static bool DoUpdate { get { return accumulator >= dt; } }
+		public static bool DoDraw { get; private set; } = false;
+
+		public static void SetUpdateHz(double updateHz)
 		{
-			get { return Platform.TotalMilliseconds; }
+			if (Time.updateHz != updateHz)
+			{
+				if (updateHz <= 0f)
+					throw new System.Exception("UpdateHz must be greater than 0.");
+				Time.updateHz = updateHz;
+				dt = 1.0 / Time.updateHz;
+
+				SPU = (float)dt;
+				UPS = (float)(1.0 / dt);
+			}
 		}
 
-		public static float TotalSeconds
+		public static void SetMinimumUPS(double minimumUPS)
 		{
-			get { return Platform.TotalMilliseconds * 0.001f; }
+			if (MinimumUPS != minimumUPS)
+			{
+				if (minimumUPS <= 0f)
+					throw new System.Exception("MinimumUPS must be greater than 0.");
+				MinimumUPS = minimumUPS;
+				MinimumSPU = 1.0 / MinimumUPS;
+			}
 		}
 
-		public static float DeltaTime { get; private set; }
-		//public static float DeltaTimeAverage { get; private set; }
+		private static ulong tickCurrentTime = Platform.PerformanceCounter;
+		public static void Tick()
+		{
+			ulong newTime = Platform.PerformanceCounter;
+			double tickDeltaTime = (newTime - tickCurrentTime) / (double)Platform.PerformanceFrequency;
+
+			// Minimum UpdateHz, slow game down if slower
+			if (UseMinimumUPS && tickDeltaTime > MinimumSPU)
+				tickDeltaTime = MinimumSPU;
+
+			tickCurrentTime = newTime;
+
+			accumulator += tickDeltaTime;
+		}
 
 		public static void Update()
 		{
-			previous = current;
-			current = Platform.PerformanceCounter;
+			accumulator -= dt;
+			t += dt;
+			DoDraw = true;
+		}
 
-			DeltaTime = (float)(((current - previous) * 1000) / (double)Platform.PerformanceFrequency);
-			//DeltaTimeAverage = DeltaTimeAverage.Lerp(DeltaTime, 0.1f).Min(500f);
+		private static ulong drawCurrentTime;
+		public static void Draw()
+		{
+			ulong newTime = Platform.PerformanceCounter;
+			double drawDeltaTime = ((newTime - drawCurrentTime) / (double)Platform.PerformanceFrequency);
+			drawCurrentTime = newTime;
+
+			SPF = (float)drawDeltaTime;
+			FPS = (float)(1.0 / drawDeltaTime);
+			DoDraw = false;
 		}
 
 		public static class Stopwatch

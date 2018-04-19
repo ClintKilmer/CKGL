@@ -84,7 +84,7 @@ void main()
 	{
 		private static int width = 320;
 		private static int height = 180;
-		private static int scale = 4;
+		private static int scale = 3;
 
 		public CKGLTest()
 			: base(windowTitle: "CKGL Game!",
@@ -139,7 +139,8 @@ void main()
 		public override void Update()
 		{
 			//Window.Title = $"{Time.DeltaTime.ToString("n1")}ms - Info: {Platform.OS} | {Time.TotalSeconds.ToString("n1")} - Buffers: {Audio.BufferCount} - Sources: {Audio.SourceCount} - Position: [{Window.X}, {Window.Y}] - Size: [{Window.Width}, {Window.Height}] - Mouse: [{Input.Mouse.Position.X}, {Input.Mouse.Position.Y}]";
-			Window.Title = $"{Time.DeltaTime.ToString("n1")}ms | Position: [{Window.X}, {Window.Y}] | Size: [{Window.Width}, {Window.Height}] | Mouse: [{Input.Mouse.Position.X}, {Input.Mouse.Position.Y}]";
+			//Window.Title = $"{Time.DeltaTime.ToString("n1")}ms | Position: [{Window.X}, {Window.Y}] | Size: [{Window.Width}, {Window.Height}] | Mouse: [{Input.Mouse.Position.X}, {Input.Mouse.Position.Y}]";
+			Window.Title = $"VSync: {Window.VSync} | {Time.UPS.ToString("n0")}ups | {Time.FPS.ToString("n0")}fps | {Time.TotalSeconds.ToString("n0")}s | WinPos: [{Window.X}, {Window.Y}] | Size: [{Window.Size}] | Mouse: [{Input.Mouse.Position}]";
 
 			if (Input.Keyboard.Down(KeyCode.Backspace))
 				Platform.Quit();
@@ -150,8 +151,11 @@ void main()
 			if (Input.Keyboard.Pressed(KeyCode.F10))
 				Window.Borderless = !Window.Borderless;
 
-			if (Input.Keyboard.Pressed(KeyCode.F9))
+			if (Input.Keyboard.Pressed(KeyCode.F8))
 				Window.Resizable = !Window.Resizable;
+
+			if (Input.Keyboard.Pressed(KeyCode.F7))
+				Window.VSync = !Window.VSync;
 
 			if (Input.Mouse.LeftPressed)
 				windowDraggingPosition = Input.Mouse.LastPosition;
@@ -163,7 +167,7 @@ void main()
 			if (Input.Keyboard.Released(KeyCode.Space) || Input.Mouse.LeftReleased)
 				Sounds.sndPop2.Play();
 
-			var speed = 0.01f;
+			var speed = 10f;
 			if (Input.Keyboard.Down(KeyCode.Z))
 				cameraRotationZ -= 0.01f;
 			if (Input.Keyboard.Down(KeyCode.C))
@@ -282,7 +286,7 @@ void main()
 												  new Colour(Random.Range(1f), Random.Range(1f), Random.Range(1f), Random.Range(1f)));
 			Renderer.Draw.LineListStrip.End();
 
-			Renderer.Draw.Circle(new Vector2(0f, -8f), 10f, Colour.Green, Colour.Green.Alpha(0.1f), (int)Math.Lerp(4f, 64f, Math.Sin(Time.TotalSeconds * 0.3f).Abs()));
+			Renderer.Draw.Circle(new Vector2(0f, -8f), 10f, Colour.Green, Colour.Green.Alpha(0.1f), (int)Math.Lerp(8f, 64f, Math.SinNormalized(Time.TotalSeconds)));
 
 			//for (int i = 0; i < 100; i++)
 			//	Renderer.Draw.Pixel(new Vector3(Random.Range(-40f, 40f), Random.Range(-20f, 20f), 0.0f),
