@@ -50,7 +50,7 @@ namespace OpenGL
 			{
 				if (field.Name.StartsWith("gl", StringComparison.Ordinal))
 				{
-					var addr = CKGL.Platform.GetProcAddress(field.Name);
+					var addr = Platform.GetProcAddress(field.Name);
 					if (addr == IntPtr.Zero)
 						throw new Exception("OpenGL function not available: " + field.Name);
 
@@ -71,6 +71,7 @@ namespace OpenGL
 			GetIntegerV((GLuint)maxTextureImageUnits, out maxTextureImageUnits);
 			GetIntegerV((GLuint)maxTextureSize, out maxTextureSize);
 
+			// Debug
 			Output.WriteLine($"OpenGL Version: {MajorVersion}.{MinorVersion}");
 			Output.WriteLine($"OpenGL MaxColourAttachments: {MaxColourAttachments}");
 			Output.WriteLine($"OpenGL MaxCubeMapTextureSize: {MaxCubeMapTextureSize}");
@@ -81,6 +82,11 @@ namespace OpenGL
 			Output.WriteLine($"OpenGL MaxSamples: {MaxSamples}");
 			Output.WriteLine($"OpenGL MaxTextureImageUnits: {MaxTextureImageUnits}");
 			Output.WriteLine($"OpenGL MaxTextureSize: {MaxTextureSize}");
+
+			Output.WriteLine($"OpenGL Version: {GetString(Strings.Version)}");
+			Output.WriteLine($"OpenGL Vendor: {GetString(Strings.Vendor)}");
+			Output.WriteLine($"OpenGL Renderer: {GetString(Strings.Renderer)}");
+			//Output.WriteLine($"OpenGL - Extensions: {GetString(Strings.Extensions)}");
 		}
 
 #pragma warning disable 0649
@@ -185,6 +191,18 @@ namespace OpenGL
 		{
 			glPolygonMode(face, polygonMode);
 			CheckError();
+		}
+
+		unsafe delegate IntPtr _glGetString(Strings name);
+		static _glGetString glGetString;
+		static unsafe string GetString(Strings name)
+		{
+			unsafe
+			{
+				string s = new string((sbyte*)glGetString(name));
+				CheckError();
+				return s;
+			}
 		}
 
 		unsafe delegate void _glGetIntegerv(GLuint name, int* data);
@@ -1037,6 +1055,14 @@ namespace OpenGL
 		}
 
 #pragma warning restore 0649
+	}
+
+	public enum Strings
+	{
+		Vendor = 0x1F00,
+		Renderer = 0x1F01,
+		Version = 0x1F02,
+		Extensions = 0x1F03
 	}
 
 	public enum FramebufferStatus
