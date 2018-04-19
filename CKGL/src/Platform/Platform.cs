@@ -194,6 +194,12 @@ namespace CKGL
 			Window.Create(windowTitle, windowWidth, windowHeight, windowVSync, windowFullscreen, windowResizable, windowBorderless);
 
 			Running = true;
+
+			// Debug
+			Output.WriteLine($"Platform - Video Driver: {SDL_GetCurrentVideoDriver()}");
+			Output.WriteLine($"Platform - Audio Driver: {SDL_GetCurrentAudioDriver()}");
+			Output.WriteLine($"Platform - # of CPUs: {SDL_GetCPUCount()}");
+			Output.WriteLine($"Platform - Total RAM: {SDL_GetSystemRAM()}MB");
 		}
 
 		public static void Destroy()
