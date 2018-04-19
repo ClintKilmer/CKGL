@@ -28,6 +28,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\MeshBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\OpenGL.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\Renderer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\RenderTarget.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\Shader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\Shaders.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\Sprite.cs" />
@@ -58,6 +59,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\Vector2.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\Vector3.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\Vector4.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Platform\Output.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Platform\Platform.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Platform\Time.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Platform\Window.cs" />

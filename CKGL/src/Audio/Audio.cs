@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+
 using OpenAL;
 using static SDL2.SDL;
 
@@ -99,19 +100,19 @@ namespace CKGL
 				switch (error)
 				{
 					case ALC10.ALC_INVALID_DEVICE:
-						Console.WriteLine("OpenAL ALC error: ALC_INVALID_DEVICE");
+						Output.WriteLine("OpenAL ALC error: ALC_INVALID_DEVICE");
 						break;
 					case ALC10.ALC_INVALID_CONTEXT:
-						Console.WriteLine("OpenAL ALC error: ALC_INVALID_CONTEXT");
+						Output.WriteLine("OpenAL ALC error: ALC_INVALID_CONTEXT");
 						break;
 					case ALC10.ALC_INVALID_ENUM:
-						Console.WriteLine("OpenAL ALC error: ALC_INVALID_ENUM");
+						Output.WriteLine("OpenAL ALC error: ALC_INVALID_ENUM");
 						break;
 					case ALC10.ALC_INVALID_VALUE:
-						Console.WriteLine("OpenAL ALC error: ALC_INVALID_VALUE");
+						Output.WriteLine("OpenAL ALC error: ALC_INVALID_VALUE");
 						break;
 					case ALC10.ALC_OUT_OF_MEMORY:
-						Console.WriteLine("OpenAL ALC error: ALC_OUT_OF_MEMORY");
+						Output.WriteLine("OpenAL ALC error: ALC_OUT_OF_MEMORY");
 						break;
 				}
 				return true;
@@ -127,19 +128,19 @@ namespace CKGL
 				switch (error)
 				{
 					case AL10.AL_INVALID_NAME:
-						Console.WriteLine("OpenAL AL error: AL_INVALID_NAME");
+						Output.WriteLine("OpenAL AL error: AL_INVALID_NAME");
 						break;
 					case AL10.AL_INVALID_ENUM:
-						Console.WriteLine("OpenAL AL error: AL_INVALID_ENUM");
+						Output.WriteLine("OpenAL AL error: AL_INVALID_ENUM");
 						break;
 					case AL10.AL_INVALID_VALUE:
-						Console.WriteLine("OpenAL AL error: AL_INVALID_VALUE");
+						Output.WriteLine("OpenAL AL error: AL_INVALID_VALUE");
 						break;
 					case AL10.AL_INVALID_OPERATION:
-						Console.WriteLine("OpenAL AL error: AL_INVALID_OPERATION");
+						Output.WriteLine("OpenAL AL error: AL_INVALID_OPERATION");
 						break;
 					case AL10.AL_OUT_OF_MEMORY:
-						Console.WriteLine("OpenAL AL error: AL_OUT_OF_MEMORY");
+						Output.WriteLine("OpenAL AL error: AL_OUT_OF_MEMORY");
 						break;
 				}
 				return true;
@@ -363,7 +364,7 @@ namespace CKGL
 		//	}
 		//	catch
 		//	{
-		//		Console.WriteLine("...Failed to load note: " + filename);
+		//		Output.WriteLine("...Failed to load note: " + filename);
 		//		//return false;
 		//		//left = new float[ 1 ]{ 0f };
 		//	}

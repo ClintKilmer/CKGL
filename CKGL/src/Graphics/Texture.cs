@@ -19,7 +19,7 @@ namespace CKGL
 		public static TextureWrap DefaultWrapX = TextureWrap.Clamp;
 		public static TextureWrap DefaultWrapY = TextureWrap.Clamp;
 
-		private GLuint id;
+		public GLuint ID { get; private set; }
 
 		public int Width { get; set; }
 		public int Height { get; set; }
@@ -32,7 +32,7 @@ namespace CKGL
 						  TextureFilter minFilter, TextureFilter magFilter,
 						  TextureWrap wrapX, TextureWrap wrapY)
 		{
-			id = GL.GenTexture();
+			ID = GL.GenTexture();
 			Format = format;
 			BindTarget = bindTarget;
 			DataTarget = dataTarget;
@@ -44,10 +44,10 @@ namespace CKGL
 
 		public void Destroy()
 		{
-			if (id != default(GLuint))
+			if (ID != default(GLuint))
 			{
-				GL.DeleteTexture(id);
-				id = default(GLuint);
+				GL.DeleteTexture(ID);
+				ID = default(GLuint);
 			}
 		}
 
@@ -127,7 +127,7 @@ namespace CKGL
 		public bool IsBound(GLuint textureSlot) => IsBound(textureSlot, BindTarget);
 		private bool IsBound(GLuint textureSlot, TextureTarget target)
 		{
-			return bindings[textureSlot].ID == id && bindings[textureSlot].Target == target;
+			return bindings[textureSlot].ID == ID && bindings[textureSlot].Target == target;
 		}
 
 		public void Bind() => Bind(0, BindTarget);
@@ -137,9 +137,9 @@ namespace CKGL
 			if (!IsBound(textureSlot, target))
 			{
 				GL.ActiveTexture(textureSlot);
-				GL.BindTexture(target, id);
+				GL.BindTexture(target, ID);
 
-				bindings[textureSlot].ID = id;
+				bindings[textureSlot].ID = ID;
 				bindings[textureSlot].Target = target;
 			}
 		}
@@ -148,18 +148,18 @@ namespace CKGL
 		#region Overrides
 		public override string ToString()
 		{
-			return $"{id}";
+			return $"{ID}";
 		}
 		#endregion
 
 		#region Operators
 		public static bool operator ==(Texture a, Texture b)
 		{
-			return a.id == b.id;
+			return a.ID == b.ID;
 		}
 		public static bool operator !=(Texture a, Texture b)
 		{
-			return a.id != b.id;
+			return a.ID != b.ID;
 		}
 		#endregion
 	}

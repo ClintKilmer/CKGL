@@ -82,10 +82,14 @@ void main()
 
 	public class CKGLTest : Game
 	{
+		private static int width = 320;
+		private static int height = 180;
+		private static int scale = 4;
+
 		public CKGLTest()
 			: base(windowTitle: "CKGL Game!",
-				   windowWidth: 640,
-				   windowHeight: 360,
+				   windowWidth: width * scale,
+				   windowHeight: height * scale,
 				   windowVSync: true,
 				   windowFullscreen: false,
 				   windowResizable: true,
@@ -107,6 +111,8 @@ void main()
 		Matrix ViewMatrix = Matrix.Identity;
 		Matrix ProjectionMatrix = Matrix.Identity;
 
+		RenderTarget surface;
+
 		public override void Init()
 		{
 			//Platform.ShowCursor = false; // Default true
@@ -125,7 +131,9 @@ void main()
 
 			// Debug, test spritesheet
 			//SpriteSheets.SpriteSheet.Texture.SavePNG($@"{System.IO.Directory.GetCurrentDirectory()}/SpriteSheet.png");
-			SpriteSheets.SpriteSheet.Texture.SavePNG("SpriteSheet.png");
+			//SpriteSheets.SpriteSheet.Texture.SavePNG("SpriteSheet.png");
+
+			surface = new RenderTarget(width, height, 1, TextureFormat.RGB8);
 		}
 
 		public override void Update()
@@ -172,9 +180,11 @@ void main()
 				direction -= cameraLookatNoVertical;
 			//cameraTranslationMatrix = Matrix.CreateTranslation(-cameraPosition);
 			if (Input.Keyboard.Down(KeyCode.Q))
-				cameraScale -= 0.03f * cameraScale;
+				direction += Vector3.Down;
+			//cameraScale -= 0.03f * cameraScale;
 			if (Input.Keyboard.Down(KeyCode.E))
-				cameraScale += 0.03f * cameraScale;
+				direction += Vector3.Up;
+			//cameraScale += 0.03f * cameraScale;
 
 			cameraPosition += direction.Normalized * speed * Time.DeltaTime;
 
@@ -191,24 +201,29 @@ void main()
 
 		public override void Draw()
 		{
+			RenderTarget.Bind(null);
+			Graphics.Clear(new Colour(0.1f, 0.1f, 0.1f, 1f));
+
+			Renderer.Start();
+
+			// Set Shader uniforms
+			//shader.SetUniform("offset", Time.TotalMilliseconds * 0.0016f, Time.TotalMilliseconds * 0.002f, Time.TotalMilliseconds * 0.0023f);
+
+			Renderer.SetRenderTarget(surface);
+
 			// Clear the screen
 			if (Input.Keyboard.Down(KeyCode.Space))
 			{ }
 			//Graphics.Clear(Colour.Grey * 0.25f);
 			else
-				Graphics.Clear(Colour.Black);
-
-			// Set Shader uniforms
-			//shader.SetUniform("offset", Time.TotalMilliseconds * 0.0016f, Time.TotalMilliseconds * 0.002f, Time.TotalMilliseconds * 0.0023f);
-
-			Renderer.Start();
+				Renderer.Clear(Colour.Black);
 
 			//Renderer.SetFrontFaceState(FrontFace.Clockwise);
 			//Renderer.SetCullState(CullState.Back);
-			//Renderer.SetBlendState(BlendState.AlphaBlend);
+			Renderer.SetBlendState(BlendState.AlphaBlend);
 			Renderer.SetPolygonModeState(PolygonModeState.FrontFillBackLine);
 
-			CKGL.Shaders.Renderer.SetUniform("MVP", Matrix.Model3D * ViewMatrix * ProjectionMatrix);
+			CKGL.Shaders.Renderer.SetUniform("MVP", Matrix.Model * ViewMatrix * ProjectionMatrix);
 
 			Renderer.Draw.Triangle(new Vector2(0f, 1f),
 								   new Vector2(0f, 1f) * Matrix2D.CreateRotationZ(Math.RotationsToRadians(0.66666f)),
@@ -224,8 +239,8 @@ void main()
 								   Vector2.Zero);
 
 			Renderer.SetTexture(Textures.Test);
-			Renderer.Draw.Rectangle(2f,
-									1f,
+			Renderer.Draw.Rectangle(4f,
+									-1f,
 									1f,
 									1f,
 									Colour.White,
@@ -239,20 +254,20 @@ void main()
 									new Vector2(1f, 1f),
 									//-Time.TotalSeconds * 0.5f,
 									0f,
-									new Vector2(2.5f, 1.5f));
+									new Vector2(4.5f, -0.5f));
 
 			Renderer.Draw.Sprite(Sprites.Test1,
-								 new Vector2(5f, 0.5f),
+								 new Vector2(2f, -1f),
 								 Vector2.One / 8f,
 								 Colour.White);
 
 			Renderer.Draw.Text(SpriteFonts.Font,
-							   "|:shadow=0,1,0,1,0,0.5:|ABCDEFGHIJKLMNOPQRSTUVWXYZ\nabcdefghijklmnopqrstuvwxyz\n1234567890\n_-+=(){}[]<>\\|/;:'\"?.,!@#$%^&*~`",
+							   "|:shadow=0,-1,1,1,1,0.5:|ABCDEFGHIJKLMNOPQRSTUVWXYZ\nabcdefghijklmnopqrstuvwxyz\n1234567890\n_-+=(){}[]<>\\|/;:'\"?.,!@#$%^&*~`",
 							   new Vector2(0f, 4f),
 							   Vector2.One / 7f,
 							   Colour.White,
 							   HAlign.Center,
-							   VAlign.Top);
+							   VAlign.Bottom);
 
 			//Renderer.Draw.TriangleListStrip.Begin();
 			////int ii = Random.Range(1000, 10000);
@@ -267,11 +282,38 @@ void main()
 												  new Colour(Random.Range(1f), Random.Range(1f), Random.Range(1f), Random.Range(1f)));
 			Renderer.Draw.LineListStrip.End();
 
+			Renderer.Draw.Circle(new Vector2(0f, -8f), 10f, Colour.Green, Colour.Green.Alpha(0.1f), (int)Math.Lerp(4f, 64f, Math.Sin(Time.TotalSeconds * 0.3f).Abs()));
+
 			//for (int i = 0; i < 100; i++)
 			//	Renderer.Draw.Pixel(new Vector3(Random.Range(-40f, 40f), Random.Range(-20f, 20f), 0.0f),
 			//						new Colour(Random.Range(1f), Random.Range(1f), Random.Range(1f), 1f));
 
+			//Renderer.ResetRenderTarget();
+			//Renderer.Draw.RenderTarget(surface, 0,
+			//						   -5f, 5f, 0.1f,
+			//						   Colour.White);
+
 			Renderer.End();
+
+			scale = Math.Max(1, Math.Min(Window.Width / width, Window.Height / height));
+			surface.BlitTextureTo(null, 0, BlitFilter.Nearest, new RectangleI((Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, width * scale, height * scale));
+			//surface.BlitTextureTo(null, 0, BlitFilter.Nearest, new RectangleI(0, 0, width, height));
+
+			// Screenshot
+			if (Input.Keyboard.Down(KeyCode.F9))
+			{
+				string s = @"X:\Dropbox\Clint\Gamedev\2018-03-22 CKGL\screenshots\";
+
+				int sequentialNumber = 1;
+				while (System.IO.File.Exists($@"{s}{System.DateTime.Now.ToString("yyyy-MM-dd HH.mm.ss")}-{sequentialNumber} [CKGL].png"))
+				{
+					sequentialNumber++;
+				}
+
+				surface.textures[0].SavePNG($@"{s}{System.DateTime.Now.ToString("yyyy-MM-dd HH.mm.ss")}-{sequentialNumber} [CKGL].png");
+
+				//System.GC.Collect();
+			}
 		}
 
 		public override void Destroy()
@@ -280,12 +322,12 @@ void main()
 
 		public override void OnFocusGained()
 		{
-			Debug("Focus Gained");
+			Output.WriteLine("Focus Gained");
 		}
 
 		public override void OnFocusLost()
 		{
-			Debug("Focus Lost");
+			Output.WriteLine("Focus Lost");
 		}
 
 		public override void OnWindowResized()
