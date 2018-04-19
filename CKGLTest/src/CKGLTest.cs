@@ -82,10 +82,14 @@ void main()
 
 	public class CKGLTest : Game
 	{
+		private static int width = 320;
+		private static int height = 180;
+		private static int scale = 4;
+
 		public CKGLTest()
 			: base(windowTitle: "CKGL Game!",
-				   windowWidth: 640,
-				   windowHeight: 360,
+				   windowWidth: width * scale,
+				   windowHeight: height * scale,
 				   windowVSync: true,
 				   windowFullscreen: false,
 				   windowResizable: true,
@@ -129,7 +133,7 @@ void main()
 			//SpriteSheets.SpriteSheet.Texture.SavePNG($@"{System.IO.Directory.GetCurrentDirectory()}/SpriteSheet.png");
 			//SpriteSheets.SpriteSheet.Texture.SavePNG("SpriteSheet.png");
 
-			surface = new RenderTarget(320, 180, 1, TextureFormat.RGBA8);
+			surface = new RenderTarget(width, height, 1, TextureFormat.RGB8);
 		}
 
 		public override void Update()
@@ -198,7 +202,7 @@ void main()
 		public override void Draw()
 		{
 			RenderTarget.Bind(null);
-			Graphics.Clear(Colour.Magenta);
+			Graphics.Clear(new Colour(0.1f, 0.1f, 0.1f, 1f));
 
 			Renderer.Start();
 
@@ -278,6 +282,8 @@ void main()
 												  new Colour(Random.Range(1f), Random.Range(1f), Random.Range(1f), Random.Range(1f)));
 			Renderer.Draw.LineListStrip.End();
 
+			Renderer.Draw.Circle(new Vector2(0f, -8f), 10f, Colour.Green, Colour.Green.Alpha(0.1f), (int)Math.Lerp(4f, 64f, Math.Sin(Time.TotalSeconds * 0.3f).Abs()));
+
 			//for (int i = 0; i < 100; i++)
 			//	Renderer.Draw.Pixel(new Vector3(Random.Range(-40f, 40f), Random.Range(-20f, 20f), 0.0f),
 			//						new Colour(Random.Range(1f), Random.Range(1f), Random.Range(1f), 1f));
@@ -289,10 +295,12 @@ void main()
 
 			Renderer.End();
 
-			surface.BlitTextureTo(null, 0, BlitFilter.Nearest, new RectangleI(0, 0, Window.Width, Window.Height));
+			scale = Math.Max(1, Math.Min(Window.Width / width, Window.Height / height));
+			surface.BlitTextureTo(null, 0, BlitFilter.Nearest, new RectangleI((Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, width * scale, height * scale));
+			//surface.BlitTextureTo(null, 0, BlitFilter.Nearest, new RectangleI(0, 0, width, height));
 
 			// Screenshot
-			if (Input.Keyboard.Pressed(KeyCode.F9))
+			if (Input.Keyboard.Down(KeyCode.F9))
 			{
 				string s = @"X:\Dropbox\Clint\Gamedev\2018-03-22 CKGL\screenshots\";
 
