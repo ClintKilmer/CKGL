@@ -170,6 +170,11 @@
 			return (float)System.Math.Sin(x);
 		}
 
+		public static float SinNormalized(this float x)
+		{
+			return (float)((System.Math.Sin(x) + 1.0) * 0.5);
+		}
+
 		public static float Asin(this float x)
 		{
 			return (float)System.Math.Asin(x);
@@ -178,6 +183,11 @@
 		public static float Cos(this float x)
 		{
 			return (float)System.Math.Cos(x);
+		}
+
+		public static float CosNormalized(this float x)
+		{
+			return (float)((System.Math.Cos(x) + 1.0) * 0.5);
 		}
 
 		public static float Acos(this float x)
