@@ -4,7 +4,7 @@
 - Platform.SaveJPG is broken
 - ScissorState
 - State - move all state logic out of renderer and have dirty state flag
-- Renderer - add lineloop and any fixgure out all DrawModes
+- Renderer - add lineloop and any figure out all DrawModes
 - Vector 2/3 rotate around
 - Instead of giving Renderer.Draw_() a rotation, give it a transform (A Model Matrix)
 - Hard Coded uniforms in shaders via inheritance
