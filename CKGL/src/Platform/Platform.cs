@@ -9,43 +9,46 @@ namespace CKGL
 	public static class Platform
 	{
 		#region Events
-		public delegate void KeyEvent(KeyCode keyCode, ScanCode scanCode, bool repeat);
-		public delegate void MouseMoveEvent(int x, int y);
-		public delegate void MouseButtonEvent(int buttonID);
-		public delegate void MouseScrollEvent(int x, int y);
-		public delegate void JoyDeviceEvent(int deviceID);
-		public delegate void JoyButtonEvent(int deviceID, int buttonID);
-		public delegate void JoyAxisEvent(int deviceID, int axisID, float value);
-		public delegate void OtherEvent(int eventID);
+		public static class Events
+		{
+			public delegate void KeyEvent(KeyCode keyCode, ScanCode scanCode, bool repeat);
+			public delegate void MouseMoveEvent(int x, int y);
+			public delegate void MouseButtonEvent(int buttonID);
+			public delegate void MouseScrollEvent(int x, int y);
+			public delegate void JoyDeviceEvent(int deviceID);
+			public delegate void JoyButtonEvent(int deviceID, int buttonID);
+			public delegate void JoyAxisEvent(int deviceID, int axisID, float value);
+			public delegate void OtherEvent(int eventID);
 
-		public static Action OnQuit;
-		public static KeyEvent OnKeyDown;
-		public static KeyEvent OnKeyRepeat;
-		public static KeyEvent OnKeyUp;
-		public static MouseMoveEvent OnMouseMove;
-		public static MouseButtonEvent OnMouseButtonDown;
-		public static MouseButtonEvent OnMouseButtonUp;
-		public static MouseScrollEvent OnMouseScroll;
-		public static JoyDeviceEvent OnJoyDeviceAdd;
-		public static JoyDeviceEvent OnJoyDeviceRemove;
-		public static JoyButtonEvent OnJoyButtonDown;
-		public static JoyButtonEvent OnJoyButtonUp;
-		public static JoyAxisEvent OnJoyAxisMove;
-		public static Action OnWinClose;
-		public static Action OnWinShown;
-		public static Action OnWinHidden;
-		public static Action OnWinExposed;
-		public static Action OnWinMoved;
-		public static Action OnWinResized;
-		public static Action OnWinMinimized;
-		public static Action OnWinMaximized;
-		public static Action OnWinRestored;
-		public static Action OnWinEnter;
-		public static Action OnWinLeave;
-		public static Action OnWinFocusGained;
-		public static Action OnWinFocusLost;
-		public static OtherEvent OnWinOtherEvent;
-		public static OtherEvent OnOtherEvent;
+			public static Action OnQuit;
+			public static KeyEvent OnKeyDown;
+			public static KeyEvent OnKeyRepeat;
+			public static KeyEvent OnKeyUp;
+			public static MouseMoveEvent OnMouseMove;
+			public static MouseButtonEvent OnMouseButtonDown;
+			public static MouseButtonEvent OnMouseButtonUp;
+			public static MouseScrollEvent OnMouseScroll;
+			public static JoyDeviceEvent OnJoyDeviceAdd;
+			public static JoyDeviceEvent OnJoyDeviceRemove;
+			public static JoyButtonEvent OnJoyButtonDown;
+			public static JoyButtonEvent OnJoyButtonUp;
+			public static JoyAxisEvent OnJoyAxisMove;
+			public static Action OnWinClose;
+			public static Action OnWinShown;
+			public static Action OnWinHidden;
+			public static Action OnWinExposed;
+			public static Action OnWinMoved;
+			public static Action OnWinResized;
+			public static Action OnWinMinimized;
+			public static Action OnWinMaximized;
+			public static Action OnWinRestored;
+			public static Action OnWinEnter;
+			public static Action OnWinLeave;
+			public static Action OnWinFocusGained;
+			public static Action OnWinFocusLost;
+			public static OtherEvent OnWinOtherEvent;
+			public static OtherEvent OnOtherEvent;
+		}
 		#endregion
 
 		public static bool Running { get; private set; } = false;
@@ -201,47 +204,47 @@ namespace CKGL
 				switch (Event.type)
 				{
 					case SDL_EventType.SDL_QUIT:
-						OnQuit?.Invoke();
+						Events.OnQuit?.Invoke();
 						Quit();
 						break;
 					case SDL_EventType.SDL_KEYDOWN:
-						OnKeyDown?.Invoke((KeyCode)Event.key.keysym.sym, (ScanCode)Event.key.keysym.scancode, Event.key.repeat != 0);
+						Events.OnKeyDown?.Invoke((KeyCode)Event.key.keysym.sym, (ScanCode)Event.key.keysym.scancode, Event.key.repeat != 0);
 						break;
 					case SDL_EventType.SDL_KEYUP:
-						OnKeyUp?.Invoke((KeyCode)Event.key.keysym.sym, (ScanCode)Event.key.keysym.scancode, Event.key.repeat != 0);
+						Events.OnKeyUp?.Invoke((KeyCode)Event.key.keysym.sym, (ScanCode)Event.key.keysym.scancode, Event.key.repeat != 0);
 						break;
 					case SDL_EventType.SDL_MOUSEMOTION:
-						OnMouseMove?.Invoke(Event.motion.x, Event.motion.y);
+						Events.OnMouseMove?.Invoke(Event.motion.x, Event.motion.y);
 						break;
 					case SDL_EventType.SDL_MOUSEBUTTONDOWN:
-						OnMouseButtonDown?.Invoke(Event.button.button);
+						Events.OnMouseButtonDown?.Invoke(Event.button.button);
 						break;
 					case SDL_EventType.SDL_MOUSEBUTTONUP:
-						OnMouseButtonUp?.Invoke(Event.button.button);
+						Events.OnMouseButtonUp?.Invoke(Event.button.button);
 						break;
 					case SDL_EventType.SDL_MOUSEWHEEL:
-						OnMouseScroll?.Invoke(Event.wheel.x, Event.wheel.y);
+						Events.OnMouseScroll?.Invoke(Event.wheel.x, Event.wheel.y);
 						break;
 					//case SDL_EventType.SDL_JOYDEVICEADDED:
-					//	OnJoyDeviceAdd?.Invoke(Event.JDevice.Which);
+					//	Events.OnJoyDeviceAdd?.Invoke(Event.JDevice.Which);
 					//	break;
 					//case SDL_EventType.SDL_JOYDEVICEREMOVED:
-					//	OnJoyDeviceRemove?.Invoke(Event.JDevice.Which);
+					//	Events.OnJoyDeviceRemove?.Invoke(Event.JDevice.Which);
 					//	break;
 					//case SDL_EventType.SDL_JOYBUTTONDOWN:
-					//	OnJoyButtonDown?.Invoke(Event.JButton.Which, Event.JButton.Button);
+					//	Events.OnJoyButtonDown?.Invoke(Event.JButton.Which, Event.JButton.Button);
 					//	break;
 					//case SDL_EventType.SDL_JOYBUTTONUP:
-					//	OnJoyButtonDown?.Invoke(Event.JButton.Which, Event.JButton.Button);
+					//	Events.OnJoyButtonDown?.Invoke(Event.JButton.Which, Event.JButton.Button);
 					//	break;
 					//case SDL_EventType.SDL_JOYAXISMOTION:
-					//	OnJoyAxisMove?.Invoke(Event.JAxis.Which, Event.JAxis.Axis, Event.JAxis.Value / (float)short.MaxValue);
+					//	Events.OnJoyAxisMove?.Invoke(Event.JAxis.Which, Event.JAxis.Axis, Event.JAxis.Value / (float)short.MaxValue);
 					//	break;
 					//case SDL_EventType.SDL_JOYHATMOTION:
-					//	OnJoyAxisMove?.Invoke(Event.JAxis.Which, Event.JAxis.Axis, Event.JAxis.Value / (float)short.MaxValue);
+					//	Events.OnJoyAxisMove?.Invoke(Event.JAxis.Which, Event.JAxis.Axis, Event.JAxis.Value / (float)short.MaxValue);
 					//	break;
 					//case SDL_EventType.SDL_JOYBALLMOTION:
-					//	OnJoyAxisMove?.Invoke(Event.JAxis.Which, Event.JAxis.Axis, Event.JAxis.Value / (float)short.MaxValue);
+					//	Events.OnJoyAxisMove?.Invoke(Event.JAxis.Which, Event.JAxis.Axis, Event.JAxis.Value / (float)short.MaxValue);
 					//	break;
 					case SDL_EventType.SDL_WINDOWEVENT:
 						if (Event.window.windowID == Window.ID)
@@ -250,46 +253,46 @@ namespace CKGL
 							switch (Event.window.windowEvent)
 							{
 								case SDL_WindowEventID.SDL_WINDOWEVENT_CLOSE:
-									OnWinClose?.Invoke();
+									Events.OnWinClose?.Invoke();
 									break;
 								case SDL_WindowEventID.SDL_WINDOWEVENT_SHOWN:
-									OnWinShown?.Invoke();
+									Events.OnWinShown?.Invoke();
 									break;
 								case SDL_WindowEventID.SDL_WINDOWEVENT_HIDDEN:
-									OnWinHidden?.Invoke();
+									Events.OnWinHidden?.Invoke();
 									break;
 								case SDL_WindowEventID.SDL_WINDOWEVENT_EXPOSED:
-									OnWinExposed?.Invoke();
+									Events.OnWinExposed?.Invoke();
 									break;
 								case SDL_WindowEventID.SDL_WINDOWEVENT_MOVED:
-									OnWinMoved?.Invoke();
+									Events.OnWinMoved?.Invoke();
 									break;
 								case SDL_WindowEventID.SDL_WINDOWEVENT_RESIZED:
-									OnWinResized?.Invoke();
+									Events.OnWinResized?.Invoke();
 									break;
 								case SDL_WindowEventID.SDL_WINDOWEVENT_MINIMIZED:
-									OnWinMinimized?.Invoke();
+									Events.OnWinMinimized?.Invoke();
 									break;
 								case SDL_WindowEventID.SDL_WINDOWEVENT_MAXIMIZED:
-									OnWinMaximized?.Invoke();
+									Events.OnWinMaximized?.Invoke();
 									break;
 								case SDL_WindowEventID.SDL_WINDOWEVENT_RESTORED:
-									OnWinRestored?.Invoke();
+									Events.OnWinRestored?.Invoke();
 									break;
 								case SDL_WindowEventID.SDL_WINDOWEVENT_ENTER:
-									OnWinEnter?.Invoke();
+									Events.OnWinEnter?.Invoke();
 									break;
 								case SDL_WindowEventID.SDL_WINDOWEVENT_LEAVE:
-									OnWinLeave?.Invoke();
+									Events.OnWinLeave?.Invoke();
 									break;
 								case SDL_WindowEventID.SDL_WINDOWEVENT_FOCUS_GAINED:
-									OnWinFocusGained?.Invoke();
+									Events.OnWinFocusGained?.Invoke();
 									break;
 								case SDL_WindowEventID.SDL_WINDOWEVENT_FOCUS_LOST:
-									OnWinFocusLost?.Invoke();
+									Events.OnWinFocusLost?.Invoke();
 									break;
 								default:
-									OnWinOtherEvent?.Invoke((int)Event.window.windowEvent);
+									Events.OnWinOtherEvent?.Invoke((int)Event.window.windowEvent);
 									break;
 							}
 						}

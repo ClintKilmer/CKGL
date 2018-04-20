@@ -17,9 +17,9 @@
 			Input.Init();
 			Renderer.Init();
 
-			Platform.OnWinFocusGained += () => { OnFocusGained(); };
-			Platform.OnWinFocusLost += () => { OnFocusLost(); };
-			Platform.OnWinResized += () => { OnWindowResized(); };
+			Platform.Events.OnWinFocusGained += () => { OnFocusGained(); };
+			Platform.Events.OnWinFocusLost += () => { OnFocusLost(); };
+			Platform.Events.OnWinResized += () => { OnWindowResized(); };
 		}
 
 		public void GameLoop()

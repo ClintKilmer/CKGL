@@ -12,7 +12,7 @@ namespace CKGL
 			GL.Init();
 
 			// TODO - OnWinResized - GL.Viewport?
-			//Platform.OnWinResized += () =>
+			//Platform.Events.OnWinResized += () =>
 			//{
 			//	GL.Viewport(0, 0, Window.Width, Window.Height);
 			//};

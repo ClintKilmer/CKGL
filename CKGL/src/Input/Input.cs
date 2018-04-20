@@ -2,7 +2,7 @@
 
 namespace CKGL
 {
-	public class Input
+	public static class Input
 	{
 		internal static void Init()
 		{
@@ -38,7 +38,7 @@ namespace CKGL
 
 			internal static void Init()
 			{
-				Platform.OnKeyDown += (keycode, scancode, repeated) =>
+				Platform.Events.OnKeyDown += (keycode, scancode, repeated) =>
 				{
 					downKeyCode.Add(keycode);
 					downScanCode.Add(scancode);
@@ -59,7 +59,7 @@ namespace CKGL
 					}
 				};
 
-				Platform.OnKeyUp += (keycode, scancode, repeated) =>
+				Platform.Events.OnKeyUp += (keycode, scancode, repeated) =>
 				{
 					downKeyCode.Remove(keycode);
 					releasedKeyCode.Add(keycode);
@@ -146,19 +146,19 @@ namespace CKGL
 
 			internal static void Init()
 			{
-				Platform.OnMouseButtonDown += id =>
+				Platform.Events.OnMouseButtonDown += id =>
 				{
 					down[id] = true;
 					pressed[id] = true;
 				};
 
-				Platform.OnMouseButtonUp += id =>
+				Platform.Events.OnMouseButtonUp += id =>
 				{
 					down[id] = false;
 					released[id] = true;
 				};
 
-				Platform.OnMouseScroll += (x, y) =>
+				Platform.Events.OnMouseScroll += (x, y) =>
 				{
 					Scroll = new Point2(x, y);
 				};
