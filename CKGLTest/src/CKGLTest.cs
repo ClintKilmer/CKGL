@@ -227,7 +227,7 @@ void main()
 			Renderer.SetBlendState(BlendState.AlphaBlend);
 			Renderer.SetPolygonModeState(PolygonModeState.FrontFillBackLine);
 
-			CKGL.Shaders.Renderer.MVP = Matrix.Model * ViewMatrix * ProjectionMatrix;
+			InternalShaders.Renderer.MVP = Matrix.Model * ViewMatrix * ProjectionMatrix;
 
 			Renderer.Draw.Triangle(new Vector2(0f, 1f),
 								   new Vector2(0f, 1f) * Matrix2D.CreateRotationZ(Math.RotationsToRadians(0.66666f)),
