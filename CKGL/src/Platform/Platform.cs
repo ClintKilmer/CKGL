@@ -52,25 +52,10 @@ namespace CKGL
 
 		private static SDL_Event Event;
 
-		public static string OS
-		{
-			get { return SDL_GetPlatform(); }
-		}
-
-		public static uint TotalMilliseconds
-		{
-			get { return SDL_GetTicks(); }
-		}
-
-		public static ulong PerformanceCounter
-		{
-			get { return SDL_GetPerformanceCounter(); }
-		}
-
-		public static ulong PerformanceFrequency
-		{
-			get { return SDL_GetPerformanceFrequency(); }
-		}
+		public static string OS { get { return SDL_GetPlatform(); } }
+		//public static uint TotalMilliseconds { get { return SDL_GetTicks(); } }
+		public static ulong PerformanceCounter { get { return SDL_GetPerformanceCounter(); } }
+		public static ulong PerformanceFrequency { get { return SDL_GetPerformanceFrequency(); } }
 
 		public static bool ShowCursor // Default true
 		{
@@ -106,18 +91,19 @@ namespace CKGL
 		{
 			SetDllDirectory();
 
-			#region Flibit - shims
-			// Missing libs?
+			#region Check for SDL2 libs
 			try
 			{
-				Output.WriteLine($"Platform: {OS}");
+				string test = OS;
 			}
 			catch (Exception e)
 			{
 				Output.WriteLine("SDL2 was not found! Do you have fnalibs?");
 				throw e;
 			}
+			#endregion
 
+			#region Flibit - shims
 			/* SDL2 might complain if an OS that uses SDL_main has not actually
 			 * used SDL_main by the time you initialize SDL2.
 			 * The only platform that is affected is Windows, but we can skip
@@ -196,6 +182,7 @@ namespace CKGL
 			Running = true;
 
 			// Debug
+			Output.WriteLine($"Platform - OS: {OS}");
 			Output.WriteLine($"Platform - Video Driver: {SDL_GetCurrentVideoDriver()}");
 			Output.WriteLine($"Platform - Audio Driver: {SDL_GetCurrentAudioDriver()}");
 			Output.WriteLine($"Platform - # of CPUs: {SDL_GetCPUCount()}");
