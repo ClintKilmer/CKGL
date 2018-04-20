@@ -90,26 +90,57 @@ namespace CKGL
 			get { return Width / (float)Height; }
 		}
 
+		#region VSync
 		public class VSyncMode
 		{
-			// TODO - VSyncMode - LateSwapTearing
-			public static int LateSwapTearing { get; } = -1;
+			// Late Swap Tearing - https://wiki.libsdl.org/SDL_GL_SetSwapInterval
+			// Adaptive VSync - https://www.khronos.org/opengl/wiki/Swap_Interval
+			public static int Adaptive { get; } = -1;
 			public static int Off { get; } = 0;
 			public static int On { get; } = 1;
 		}
 		public static bool VSync
 		{
 			get { return SDL_GL_GetSwapInterval() != VSyncMode.Off; }
-			//set { SDL_GL_SetSwapInterval(value ? VSyncMode.On : VSyncMode.Off); }
 			set
 			{
-				if (SDL_GL_SetSwapInterval(value ? VSyncMode.LateSwapTearing : VSyncMode.Off) == -1)
+				if (value)
 				{
-					SDL_GL_SetSwapInterval(VSyncMode.On);
-					Output.WriteLine("VSync Mode LateSwapTearing not supported. Normal VSync enabled instead.");
+					if (SDL_GL_SetSwapInterval(VSyncMode.Adaptive) == -1)
+					{
+						SDL_GL_SetSwapInterval(VSyncMode.On);
+						Output.WriteLine("Adaptive VSync Mode not supported. Standard VSync enabled instead.");
+					}
+				}
+				else
+				{
+					SDL_GL_SetSwapInterval(VSyncMode.Off);
 				}
 			}
 		}
+
+		public enum VSyncModeEnum
+		{
+			Adaptive = -1,
+			Off = 0,
+			On = 1
+		};
+		public static VSyncModeEnum GetVSyncMode()
+		{
+			switch (SDL_GL_GetSwapInterval())
+			{
+				case -1:
+					return VSyncModeEnum.Adaptive;
+				case 0:
+					return VSyncModeEnum.Off;
+				case 1:
+					return VSyncModeEnum.On;
+				default:
+					throw new NotImplementedException("Unknown VSync Mode");
+
+			}
+		}
+		#endregion
 
 		public static class FullscreenMode
 		{

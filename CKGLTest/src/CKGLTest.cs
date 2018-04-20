@@ -140,7 +140,7 @@ void main()
 		{
 			//Window.Title = $"{Time.DeltaTime.ToString("n1")}ms - Info: {Platform.OS} | {Time.TotalSeconds.ToString("n1")} - Buffers: {Audio.BufferCount} - Sources: {Audio.SourceCount} - Position: [{Window.X}, {Window.Y}] - Size: [{Window.Width}, {Window.Height}] - Mouse: [{Input.Mouse.Position.X}, {Input.Mouse.Position.Y}]";
 			//Window.Title = $"{Time.DeltaTime.ToString("n1")}ms | Position: [{Window.X}, {Window.Y}] | Size: [{Window.Width}, {Window.Height}] | Mouse: [{Input.Mouse.Position.X}, {Input.Mouse.Position.Y}]";
-			Window.Title = $"VSync: {Window.VSync} | {Time.UPS.ToString("n0")}ups | {Time.FPS.ToString("n0")}fps | {Time.TotalSeconds.ToString("n0")}s | WinPos: [{Window.X}, {Window.Y}] | Size: [{Window.Size}] | Mouse: [{Input.Mouse.Position}]";
+			Window.Title = $"VSync: {Window.GetVSyncMode()} | {Time.UPS.ToString("n0")}ups | {Time.FPS.ToString("n0")}fps | {Time.TotalSeconds.ToString("n0")}s | WinPos: [{Window.X}, {Window.Y}] | Size: [{Window.Size}] | Mouse: [{Input.Mouse.Position}]";
 
 			if (Input.Keyboard.Down(KeyCode.Backspace))
 				Platform.Quit();
