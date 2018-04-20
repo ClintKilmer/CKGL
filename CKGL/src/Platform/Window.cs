@@ -98,8 +98,16 @@ namespace CKGL
 		}
 		public static bool VSync
 		{
-			get { return SDL_GL_GetSwapInterval() == VSyncMode.On; }
-			set { SDL_GL_SetSwapInterval(value ? VSyncMode.On : VSyncMode.Off); }
+			get { return SDL_GL_GetSwapInterval() != VSyncMode.Off; }
+			//set { SDL_GL_SetSwapInterval(value ? VSyncMode.On : VSyncMode.Off); }
+			set
+			{
+				if (SDL_GL_SetSwapInterval(value ? VSyncMode.LateSwapTearing : VSyncMode.Off) == -1)
+				{
+					SDL_GL_SetSwapInterval(VSyncMode.On);
+					Output.WriteLine("VSync Mode LateSwapTearing not supported. Normal VSync enabled instead.");
+				}
+			}
 		}
 
 		public static class FullscreenMode
