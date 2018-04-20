@@ -129,8 +129,6 @@ namespace CKGL
 					RenderTarget.Bind(null);
 				else
 					renderTarget.Bind();
-
-				Graphics.SetViewport(renderTarget);
 			}
 		}
 

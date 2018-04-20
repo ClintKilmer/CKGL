@@ -100,6 +100,7 @@ namespace CKGL
 			{
 				GL.BindFramebuffer(FramebufferTarget.Framebuffer, id);
 				Current = renderTarget;
+				Graphics.SetViewport();
 			}
 		}
 		#endregion
@@ -117,6 +118,7 @@ namespace CKGL
 
 			GL.BindFramebuffer(FramebufferTarget.Read, id);
 			GL.BindFramebuffer(FramebufferTarget.Draw, target?.id ?? 0);
+			Graphics.SetViewport(target);
 			GL.ReadBuffer((ReadBuffer)((uint)ReadBuffer.Colour0 + textureNum));
 			GL.BlitFramebuffer(new RectangleI(Width, Height), rect, BufferBit.Colour, filter);
 		}
