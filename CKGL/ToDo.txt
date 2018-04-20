@@ -1,5 +1,6 @@
 ﻿CKGL TODO List:
 
+- ProjectionMatrix only needs updates if target is changed, not window
 - Platform.SaveJPG is broken
 - ScissorState / ViewportState? Move to state?
 - State - move all state logic out of renderer and have dirty state flag

@@ -119,7 +119,7 @@ void main()
 			//Platform.ScreensaverAllowed = true; // Default false
 
 			//ProjectionMatrix = Matrix.CreateOrthographic(Window.Size, -10000f, 10000f);
-			ProjectionMatrix = Matrix.CreatePerspectiveFieldOfView(Math.DegreesToRadians(75f), Window.AspectRatio, 0.1f, 1000f);
+			ProjectionMatrix = Matrix.CreatePerspectiveFieldOfView(Math.DegreesToRadians(75f), width / (float)height, 0.1f, 1000f);
 
 			// LoadContent()
 			SpriteSheets.SpriteSheet = new SpriteSheet(128);
@@ -336,8 +336,6 @@ void main()
 
 		public override void OnWindowResized()
 		{
-			//ProjectionMatrix = Matrix.CreateOrthographic(Window.Size, -10000f, 10000f);
-			ProjectionMatrix = Matrix.CreatePerspectiveFieldOfView(Math.DegreesToRadians(75f), Window.AspectRatio, 0.1f, 1000f);
 		}
 	}
 }
