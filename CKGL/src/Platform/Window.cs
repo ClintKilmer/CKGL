@@ -75,7 +75,8 @@ namespace CKGL
 			get
 			{
 				Point2 size = Point2.Zero;
-				SDL_GetWindowSize(IntPtr, out size.X, out size.Y);
+				//SDL_GetWindowSize(IntPtr, out size.X, out size.Y);
+				SDL_GL_GetDrawableSize(IntPtr, out size.X, out size.Y);
 				return size;
 			}
 			set
