@@ -76,6 +76,7 @@ namespace CKGL
 			vboLayout.Push<float>(2); // uvs
 			vboLayout.Push<float>(1); // textured
 			vao.AddBuffer(vbo, vboLayout);
+			Output.WriteLine($"Renderer Initialized");
 		}
 
 		public static void Destroy()

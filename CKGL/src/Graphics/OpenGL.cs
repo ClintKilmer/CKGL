@@ -72,6 +72,7 @@ namespace OpenGL
 			GetIntegerV((GLuint)maxTextureSize, out maxTextureSize);
 
 			// Debug
+			Output.WriteLine($"OpenGL Initialized");
 			Output.WriteLine($"OpenGL Version: {MajorVersion}.{MinorVersion}");
 			Output.WriteLine($"OpenGL MaxColourAttachments: {MaxColourAttachments}");
 			Output.WriteLine($"OpenGL MaxCubeMapTextureSize: {MaxCubeMapTextureSize}");

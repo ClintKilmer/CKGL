@@ -183,6 +183,8 @@ namespace CKGL
 				SDL_Quit();
 				throw new Exception(SDL_GetError());
 			}
+			Output.WriteLine($"Window Initialized");
+
 			// Create OpenGL Context
 			if ((GL_Context = SDL_GL_CreateContext(IntPtr)) == IntPtr.Zero)
 			{
@@ -190,6 +192,8 @@ namespace CKGL
 				throw new Exception(SDL_GetError());
 			}
 			SDL_GL_MakeCurrent(IntPtr, GL_Context);
+			Output.WriteLine($"OpenGL Context Initialized");
+
 			VSync = vsync;
 		}
 

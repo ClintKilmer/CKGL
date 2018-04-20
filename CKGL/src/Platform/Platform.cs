@@ -182,6 +182,7 @@ namespace CKGL
 			Running = true;
 
 			// Debug
+			Output.WriteLine($"Platform SDL2 Initialized");
 			Output.WriteLine($"Platform - OS: {OS}");
 			Output.WriteLine($"Platform - Video Driver: {SDL_GetCurrentVideoDriver()}");
 			Output.WriteLine($"Platform - Audio Driver: {SDL_GetCurrentAudioDriver()}");
