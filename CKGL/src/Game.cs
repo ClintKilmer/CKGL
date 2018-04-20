@@ -10,7 +10,8 @@
 
 		private void PreInit(string windowTitle, int windowWidth, int windowHeight, bool windowVSync, bool windowFullscreen, bool windowResizable, bool windowBorderless)
 		{
-			Platform.Init(windowTitle, windowWidth, windowHeight, windowVSync, windowFullscreen, windowResizable, windowBorderless);
+			Platform.Init();
+			Window.Create(windowTitle, windowWidth, windowHeight, windowVSync, windowFullscreen, windowResizable, windowBorderless);
 			Graphics.Init();
 			Audio.Init();
 			Input.Init();
@@ -71,6 +72,7 @@
 		{
 			Renderer.Destroy();
 			Audio.Destroy();
+			Window.Destroy();
 			Platform.Destroy();
 		}
 	}

@@ -87,7 +87,7 @@ namespace CKGL
 		#endregion
 
 		#region Init/Exit Methods
-		public static void Init(string windowTitle, int windowWidth, int windowHeight, bool windowVSync, bool windowFullscreen, bool windowResizable, bool windowBorderless)
+		public static void Init()
 		{
 			SetDllDirectory();
 
@@ -176,9 +176,6 @@ namespace CKGL
 			//SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_MULTISAMPLEBUFFERS, 1);
 			//SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_MULTISAMPLESAMPLES, 3);
 
-			// Create Window
-			Window.Create(windowTitle, windowWidth, windowHeight, windowVSync, windowFullscreen, windowResizable, windowBorderless);
-
 			Running = true;
 
 			// Debug
@@ -192,7 +189,6 @@ namespace CKGL
 
 		public static void Destroy()
 		{
-			Window.Destroy();
 			SDL_Quit();
 		}
 		#endregion
