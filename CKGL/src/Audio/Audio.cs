@@ -273,7 +273,7 @@ namespace CKGL
 		}
 
 		#region Custom WAV parser - not used, SDL provides this functionality
-		//private static float[] readWav(string filename)
+		//private static float[] readWAV(string filename)
 		//{
 		//	float[] L = null;
 

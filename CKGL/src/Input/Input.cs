@@ -4,19 +4,19 @@ namespace CKGL
 {
 	public static class Input
 	{
-		internal static void Init()
+		public static void Init()
 		{
 			Keyboard.Init();
 			Mouse.Init();
 		}
 
-		internal static void Clear()
+		public static void Clear()
 		{
 			Keyboard.Clear();
 			Mouse.Clear();
 		}
 
-		internal static void Update()
+		public static void Update()
 		{
 			//Keyboard.Update();
 			Mouse.Update();
@@ -36,7 +36,7 @@ namespace CKGL
 			private static HashSet<ScanCode> releasedScanCode = new HashSet<ScanCode>();
 			private static HashSet<ScanCode> repeatedScanCode = new HashSet<ScanCode>();
 
-			internal static void Init()
+			public static void Init()
 			{
 				Platform.Events.OnKeyDown += (keycode, scancode, repeated) =>
 				{
@@ -73,7 +73,7 @@ namespace CKGL
 				};
 			}
 
-			internal static void Clear()
+			public static void Clear()
 			{
 				//Output.WriteLine("down:     " + string.Join(", ", downKeyCode));
 
@@ -140,11 +140,11 @@ namespace CKGL
 			public static Point2 PositionDisplay { get; private set; }
 			public static Point2 Scroll { get; private set; }
 
-			static bool[] down = new bool[16];
-			static bool[] pressed = new bool[16];
-			static bool[] released = new bool[16];
+			private static bool[] down = new bool[16];
+			private static bool[] pressed = new bool[16];
+			private static bool[] released = new bool[16];
 
-			internal static void Init()
+			public static void Init()
 			{
 				Platform.Events.OnMouseButtonDown += id =>
 				{
@@ -164,7 +164,7 @@ namespace CKGL
 				};
 			}
 
-			internal static void Clear()
+			public static void Clear()
 			{
 				Scroll = Point2.Zero;
 
@@ -175,7 +175,7 @@ namespace CKGL
 				}
 			}
 
-			internal static void Update()
+			public static void Update()
 			{
 				LastPosition = Position;
 				LastPositionDisplay = PositionDisplay;
