@@ -2,6 +2,10 @@
 {
 	public abstract class Game
 	{
+		public bool UnfocusedFrameLimiter = true;
+		public uint UnfocusedFrameLimiterSleep = 33;
+		private bool focused = true;
+
 		public Game(string windowTitle, int windowWidth, int windowHeight, bool windowVSync, bool windowFullscreen, bool windowResizable, bool windowBorderless)
 		{
 			PreInit(windowTitle, windowWidth, windowHeight, windowVSync, windowFullscreen, windowResizable, windowBorderless);
@@ -17,8 +21,8 @@
 			Input.Init();
 			Renderer.Init();
 
-			Platform.Events.OnWinFocusGained += () => { OnFocusGained(); };
-			Platform.Events.OnWinFocusLost += () => { OnFocusLost(); };
+			Platform.Events.OnWinFocusGained += () => { focused = true; OnFocusGained(); };
+			Platform.Events.OnWinFocusLost += () => { focused = false; OnFocusLost(); };
 			Platform.Events.OnWinResized += () => { OnWindowResized(); };
 		}
 
@@ -41,7 +45,8 @@
 					Draw();
 					Window.SwapBuffers();
 					Time.Draw();
-					//Platform.Delay(1);
+					if (UnfocusedFrameLimiter && !focused)
+						Platform.Delay(UnfocusedFrameLimiterSleep);
 				}
 			}
 			Destroy();
@@ -70,6 +75,10 @@
 
 		private void PostDestroy()
 		{
+			Platform.Events.OnWinFocusGained = null;
+			Platform.Events.OnWinFocusLost = null;
+			Platform.Events.OnWinResized = null;
+
 			Renderer.Destroy();
 			Audio.Destroy();
 			Window.Destroy();
