@@ -12,7 +12,7 @@ namespace CKGL
 		public static class Events
 		{
 			public delegate void KeyEvent(KeyCode keyCode, ScanCode scanCode, bool repeat);
-			public delegate void MouseMoveEvent(int x, int y);
+			public delegate void MouseMoveEvent(int x, int y, int xRelative, int yRelative);
 			public delegate void MouseButtonEvent(int buttonID);
 			public delegate void MouseScrollEvent(int x, int y);
 			public delegate void JoyDeviceEvent(int deviceID);
@@ -54,6 +54,8 @@ namespace CKGL
 		public static bool Running { get; private set; } = false;
 
 		private static SDL_Event Event;
+
+		public const int ScanCodeMask = SDLK_SCANCODE_MASK;
 
 		public static string OS { get { return SDL_GetPlatform(); } }
 		//public static uint TotalMilliseconds { get { return SDL_GetTicks(); } }
@@ -188,6 +190,10 @@ namespace CKGL
 			Output.WriteLine($"Platform - Audio Driver: {SDL_GetCurrentAudioDriver()}");
 			Output.WriteLine($"Platform - # of CPUs: {SDL_GetCPUCount()}");
 			Output.WriteLine($"Platform - Total RAM: {SDL_GetSystemRAM()}MB");
+
+			Input.Init();
+			// Debug
+			Output.WriteLine($"Platform SDL2 Initialized");
 		}
 
 		public static void Destroy()
@@ -214,7 +220,7 @@ namespace CKGL
 						Events.OnKeyUp?.Invoke((KeyCode)Event.key.keysym.sym, (ScanCode)Event.key.keysym.scancode, Event.key.repeat != 0);
 						break;
 					case SDL_EventType.SDL_MOUSEMOTION:
-						Events.OnMouseMove?.Invoke(Event.motion.x, Event.motion.y);
+						Events.OnMouseMove?.Invoke(Event.motion.x, Event.motion.y, Event.motion.xrel, Event.motion.yrel);
 						break;
 					case SDL_EventType.SDL_MOUSEBUTTONDOWN:
 						Events.OnMouseButtonDown?.Invoke(Event.button.button);
@@ -306,9 +312,25 @@ namespace CKGL
 			Running = false;
 		}
 
+		public static bool RelativeMouseMode // Default true
+		{
+			get { return SDL_GetRelativeMouseMode() == SDL_bool.SDL_TRUE; }
+			set { SDL_SetRelativeMouseMode(value ? SDL_bool.SDL_TRUE : SDL_bool.SDL_FALSE); }
+		}
+
 		public static void GetGlobalMousePosition(out int x, out int y)
 		{
 			SDL_GetGlobalMouseState(out x, out y);
+		}
+
+		public static void GetMousePosition(out int x, out int y)
+		{
+			SDL_GetMouseState(out x, out y);
+		}
+
+		public static void GetRelativeMousePosition(out int x, out int y)
+		{
+			SDL_GetRelativeMouseState(out x, out y);
 		}
 
 		public static IntPtr GetProcAddress(string proc)

@@ -115,6 +115,7 @@ void main()
 
 		public override void Init()
 		{
+			Platform.RelativeMouseMode = true;
 			//Platform.ShowCursor = false; // Default true
 			//Platform.ScreensaverAllowed = true; // Default false
 
@@ -140,7 +141,7 @@ void main()
 		{
 			//Window.Title = $"{Time.DeltaTime.ToString("n1")}ms - Info: {Platform.OS} | {Time.TotalSeconds.ToString("n1")} - Buffers: {Audio.BufferCount} - Sources: {Audio.SourceCount} - Position: [{Window.X}, {Window.Y}] - Size: [{Window.Width}, {Window.Height}] - Mouse: [{Input.Mouse.Position.X}, {Input.Mouse.Position.Y}]";
 			//Window.Title = $"{Time.DeltaTime.ToString("n1")}ms | Position: [{Window.X}, {Window.Y}] | Size: [{Window.Width}, {Window.Height}] | Mouse: [{Input.Mouse.Position.X}, {Input.Mouse.Position.Y}]";
-			Window.Title = $"VSync: {Window.GetVSyncMode()} | {Time.UPS.ToString("n0")}ups | {Time.FPS.ToString("n0")}fps | {Time.TotalSeconds.ToString("n0")}s | WinPos: [{Window.X}, {Window.Y}] | Size: [{Window.Size}] | Mouse: [{Input.Mouse.Position}]";
+			Window.Title = $"VSync: {Window.GetVSyncMode()} | {Time.UPS.ToString("n0")}ups | {Time.FPS.ToString("n0")}fps | {Time.TotalSeconds.ToString("n0")}s | WinPos: [{Window.X}, {Window.Y}] | Size: [{Window.Size}] | Mouse Global: [{Input.Mouse.PositionDisplay}] | Mouse: [{Input.Mouse.Position}] | Mouse Relative: [{Input.Mouse.PositionRelative}]";
 
 			if (Input.Keyboard.Down(KeyCode.Backspace))
 				Platform.Quit();
@@ -157,10 +158,16 @@ void main()
 			if (Input.Keyboard.Pressed(KeyCode.F7))
 				Window.VSync = !Window.VSync;
 
-			if (Input.Mouse.LeftPressed)
-				windowDraggingPosition = Input.Mouse.LastPosition;
-			else if (Input.Mouse.LeftDown)
-				Window.Position = Input.Mouse.PositionDisplay - windowDraggingPosition;
+			if (Input.Keyboard.Pressed(KeyCode.Escape))
+				Platform.RelativeMouseMode = !Platform.RelativeMouseMode;
+
+			if (!Platform.RelativeMouseMode)
+			{
+				if (Input.Mouse.LeftPressed)
+					windowDraggingPosition = Input.Mouse.LastPosition;
+				else if (Input.Mouse.LeftDown)
+					Window.Position = Input.Mouse.PositionDisplay - windowDraggingPosition;
+			}
 
 			if (Input.Keyboard.Pressed(KeyCode.Space) || Input.Mouse.LeftPressed)
 				Sounds.sndPop1.Play();
@@ -192,8 +199,12 @@ void main()
 
 			cameraPosition += direction.Normalized * speed * Time.DeltaTime;
 
-			cameraYaw = Math.Clamp(cameraYaw + (Input.Mouse.Position.Y - Input.Mouse.LastPosition.Y) * 0.003f, -0.24f, 0.24f);
-			cameraPitch = cameraPitch + (Input.Mouse.Position.X - Input.Mouse.LastPosition.X) * -0.003f;
+			if (Platform.RelativeMouseMode)
+			{
+				var mouseSpeed = 0.0005f;
+				cameraYaw = Math.Clamp(cameraYaw + (Input.Mouse.PositionRelative.Y) * mouseSpeed, -0.24f, 0.24f);
+				cameraPitch = cameraPitch + (Input.Mouse.PositionRelative.X) * -mouseSpeed;
+			}
 
 			cameraLookat = Vector3.Forward *
 						   (Matrix.CreateRotationX(cameraYaw.RotationsToRadians()) *

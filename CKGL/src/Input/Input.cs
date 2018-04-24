@@ -24,7 +24,7 @@ namespace CKGL
 
 		public static class Keyboard
 		{
-			public const int ScanCodeMask = SDL2.SDL.SDLK_SCANCODE_MASK;
+			public const int ScanCodeMask = Platform.ScanCodeMask;
 
 			private static HashSet<KeyCode> downKeyCode = new HashSet<KeyCode>();
 			private static HashSet<KeyCode> pressedKeyCode = new HashSet<KeyCode>();
@@ -138,6 +138,7 @@ namespace CKGL
 			public static Point2 Position { get; private set; }
 			public static Point2 LastPositionDisplay { get; private set; }
 			public static Point2 PositionDisplay { get; private set; }
+			public static Point2 PositionRelative { get; private set; }
 			public static Point2 Scroll { get; private set; }
 
 			private static bool[] down = new bool[16];
@@ -146,13 +147,13 @@ namespace CKGL
 
 			public static void Init()
 			{
-				Platform.Events.OnMouseButtonDown += id =>
+				Platform.Events.OnMouseButtonDown += (id) =>
 				{
 					down[id] = true;
 					pressed[id] = true;
 				};
 
-				Platform.Events.OnMouseButtonUp += id =>
+				Platform.Events.OnMouseButtonUp += (id) =>
 				{
 					down[id] = false;
 					released[id] = true;
@@ -177,13 +178,16 @@ namespace CKGL
 
 			public static void Update()
 			{
-				LastPosition = Position;
 				LastPositionDisplay = PositionDisplay;
+				Platform.GetGlobalMousePosition(out int mouseDisplayX, out int mouseDisplayY);
+				PositionDisplay = new Point2(mouseDisplayX, mouseDisplayY);
 
-				Platform.GetGlobalMousePosition(out int mx, out int my);
-				Position = new Point2((int)((mx - Window.X)/* / Window.PixelW*/),
-									  (int)((my - Window.Y)/* / Window.PixelH*/));
-				PositionDisplay = new Point2(mx, my);
+				LastPosition = Position;
+				Platform.GetMousePosition(out int mouseX, out int mouseY);
+				Position = new Point2(mouseX, mouseY);
+
+				Platform.GetRelativeMousePosition(out int mouseRelativeX, out int mmouseDisplayY);
+				PositionRelative = new Point2(mouseRelativeX, mmouseDisplayY);
 			}
 
 			public static bool Down(MouseButton button)
