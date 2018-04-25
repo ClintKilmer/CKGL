@@ -315,9 +315,10 @@ void main()
 			//surface.BlitTextureTo(null, 0, BlitFilter.Nearest, new RectangleI(0, 0, width, height));
 
 			// Screenshot
-			if (Input.Keyboard.Down(KeyCode.F9))
+			if (Input.Keyboard.Pressed(KeyCode.F9))
 			{
 				string s = @"X:\Dropbox\Clint\Gamedev\2018-03-22 CKGL\screenshots\";
+				//string s = @"C:\Users\Clint Kilmer\Dropbox\Clint\Gamedev\2018-03-22 CKGL\screenshots\";
 
 				int sequentialNumber = 1;
 				while (System.IO.File.Exists($@"{s}{System.DateTime.Now.ToString("yyyy-MM-dd HH.mm.ss")}-{sequentialNumber} [CKGL].png"))
