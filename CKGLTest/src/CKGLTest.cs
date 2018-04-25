@@ -240,18 +240,55 @@ void main()
 
 			InternalShaders.Renderer.MVP = Matrix.Model * ViewMatrix * ProjectionMatrix;
 
+			// Start Drawing
+
+			Colour gridColour = Colour.White.Alpha(0.1f);
+			int length = 100;
+			//for (int yy = -length; yy <= length; yy++)
+			for (int yy = 0; yy <= 0; yy++)
+			{
+				for (int i = -length; i <= length; i++)
+				{
+					Renderer.Draw.Lines.Line3D(new Vector3(-length, yy, i),
+											   new Vector3(length, yy, i),
+											   gridColour,
+											   gridColour,
+											   false,
+											   Vector2.Zero,
+											   Vector2.Zero);
+
+					Renderer.Draw.Lines.Line3D(new Vector3(i, yy, -length),
+											   new Vector3(i, yy, length),
+											   gridColour,
+											   gridColour,
+											   false,
+											   Vector2.Zero,
+											   Vector2.Zero);
+				}
+			}
+			//for (int y = -length; y <= length; y++)
+			//{
+			//	for (int x = -length; x <= length; x++)
+			//	{
+			//		for (int z = -length; z <= length; z++)
+			//		{
+			//			Renderer.Draw.Points.Point(new Vector3(x, y, z), gridColour);
+			//		}
+			//	}
+			//}
+
 			Renderer.Draw.Triangle(new Vector2(0f, 1f),
-								   new Vector2(0f, 1f) * Matrix2D.CreateRotationZ(Math.RotationsToRadians(0.66666f)),
-								   new Vector2(0f, 1f) * Matrix2D.CreateRotationZ(Math.RotationsToRadians(0.33333f)),
-								   Colour.Red,
-								   Colour.Green,
-								   Colour.Blue,
-								   false,
-								   Vector2.Zero,
-								   Vector2.One,
-								   new Vector2(1f, 0f),
-								   Time.TotalSeconds * 0.5f,
-								   Vector2.Zero);
+					   new Vector2(0f, 1f) * Matrix2D.CreateRotationZ(Math.RotationsToRadians(0.66666f)),
+					   new Vector2(0f, 1f) * Matrix2D.CreateRotationZ(Math.RotationsToRadians(0.33333f)),
+					   Colour.Red,
+					   Colour.Green,
+					   Colour.Blue,
+					   false,
+					   Vector2.Zero,
+					   Vector2.One,
+					   new Vector2(1f, 0f),
+					   Time.TotalSeconds * 0.5f,
+					   Vector2.Zero);
 
 			Renderer.SetTexture(Textures.Test);
 			Renderer.Draw.Rectangle(4f,

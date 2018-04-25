@@ -286,15 +286,15 @@ namespace CKGL
 			vertexCount = remainder;
 		}
 
-		private static void AddVertex(DrawMode type, Vector2 position, Colour colour)
+		private static void AddVertex(DrawMode type, Vector3 position, Colour colour)
 		{
 			AddVertex(type, position, colour, false);
 		}
-		private static void AddVertex(DrawMode type, Vector2 position, Colour colour, bool textured)
+		private static void AddVertex(DrawMode type, Vector3 position, Colour colour, bool textured)
 		{
 			AddVertex(type, position, colour, textured, Vector2.Zero);
 		}
-		private static void AddVertex(DrawMode type, Vector2 position, Colour colour, bool textured, Vector2 uv)
+		private static void AddVertex(DrawMode type, Vector3 position, Colour colour, bool textured, Vector2 uv)
 		{
 			if (!working)
 				throw new Exception("Start must be called before AddVertex can be called.");
@@ -310,13 +310,14 @@ namespace CKGL
 			if (vertexCount >= bufferSize)
 				Flush();
 
-			vertices[vertexCount].Position = new Vector3(position.X, position.Y, 0f);
+			vertices[vertexCount].Position = position;
 			vertices[vertexCount].Colour = colour;
 			vertices[vertexCount].UV = uv;
 			vertices[vertexCount].Textured = textured;
 			vertexCount++;
 		}
-		private static void AddVertex(DrawMode type, Vector2 position, Colour colour, bool textured, Vector2 uv, float rotation, Vector2 origin)
+		// TODO - Transform/Matrix instead of rotation/origin
+		private static void AddVertex(DrawMode type, Vector3 position, Colour colour, bool textured, Vector2 uv, float rotation, Vector2 origin)
 		{
 			if (rotation != 0f)
 				AddVertex(type, position * (Matrix2D.CreateTranslation(-origin) * Matrix2D.CreateRotationZ(Math.RotationsToRadians(rotation)) * Matrix2D.CreateTranslation(origin)), colour, textured, uv);
@@ -833,6 +834,22 @@ namespace CKGL
 				}
 			}
 
+			public static class Points
+			{
+				public static void Point(float x, float y, Colour c)
+				{
+					Point(new Vector2(x, y), c);
+				}
+				public static void Point(float x, float y, float z, Colour c)
+				{
+					Point(new Vector3(x, y, z), c);
+				}
+				public static void Point(Vector3 v, Colour c)
+				{
+					AddVertex(DrawMode.PointList, v, c);
+				}
+			}
+
 			public static class Lines
 			{
 				public static void Line(float x1, float y1, float x2, float y2, Colour colour)
@@ -856,6 +873,11 @@ namespace CKGL
 					Line(v1, v2, c1, c2, textured, Vector2.Zero, Vector2.Zero);
 				}
 				public static void Line(Vector2 v1, Vector2 v2, Colour c1, Colour c2, bool textured, Vector2 uv1, Vector2 uv2)
+				{
+					AddVertex(DrawMode.LineList, v1, c1, textured, uv1);
+					AddVertex(DrawMode.LineList, v2, c2, textured, uv2);
+				}
+				public static void Line3D(Vector3 v1, Vector3 v2, Colour c1, Colour c2, bool textured, Vector2 uv1, Vector2 uv2)
 				{
 					AddVertex(DrawMode.LineList, v1, c1, textured, uv1);
 					AddVertex(DrawMode.LineList, v2, c2, textured, uv2);
