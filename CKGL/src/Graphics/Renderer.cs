@@ -60,12 +60,6 @@ namespace CKGL
 		private static Vertex[] vertices = new Vertex[bufferSize];
 		private static int vertexCount = 0;
 
-		// TODO - Remove these uv defaults
-		private static Vector2 uvFull1 = new Vector2(0f, 0f);
-		private static Vector2 uvFull2 = new Vector2(1f, 0f);
-		private static Vector2 uvFull3 = new Vector2(0f, 1f);
-		private static Vector2 uvFull4 = new Vector2(1f, 1f);
-
 		public static void Init()
 		{
 			vao = new VertexArray();
@@ -647,6 +641,10 @@ namespace CKGL
 			}
 
 			// RenderTargets
+			private static Vector2 uvFull1 = new Vector2(0f, 0f);
+			private static Vector2 uvFull2 = new Vector2(1f, 0f);
+			private static Vector2 uvFull3 = new Vector2(0f, 1f);
+			private static Vector2 uvFull4 = new Vector2(1f, 1f);
 			public static void RenderTarget(RenderTarget renderTarget, int texture, float x, float y, Colour colour)
 			{
 				SetTexture(renderTarget.textures[texture]);
