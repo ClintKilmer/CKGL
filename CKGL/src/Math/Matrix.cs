@@ -273,6 +273,29 @@ namespace CKGL
 		#endregion
 
 		#region Static Methods
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static Matrix CreateTransform(Vector3 origin, Vector3 position, Quaternion rotation, Vector3 scale)
+		{
+			Matrix transformMatrix = Identity;
+
+			if (origin != Vector3.Zero)
+				transformMatrix *= CreateTranslation(-origin);
+
+			if (scale != Vector3.One)
+				transformMatrix *= CreateScale(scale);
+
+			if (rotation != Quaternion.Identity)
+				transformMatrix *= CreateFromQuaternion(rotation);
+
+			if (position != Vector3.Zero)
+				transformMatrix *= CreateTranslation(position);
+
+			if (origin != Vector3.Zero)
+				transformMatrix *= CreateTranslation(origin);
+
+			return transformMatrix;
+		}
+
 		public static Matrix CreateFromAxisAngle(ref Vector3 axis, float angle)
 		{
 			Matrix result = Identity;

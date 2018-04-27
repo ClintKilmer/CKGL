@@ -229,6 +229,29 @@ namespace CKGL
 
 		#region Static Methods
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static Matrix2D CreateTransform(Vector2 origin, Vector2 position, float rotationInRadians, Vector2 scale)
+		{
+			Matrix2D transformMatrix = Identity;
+
+			if (origin != Vector2.Zero)
+				transformMatrix *= CreateTranslation(-origin);
+
+			if (scale != Vector2.One)
+				transformMatrix *= CreateScale(scale);
+
+			if (rotationInRadians != 0f)
+				transformMatrix *= CreateRotationZ(-rotationInRadians);
+
+			if (position != Vector2.Zero)
+				transformMatrix *= CreateTranslation(position);
+
+			if (origin != Vector2.Zero)
+				transformMatrix *= CreateTranslation(origin);
+
+			return transformMatrix;
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static Matrix2D CreateFrom(Vector2 position, float rotationInRadians, Vector2? scale = null, Vector2? origin = null)
 		{
 			Matrix2D transformMatrix = Identity;
