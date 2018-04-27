@@ -56,6 +56,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\Quaternion.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\Random.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\RectangleI.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Math\Transform2D.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Math\Transform3D.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\Vector2.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\Vector3.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\Vector4.cs" />
