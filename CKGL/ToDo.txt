@@ -7,8 +7,6 @@
 - Renderer - add lineloop and any figure out all DrawModes
 - Vector 2/3 rotate around
 - Instead of giving Renderer.Draw_() a rotation, give it a transform (A Model Matrix)
-- Max Framerate
-- Mim Framerate before game slowdown
 - Figure out how to proccess Vertex into buffer data
 - Add Texture2dSampler, and CubeMap to Shader Uniform Set
 - ResourceHandle? GLResource?
