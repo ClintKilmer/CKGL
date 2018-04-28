@@ -1,5 +1,6 @@
 ﻿CKGL TODO List:
 
+- ref it up in Renderer!
 - Graphics State - move rest of state logic out of renderer
 	- On Shader/Texture/RenderTarget Bind(), have Graphics State subscribe to Event
 	- Or move bind/set to Graphics State
