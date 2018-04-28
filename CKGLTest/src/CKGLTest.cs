@@ -134,7 +134,7 @@ void main()
 			//SpriteSheets.SpriteSheet.Texture.SavePNG($@"{System.IO.Directory.GetCurrentDirectory()}/SpriteSheet.png");
 			//SpriteSheets.SpriteSheet.Texture.SavePNG("SpriteSheet.png");
 
-			surface = new RenderTarget(width, height, 1, TextureFormat.RGB8);
+			surface = new RenderTarget(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth24);
 		}
 
 		public override void Update()
@@ -221,6 +221,8 @@ void main()
 
 			Renderer.Start();
 
+			Renderer.SetDepthState(DepthState.LessEqual);
+
 			// Set Shader uniforms
 			//shader.SetUniform("offset", Time.TotalMilliseconds * 0.0016f, Time.TotalMilliseconds * 0.002f, Time.TotalMilliseconds * 0.0023f);
 
@@ -228,10 +230,9 @@ void main()
 
 			// Clear the screen
 			if (Input.Keyboard.Down(KeyCode.Space))
-			{ }
-			//Graphics.Clear(Colour.Grey * 0.25f);
+				Graphics.ClearDepth();
 			else
-				Renderer.Clear(Colour.Black);
+				Graphics.Clear(Colour.Black);
 
 			//Renderer.SetFrontFaceState(FrontFace.Clockwise);
 			//Renderer.SetCullState(CullState.Back);

@@ -98,21 +98,6 @@ namespace CKGL
 		//#endif
 		//		};
 
-		#region Clear
-		public static void Clear(Colour colour, float depth)
-		{
-			Graphics.Clear(colour, depth);
-		}
-		public static void Clear(Colour colour)
-		{
-			Graphics.Clear(colour);
-		}
-		public static void Clear(float depth)
-		{
-			Graphics.Clear(depth);
-		}
-		#endregion
-
 		#region State
 		public static void SetRenderTarget(RenderTarget renderTarget)
 		{
