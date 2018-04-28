@@ -248,6 +248,11 @@ namespace CKGL
 			{
 				GL.UniformMatrix4FV(Location, 1, false, value.ToArrayColumnMajor());
 			}
+			public void SetUniform(Texture value, GLuint textureSlot)
+			{
+				value.Bind(textureSlot);
+				GL.Uniform1I(Location, (GLint)textureSlot);
+			}
 			//public void SetUniform(UniformSampler2D value)
 			//{
 			//	int slot = Texture.Bind(value.ID, value.BindTarget);
@@ -257,7 +262,7 @@ namespace CKGL
 			//{
 			//	int slot = Texture.Bind(value.ID, TextureTarget.TextureCubeMap);
 			//	GL.Uniform1I(Location, slot);
-			//} 
+			//}
 			#endregion
 		}
 		#endregion
@@ -325,6 +330,11 @@ namespace CKGL
 		{
 			Bind();
 			GetUniform(name).SetUniform(value);
+		}
+		public void SetUniform(string name, Texture value, GLuint textureSlot)
+		{
+			Bind();
+			GetUniform(name).SetUniform(value, textureSlot);
 		}
 		//public void SetUniform(string name, UniformSampler2D value)
 		//{

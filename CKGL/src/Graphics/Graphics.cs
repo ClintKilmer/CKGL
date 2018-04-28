@@ -35,23 +35,55 @@ namespace CKGL
 		#endregion
 
 		#region Clear
-		public static void Clear(Colour colour, float depth)
+		public static void SetClearColour(Colour colour)
 		{
 			GL.ClearColour(colour);
+		}
+		public static void SetClearDepth(float depth)
+		{
 			GL.ClearDepth(depth);
+		}
+
+		public static void ClearColour()
+		{
+			GL.Clear(BufferBit.Colour);
+		}
+		public static void ClearColour(Colour colour)
+		{
+			GL.ClearColour(colour);
+			GL.Clear(BufferBit.Colour);
+		}
+
+		public static void ClearDepth()
+		{
+			GL.Clear(BufferBit.Depth);
+		}
+		public static void ClearDepth(float depth)
+		{
+			GL.ClearDepth(depth);
+			GL.Clear(BufferBit.Depth);
+		}
+
+		public static void Clear()
+		{
 			GL.Clear(BufferBit.Colour | BufferBit.Depth);
 		}
 
 		public static void Clear(Colour colour)
 		{
 			GL.ClearColour(colour);
-			GL.Clear(BufferBit.Colour);
+			GL.Clear(BufferBit.Colour | BufferBit.Depth);
 		}
-
 		public static void Clear(float depth)
 		{
 			GL.ClearDepth(depth);
-			GL.Clear(BufferBit.Depth);
+			GL.Clear(BufferBit.Colour | BufferBit.Depth);
+		}
+		public static void Clear(Colour colour, float depth)
+		{
+			GL.ClearColour(colour);
+			GL.ClearDepth(depth);
+			GL.Clear(BufferBit.Colour | BufferBit.Depth);
 		}
 		#endregion
 
