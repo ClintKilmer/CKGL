@@ -1,4 +1,6 @@
-﻿using OpenGL;
+﻿using System;
+
+using OpenGL;
 
 using GLint = System.Int32;
 using GLuint = System.UInt32;
@@ -11,11 +13,16 @@ namespace CKGL
 		{
 			GL.Init();
 
+			State.Init();
+
 			// TODO - OnWinResized - GL.Viewport?
 			//Platform.Events.OnWinResized += () =>
 			//{
 			//	GL.Viewport(0, 0, Window.Width, Window.Height);
 			//};
+
+			// Debug
+			Output.WriteLine($"Graphics Initialized");
 		}
 
 		#region Viewport
@@ -88,109 +95,125 @@ namespace CKGL
 		#endregion
 
 		#region State
-		private class State
+		public static class State
 		{
-			public static FrontFaceState FrontFaceState = FrontFaceState.Default;
-			public static CullState CullState = CullState.Default;
-			public static PolygonModeState PolygonModeState = PolygonModeState.Default;
-			public static BlendState BlendState = BlendState.Default;
-			public static DepthState DepthState = DepthState.Default;
-		}
+			public static Action OnStateChanged;
 
-		public static FrontFaceState FrontFaceState
-		{
-			get
+			public static FrontFaceState FrontFaceState { get; private set; }
+			public static CullState CullState { get; private set; }
+			public static PolygonModeState PolygonModeState { get; private set; }
+			public static BlendState BlendState { get; private set; }
+			public static DepthState DepthState { get; private set; }
+
+			public static void Init()
 			{
-				return State.FrontFaceState;
+				ResetFrontFaceState();
+				ResetCullState();
+				ResetPolygonModeState();
+				ResetBlendState();
+				ResetDepthState();
 			}
-			set
+
+			#region FrontFaceState
+			public static void SetFrontFaceState(FrontFaceState frontFaceState)
 			{
-				if (value != State.FrontFaceState)
+				if (FrontFaceState != frontFaceState)
 				{
-					GL.FrontFace(value.FrontFace);
+					OnStateChanged?.Invoke();
+					GL.FrontFace(frontFaceState.FrontFace);
+					FrontFaceState = frontFaceState;
 				}
 			}
-		}
-
-		public static CullState CullState
-		{
-			get
+			public static void ResetFrontFaceState()
 			{
-				return State.CullState;
+				SetFrontFaceState(FrontFaceState.Default);
 			}
-			set
+			#endregion
+
+			#region CullState
+			public static void SetCullState(CullState cullState)
 			{
-				if (value != State.CullState)
+				if (CullState != cullState)
 				{
-					if (value.On)
+					OnStateChanged?.Invoke();
+					if (cullState.On)
 						GL.Enable(EnableCap.CullFace);
 					else
 						GL.Disable(EnableCap.CullFace);
-					GL.CullFace(value.Face);
+					GL.CullFace(cullState.Face);
+					CullState = cullState;
 				}
 			}
-		}
-
-		public static PolygonModeState PolygonModeState
-		{
-			get
+			public static void ResetCullState()
 			{
-				return State.PolygonModeState;
+				SetCullState(CullState.Default);
 			}
-			set
+			#endregion
+
+			#region PolygonModeState
+			public static void SetPolygonModeState(PolygonModeState polygonModeState)
 			{
-				if (value != State.PolygonModeState)
+				if (PolygonModeState != polygonModeState)
 				{
-					if (value.FrontAndBack)
+					OnStateChanged?.Invoke();
+					if (polygonModeState.FrontAndBack)
 					{
-						GL.PolygonMode(Face.FrontAndBack, value.BackPolygonMode);
+						GL.PolygonMode(Face.FrontAndBack, polygonModeState.BackPolygonMode);
 					}
 					else
 					{
-						GL.PolygonMode(Face.Front, value.FrontPolygonMode);
-						GL.PolygonMode(Face.Back, value.BackPolygonMode);
+						GL.PolygonMode(Face.Front, polygonModeState.FrontPolygonMode);
+						GL.PolygonMode(Face.Back, polygonModeState.BackPolygonMode);
 					}
+					PolygonModeState = polygonModeState;
 				}
 			}
-		}
-
-		public static BlendState BlendState
-		{
-			get
+			public static void ResetPolygonModeState()
 			{
-				return State.BlendState;
+				SetPolygonModeState(PolygonModeState.Default);
 			}
-			set
+			#endregion
+
+			#region BlendState
+			public static void SetBlendState(BlendState blendState)
 			{
-				if (value != State.BlendState)
+				if (BlendState != blendState)
 				{
-					if (value.On)
+					OnStateChanged?.Invoke();
+					if (blendState.On)
 						GL.Enable(EnableCap.Blend);
 					else
 						GL.Disable(EnableCap.Blend);
-					GL.BlendFuncSeparate(value.ColourSource, value.ColourDestination, value.AlphaSource, value.AlphaDestination);
-					GL.BlendEquationSeparate(value.ColourEquation, value.AlphaEquation);
+					GL.BlendFuncSeparate(blendState.ColourSource, blendState.ColourDestination, blendState.AlphaSource, blendState.AlphaDestination);
+					GL.BlendEquationSeparate(blendState.ColourEquation, blendState.AlphaEquation);
+					BlendState = blendState;
 				}
 			}
-		}
-
-		public static DepthState DepthState
-		{
-			get
+			public static void ResetBlendState()
 			{
-				return State.DepthState;
+				SetBlendState(BlendState.Off);
 			}
-			set
+			#endregion
+
+			#region DepthState
+			public static void SetDepthState(DepthState depthState)
 			{
-				if (value != State.DepthState)
+				if (DepthState != depthState)
 				{
-					if (value.On)
+					OnStateChanged?.Invoke();
+					if (depthState.On)
 						GL.Enable(EnableCap.DepthTest);
 					else
 						GL.Disable(EnableCap.DepthTest);
-					GL.DepthFunc(value.DepthFunc);
+					GL.DepthFunc(depthState.DepthFunc);
+					DepthState = depthState;
 				}
 			}
+			public static void ResetDepthState()
+			{
+				SetDepthState(DepthState.Default);
+			}
+			#endregion
 		}
 		#endregion
 

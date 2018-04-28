@@ -7,8 +7,9 @@ namespace CKGL
 		public readonly bool On;
 		public readonly Face Face;
 
+		public static CullState Default { get { return Off; } }
+
 		#region Static Constructors
-		public static readonly CullState Default = Off;
 		public static readonly CullState Off = new CullState(false, Face.Back);
 		public static readonly CullState Back = new CullState(true, Face.Back);
 		public static readonly CullState Front = new CullState(true, Face.Front);
@@ -26,7 +27,7 @@ namespace CKGL
 		#region Overrides
 		public override string ToString()
 		{
-			return $"CullState: [Enabled: {On}, Face: {Face.ToString()}]";
+			return $"CullState: [Enabled: {On}, Face: {Face}]";
 		}
 		#endregion
 

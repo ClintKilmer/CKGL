@@ -7,8 +7,9 @@ namespace CKGL
 		public readonly bool On;
 		public readonly DepthFunc DepthFunc;
 
+		public static DepthState Default { get { return Off; } }
+
 		#region Static Constructors
-		public static readonly DepthState Default = Off;
 		public static readonly DepthState Off = new DepthState(false);
 		public static readonly DepthState Never = new DepthState(true, DepthFunc.Never);
 		public static readonly DepthState Less = new DepthState(true, DepthFunc.Less);
@@ -21,8 +22,8 @@ namespace CKGL
 		#endregion
 
 		#region Constructors
-		public DepthState(bool on) : this(on, DepthFunc.Less) { }
-		public DepthState(bool on, DepthFunc depthFunc)
+		private DepthState(bool on) : this(on, DepthFunc.Less) { }
+		private DepthState(bool on, DepthFunc depthFunc)
 		{
 			On = on;
 			DepthFunc = depthFunc;
@@ -32,7 +33,7 @@ namespace CKGL
 		#region Overrides
 		public override string ToString()
 		{
-			return $"DepthState: [Enabled: {On}, Func: {DepthFunc.ToString()}]";
+			return $"DepthState: [Enabled: {On}, Func: {DepthFunc}]";
 		}
 		#endregion
 

@@ -8,8 +8,9 @@ namespace CKGL
 		public readonly PolygonMode BackPolygonMode;
 		public readonly bool FrontAndBack;
 
+		public static PolygonModeState Default { get { return FrontFillBackFill; } }
+
 		#region Static Constructors
-		public static readonly PolygonModeState Default = FrontFillBackFill;
 		public static readonly PolygonModeState FrontPointBackPoint = new PolygonModeState(PolygonMode.Point, PolygonMode.Point);
 		public static readonly PolygonModeState FrontPointBackLine = new PolygonModeState(PolygonMode.Point, PolygonMode.Line);
 		public static readonly PolygonModeState FrontPointBackFill = new PolygonModeState(PolygonMode.Point, PolygonMode.Fill);
@@ -33,7 +34,7 @@ namespace CKGL
 		#region Overrides
 		public override string ToString()
 		{
-			return $"PolygonModeState: [Front Face: {FrontPolygonMode.ToString()}, Back Face: {BackPolygonMode.ToString()}]";
+			return $"PolygonModeState: [Front Face: {FrontPolygonMode}, Back Face: {BackPolygonMode}]";
 		}
 		#endregion
 

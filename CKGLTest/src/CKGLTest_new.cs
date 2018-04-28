@@ -232,11 +232,12 @@ void main()
 			//Graphics.Clear(Colour.Grey * 0.25f);
 			else
 				Renderer.Clear(Colour.Black);
-
-			//Renderer.SetFrontFaceState(FrontFace.Clockwise);
-			//Renderer.SetCullState(CullState.Back);
-			Renderer.SetBlendState(BlendState.AlphaBlend);
-			Renderer.SetPolygonModeState(PolygonModeState.FrontFillBackLine);
+			
+			//Graphics.State.SetFrontFaceState(FrontFaceState.CounterClockwise);
+			//Graphics.State.SetCullState(CullState.Back);
+			Graphics.State.SetPolygonModeState(PolygonModeState.FrontFillBackLine);
+			Graphics.State.SetBlendState(BlendState.AlphaBlend);
+			Graphics.State.SetDepthState(DepthState.LessEqual);
 
 			InternalShaders.Renderer.MVP = Matrix.Model * ViewMatrix * ProjectionMatrix;
 

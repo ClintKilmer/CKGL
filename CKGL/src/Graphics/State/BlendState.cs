@@ -10,9 +10,10 @@
 		public BlendEquation ColourEquation;
 		public BlendEquation AlphaEquation;
 
+		public static BlendState Default { get { return Off; } }
+
 		#region Static Constructors
-		public static readonly BlendState Default = None;
-		public static readonly BlendState None = new BlendState(false);
+		public static readonly BlendState Off = new BlendState(false);
 		public static readonly BlendState Opaque = new BlendState(true, BlendFactor.One, BlendFactor.Zero);
 		public static readonly BlendState AlphaBlend = new BlendState(true, BlendFactor.SrcAlpha, BlendFactor.OneMinusSrcAlpha);
 		public static readonly BlendState Additive = new BlendState(true, BlendFactor.SrcAlpha, BlendFactor.One);
@@ -81,7 +82,7 @@
 		#region Overrides
 		public override string ToString()
 		{
-			return $"Not implemented yet";
+			return $"BlendState: [Enabled: {On}, ColourSource: {ColourSource}, AlphaSource: {AlphaSource}, ColourDestination: {ColourDestination}, AlphaDestination: {AlphaDestination}, ColourEquation: {ColourEquation}, AlphaEquation: {AlphaEquation}]";
 		}
 		#endregion
 

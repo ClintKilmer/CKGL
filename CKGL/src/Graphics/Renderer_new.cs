@@ -70,6 +70,10 @@ namespace CKGL
 			vboLayout.Push<float>(2); // uvs
 			vboLayout.Push<float>(1); // textured
 			vao.AddBuffer(vbo, vboLayout);
+
+			Graphics.State.OnStateChanged += () => { Flush(); };
+
+			// Debug
 			Output.WriteLine($"Renderer Initialized");
 		}
 
@@ -83,36 +87,7 @@ namespace CKGL
 			vboLayout = null;
 		}
 
-		// TODO - Render States
-		//		private static RasterizerState DefaultRasterizerState { get; } = new RasterizerState
-		//		{
-		//			CullMode = CullMode.None,
-		//			FillMode = FillMode.Solid,
-		//			MultiSampleAntiAlias = false,
-		//			ScissorTestEnable = false,
-		//			SlopeScaleDepthBias = 0,
-		//#if LINUX && !FNA
-		//			DepthClipEnable = false
-		//#elif WINDOWS
-		//			DepthClipEnable = true
-		//#endif
-		//		};
-
-		#region Clear
-		public static void Clear(Colour colour, float depth)
-		{
-			Graphics.Clear(colour, depth);
-		}
-		public static void Clear(Colour colour)
-		{
-			Graphics.Clear(colour);
-		}
-		public static void Clear(float depth)
-		{
-			Graphics.Clear(depth);
-		}
-		#endregion
-
+		// TODO - Move all state stuff to Graphics.State
 		#region State
 		public static void SetRenderTarget(RenderTarget renderTarget)
 		{
@@ -125,7 +100,6 @@ namespace CKGL
 					renderTarget.Bind();
 			}
 		}
-
 		public static void ResetRenderTarget()
 		{
 			SetRenderTarget(null);
@@ -143,71 +117,6 @@ namespace CKGL
 		public static void ResetShader()
 		{
 			SetShader(DefaultShader);
-		}
-
-		public static void SetFrontFaceState(FrontFaceState frontFaceState)
-		{
-			if (Graphics.FrontFaceState != frontFaceState)
-			{
-				Flush();
-				Graphics.FrontFaceState = frontFaceState;
-			}
-		}
-		public static void ResetFrontFaceState()
-		{
-			SetFrontFaceState(FrontFaceState.Default);
-		}
-
-		public static void SetCullState(CullState cullState)
-		{
-			if (Graphics.CullState != cullState)
-			{
-				Flush();
-				Graphics.CullState = cullState;
-			}
-		}
-		public static void ResetCullState()
-		{
-			SetCullState(CullState.Default);
-		}
-
-		public static void SetPolygonModeState(PolygonModeState polygonModeState)
-		{
-			if (Graphics.PolygonModeState != polygonModeState)
-			{
-				Flush();
-				Graphics.PolygonModeState = polygonModeState;
-			}
-		}
-		public static void ResetPolygonModeState()
-		{
-			SetPolygonModeState(PolygonModeState.Default);
-		}
-
-		public static void SetBlendState(BlendState blendState)
-		{
-			if (Graphics.BlendState != blendState)
-			{
-				Flush();
-				Graphics.BlendState = blendState;
-			}
-		}
-		public static void ResetBlendState()
-		{
-			SetBlendState(BlendState.Default);
-		}
-
-		public static void SetDepthState(DepthState depthState)
-		{
-			if (Graphics.DepthState != depthState)
-			{
-				Flush();
-				Graphics.DepthState = depthState;
-			}
-		}
-		public static void ResetDepthState()
-		{
-			SetDepthState(DepthState.Default);
 		}
 
 		public static void SetTexture(Texture texture)

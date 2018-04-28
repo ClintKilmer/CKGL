@@ -6,8 +6,9 @@ namespace CKGL
 	{
 		public readonly FrontFace FrontFace;
 
+		public static FrontFaceState Default { get { return CounterClockwise; } }
+
 		#region Static Constructors
-		public static readonly FrontFaceState Default = CounterClockwise;
 		public static readonly FrontFaceState Clockwise = new FrontFaceState(FrontFace.Clockwise);
 		public static readonly FrontFaceState CounterClockwise = new FrontFaceState(FrontFace.CounterClockwise);
 		#endregion
@@ -22,7 +23,7 @@ namespace CKGL
 		#region Overrides
 		public override string ToString()
 		{
-			return $"FrontFaceState: [FrontFace: {FrontFace.ToString()}]";
+			return $"FrontFaceState: [FrontFace: {FrontFace}]";
 		}
 		#endregion
 
