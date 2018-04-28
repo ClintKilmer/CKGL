@@ -1,12 +1,12 @@
 ﻿CKGL TODO List:
 
+- Instead of giving Renderer.Draw_() a rotation, give it a transform (A Model Matrix)
 - ProjectionMatrix only needs updates if target is changed, not window
 - Platform.SaveJPG is broken
 - ScissorState / ViewportState? Move to state?
 - State - move all state logic out of renderer and have dirty state flag
 - Renderer - add lineloop and any figure out all DrawModes
 - Vector 2/3 rotate around
-- Instead of giving Renderer.Draw_() a rotation, give it a transform (A Model Matrix)
 - Figure out how to proccess Vertex into buffer data
 - Add Texture2dSampler, and CubeMap to Shader Uniform Set
 - ResourceHandle? GLResource?
