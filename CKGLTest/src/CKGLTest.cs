@@ -219,19 +219,17 @@ void main()
 			RenderTarget.Bind(null);
 			Graphics.Clear(new Colour(0.1f, 0.1f, 0.1f, 1f));
 
-			Renderer.Start();
-			
 			// Set Shader uniforms
 			//shader.SetUniform("offset", Time.TotalMilliseconds * 0.0016f, Time.TotalMilliseconds * 0.002f, Time.TotalMilliseconds * 0.0023f);
 
-			Renderer.SetRenderTarget(surface);
+			RenderTarget.Bind(surface);
 
 			// Clear the screen
 			if (Input.Keyboard.Down(KeyCode.Space))
 				Graphics.ClearDepth();
 			else
 				Graphics.Clear(Colour.Black);
-			
+
 			//Graphics.State.SetFrontFaceState(FrontFaceState.CounterClockwise);
 			//Graphics.State.SetCullState(CullState.Back);
 			Graphics.State.SetPolygonModeState(PolygonModeState.FrontFillBackLine);
@@ -345,7 +343,7 @@ void main()
 			//						   -5f, 5f, 0.1f,
 			//						   Colour.White);
 
-			Renderer.End();
+			Renderer.Flush();
 
 			scale = Math.Max(1, Math.Min(Window.Width / width, Window.Height / height));
 			surface.BlitTextureTo(null, 0, BlitFilter.Nearest, new RectangleI((Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, width * scale, height * scale));

@@ -1,16 +1,19 @@
-﻿using OpenGL;
+﻿using System;
+using System.IO;
+using System.Collections.Generic;
+
+using OpenGL;
 
 using GLint = System.Int32;
 using GLuint = System.UInt32;
-
-using System;
-using System.IO;
-using System.Collections.Generic;
 
 namespace CKGL
 {
 	public class Shader
 	{
+		public static Action OnBinding;
+		public static Action OnBound;
+
 		private static GLuint currentlyBoundShader;
 
 		private GLuint id;
@@ -182,8 +185,10 @@ namespace CKGL
 		{
 			if (id != currentlyBoundShader)
 			{
+				OnBinding?.Invoke();
 				GL.UseProgram(id);
 				currentlyBoundShader = id;
+				OnBound?.Invoke();
 			}
 		}
 

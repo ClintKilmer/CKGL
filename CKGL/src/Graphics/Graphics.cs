@@ -97,6 +97,7 @@ namespace CKGL
 		#region State
 		public static class State
 		{
+			public static Action OnStateChanging;
 			public static Action OnStateChanged;
 
 			public static FrontFaceState FrontFaceState { get; private set; }
@@ -112,6 +113,14 @@ namespace CKGL
 				ResetPolygonModeState();
 				ResetBlendState();
 				ResetDepthState();
+
+				Shader.OnBinding += OnStateChanging;
+				RenderTarget.OnBinding += OnStateChanging;
+				Texture.OnBinding += OnStateChanging;
+
+				Shader.OnBound += OnStateChanged;
+				RenderTarget.OnBound += OnStateChanged;
+				Texture.OnBound += OnStateChanged;
 			}
 
 			#region FrontFaceState
@@ -119,9 +128,10 @@ namespace CKGL
 			{
 				if (FrontFaceState != frontFaceState)
 				{
-					OnStateChanged?.Invoke();
+					OnStateChanging?.Invoke();
 					GL.FrontFace(frontFaceState.FrontFace);
 					FrontFaceState = frontFaceState;
+					OnStateChanged?.Invoke();
 				}
 			}
 			public static void ResetFrontFaceState()
@@ -135,13 +145,14 @@ namespace CKGL
 			{
 				if (CullState != cullState)
 				{
-					OnStateChanged?.Invoke();
+					OnStateChanging?.Invoke();
 					if (cullState.On)
 						GL.Enable(EnableCap.CullFace);
 					else
 						GL.Disable(EnableCap.CullFace);
 					GL.CullFace(cullState.Face);
 					CullState = cullState;
+					OnStateChanged?.Invoke();
 				}
 			}
 			public static void ResetCullState()
@@ -155,7 +166,7 @@ namespace CKGL
 			{
 				if (PolygonModeState != polygonModeState)
 				{
-					OnStateChanged?.Invoke();
+					OnStateChanging?.Invoke();
 					if (polygonModeState.FrontAndBack)
 					{
 						GL.PolygonMode(Face.FrontAndBack, polygonModeState.BackPolygonMode);
@@ -166,6 +177,7 @@ namespace CKGL
 						GL.PolygonMode(Face.Back, polygonModeState.BackPolygonMode);
 					}
 					PolygonModeState = polygonModeState;
+					OnStateChanged?.Invoke();
 				}
 			}
 			public static void ResetPolygonModeState()
@@ -179,7 +191,7 @@ namespace CKGL
 			{
 				if (BlendState != blendState)
 				{
-					OnStateChanged?.Invoke();
+					OnStateChanging?.Invoke();
 					if (blendState.On)
 						GL.Enable(EnableCap.Blend);
 					else
@@ -187,6 +199,7 @@ namespace CKGL
 					GL.BlendFuncSeparate(blendState.ColourSource, blendState.ColourDestination, blendState.AlphaSource, blendState.AlphaDestination);
 					GL.BlendEquationSeparate(blendState.ColourEquation, blendState.AlphaEquation);
 					BlendState = blendState;
+					OnStateChanged?.Invoke();
 				}
 			}
 			public static void ResetBlendState()
@@ -200,13 +213,14 @@ namespace CKGL
 			{
 				if (DepthState != depthState)
 				{
-					OnStateChanged?.Invoke();
+					OnStateChanging?.Invoke();
 					if (depthState.On)
 						GL.Enable(EnableCap.DepthTest);
 					else
 						GL.Disable(EnableCap.DepthTest);
 					GL.DepthFunc(depthState.DepthFunc);
 					DepthState = depthState;
+					OnStateChanged?.Invoke();
 				}
 			}
 			public static void ResetDepthState()

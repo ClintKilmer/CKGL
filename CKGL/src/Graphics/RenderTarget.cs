@@ -9,6 +9,9 @@ namespace CKGL
 {
 	public class RenderTarget
 	{
+		public static Action OnBinding;
+		public static Action OnBound;
+
 		public static RenderTarget Current { get; private set; } = null;
 
 		public int Width { get; private set; }
@@ -98,9 +101,11 @@ namespace CKGL
 			GLuint id = renderTarget?.id ?? 0;
 			if (id != (Current?.id ?? 0))
 			{
+				OnBinding?.Invoke();
 				GL.BindFramebuffer(FramebufferTarget.Framebuffer, id);
 				Current = renderTarget;
 				Graphics.SetViewport();
+				OnBound?.Invoke();
 			}
 		}
 		#endregion

@@ -49,7 +49,6 @@ namespace CKGL
 			}
 		}
 
-		private static bool working = false;
 		private static VertexArray vao;
 		private static VertexBuffer vbo;
 		private static VertexBufferLayout vboLayout;
@@ -71,7 +70,7 @@ namespace CKGL
 			vboLayout.Push<float>(1); // textured
 			vao.AddBuffer(vbo, vboLayout);
 
-			Graphics.State.OnStateChanged += () => { Flush(); };
+			Graphics.State.OnStateChanging += () => { Flush(); };
 
 			// Debug
 			Output.WriteLine($"Renderer Initialized");
@@ -89,36 +88,6 @@ namespace CKGL
 
 		// TODO - Move all state stuff to Graphics.State
 		#region State
-		public static void SetRenderTarget(RenderTarget renderTarget)
-		{
-			if ((renderTarget is null && !RenderTarget.IsBound(null)) || !renderTarget.IsBound())
-			{
-				Flush();
-				if (renderTarget is null)
-					RenderTarget.Bind(null);
-				else
-					renderTarget.Bind();
-			}
-		}
-		public static void ResetRenderTarget()
-		{
-			SetRenderTarget(null);
-		}
-
-		public static void SetShader(Shader shader)
-		{
-			if (currentShader != shader)
-			{
-				Flush();
-				shader.Bind();
-				currentShader = shader;
-			}
-		}
-		public static void ResetShader()
-		{
-			SetShader(DefaultShader);
-		}
-
 		public static void SetTexture(Texture texture)
 		{
 			if (!texture.IsBound())
@@ -129,32 +98,8 @@ namespace CKGL
 		}
 		#endregion
 
-		// TODO - Remove Renderer.Start(), useless method
-		public static void Start()
+		public static void Flush()
 		{
-			if (working)
-				throw new Exception("End must be called before Begin can be called again.");
-
-			working = true;
-
-			vertexCount = 0;
-		}
-
-		public static void End()
-		{
-			if (!working)
-				throw new Exception("Start must be called before End can be called.");
-
-			Flush();
-
-			working = false;
-		}
-
-		private static void Flush()
-		{
-			if (!working)
-				throw new Exception("Start must be called before Flush can be called.");
-
 			if (vertexCount > 0)
 			{
 				currentShader.Bind();
@@ -193,9 +138,6 @@ namespace CKGL
 		private static void AddVertex(DrawMode type, Vector3 position, Colour colour, Vector2? uv, Matrix? matrix) => AddVertex(type, position * matrix ?? position, colour, uv);
 		private static void AddVertex(DrawMode type, Vector3 position, Colour colour, Vector2? uv)
 		{
-			if (!working)
-				throw new Exception("Start must be called before AddVertex can be called.");
-
 			if (currentDrawMode != type)
 			{
 				Flush();

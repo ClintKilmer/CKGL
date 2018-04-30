@@ -1,4 +1,6 @@
-﻿using OpenGL;
+﻿using System;
+
+using OpenGL;
 
 using GLint = System.Int32;
 using GLuint = System.UInt32;
@@ -7,6 +9,9 @@ namespace CKGL
 {
 	public abstract class Texture
 	{
+		public static Action OnBinding;
+		public static Action OnBound;
+
 		private struct Binding
 		{
 			public GLuint ID;
@@ -136,11 +141,13 @@ namespace CKGL
 		{
 			if (!IsBound(textureSlot, target))
 			{
+				OnBinding?.Invoke();
 				GL.ActiveTexture(textureSlot);
 				GL.BindTexture(target, ID);
 
 				bindings[textureSlot].ID = ID;
 				bindings[textureSlot].Target = target;
+				OnBound?.Invoke();
 			}
 		}
 		#endregion

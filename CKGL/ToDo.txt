@@ -1,9 +1,7 @@
 ﻿CKGL TODO List:
 
 - ref it up in Renderer!
-- Graphics State - move rest of state logic out of renderer
-	- On Shader/Texture/RenderTarget Bind(), have Graphics State subscribe to Event
-	- Or move bind/set to Graphics State
+- Graphics State - move GL calls into classes/stucts? Or cleanup somehow
 - ScissorState / ViewportState? Move to state?
 - Instead of giving Renderer.Draw_() a rotation, give it a transform (A Model Matrix)
 - ProjectionMatrix only needs updates if target is changed, not window
