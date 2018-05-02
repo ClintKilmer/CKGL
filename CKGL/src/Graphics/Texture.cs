@@ -19,6 +19,8 @@ namespace CKGL
 		}
 		private static Binding[] bindings = new Binding[GL.MaxTextureUnits];
 
+		public static GLuint Swaps { get; private set; }
+
 		public static TextureFilter DefaultMinFilter = TextureFilter.Nearest;
 		public static TextureFilter DefaultMagFilter = TextureFilter.Nearest;
 		public static TextureWrap DefaultWrapX = TextureWrap.Clamp;
@@ -46,6 +48,11 @@ namespace CKGL
 			MagFilter = magFilter;
 			WrapX = wrapX;
 			WrapY = wrapY;
+		}
+
+		public static void PreDraw()
+		{
+			Swaps = 0;
 		}
 
 		public void Destroy()
@@ -135,6 +142,7 @@ namespace CKGL
 
 				bindings[textureSlot].ID = id;
 				bindings[textureSlot].Target = BindTarget;
+				Swaps++;
 				OnBound?.Invoke();
 			}
 		}
