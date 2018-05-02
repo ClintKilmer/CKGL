@@ -42,6 +42,7 @@
 
 				if (Window.VSync || Time.DoDraw)
 				{
+					PreDraw();
 					Draw();
 					Window.SwapBuffers();
 					Time.Draw();
@@ -64,6 +65,11 @@
 		}
 
 		public abstract void Update();
+
+		private void PreDraw()
+		{
+			Graphics.PreDraw();
+		}
 
 		public abstract void Draw();
 

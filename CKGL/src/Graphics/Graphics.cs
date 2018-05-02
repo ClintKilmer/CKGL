@@ -9,6 +9,8 @@ namespace CKGL
 {
 	public static class Graphics
 	{
+		public static GLuint DrawCalls { get; private set; }
+
 		public static void Init()
 		{
 			GL.Init();
@@ -23,6 +25,11 @@ namespace CKGL
 
 			// Debug
 			Output.WriteLine($"Graphics Initialized");
+		}
+
+		public static void PreDraw()
+		{
+			DrawCalls = 0;
 		}
 
 		#region Viewport
@@ -235,11 +242,13 @@ namespace CKGL
 		public static void DrawVertexArrays(DrawMode drawMode, GLint offset, GLint count)
 		{
 			GL.DrawArrays(drawMode, offset, count);
+			DrawCalls++;
 		}
 
 		public static void DrawIndexedVertexArrays(DrawMode drawMode, GLint offset, GLint count)
 		{
 			GL.DrawElements(drawMode, count, IndexType.UnsignedInt, offset);
+			DrawCalls++;
 		}
 		#endregion
 	}
