@@ -136,7 +136,6 @@ namespace CKGL
 				bindings[textureSlot].ID = id;
 				bindings[textureSlot].Target = BindTarget;
 				OnBound?.Invoke();
-				Output.WriteLine($"Texture swap {id}");
 			}
 		}
 		#endregion

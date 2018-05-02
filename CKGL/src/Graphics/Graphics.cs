@@ -114,13 +114,13 @@ namespace CKGL
 				ResetBlendState();
 				ResetDepthState();
 
-				Shader.OnBinding += OnStateChanging;
-				RenderTarget.OnBinding += OnStateChanging;
-				Texture.OnBinding += OnStateChanging;
+				Shader.OnBinding += () => { OnStateChanging?.Invoke(); };
+				RenderTarget.OnBinding += () => { OnStateChanging?.Invoke(); };
+				Texture.OnBinding += () => { OnStateChanging?.Invoke(); };
 
-				Shader.OnBound += OnStateChanged;
-				RenderTarget.OnBound += OnStateChanged;
-				Texture.OnBound += OnStateChanged;
+				Shader.OnBound += () => { OnStateChanged?.Invoke(); };
+				RenderTarget.OnBound += () => { OnStateChanged?.Invoke(); };
+				Texture.OnBound += () => { OnStateChanged?.Invoke(); };
 			}
 
 			#region FrontFaceState
