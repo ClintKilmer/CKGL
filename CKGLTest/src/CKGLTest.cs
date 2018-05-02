@@ -288,9 +288,9 @@ void main()
 					   Time.TotalSeconds * 0.5f,
 					   Vector2.Zero);
 
-			Renderer.SetTexture(Textures.Test);
-			Renderer.Draw.Rectangle(4f,
-									-1f,
+			Textures.Test.Bind();
+			Renderer.Draw.Rectangle(2f,
+									-0.5f,
 									1f,
 									1f,
 									Colour.White,
@@ -307,7 +307,17 @@ void main()
 									new Vector2(4.5f, -0.5f));
 
 			Renderer.Draw.Sprite(Sprites.Test1,
-								 new Vector2(2f, -1f),
+								 new Vector2(4f, -0.5f),
+								 Vector2.One / 8f,
+								 Colour.White);
+
+			Renderer.Draw.Sprite(Sprites.Test2,
+								 new Vector2(6f, -0.5f),
+								 Vector2.One / 8f,
+								 Colour.White);
+
+			Renderer.Draw.Sprite(Sprites.Test3,
+								 new Vector2(8f, -0.5f),
 								 Vector2.One / 8f,
 								 Colour.White);
 

@@ -24,8 +24,9 @@ namespace CKGL
 		public static TextureWrap DefaultWrapX = TextureWrap.Clamp;
 		public static TextureWrap DefaultWrapY = TextureWrap.Clamp;
 
-		public GLuint ID { get; private set; }
+		private GLuint id;
 
+		public GLuint ID { get => id; }
 		public int Width { get; set; }
 		public int Height { get; set; }
 		public TextureFormat Format { get; private set; }
@@ -37,7 +38,7 @@ namespace CKGL
 						  TextureFilter minFilter, TextureFilter magFilter,
 						  TextureWrap wrapX, TextureWrap wrapY)
 		{
-			ID = GL.GenTexture();
+			id = GL.GenTexture();
 			Format = format;
 			BindTarget = bindTarget;
 			DataTarget = dataTarget;
@@ -49,10 +50,10 @@ namespace CKGL
 
 		public void Destroy()
 		{
-			if (ID != default(GLuint))
+			if (id != default(GLuint))
 			{
-				GL.DeleteTexture(ID);
-				ID = default(GLuint);
+				GL.DeleteTexture(id);
+				id = default(GLuint);
 			}
 		}
 
@@ -123,31 +124,19 @@ namespace CKGL
 		#endregion
 
 		#region Bind
-		public static GLuint BoundAt(GLuint textureSlot)
+		public void Bind() => Bind(0);
+		public void Bind(GLuint textureSlot)
 		{
-			return bindings[textureSlot].ID;
-		}
-
-		public bool IsBound() => IsBound(0);
-		public bool IsBound(GLuint textureSlot) => IsBound(textureSlot, BindTarget);
-		private bool IsBound(GLuint textureSlot, TextureTarget target)
-		{
-			return bindings[textureSlot].ID == ID && bindings[textureSlot].Target == target;
-		}
-
-		public void Bind() => Bind(0, BindTarget);
-		public void Bind(GLuint textureSlot) => Bind(textureSlot, BindTarget);
-		private void Bind(GLuint textureSlot, TextureTarget target)
-		{
-			if (!IsBound(textureSlot, target))
+			if (id != bindings[textureSlot].ID || BindTarget != bindings[textureSlot].Target)
 			{
 				OnBinding?.Invoke();
 				GL.ActiveTexture(textureSlot);
-				GL.BindTexture(target, ID);
+				GL.BindTexture(BindTarget, id);
 
-				bindings[textureSlot].ID = ID;
-				bindings[textureSlot].Target = target;
+				bindings[textureSlot].ID = id;
+				bindings[textureSlot].Target = BindTarget;
 				OnBound?.Invoke();
+				Output.WriteLine($"Texture swap {id}");
 			}
 		}
 		#endregion
@@ -155,18 +144,18 @@ namespace CKGL
 		#region Overrides
 		public override string ToString()
 		{
-			return $"{ID}";
+			return $"{id}";
 		}
 		#endregion
 
 		#region Operators
 		public static bool operator ==(Texture a, Texture b)
 		{
-			return a.ID == b.ID;
+			return a.id == b.id;
 		}
 		public static bool operator !=(Texture a, Texture b)
 		{
-			return a.ID != b.ID;
+			return a.id != b.id;
 		}
 		#endregion
 	}

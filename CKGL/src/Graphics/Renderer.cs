@@ -85,18 +85,6 @@ namespace CKGL
 			vboLayout = null;
 		}
 
-		// TODO - Move all state stuff to Graphics.State
-		#region State
-		public static void SetTexture(Texture texture)
-		{
-			if (!texture.IsBound())
-			{
-				Flush();
-				texture.Bind();
-			}
-		}
-		#endregion
-
 		public static void Flush()
 		{
 			if (vertexCount > 0)
@@ -302,29 +290,29 @@ namespace CKGL
 			// Sprites
 			public static void Sprite(Sprite sprite, Vector2 position, Colour colour)
 			{
-				SetTexture(sprite.SpriteSheet.Texture);
+				sprite.SpriteSheet.Texture.Bind();
 				Rectangle(position.X, position.Y, sprite.Width, sprite.Height, colour, colour, colour, colour, true, sprite.UV_BL, sprite.UV_BR, sprite.UV_TL, sprite.UV_TR);
 			}
 			public static void Sprite(Sprite sprite, Vector2 position, Vector2 scale, Colour colour)
 			{
-				SetTexture(sprite.SpriteSheet.Texture);
+				sprite.SpriteSheet.Texture.Bind();
 				Rectangle(position.X, position.Y, sprite.Width * scale.X, sprite.Height * scale.Y, colour, colour, colour, colour, true, sprite.UV_BL, sprite.UV_BR, sprite.UV_TL, sprite.UV_TR);
 			}
 			public static void Sprite(Sprite sprite, Vector2 position, Colour colour, float rotation, Vector2 origin)
 			{
-				SetTexture(sprite.SpriteSheet.Texture);
+				sprite.SpriteSheet.Texture.Bind();
 				Rectangle(position.X, position.Y, sprite.Width, sprite.Height, colour, colour, colour, colour, true, sprite.UV_BL, sprite.UV_BR, sprite.UV_TL, sprite.UV_TR, rotation, origin);
 			}
 			public static void Sprite(Sprite sprite, Vector2 position, Vector2 scale, Colour colour, float rotation, Vector2 origin)
 			{
-				SetTexture(sprite.SpriteSheet.Texture);
+				sprite.SpriteSheet.Texture.Bind();
 				Rectangle(position.X, position.Y, sprite.Width * scale.X, sprite.Height * scale.Y, colour, colour, colour, colour, true, sprite.UV_BL, sprite.UV_BR, sprite.UV_TL, sprite.UV_TR, rotation, origin);
 			}
 
 			// Strings
 			public static void Text(SpriteFont font, string text, Vector2 position, Vector2 scale, Colour colour, HAlign hAlign = HAlign.Left, VAlign vAlign = VAlign.Top)
 			{
-				SetTexture(font.SpriteSheet.Texture);
+				font.SpriteSheet.Texture.Bind();
 
 				float offsetX = 0;
 				float offsetY = 0;
@@ -495,32 +483,32 @@ namespace CKGL
 			private static Vector2 uvFull4 = new Vector2(1f, 1f);
 			public static void RenderTarget(RenderTarget renderTarget, int texture, float x, float y, Colour colour)
 			{
-				SetTexture(renderTarget.textures[texture]);
+				renderTarget.textures[texture].Bind();
 				Rectangle(x, y, renderTarget.Width, renderTarget.Height, colour, colour, colour, colour, true, uvFull1, uvFull2, uvFull3, uvFull4);
 			}
 			public static void RenderTarget(RenderTarget renderTarget, int texture, float x, float y, float rotation, Vector2 origin, Colour colour)
 			{
-				SetTexture(renderTarget.textures[texture]);
+				renderTarget.textures[texture].Bind();
 				Rectangle(x, y, renderTarget.Width, renderTarget.Height, colour, colour, colour, colour, true, uvFull1, uvFull2, uvFull3, uvFull4, rotation, origin);
 			}
 			public static void RenderTarget(RenderTarget renderTarget, int texture, float x, float y, float scale, Colour colour)
 			{
-				SetTexture(renderTarget.textures[texture]);
+				renderTarget.textures[texture].Bind();
 				Rectangle(x, y, renderTarget.Width * scale, renderTarget.Height * scale, colour, colour, colour, colour, true, uvFull1, uvFull2, uvFull3, uvFull4);
 			}
 			public static void RenderTarget(RenderTarget renderTarget, int texture, float x, float y, float scale, float rotation, Vector2 origin, Colour colour)
 			{
-				SetTexture(renderTarget.textures[texture]);
+				renderTarget.textures[texture].Bind();
 				Rectangle(x, y, renderTarget.Width * scale, renderTarget.Height * scale, colour, colour, colour, colour, true, uvFull1, uvFull2, uvFull3, uvFull4, rotation, origin);
 			}
 			public static void RenderTarget(RenderTarget renderTarget, int texture, float x, float y, float width, float height, Colour colour)
 			{
-				SetTexture(renderTarget.textures[texture]);
+				renderTarget.textures[texture].Bind();
 				Rectangle(x, y, width, height, colour, colour, colour, colour, true, uvFull1, uvFull2, uvFull3, uvFull4);
 			}
 			public static void RenderTarget(RenderTarget renderTarget, int texture, Vector2 v1, Vector2 v2, Colour colour)
 			{
-				SetTexture(renderTarget.textures[texture]);
+				renderTarget.textures[texture].Bind();
 				Rectangle(new Vector2(v1.X, v1.Y), new Vector2(v2.X, v2.Y), colour, colour, colour, colour, true, uvFull1, uvFull2, uvFull3, uvFull4);
 			}
 
