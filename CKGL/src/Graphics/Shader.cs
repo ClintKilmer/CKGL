@@ -19,50 +19,6 @@ namespace CKGL
 		private GLuint id;
 		private Dictionary<string, Uniform> uniforms = new Dictionary<string, Uniform>(StringComparer.Ordinal);
 
-		#region Default Shaders
-		public static readonly string Basic2D = @"
-			#version 330
-			uniform mat4 Matrix;
-			layout(location = 0) in vec2 vertPos;
-			layout(location = 1) in vec2 vertUV;
-			layout(location = 2) in vec4 vertCol;
-			layout(location = 3) in float vertMult;
-			layout(location = 4) in float vertWash;
-			layout(location = 5) in float vertVeto;
-			out vec2 fragUV;
-			out vec4 fragCol;
-			out float fragMult;
-			out float fragWash;
-			out float fragVeto;
-			void main(void)
-			{
-				gl_Position = Matrix * vec4(vertPos, 0.0, 1.0);
-				fragUV = vertUV;
-				fragCol = vertCol;
-				fragMult = vertMult;
-				fragWash = vertWash;
-				fragVeto = vertVeto;
-			}
-			...
-			#version 330
-			uniform sampler2D Texture;
-			in vec2 fragUV;
-			in vec4 fragCol;
-			in float fragMult;
-			in float fragWash;
-			in float fragVeto;
-			layout(location = 0) out vec4 outColour;
-			void main(void)
-			{
-				vec4 colour = texture(Texture, fragUV);
-				outColour = 
-					fragMult * colour * fragCol + 
-					fragWash * colour.a * fragCol + 
-					fragVeto * fragCol;
-			}
-		";
-		#endregion
-
 		public Shader(ref string source)
 		{
 			Compile(ref source);
@@ -175,11 +131,6 @@ namespace CKGL
 				id = default(GLuint);
 			}
 		}
-
-		//protected override void Dispose()
-		//{
-		//	Destroy();
-		//}
 
 		public void Bind()
 		{
