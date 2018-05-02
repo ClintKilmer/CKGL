@@ -2,7 +2,6 @@
 
 - ref it up in Renderer!
 - Graphics State - move GL calls into classes/stucts? Or cleanup somehow
-- ScissorState / ViewportState? Move to state?
 - Instead of giving Renderer.Draw_() a rotation, give it a transform (A Model Matrix)
 - ProjectionMatrix only needs updates if target is changed, not window
 - Platform.SaveJPG is broken

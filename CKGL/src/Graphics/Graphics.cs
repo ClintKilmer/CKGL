@@ -48,6 +48,31 @@ namespace CKGL
 		}
 		#endregion
 
+		#region ScissorTest
+		public static void SetScissorTest() => SetScissorTest(RenderTarget.Current);
+		public static void SetScissorTest(RenderTarget renderTarget)
+		{
+			if (renderTarget == null)
+				SetScissorTest(0, 0, Window.Width, Window.Height);
+			else
+				SetScissorTest(0, 0, renderTarget.Width, renderTarget.Height);
+		}
+		
+		public static void SetScissorTest(GLint x, GLint y, GLint width, GLint height)
+		{
+			GL.Enable(EnableCap.ScissorTest);
+			GL.Scissor(x, y, width, height);
+		}
+
+		public static void SetScissorTest(bool enabled)
+		{
+			if (enabled)
+				GL.Enable(EnableCap.ScissorTest);
+			else
+				GL.Disable(EnableCap.ScissorTest);
+		}
+		#endregion
+
 		#region Clear
 		public static void SetClearColour(Colour colour)
 		{

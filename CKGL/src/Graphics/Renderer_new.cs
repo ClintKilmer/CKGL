@@ -89,9 +89,6 @@ namespace CKGL
 		{
 			if (vertexCount > 0)
 			{
-				OpenGL.GL.Enable(OpenGL.EnableCap.ScissorTest);
-				OpenGL.GL.Scissor(0, 0, RenderTarget.Current?.Width ?? Window.Width, RenderTarget.Current?.Height ?? Window.Height);
-
 				vao.Bind();
 				vbo.LoadData(Vertex.GetVBO(vertices), BufferUsage.DynamicDraw);
 

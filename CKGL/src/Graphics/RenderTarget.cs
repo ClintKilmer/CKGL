@@ -95,6 +95,7 @@ namespace CKGL
 				GL.BindFramebuffer(FramebufferTarget.Framebuffer, id);
 				Current = renderTarget;
 				Graphics.SetViewport();
+				Graphics.SetScissorTest();
 				OnBound?.Invoke();
 			}
 		}
@@ -106,14 +107,11 @@ namespace CKGL
 		{
 			if (textures[textureNum].ID == 0)
 				throw new Exception("RenderTarget does not have a texture in slot: " + textureNum);
-
-			//GL.Enable(EnableCap.ScissorTest);
-			//GL.Scissor(rect.X, rect.Y, rect.W, rect.H);
-			GL.Disable(EnableCap.ScissorTest);
-
+			
 			GL.BindFramebuffer(FramebufferTarget.Read, id);
 			GL.BindFramebuffer(FramebufferTarget.Draw, target?.id ?? 0);
 			Graphics.SetViewport(target);
+			Graphics.SetScissorTest(target);
 			GL.ReadBuffer((ReadBuffer)((uint)ReadBuffer.Colour0 + textureNum));
 			GL.BlitFramebuffer(new RectangleI(Width, Height), rect, BufferBit.Colour, filter);
 		}
