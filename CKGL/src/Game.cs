@@ -69,7 +69,9 @@
 		private void PreDraw()
 		{
 			Graphics.PreDraw();
+			RenderTarget.PreDraw();
 			Texture.PreDraw();
+			Shader.PreDraw();
 		}
 
 		public abstract void Draw();

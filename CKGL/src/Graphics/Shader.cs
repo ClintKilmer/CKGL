@@ -16,6 +16,8 @@ namespace CKGL
 
 		private static GLuint currentlyBoundShader;
 
+		public static GLuint Swaps { get; private set; }
+
 		private GLuint id;
 		private Dictionary<string, Uniform> uniforms = new Dictionary<string, Uniform>(StringComparer.Ordinal);
 
@@ -123,6 +125,11 @@ namespace CKGL
 		}
 		#endregion
 
+		public static void PreDraw()
+		{
+			Swaps = 0;
+		}
+
 		public void Destroy()
 		{
 			if (id != default(GLuint))
@@ -139,6 +146,7 @@ namespace CKGL
 				OnBinding?.Invoke();
 				GL.UseProgram(id);
 				currentlyBoundShader = id;
+				Swaps++;
 				OnBound?.Invoke();
 			}
 		}

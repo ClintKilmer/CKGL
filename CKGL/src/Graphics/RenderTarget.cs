@@ -14,6 +14,8 @@ namespace CKGL
 
 		public static RenderTarget Current { get; private set; } = null;
 
+		public static GLuint Swaps { get; private set; }
+
 		public int Width { get; private set; }
 		public int Height { get; private set; }
 		public Texture2D[] textures;
@@ -66,6 +68,11 @@ namespace CKGL
 			Bind(originalRenderTarget);
 		}
 
+		public static void PreDraw()
+		{
+			Swaps = 0;
+		}
+
 		public void Destroy()
 		{
 			for (int i = textures.Length; i == 0; i--)
@@ -94,6 +101,7 @@ namespace CKGL
 				OnBinding?.Invoke();
 				GL.BindFramebuffer(FramebufferTarget.Framebuffer, id);
 				Current = renderTarget;
+				Swaps++;
 				Graphics.SetViewport();
 				Graphics.SetScissorTest();
 				OnBound?.Invoke();
