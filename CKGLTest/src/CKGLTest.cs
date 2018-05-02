@@ -383,12 +383,10 @@ void main()
 
 		public override void OnFocusGained()
 		{
-			Output.WriteLine("Focus Gained");
 		}
 
 		public override void OnFocusLost()
 		{
-			Output.WriteLine("Focus Lost");
 		}
 
 		public override void OnWindowResized()
