@@ -1,5 +1,7 @@
 ﻿CKGL TODO List:
 
+*** MEMORY LEAK!
+
 - ref it up in Renderer!
 - Graphics State - move GL calls into classes/stucts? Or cleanup somehow
 - Instead of giving Renderer.Draw_() a rotation, give it a transform (A Model Matrix)
