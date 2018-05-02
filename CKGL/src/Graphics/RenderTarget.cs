@@ -85,16 +85,6 @@ namespace CKGL
 		}
 
 		#region Bind
-		public bool IsBound()
-		{
-			return (Current?.id ?? 0) == id;
-		}
-
-		public static bool IsBound(RenderTarget renderTarget)
-		{
-			return (Current?.id ?? 0) == (renderTarget?.id ?? 0);
-		}
-
 		public void Bind() => Bind(this);
 		public static void Bind(RenderTarget renderTarget)
 		{
