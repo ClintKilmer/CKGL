@@ -36,7 +36,7 @@ namespace CKGL
 		public static void SetViewport() => SetViewport(RenderTarget.Current);
 		public static void SetViewport(RenderTarget renderTarget)
 		{
-			if (renderTarget is null)
+			if (renderTarget == null)
 				SetViewport(0, 0, Window.Width, Window.Height);
 			else
 				SetViewport(0, 0, renderTarget.Width, renderTarget.Height);
