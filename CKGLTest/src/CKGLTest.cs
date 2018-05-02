@@ -348,7 +348,7 @@ void main()
 			//	Renderer.Draw.Pixel(new Vector3(Random.Range(-40f, 40f), Random.Range(-20f, 20f), 0.0f),
 			//						new Colour(Random.Range(1f), Random.Range(1f), Random.Range(1f), 1f));
 
-			//Renderer.ResetRenderTarget();
+			//RenderTarget.Bind(null);
 			//Renderer.Draw.RenderTarget(surface, 0,
 			//						   -5f, 5f, 0.1f,
 			//						   Colour.White);
@@ -357,7 +357,6 @@ void main()
 
 			scale = Math.Max(1, Math.Min(Window.Width / width, Window.Height / height));
 			surface.BlitTextureTo(null, 0, BlitFilter.Nearest, new RectangleI((Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, width * scale, height * scale));
-			//surface.BlitTextureTo(null, 0, BlitFilter.Nearest, new RectangleI(0, 0, width, height));
 
 			// Screenshot
 			if (Input.Keyboard.Pressed(KeyCode.F9))

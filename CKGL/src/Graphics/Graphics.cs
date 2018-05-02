@@ -57,7 +57,7 @@ namespace CKGL
 			else
 				SetScissorTest(0, 0, renderTarget.Width, renderTarget.Height);
 		}
-		
+
 		public static void SetScissorTest(GLint x, GLint y, GLint width, GLint height)
 		{
 			GL.Enable(EnableCap.ScissorTest);

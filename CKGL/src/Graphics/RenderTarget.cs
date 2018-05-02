@@ -107,7 +107,7 @@ namespace CKGL
 		{
 			if (textures[textureNum].ID == 0)
 				throw new Exception("RenderTarget does not have a texture in slot: " + textureNum);
-			
+
 			GL.BindFramebuffer(FramebufferTarget.Read, id);
 			GL.BindFramebuffer(FramebufferTarget.Draw, target?.id ?? 0);
 			Graphics.SetViewport(target);

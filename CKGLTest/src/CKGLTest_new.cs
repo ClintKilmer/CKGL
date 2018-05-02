@@ -232,7 +232,7 @@ void main()
 			//Graphics.Clear(Colour.Grey * 0.25f);
 			else
 				Renderer.Clear(Colour.Black);
-			
+
 			//Graphics.State.SetFrontFaceState(FrontFaceState.CounterClockwise);
 			//Graphics.State.SetCullState(CullState.Back);
 			Graphics.State.SetPolygonModeState(PolygonModeState.FrontFillBackLine);
