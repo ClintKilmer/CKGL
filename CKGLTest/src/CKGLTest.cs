@@ -141,7 +141,7 @@ void main()
 		{
 			//Window.Title = $"{Time.DeltaTime:n1}ms - Info: {Platform.OS} | {Time.TotalSeconds:n1} - Buffers: {Audio.BufferCount} - Sources: {Audio.SourceCount} - Position: [{Window.X}, {Window.Y}] - Size: [{Window.Width}, {Window.Height}] - Mouse: [{Input.Mouse.Position.X}, {Input.Mouse.Position.Y}]";
 			//Window.Title = $"{Time.DeltaTime:n1}ms | Position: [{Window.X}, {Window.Y}] | Size: [{Window.Width}, {Window.Height}] | Mouse: [{Input.Mouse.Position.X}, {Input.Mouse.Position.Y}]";
-			Window.Title = $"VSync: {Window.GetVSyncMode()} | {Time.UPS:n0}ups | {Time.FPS:n0}fps | Draw Calls: {Graphics.DrawCalls} | State Changes: {Graphics.State.Changes} | RenderTarget Swaps: {RenderTarget.Swaps} | Texture Swaps: {Texture.Swaps} | Shader Swaps: {Shader.Swaps} | WinPos: [{Window.X}, {Window.Y}] | Size: [{Window.Size}] | Mouse Global: [{Input.Mouse.PositionDisplay}] | Mouse: [{Input.Mouse.Position}] | Mouse Relative: [{Input.Mouse.PositionRelative}]";
+			Window.Title = $"Mem: {RAM:n1}MB | VSync: {Window.GetVSyncMode()} | {Time.UPS:n0}ups | {Time.FPS:n0}fps | Draw Calls: {Graphics.DrawCalls} | State Changes: {Graphics.State.Changes} | RenderTarget Swaps: {RenderTarget.Swaps} | Texture Swaps: {Texture.Swaps} | Shader Swaps: {Shader.Swaps} | WinPos: [{Window.X}, {Window.Y}] | Size: [{Window.Size}] | Mouse Global: [{Input.Mouse.PositionDisplay}] | Mouse: [{Input.Mouse.Position}] | Mouse Relative: [{Input.Mouse.PositionRelative}]";
 
 			if (Input.Keyboard.Down(KeyCode.Backspace))
 				Platform.Quit();
