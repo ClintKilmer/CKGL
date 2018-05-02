@@ -30,6 +30,7 @@ namespace CKGL
 		public static void PreDraw()
 		{
 			DrawCalls = 0;
+			State.PreDraw();
 		}
 
 		#region Viewport
@@ -132,6 +133,8 @@ namespace CKGL
 			public static Action OnStateChanging;
 			public static Action OnStateChanged;
 
+			public static GLuint Changes { get; private set; }
+
 			public static FrontFaceState FrontFaceState { get; private set; }
 			public static CullState CullState { get; private set; }
 			public static PolygonModeState PolygonModeState { get; private set; }
@@ -140,6 +143,8 @@ namespace CKGL
 
 			public static void Init()
 			{
+				OnStateChanged += () => { Changes++; };
+
 				ResetFrontFaceState();
 				ResetCullState();
 				ResetPolygonModeState();
@@ -153,6 +158,11 @@ namespace CKGL
 				Shader.OnBound += () => { OnStateChanged?.Invoke(); };
 				RenderTarget.OnBound += () => { OnStateChanged?.Invoke(); };
 				Texture.OnBound += () => { OnStateChanged?.Invoke(); };
+			}
+
+			public static void PreDraw()
+			{
+				Changes = 0;
 			}
 
 			#region FrontFaceState
