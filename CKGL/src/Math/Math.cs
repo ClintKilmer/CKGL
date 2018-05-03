@@ -109,12 +109,7 @@
 			return x > 0 ? 1 : (x < 0 ? -1 : 0);
 		}
 
-		public static float Sign(float x)
-		{
-			return x > 0f ? 1f : (x < 0f ? -1f : 0f);
-		}
-
-		public static int SignInt(float x)
+		public static int Sign(float x)
 		{
 			return x > 0f ? 1 : (x < 0f ? -1 : 0);
 		}

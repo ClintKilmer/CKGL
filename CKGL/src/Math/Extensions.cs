@@ -100,12 +100,7 @@
 			return x > 0 ? 1 : (x < 0 ? -1 : 0);
 		}
 
-		public static float Sign(this float x)
-		{
-			return x > 0f ? 1f : (x < 0f ? -1f : 0f);
-		}
-
-		public static int SignInt(this float x)
+		public static int Sign(this float x)
 		{
 			return x > 0f ? 1 : (x < 0f ? -1 : 0);
 		}

@@ -23,6 +23,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)src\Collision\AABB.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Collision\AABBi.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Game.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\Camera.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\Graphics.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\IndexBuffer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\MeshBase.cs" />
