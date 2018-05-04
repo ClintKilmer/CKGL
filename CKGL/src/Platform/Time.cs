@@ -16,6 +16,9 @@
 
 		public static float UPS { get; private set; } = (float)(1.0 / dt);
 		public static float SPU { get; private set; } = (float)dt;
+
+		public static float FPSRaw { get; private set; } = (float)(1.0 / dt);
+		public static float SPFRaw { get; private set; } = (float)dt;
 		public static float FPS { get; private set; } = (float)(1.0 / dt);
 		public static float SPF { get; private set; } = (float)dt;
 
@@ -65,21 +68,34 @@
 
 		public static void Update()
 		{
+			DoDraw = true;
 			accumulator -= dt;
 			t += dt;
-			DoDraw = true;
+
+			SPF = Math.Lerp(SPF, SPFRaw, SPU * 4f);
+			FPS = Math.Lerp(FPS, FPSRaw, SPU * 4f);
 		}
 
 		private static ulong drawCurrentTime;
+		private static double averageTarget = 0.5;
+		private static int drawAverageSamples = 0;
+		private static double drawAverageAccumulator = 0.0;
 		public static void Draw()
 		{
+			DoDraw = false;
+
 			ulong newTime = Platform.PerformanceCounter;
 			double drawDeltaTime = ((newTime - drawCurrentTime) / (double)Platform.PerformanceFrequency);
 			drawCurrentTime = newTime;
 
-			SPF = (float)drawDeltaTime;
-			FPS = (float)(1.0 / drawDeltaTime);
-			DoDraw = false;
+			drawAverageSamples++;
+			if ((drawAverageAccumulator += drawDeltaTime) >= averageTarget)
+			{
+				SPFRaw = (float)drawAverageAccumulator / drawAverageSamples;
+				FPSRaw = (float)(1.0 / (drawAverageAccumulator / drawAverageSamples));
+				drawAverageSamples = 0;
+				drawAverageAccumulator = 0.0;
+			}
 		}
 
 		public static class Stopwatch
