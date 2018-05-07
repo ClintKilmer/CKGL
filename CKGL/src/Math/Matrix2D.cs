@@ -240,7 +240,7 @@ namespace CKGL
 				transformMatrix *= CreateScale(scale);
 
 			if (rotationInRadians != 0f)
-				transformMatrix *= CreateRotationZ(-rotationInRadians);
+				transformMatrix *= CreateRotationZ(rotationInRadians);
 
 			if (position != Vector2.Zero)
 				transformMatrix *= CreateTranslation(position);
@@ -270,7 +270,7 @@ namespace CKGL
 
 			if (rotationInRadians != 0f)
 			{
-				var rotationMatrix = CreateRotationZ(-rotationInRadians);
+				var rotationMatrix = CreateRotationZ(rotationInRadians);
 				transformMatrix = transformMatrix * rotationMatrix;
 			}
 
