@@ -14,14 +14,13 @@ namespace CKGL
 		public static void Init()
 		{
 			GL.Init();
-
 			State.Init();
 
-			// TODO - OnWinResized - GL.Viewport?
-			//Platform.Events.OnWinResized += () =>
-			//{
-			//	GL.Viewport(0, 0, Window.Width, Window.Height);
-			//};
+			Platform.Events.OnWinResized += () =>
+			{
+				SetViewport();
+				SetScissorTest();
+			};
 
 			// Debug
 			Output.WriteLine($"Graphics Initialized");
