@@ -195,6 +195,16 @@ namespace CKGL
 				v.X * m.M12 + v.Y * m.M22 + m.M32
 			);
 		}
+		// Pre-multiplication only
+		public static Vector3 operator *(Vector2 v, Quaternion q)
+		{
+			return v * q.ToMatrix2D();
+		}
+		// Pre-multiplication conversion from Post-multiplication order
+		public static Vector3 operator *(Quaternion q, Vector2 v)
+		{
+			return v * q.ToMatrix2D();
+		}
 
 		public static Vector2 operator /(Vector2 a, Vector2 b)
 		{

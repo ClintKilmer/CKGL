@@ -91,6 +91,9 @@ void main()
 		//private static int width = 1778;
 		//private static int height = 1000;
 		//private static int scale = 1;
+		//private static int width = 16;
+		//private static int height = 9;
+		//private static int scale = 100;
 
 		public CKGLTest()
 			: base(windowTitle: "CKGL Game!",
@@ -147,7 +150,7 @@ void main()
 		{
 			//Window.Title = $"{Time.DeltaTime:n1}ms - Info: {Platform.OS} | {Time.TotalSeconds:n1} - Buffers: {Audio.BufferCount} - Sources: {Audio.SourceCount} - Position: [{Window.X}, {Window.Y}] - Size: [{Window.Width}, {Window.Height}] - Mouse: [{Input.Mouse.Position.X}, {Input.Mouse.Position.Y}]";
 			//Window.Title = $"{Time.DeltaTime:n1}ms | Position: [{Window.X}, {Window.Y}] | Size: [{Window.Width}, {Window.Height}] | Mouse: [{Input.Mouse.Position.X}, {Input.Mouse.Position.Y}]";
-			Window.Title = $"Mem: {RAM:n1}MB | VSync: {Window.GetVSyncMode()} | {Time.UPS:n0}ups | {Time.FPS:n0}fps | Draw Calls: {Graphics.DrawCalls} | State Changes: {Graphics.State.Changes} | RenderTarget Swaps: {RenderTarget.Swaps} | Texture Swaps: {Texture.Swaps} | Shader Swaps: {Shader.Swaps} | WinPos: [{Window.X}, {Window.Y}] | Size: [{Window.Size}] | Mouse Global: [{Input.Mouse.PositionDisplay}] | Mouse: [{Input.Mouse.Position}] | Mouse Relative: [{Input.Mouse.PositionRelative}]";
+			Window.Title = $"Mem: {RAM:n1}MB | VSync: {Window.GetVSyncMode()} | {Time.UPS:n0}ups | {Time.FPSSmoothed:n0}fps | Draw Calls: {Graphics.DrawCalls} | State Changes: {Graphics.State.Changes} | RenderTarget Swaps: {RenderTarget.Swaps} | Texture Swaps: {Texture.Swaps} | Shader Swaps: {Shader.Swaps} | WinPos: [{Window.X}, {Window.Y}] | Size: [{Window.Size}] | Mouse Global: [{Input.Mouse.PositionDisplay}] | Mouse: [{Input.Mouse.Position}] | Mouse Relative: [{Input.Mouse.PositionRelative}]";
 
 			if (Input.Keyboard.Down(KeyCode.Backspace))
 				Platform.Quit();
@@ -208,13 +211,11 @@ void main()
 			if (Platform.RelativeMouseMode)
 			{
 				var mouseSpeed = 0.0005f;
-				cameraYaw = Math.Clamp(cameraYaw - (Input.Mouse.PositionRelative.Y) * mouseSpeed, -0.24f, 0.24f);
+				cameraYaw = Math.Clamp(cameraYaw - (Input.Mouse.PositionRelative.Y) * mouseSpeed, -0.249f, 0.249f);
 				cameraPitch = cameraPitch + (Input.Mouse.PositionRelative.X) * mouseSpeed;
 			}
 
-			cameraLookat = Vector3.Forward *
-						   (Matrix.CreateRotationX(cameraYaw.RotationsToRadians()) *
-						   Matrix.CreateRotationY(cameraPitch.RotationsToRadians()));
+			cameraLookat = Vector3.Forward * (Matrix.CreateRotationX(cameraYaw) * Matrix.CreateRotationY(cameraPitch));
 
 			//ViewMatrix = cameraRotationMatrix * cameraTranslationMatrix;
 			ViewMatrix = Matrix.CreateLookAt(cameraPosition, cameraPosition + cameraLookat, Vector3.Up);
@@ -241,48 +242,22 @@ void main()
 
 			InternalShaders.Renderer.MVP = Matrix.Model * ViewMatrix * ProjectionMatrix;
 
+			Renderer.Draw.ResetTransform();
+			Renderer.Draw3D.ResetTransform();
+
 			// Start Drawing
 
 			Transform2D t2D = new Transform2D();
-			t2D.Rotation = Math.Sin(Time.TotalSeconds) * 0.2f;
+			t2D.Rotation = Math.Sin(Time.TotalSeconds) * 0.03f;
 			Renderer.Draw.SetTransform(t2D);
 
 			Transform t = new Transform();
-			t.Rotation = Quaternion.CreateFromEuler(0f, 0f, Math.Sin(Time.TotalSeconds) * 0.2f);
+			t.Rotation = Quaternion.CreateRotationZ(Math.Sin(Time.TotalSeconds) * 0.01f);
 			Renderer.Draw3D.SetTransform(t);
 
-			Colour gridColour = Colour.White.Alpha(0.1f);
-			int length = 100;
-			//for (int yy = -length; yy <= length; yy++)
-			//for (int yy = 0; yy <= 0; yy++)
-			//{
-			//float yy = cameraPosition.Y - 2f;
-			float yy = -5f;
-			for (int i = -length; i <= length; i++)
-			{
-				Renderer.Draw3D.Line(new Vector3(-length, yy, i),
-									 new Vector3(length, yy, i),
-									 gridColour);
-
-				Renderer.Draw3D.Line(new Vector3(i, yy, -length),
-									 new Vector3(i, yy, length),
-									 gridColour);
-			}
-			//}
-			//for (int y = -length; y <= length; y++)
-			//{
-			//	for (int x = -length; x <= length; x++)
-			//	{
-			//		for (int z = -length; z <= length; z++)
-			//		{
-			//			Renderer.Draw.Points.Point(new Vector3(x, y, z), gridColour);
-			//		}
-			//	}
-			//}
-
 			Renderer.Draw.Triangle(new Vector2(0f, 1f),
-					   new Vector2(0f, 1f) * Matrix2D.CreateRotationZ(Math.RotationsToRadians(0.66666f)),
-					   new Vector2(0f, 1f) * Matrix2D.CreateRotationZ(Math.RotationsToRadians(0.33333f)),
+					   new Vector2(0f, 1f) * Matrix2D.CreateRotationZ(0.66666f),
+					   new Vector2(0f, 1f) * Matrix2D.CreateRotationZ(0.33333f),
 					   Colour.Red,
 					   Colour.Green,
 					   Colour.Blue,
@@ -293,92 +268,85 @@ void main()
 					   Vector2.Zero);
 
 			// Right
-			Vector3 vvv;
 			Renderer.Draw3D.Triangle(new Vector3(20f, 10f, 0f),
-									 new Vector3(20f, 10f, 0f) * Matrix.CreateRotationX(Math.RotationsToRadians(0.66666f)),
-									 new Vector3(20f, 10f, 0f) * Matrix.CreateRotationX(Math.RotationsToRadians(0.33333f)),
+									 new Vector3(20f, 10f, 0f) * Quaternion.CreateRotationX(0.66666f),
+									 new Vector3(20f, 10f, 0f) * Quaternion.CreateRotationX(0.33333f),
 									 Colour.Red,
 									 Colour.Green,
 									 Colour.Blue);
-			vvv = Vector3.Right;
 			Renderer.Draw3D.Triangle(new Vector3(50f, 50f, 0f),
-									 new Vector3(50f, 50f, 0f) * Matrix.CreateFromAxisAngle(ref vvv, Math.RotationsToRadians(0.66666f)),
-									 new Vector3(50f, 50f, 0f) * Matrix.CreateFromAxisAngle(ref vvv, Math.RotationsToRadians(0.33333f)),
+									 new Vector3(50f, 50f, 0f) * Quaternion.CreateRotationX(0.66666f),
+									 new Vector3(50f, 50f, 0f) * Quaternion.CreateRotationX(0.33333f),
 									 Colour.Red,
 									 Colour.Green,
 									 Colour.Blue);
 
 			// Left
 			Renderer.Draw3D.Triangle(new Vector3(-20f, 10f, 0f),
-									 new Vector3(-20f, 10f, 0f) * Matrix.CreateRotationX(Math.RotationsToRadians(0.33333f)),
-									 new Vector3(-20f, 10f, 0f) * Matrix.CreateRotationX(Math.RotationsToRadians(0.66666f)),
+									 new Vector3(-20f, 10f, 0f) * Quaternion.CreateRotationX(0.33333f),
+									 new Vector3(-20f, 10f, 0f) * Quaternion.CreateRotationX(0.66666f),
 									 Colour.Red,
 									 Colour.Green,
 									 Colour.Blue);
-			vvv = Vector3.Left;
 			Renderer.Draw3D.Triangle(new Vector3(-50f, 50f, 0f),
-									 new Vector3(-50f, 50f, 0f) * Matrix.CreateFromAxisAngle(ref vvv, Math.RotationsToRadians(0.66666f)),
-									 new Vector3(-50f, 50f, 0f) * Matrix.CreateFromAxisAngle(ref vvv, Math.RotationsToRadians(0.33333f)),
+									 new Vector3(-50f, 50f, 0f) * Quaternion.CreateFromAxisAngle(Vector3.Left, 0.66666f),
+									 new Vector3(-50f, 50f, 0f) * Quaternion.CreateFromAxisAngle(Vector3.Left, 0.33333f),
 									 Colour.Red,
 									 Colour.Green,
 									 Colour.Blue);
 
 			// Forward
 			Renderer.Draw3D.Triangle(new Vector3(0f, 10f, 20f),
-									 new Vector3(0f, 10f, 20f) * Matrix.CreateRotationZ(Math.RotationsToRadians(0.66666f)),
-									 new Vector3(0f, 10f, 20f) * Matrix.CreateRotationZ(Math.RotationsToRadians(0.33333f)),
+									 new Vector3(0f, 10f, 20f) * Quaternion.CreateRotationZ(0.66666f),
+									 new Vector3(0f, 10f, 20f) * Quaternion.CreateRotationZ(0.33333f),
 									 Colour.Red,
 									 Colour.Green,
 									 Colour.Blue);
-			vvv = Vector3.Forward;
 			Renderer.Draw3D.Triangle(new Vector3(0f, 50f, 50f),
-									 new Vector3(0f, 50f, 50f) * Matrix.CreateFromAxisAngle(ref vvv, Math.RotationsToRadians(0.66666f)),
-									 new Vector3(0f, 50f, 50f) * Matrix.CreateFromAxisAngle(ref vvv, Math.RotationsToRadians(0.33333f)),
+									 new Vector3(0f, 50f, 50f) * Quaternion.CreateRotationZ(0.66666f),
+									 new Vector3(0f, 50f, 50f) * Quaternion.CreateRotationZ(0.33333f),
 									 Colour.Red,
 									 Colour.Green,
 									 Colour.Blue);
 
 			// Backward
 			Renderer.Draw3D.Triangle(new Vector3(0f, 10f, -20f),
-									 new Vector3(0f, 10f, -20f) * Matrix.CreateRotationZ(Math.RotationsToRadians(0.33333f)),
-									 new Vector3(0f, 10f, -20f) * Matrix.CreateRotationZ(Math.RotationsToRadians(0.66666f)),
+									 new Vector3(0f, 10f, -20f) * Quaternion.CreateRotationZ(0.33333f),
+									 new Vector3(0f, 10f, -20f) * Quaternion.CreateRotationZ(0.66666f),
 									 Colour.Red,
 									 Colour.Green,
 									 Colour.Blue);
-			vvv = Vector3.Backward;
 			Renderer.Draw3D.Triangle(new Vector3(0f, 50f, -50f),
-									 new Vector3(0f, 50f, -50f) * Matrix.CreateFromAxisAngle(ref vvv, Math.RotationsToRadians(0.66666f)),
-									 new Vector3(0f, 50f, -50f) * Matrix.CreateFromAxisAngle(ref vvv, Math.RotationsToRadians(0.33333f)),
+									 new Vector3(0f, 50f, -50f) * Quaternion.CreateFromAxisAngle(Vector3.Backward, 0.66666f),
+									 new Vector3(0f, 50f, -50f) * Quaternion.CreateFromAxisAngle(Vector3.Backward, 0.33333f),
 									 Colour.Red,
 									 Colour.Green,
 									 Colour.Blue);
 
 			// Up
 			Renderer.Draw3D.Triangle(new Vector3(0f, 20f, -10f),
-									 new Vector3(0f, 20f, -10f) * Matrix.CreateRotationY(Math.RotationsToRadians(0.66666f)),
-									 new Vector3(0f, 20f, -10f) * Matrix.CreateRotationY(Math.RotationsToRadians(0.33333f)),
+									 new Vector3(0f, 20f, -10f) * Quaternion.CreateRotationY(0.66666f),
+									 new Vector3(0f, 20f, -10f) * Quaternion.CreateRotationY(0.33333f),
 									 Colour.Red,
 									 Colour.Green,
 									 Colour.Blue);
-			vvv = Vector3.Up;
 			Renderer.Draw3D.Triangle(new Vector3(0f, 50f, -50f),
-									 new Vector3(0f, 50f, -50f) * Matrix.CreateFromAxisAngle(ref vvv, Math.RotationsToRadians(0.66666f)),
-									 new Vector3(0f, 50f, -50f) * Matrix.CreateFromAxisAngle(ref vvv, Math.RotationsToRadians(0.33333f)),
+									 new Vector3(0f, 50f, -50f) * Quaternion.CreateRotationY(0.66666f),
+									 new Vector3(0f, 50f, -50f) * Quaternion.CreateRotationY(0.33333f),
 									 Colour.Red,
 									 Colour.Green,
 									 Colour.Blue);
 
 			// Down
 			Renderer.Draw3D.Triangle(new Vector3(0f, -20f, -10f),
-									 new Vector3(0f, -20f, -10f) * Matrix.CreateRotationY(Math.RotationsToRadians(0.33333f)),
-									 new Vector3(0f, -20f, -10f) * Matrix.CreateRotationY(Math.RotationsToRadians(0.66666f)),
+									 new Vector3(0f, -20f, -10f) * Quaternion.CreateRotationY(0.33333f),
+									 new Vector3(0f, -20f, -10f) * Quaternion.CreateRotationY(0.66666f),
 									 Colour.Red,
 									 Colour.Green,
 									 Colour.Blue);
-			vvv = Vector3.Down;
 			Renderer.Draw3D.Triangle(new Vector3(0f, -50f, -50f),
-									 new Vector3(0f, -50f, -50f) * Matrix.CreateFromAxisAngle(ref vvv, Math.RotationsToRadians(0.66666f)),
-									 new Vector3(0f, -50f, -50f) * Matrix.CreateFromAxisAngle(ref vvv, Math.RotationsToRadians(0.33333f)),
+									 new Vector3(0f, -50f, -50f) * Quaternion.CreateFromAxisAngle(Vector3.Down, 0.66666f),
+									 new Vector3(0f, -50f, -50f) * Quaternion.CreateFromAxisAngle(Vector3.Down, 0.33333f),
 									 Colour.Red,
 									 Colour.Green,
 									 Colour.Blue);
@@ -397,7 +365,6 @@ void main()
 									new Vector2(0f, 1f),
 									new Vector2(1f, 1f),
 									Time.TotalSeconds * 0.5f,
-									//0f,
 									new Vector2(2.5f, 0f));
 
 			Renderer.Draw.Sprite(Sprites.Test1,
@@ -447,6 +414,56 @@ void main()
 			//Renderer.Draw.RenderTarget(surface, 0,
 			//						   -5f, 5f, 0.1f,
 			//						   Colour.White);
+
+			//Graphics.State.SetBlendState(BlendState.Additive);
+			Colour gridColour = Colour.Grey.Alpha(0.3f);
+			int length = 100;
+			//for (int yy = -length; yy <= length; yy++)
+			//for (int yy = 0; yy <= 0; yy++)
+			//{
+			//float yy = cameraPosition.Y - 2f;
+			float yy = -5f;
+			for (int i = 0; i <= length; i++)
+			{
+				Renderer.Draw3D.Line(new Vector3(-length, yy, i),
+									 new Vector3(length, yy, i),
+									 gridColour);
+				if (i != 0)
+					Renderer.Draw3D.Line(new Vector3(-length, yy, -i),
+										 new Vector3(length, yy, -i),
+										 gridColour);
+
+				Renderer.Draw3D.Line(new Vector3(i, yy, -length),
+									 new Vector3(i, yy, length),
+									 gridColour);
+				if (i != 0)
+					Renderer.Draw3D.Line(new Vector3(-i, yy, -length),
+									 new Vector3(-i, yy, length),
+									 gridColour);
+			}
+			Renderer.Draw3D.Line(new Vector3(-length, yy, -length),
+								 new Vector3(-length, yy + length, -length),
+								 gridColour);
+			Renderer.Draw3D.Line(new Vector3(length, yy, -length),
+								 new Vector3(length, yy + length, -length),
+								 gridColour);
+			Renderer.Draw3D.Line(new Vector3(-length, yy, length),
+								 new Vector3(-length, yy + length, length),
+								 gridColour);
+			Renderer.Draw3D.Line(new Vector3(length, yy, length),
+								 new Vector3(length, yy + length, length),
+								 gridColour);
+			//}
+			//for (int y = -length; y <= length; y++)
+			//{
+			//	for (int x = -length; x <= length; x++)
+			//	{
+			//		for (int z = -length; z <= length; z++)
+			//		{
+			//			Renderer.Draw.Points.Point(new Vector3(x, y, z), gridColour);
+			//		}
+			//	}
+			//}
 
 			Renderer.Flush();
 

@@ -75,7 +75,7 @@
 		private static Matrix _rotationMatrix = UpdateRotationMatrix();
 		public static Matrix UpdateRotationMatrix()
 		{
-			return Matrix.CreateRotationZ(-Rotation.RotationsToRadians());
+			return Matrix.CreateRotationZ(-Rotation);
 		}
 
 		private static Matrix _scaleMatrix = UpdateScaleMatrix();

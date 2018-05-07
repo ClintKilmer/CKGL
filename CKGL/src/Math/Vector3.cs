@@ -233,6 +233,16 @@ namespace CKGL
 			var z = (v.X * m.M13) + (v.Y * m.M23) + (v.Z * m.M33) + m.M43;
 			return new Vector3(x, y, z);
 		}
+		// Pre-multiplication only
+		public static Vector3 operator *(Vector3 v, Quaternion q)
+		{
+			return v * q.ToMatrix();
+		}
+		// Pre-multiplication conversion from Post-multiplication order
+		public static Vector3 operator *(Quaternion q, Vector3 v)
+		{
+			return v * q.ToMatrix();
+		}
 
 		public static Vector3 operator /(Vector3 a, Vector3 b)
 		{

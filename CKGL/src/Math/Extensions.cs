@@ -17,6 +17,11 @@
 			return rotations * Math.RotationCoefficient;
 		}
 
+		public static float RadiansToRotations(this float radians)
+		{
+			return radians / Math.RotationCoefficient;
+		}
+
 		internal static int Min(this int a, int b)
 		{
 			return (a < b ? a : b);

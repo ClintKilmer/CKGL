@@ -56,29 +56,17 @@ namespace CKGL
 
 		public float Rotation
 		{
-			get { return Math.Atan2(M21, M11); }
+			get { return Math.Atan2(M21, M11).RadiansToRotations(); }
 			set
 			{
-				var cos = Math.Cos(value);
-				var sin = Math.Sin(value);
+				var cos = Math.Cos(value.RotationsToRadians());
+				var sin = Math.Sin(value.RotationsToRadians());
 
 				M11 = cos;
 				M12 = -sin;
 				M21 = sin;
 				M22 = cos;
 			}
-		}
-
-		public float RotationDegrees
-		{
-			get { return Math.RadiansToDegrees(Rotation); }
-			set { Rotation = Math.DegreesToRadians(value); }
-		}
-
-		public float RotationNormalizedUnits
-		{
-			get { return Math.RadiansToDegrees(Rotation) / 360f; }
-			set { Rotation = Math.RotationsToRadians(value); }
 		}
 
 		public Vector2 Scale
@@ -229,7 +217,7 @@ namespace CKGL
 
 		#region Static Methods
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static Matrix2D CreateTransform(Vector2 origin, Vector2 position, float rotationInRadians, Vector2 scale)
+		public static Matrix2D CreateTransform(Vector2 origin, Vector2 position, float rotations, Vector2 scale)
 		{
 			Matrix2D transformMatrix = Identity;
 
@@ -239,8 +227,8 @@ namespace CKGL
 			if (scale != Vector2.One)
 				transformMatrix *= CreateScale(scale);
 
-			if (rotationInRadians != 0f)
-				transformMatrix *= CreateRotationZ(rotationInRadians);
+			if (rotations != 0f)
+				transformMatrix *= CreateRotationZ(rotations);
 
 			if (position != Vector2.Zero)
 				transformMatrix *= CreateTranslation(position);
@@ -252,7 +240,7 @@ namespace CKGL
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static Matrix2D CreateFrom(Vector2 position, float rotationInRadians, Vector2? scale = null, Vector2? origin = null)
+		public static Matrix2D CreateFrom(Vector2 position, float rotations, Vector2? scale = null, Vector2? origin = null)
 		{
 			Matrix2D transformMatrix = Identity;
 
@@ -268,9 +256,9 @@ namespace CKGL
 				transformMatrix = transformMatrix * scaleMatrix;
 			}
 
-			if (rotationInRadians != 0f)
+			if (rotations != 0f)
 			{
-				var rotationMatrix = CreateRotationZ(rotationInRadians);
+				var rotationMatrix = CreateRotationZ(rotations.RotationsToRadians());
 				transformMatrix = transformMatrix * rotationMatrix;
 			}
 
@@ -302,12 +290,12 @@ namespace CKGL
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static Matrix2D CreateRotationZ(float rotationInRadians)
+		public static Matrix2D CreateRotationZ(float rotations)
 		{
 			Matrix2D result = Identity;
 
-			float cos = Math.Cos(rotationInRadians);
-			float sin = Math.Sin(rotationInRadians);
+			float cos = Math.Cos(rotations.RotationsToRadians());
+			float sin = Math.Sin(rotations.RotationsToRadians());
 
 			result.M11 = cos;
 			result.M12 = -sin;
@@ -350,7 +338,7 @@ namespace CKGL
 		#region Overrides
 		public override string ToString()
 		{
-			return this == Identity ? "Identity" : $"T:({Translation.X:0.##}, {Translation.Y:0.##}), R:{RotationNormalizedUnits:0.##}°, S:({Scale.X:0.##},{Scale.Y:0.##})";
+			return this == Identity ? "Identity" : $"T:({Translation.X:0.##}, {Translation.Y:0.##}), R:{Rotation:0.##}, S:({Scale.X:0.##},{Scale.Y:0.##})";
 			//return $"{{M11:{M11} M12:{M12}}} {{M21:{M21} M22:{M22}}} {{M31:{M31} M32:{M32}}}";
 		}
 		#endregion

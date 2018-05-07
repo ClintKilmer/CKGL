@@ -11,14 +11,14 @@ namespace CKGL
 		public float W;
 
 		#region Constructors
-		public Quaternion(float x, float y, float z, float w)
+		private Quaternion(float x, float y, float z, float w)
 		{
 			X = x;
 			Y = y;
 			Z = z;
 			W = w;
 		}
-		public Quaternion(Vector3 axis, float w)
+		private Quaternion(Vector3 axis, float w)
 		{
 			X = axis.X;
 			Y = axis.Y;
@@ -35,14 +35,88 @@ namespace CKGL
 		#endregion
 
 		#region Methods
+		public Matrix ToMatrix()
+		{
+			Matrix result = Matrix.Identity;
+
+			float num9 = X * X;
+			float num8 = Y * Y;
+			float num7 = Z * Z;
+			float num6 = X * Y;
+			float num5 = Z * W;
+			float num4 = Z * X;
+			float num3 = Y * W;
+			float num2 = Y * Z;
+			float num = X * W;
+			result.M11 = 1f - (2f * (num8 + num7));
+			result.M12 = 2f * (num6 - num5);
+			result.M13 = 2f * (num4 + num3);
+			result.M14 = 0f;
+			result.M21 = 2f * (num6 + num5);
+			result.M22 = 1f - (2f * (num7 + num9));
+			result.M23 = 2f * (num2 - num);
+			result.M24 = 0f;
+			result.M31 = 2f * (num4 - num3);
+			result.M32 = 2f * (num2 + num);
+			result.M33 = 1f - (2f * (num8 + num9));
+			result.M34 = 0f;
+			result.M41 = 0f;
+			result.M42 = 0f;
+			result.M43 = 0f;
+			result.M44 = 1f;
+
+			return result;
+		}
+
+		public Matrix2D ToMatrix2D()
+		{
+			Matrix2D result = Matrix2D.Identity;
+
+			float num9 = X * X;
+			float num8 = Y * Y;
+			float num7 = Z * Z;
+			float num6 = X * Y;
+			float num5 = Z * W;
+			float num4 = Z * X;
+			float num3 = Y * W;
+			float num2 = Y * Z;
+			float num = X * W;
+			result.M11 = 1f - (2f * (num8 + num7));
+			result.M12 = 2f * (num6 - num5);
+			result.M21 = 2f * (num6 + num5);
+			result.M22 = 1f - (2f * (num7 + num9));
+			result.M31 = 2f * (num4 - num3);
+			result.M32 = 2f * (num2 + num);
+			return result;
+		}
 		#endregion
 
 		#region Static Methods
-		public static Quaternion CreateFromAxisAngle(Vector3 axis, float angle)
+		public static Quaternion CreateFromEuler(float x, float y, float z)
 		{
 			Quaternion result = Identity;
 
-			float half = angle * 0.5f;
+			float halfX = x.RotationsToRadians() * 0.5f;
+			float sinX = Math.Sin(halfX);
+			float cosX = Math.Cos(halfX);
+			float halfY = y.RotationsToRadians() * 0.5f;
+			float sinY = Math.Sin(halfY);
+			float cosY = Math.Cos(halfY);
+			float halfZ = z.RotationsToRadians() * 0.5f;
+			float sinZ = Math.Sin(halfZ);
+			float cosZ = Math.Cos(halfZ);
+			result.X = ((cosY * sinX) * cosZ) + ((sinY * cosX) * sinZ);
+			result.Y = ((sinY * cosX) * cosZ) - ((cosY * sinX) * sinZ);
+			result.Z = ((cosY * cosX) * sinZ) - ((sinY * sinX) * cosZ);
+			result.W = ((cosY * cosX) * cosZ) + ((sinY * sinX) * sinZ);
+
+			return result;
+		}
+		public static Quaternion CreateFromAxisAngle(Vector3 axis, float rotations)
+		{
+			Quaternion result = Identity;
+
+			float half = rotations.RotationsToRadians() * 0.5f;
 			float sin = Math.Sin(half);
 			float cos = Math.Cos(half);
 			result.X = axis.X * sin;
@@ -51,6 +125,21 @@ namespace CKGL
 			result.W = cos;
 
 			return result;
+		}
+
+		public static Quaternion CreateRotationX(float rotations)
+		{
+			return CreateFromAxisAngle(Vector3.Right, rotations);
+		}
+
+		public static Quaternion CreateRotationY(float rotations)
+		{
+			return CreateFromAxisAngle(Vector3.Up, rotations);
+		}
+
+		public static Quaternion CreateRotationZ(float rotations)
+		{
+			return CreateFromAxisAngle(Vector3.Forward, rotations);
 		}
 
 		public static Quaternion CreateFromRotationMatrix(Matrix matrix)
@@ -101,48 +190,6 @@ namespace CKGL
 				result.Z = 0.5f * sqrt;
 				result.W = (matrix.M12 - matrix.M21) * half;
 			}
-
-			return result;
-		}
-
-		public static Quaternion CreateFromEuler(float x, float y, float z)
-		{
-			Quaternion result = Identity;
-
-			float halfX = x * 0.5f;
-			float sinX = Math.Sin(halfX);
-			float cosX = Math.Cos(halfX);
-			float halfY = y * 0.5f;
-			float sinY = Math.Sin(halfY);
-			float cosY = Math.Cos(halfY);
-			float halfZ = z * 0.5f;
-			float sinZ = Math.Sin(halfZ);
-			float cosZ = Math.Cos(halfZ);
-			result.X = ((cosY * sinX) * cosZ) + ((sinY * cosX) * sinZ);
-			result.Y = ((sinY * cosX) * cosZ) - ((cosY * sinX) * sinZ);
-			result.Z = ((cosY * cosX) * sinZ) - ((sinY * sinX) * cosZ);
-			result.W = ((cosY * cosX) * cosZ) + ((sinY * sinX) * sinZ);
-
-			return result;
-		}
-
-		public static Quaternion CreateFromYawPitchRoll(float yaw, float pitch, float roll)
-		{
-			Quaternion result = Identity;
-
-			float halfRoll = roll * 0.5f;
-			float sinRoll = Math.Sin(halfRoll);
-			float cosRoll = Math.Cos(halfRoll);
-			float halfPitch = pitch * 0.5f;
-			float sinPitch = Math.Sin(halfPitch);
-			float cosPitch = Math.Cos(halfPitch);
-			float halfYaw = yaw * 0.5f;
-			float sinYaw = Math.Sin(halfYaw);
-			float cosYaw = Math.Cos(halfYaw);
-			result.X = ((cosYaw * sinPitch) * cosRoll) + ((sinYaw * cosPitch) * sinRoll);
-			result.Y = ((sinYaw * cosPitch) * cosRoll) - ((cosYaw * sinPitch) * sinRoll);
-			result.Z = ((cosYaw * cosPitch) * sinRoll) - ((sinYaw * sinPitch) * cosRoll);
-			result.W = ((cosYaw * cosPitch) * cosRoll) + ((sinYaw * sinPitch) * sinRoll);
 
 			return result;
 		}
