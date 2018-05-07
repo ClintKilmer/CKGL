@@ -105,6 +105,27 @@ namespace CKGL
 			return result;
 		}
 
+		public static Quaternion CreateFromEuler(float x, float y, float z)
+		{
+			Quaternion result = Identity;
+
+			float halfX = x * 0.5f;
+			float sinX = Math.Sin(halfX);
+			float cosX = Math.Cos(halfX);
+			float halfY = y * 0.5f;
+			float sinY = Math.Sin(halfY);
+			float cosY = Math.Cos(halfY);
+			float halfZ = z * 0.5f;
+			float sinZ = Math.Sin(halfZ);
+			float cosZ = Math.Cos(halfZ);
+			result.X = ((cosY * sinX) * cosZ) + ((sinY * cosX) * sinZ);
+			result.Y = ((sinY * cosX) * cosZ) - ((cosY * sinX) * sinZ);
+			result.Z = ((cosY * cosX) * sinZ) - ((sinY * sinX) * cosZ);
+			result.W = ((cosY * cosX) * cosZ) + ((sinY * sinX) * sinZ);
+
+			return result;
+		}
+
 		public static Quaternion CreateFromYawPitchRoll(float yaw, float pitch, float roll)
 		{
 			Quaternion result = Identity;
