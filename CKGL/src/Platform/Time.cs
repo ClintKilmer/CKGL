@@ -21,6 +21,8 @@
 		public static float SPFRaw { get; private set; } = (float)dt;
 		public static float FPS { get; private set; } = (float)(1.0 / dt);
 		public static float SPF { get; private set; } = (float)dt;
+		public static float FPSSmoothed { get; private set; } = (float)(1.0 / dt);
+		public static float SPFSmoothed { get; private set; } = (float)dt;
 
 		private static double accumulator = 0.0;
 		public static bool DoUpdate { get { return accumulator >= dt; } }
@@ -68,12 +70,11 @@
 
 		public static void Update()
 		{
-			DoDraw = true;
 			accumulator -= dt;
 			t += dt;
 
-			SPF = Math.Lerp(SPF, SPFRaw, SPU * 4f);
-			FPS = Math.Lerp(FPS, FPSRaw, SPU * 4f);
+			SPFSmoothed = Math.Lerp(SPFSmoothed, SPF, SPU * 4f);
+			FPSSmoothed = Math.Lerp(FPSSmoothed, FPS, SPU * 4f);
 		}
 
 		private static ulong drawCurrentTime;
@@ -88,11 +89,14 @@
 			double drawDeltaTime = ((newTime - drawCurrentTime) / (double)Platform.PerformanceFrequency);
 			drawCurrentTime = newTime;
 
+			SPFRaw = (float)drawDeltaTime;
+			FPSRaw = (float)(1.0 / drawDeltaTime);
+
 			drawAverageSamples++;
 			if ((drawAverageAccumulator += drawDeltaTime) >= averageTarget)
 			{
-				SPFRaw = (float)drawAverageAccumulator / drawAverageSamples;
-				FPSRaw = (float)(1.0 / (drawAverageAccumulator / drawAverageSamples));
+				SPF = (float)drawAverageAccumulator / drawAverageSamples;
+				FPS = (float)(1.0 / (drawAverageAccumulator / drawAverageSamples));
 				drawAverageSamples = 0;
 				drawAverageAccumulator = 0.0;
 			}
