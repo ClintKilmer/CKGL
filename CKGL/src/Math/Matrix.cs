@@ -50,7 +50,7 @@ namespace CKGL
 		public static readonly Matrix Identity = new Matrix(1f, 0f, 0f, 0f, 0f, 1f, 0f, 0f, 0f, 0f, 1f, 0f, 0f, 0f, 0f, 1f);
 
 		// Preferred left-handed coordinate system (Unity)
-		public static readonly Matrix Model = new Matrix(-1f, 0f, 0f, 0f, 0f, 1f, 0f, 0f, 0f, 0f, -1f, 0f, 0f, 0f, 0f, 1f);
+		public static readonly Matrix Model = new Matrix(-1f, 0f, 0f, 0f, 0f, 1f, 0f, 0f, 0f, 0f, 1f, 0f, 0f, 0f, 0f, 1f);
 		#endregion
 
 		#region Properties
@@ -312,15 +312,15 @@ namespace CKGL
 			float num7 = x * z;
 			float num6 = y * z;
 			result.M11 = num11 + (num * (1f - num11));
-			result.M12 = (num8 - (num * num8)) + (num2 * z);
-			result.M13 = (num7 - (num * num7)) - (num2 * y);
+			result.M12 = (num8 - (num * num8)) - (num2 * z);
+			result.M13 = (num7 - (num * num7)) + (num2 * y);
 			result.M14 = 0;
-			result.M21 = (num8 - (num * num8)) - (num2 * z);
+			result.M21 = (num8 - (num * num8)) + (num2 * z);
 			result.M22 = num10 + (num * (1f - num10));
-			result.M23 = (num6 - (num * num6)) + (num2 * x);
+			result.M23 = (num6 - (num * num6)) - (num2 * x);
 			result.M24 = 0;
-			result.M31 = (num7 - (num * num7)) + (num2 * y);
-			result.M32 = (num6 - (num * num6)) - (num2 * x);
+			result.M31 = (num7 - (num * num7)) - (num2 * y);
+			result.M32 = (num6 - (num * num6)) + (num2 * x);
 			result.M33 = num9 + (num * (1f - num9));
 			result.M34 = 0;
 			result.M41 = 0;
@@ -554,8 +554,8 @@ namespace CKGL
 			var sin = Math.Sin(radians);
 
 			result.M22 = cos;
-			result.M23 = sin;
-			result.M32 = -sin;
+			result.M23 = -sin;
+			result.M32 = sin;
 			result.M33 = cos;
 
 			return result;
@@ -569,8 +569,8 @@ namespace CKGL
 			var sin = Math.Sin(radians);
 
 			result.M11 = cos;
-			result.M13 = -sin;
-			result.M31 = sin;
+			result.M13 = sin;
+			result.M31 = -sin;
 			result.M33 = cos;
 
 			return result;
@@ -584,8 +584,8 @@ namespace CKGL
 			var sin = Math.Sin(radians);
 
 			result.M11 = cos;
-			result.M12 = sin;
-			result.M21 = -sin;
+			result.M12 = -sin;
+			result.M21 = sin;
 			result.M22 = cos;
 
 			return result;
