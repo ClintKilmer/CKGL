@@ -10,9 +10,13 @@
 		private static double dt = 1.0 / updateHz;
 		public static float DeltaTime { get { return (float)dt; } }
 
-		public static bool UseMinimumUPS = false;
-		public static double MinimumUPS { get; private set; } = 30.0;
-		public static double MinimumSPU { get; private set; } = 1.0 / MinimumUPS;
+		public static bool UseMinimumUPS { get { return MinimumUPS > 0; } }
+		public static int MinimumUPS { get; private set; } = 0;
+		public static double MinimumSPU { get; private set; } = 0.0;
+
+		public static bool UseMaximumFPS { get { return MaximumFPS > 0; } }
+		public static int MaximumFPS { get; private set; } = 0;
+		public static double MaximumSPF { get; private set; } = 0.0;
 
 		public static float UPS { get; private set; } = (float)(1.0 / dt);
 		public static float SPU { get; private set; } = (float)dt;
@@ -42,18 +46,42 @@
 			}
 		}
 
-		public static void SetMinimumUPS(double minimumUPS)
+		public static void SetMinimumUPS(int minimumUPS)
 		{
 			if (MinimumUPS != minimumUPS)
 			{
-				if (minimumUPS <= 0f)
-					throw new System.Exception("MinimumUPS must be greater than 0.");
-				MinimumUPS = minimumUPS;
-				MinimumSPU = 1.0 / MinimumUPS;
+				if (minimumUPS <= 0)
+				{
+					MinimumUPS = 0;
+					MinimumSPU = 0.0;
+				}
+				else
+				{
+					MinimumUPS = minimumUPS;
+					MinimumSPU = 1.0 / MinimumUPS;
+				}
+			}
+		}
+
+		public static void SetMaximumFPS(int maximumFPS)
+		{
+			if (MaximumFPS != maximumFPS)
+			{
+				if (maximumFPS <= 0)
+				{
+					MaximumFPS = 0;
+					MaximumSPF = 0.0;
+				}
+				else
+				{
+					MaximumFPS = maximumFPS;
+					MaximumSPF = 1.0 / MaximumFPS;
+				}
 			}
 		}
 
 		private static ulong tickCurrentTime = Platform.PerformanceCounter;
+		private static double maximumFPSAccumulator = 0.0;
 		public static void Tick()
 		{
 			ulong newTime = Platform.PerformanceCounter;
@@ -66,12 +94,30 @@
 			tickCurrentTime = newTime;
 
 			accumulator += tickDeltaTime;
+
+			// MaximumFPS
+			if (UseMaximumFPS)
+			{
+				maximumFPSAccumulator += tickDeltaTime;
+				if (maximumFPSAccumulator >= MaximumSPF)
+				{
+					maximumFPSAccumulator %= MaximumSPF;
+					DoDraw = true;
+				}
+			}
+			else
+			{
+				DoDraw = true;
+			}
 		}
 
 		public static void Update()
 		{
 			accumulator -= dt;
 			t += dt;
+
+			if (!UseMaximumFPS)
+				DoDraw = true;
 
 			SPFSmoothed = Math.Lerp(SPFSmoothed, SPF, SPU * 4f);
 			FPSSmoothed = Math.Lerp(FPSSmoothed, FPS, SPU * 4f);
