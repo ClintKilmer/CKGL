@@ -85,6 +85,12 @@ void main()
 		private static int width = 320;
 		private static int height = 180;
 		private static int scale = 3;
+		//private static int width = 2560;
+		//private static int height = 1440;
+		//private static int scale = 1;
+		//private static int width = 1778;
+		//private static int height = 1000;
+		//private static int scale = 1;
 
 		public CKGLTest()
 			: base(windowTitle: "CKGL Game!",
@@ -202,8 +208,8 @@ void main()
 			if (Platform.RelativeMouseMode)
 			{
 				var mouseSpeed = 0.0005f;
-				cameraYaw = Math.Clamp(cameraYaw + (Input.Mouse.PositionRelative.Y) * mouseSpeed, -0.24f, 0.24f);
-				cameraPitch = cameraPitch + (Input.Mouse.PositionRelative.X) * -mouseSpeed;
+				cameraYaw = Math.Clamp(cameraYaw - (Input.Mouse.PositionRelative.Y) * mouseSpeed, -0.24f, 0.24f);
+				cameraPitch = cameraPitch + (Input.Mouse.PositionRelative.X) * mouseSpeed;
 			}
 
 			cameraLookat = Vector3.Forward *
@@ -219,9 +225,6 @@ void main()
 			RenderTarget.Bind(null);
 			Graphics.Clear(new Colour(0.1f, 0.1f, 0.1f, 1f));
 
-			// Set Shader uniforms
-			//shader.SetUniform("offset", Time.TotalMilliseconds * 0.0016f, Time.TotalMilliseconds * 0.002f, Time.TotalMilliseconds * 0.0023f);
-
 			RenderTarget.Bind(surface);
 
 			// Clear the screen
@@ -230,7 +233,7 @@ void main()
 			else
 				Graphics.Clear(Colour.Black);
 
-			//Graphics.State.SetFrontFaceState(FrontFaceState.CounterClockwise);
+			//Graphics.State.SetFrontFaceState(FrontFaceState.Clockwise);
 			//Graphics.State.SetCullState(CullState.Back);
 			Graphics.State.SetPolygonModeState(PolygonModeState.FrontFillBackLine);
 			Graphics.State.SetBlendState(BlendState.AlphaBlend);
@@ -240,30 +243,32 @@ void main()
 
 			// Start Drawing
 
+			Transform2D t2D = new Transform2D();
+			t2D.Rotation = Math.Sin(Time.TotalSeconds) * 0.2f;
+			Renderer.Draw.SetTransform(t2D);
+
+			Transform t = new Transform();
+			t.Rotation = Quaternion.CreateFromEuler(0f, 0f, Math.Sin(Time.TotalSeconds) * 0.2f);
+			Renderer.Draw3D.SetTransform(t);
+
 			Colour gridColour = Colour.White.Alpha(0.1f);
 			int length = 100;
 			//for (int yy = -length; yy <= length; yy++)
-			for (int yy = 0; yy <= 0; yy++)
+			//for (int yy = 0; yy <= 0; yy++)
+			//{
+			//float yy = cameraPosition.Y - 2f;
+			float yy = -5f;
+			for (int i = -length; i <= length; i++)
 			{
-				for (int i = -length; i <= length; i++)
-				{
-					Renderer.Draw.Lines.Line3D(new Vector3(-length, yy, i),
-											   new Vector3(length, yy, i),
-											   gridColour,
-											   gridColour,
-											   false,
-											   Vector2.Zero,
-											   Vector2.Zero);
+				Renderer.Draw3D.Line(new Vector3(-length, yy, i),
+									 new Vector3(length, yy, i),
+									 gridColour);
 
-					Renderer.Draw.Lines.Line3D(new Vector3(i, yy, -length),
-											   new Vector3(i, yy, length),
-											   gridColour,
-											   gridColour,
-											   false,
-											   Vector2.Zero,
-											   Vector2.Zero);
-				}
+				Renderer.Draw3D.Line(new Vector3(i, yy, -length),
+									 new Vector3(i, yy, length),
+									 gridColour);
 			}
+			//}
 			//for (int y = -length; y <= length; y++)
 			//{
 			//	for (int x = -length; x <= length; x++)
@@ -281,12 +286,102 @@ void main()
 					   Colour.Red,
 					   Colour.Green,
 					   Colour.Blue,
-					   false,
-					   Vector2.Zero,
-					   Vector2.One,
-					   new Vector2(1f, 0f),
+					   null,
+					   null,
+					   null,
 					   Time.TotalSeconds * 0.5f,
 					   Vector2.Zero);
+
+			// Right
+			Vector3 vvv;
+			Renderer.Draw3D.Triangle(new Vector3(20f, 10f, 0f),
+									 new Vector3(20f, 10f, 0f) * Matrix.CreateRotationX(Math.RotationsToRadians(0.66666f)),
+									 new Vector3(20f, 10f, 0f) * Matrix.CreateRotationX(Math.RotationsToRadians(0.33333f)),
+									 Colour.Red,
+									 Colour.Green,
+									 Colour.Blue);
+			vvv = Vector3.Right;
+			Renderer.Draw3D.Triangle(new Vector3(50f, 50f, 0f),
+									 new Vector3(50f, 50f, 0f) * Matrix.CreateFromAxisAngle(ref vvv, Math.RotationsToRadians(0.66666f)),
+									 new Vector3(50f, 50f, 0f) * Matrix.CreateFromAxisAngle(ref vvv, Math.RotationsToRadians(0.33333f)),
+									 Colour.Red,
+									 Colour.Green,
+									 Colour.Blue);
+
+			// Left
+			Renderer.Draw3D.Triangle(new Vector3(-20f, 10f, 0f),
+									 new Vector3(-20f, 10f, 0f) * Matrix.CreateRotationX(Math.RotationsToRadians(0.33333f)),
+									 new Vector3(-20f, 10f, 0f) * Matrix.CreateRotationX(Math.RotationsToRadians(0.66666f)),
+									 Colour.Red,
+									 Colour.Green,
+									 Colour.Blue);
+			vvv = Vector3.Left;
+			Renderer.Draw3D.Triangle(new Vector3(-50f, 50f, 0f),
+									 new Vector3(-50f, 50f, 0f) * Matrix.CreateFromAxisAngle(ref vvv, Math.RotationsToRadians(0.66666f)),
+									 new Vector3(-50f, 50f, 0f) * Matrix.CreateFromAxisAngle(ref vvv, Math.RotationsToRadians(0.33333f)),
+									 Colour.Red,
+									 Colour.Green,
+									 Colour.Blue);
+
+			// Forward
+			Renderer.Draw3D.Triangle(new Vector3(0f, 10f, 20f),
+									 new Vector3(0f, 10f, 20f) * Matrix.CreateRotationZ(Math.RotationsToRadians(0.66666f)),
+									 new Vector3(0f, 10f, 20f) * Matrix.CreateRotationZ(Math.RotationsToRadians(0.33333f)),
+									 Colour.Red,
+									 Colour.Green,
+									 Colour.Blue);
+			vvv = Vector3.Forward;
+			Renderer.Draw3D.Triangle(new Vector3(0f, 50f, 50f),
+									 new Vector3(0f, 50f, 50f) * Matrix.CreateFromAxisAngle(ref vvv, Math.RotationsToRadians(0.66666f)),
+									 new Vector3(0f, 50f, 50f) * Matrix.CreateFromAxisAngle(ref vvv, Math.RotationsToRadians(0.33333f)),
+									 Colour.Red,
+									 Colour.Green,
+									 Colour.Blue);
+
+			// Backward
+			Renderer.Draw3D.Triangle(new Vector3(0f, 10f, -20f),
+									 new Vector3(0f, 10f, -20f) * Matrix.CreateRotationZ(Math.RotationsToRadians(0.33333f)),
+									 new Vector3(0f, 10f, -20f) * Matrix.CreateRotationZ(Math.RotationsToRadians(0.66666f)),
+									 Colour.Red,
+									 Colour.Green,
+									 Colour.Blue);
+			vvv = Vector3.Backward;
+			Renderer.Draw3D.Triangle(new Vector3(0f, 50f, -50f),
+									 new Vector3(0f, 50f, -50f) * Matrix.CreateFromAxisAngle(ref vvv, Math.RotationsToRadians(0.66666f)),
+									 new Vector3(0f, 50f, -50f) * Matrix.CreateFromAxisAngle(ref vvv, Math.RotationsToRadians(0.33333f)),
+									 Colour.Red,
+									 Colour.Green,
+									 Colour.Blue);
+
+			// Up
+			Renderer.Draw3D.Triangle(new Vector3(0f, 20f, -10f),
+									 new Vector3(0f, 20f, -10f) * Matrix.CreateRotationY(Math.RotationsToRadians(0.66666f)),
+									 new Vector3(0f, 20f, -10f) * Matrix.CreateRotationY(Math.RotationsToRadians(0.33333f)),
+									 Colour.Red,
+									 Colour.Green,
+									 Colour.Blue);
+			vvv = Vector3.Up;
+			Renderer.Draw3D.Triangle(new Vector3(0f, 50f, -50f),
+									 new Vector3(0f, 50f, -50f) * Matrix.CreateFromAxisAngle(ref vvv, Math.RotationsToRadians(0.66666f)),
+									 new Vector3(0f, 50f, -50f) * Matrix.CreateFromAxisAngle(ref vvv, Math.RotationsToRadians(0.33333f)),
+									 Colour.Red,
+									 Colour.Green,
+									 Colour.Blue);
+
+			// Down
+			Renderer.Draw3D.Triangle(new Vector3(0f, -20f, -10f),
+									 new Vector3(0f, -20f, -10f) * Matrix.CreateRotationY(Math.RotationsToRadians(0.33333f)),
+									 new Vector3(0f, -20f, -10f) * Matrix.CreateRotationY(Math.RotationsToRadians(0.66666f)),
+									 Colour.Red,
+									 Colour.Green,
+									 Colour.Blue);
+			vvv = Vector3.Down;
+			Renderer.Draw3D.Triangle(new Vector3(0f, -50f, -50f),
+									 new Vector3(0f, -50f, -50f) * Matrix.CreateFromAxisAngle(ref vvv, Math.RotationsToRadians(0.66666f)),
+									 new Vector3(0f, -50f, -50f) * Matrix.CreateFromAxisAngle(ref vvv, Math.RotationsToRadians(0.33333f)),
+									 Colour.Red,
+									 Colour.Green,
+									 Colour.Blue);
 
 			Textures.Test.Bind();
 			Renderer.Draw.Rectangle(2f,
@@ -297,14 +392,13 @@ void main()
 									Colour.White,
 									Colour.White,
 									Colour.White,
-									true,
 									new Vector2(0f, 0f),
 									new Vector2(1f, 0f),
 									new Vector2(0f, 1f),
 									new Vector2(1f, 1f),
-									//-Time.TotalSeconds * 0.5f,
-									0f,
-									new Vector2(4.5f, -0.5f));
+									Time.TotalSeconds * 0.5f,
+									//0f,
+									new Vector2(2.5f, 0f));
 
 			Renderer.Draw.Sprite(Sprites.Test1,
 								 new Vector2(4f, -0.5f),
@@ -322,7 +416,7 @@ void main()
 								 Colour.White);
 
 			Renderer.Draw.Text(SpriteFonts.Font,
-							   "|:shadow=0,-1,1,1,1,0.5:|ABCDEFGHIJKLMNOPQRSTUVWXYZ\nabcdefghijklmnopqrstuvwxyz\n1234567890\n_-+=(){}[]<>\\|/;:'\"?.,!@#$%^&*~`",
+							   "|:shadow=0,-1,0.01,1,1,1,0.5:|ABCDEFGHIJKLMNOPQRSTUVWXYZ\nabcdefghijklmnopqrstuvwxyz\n1234567890\n_-+=(){}[]<>\\|/;:'\"?.,!@#$%^&*~`",
 							   new Vector2(0f, 4f),
 							   Vector2.One / 7f,
 							   Colour.White,
@@ -336,13 +430,14 @@ void main()
 			//										  new Colour(Random.Range(1f), Random.Range(1f), Random.Range(1f), Random.Range(1f)));
 			//Renderer.Draw.TriangleListStrip.End();
 
-			Renderer.Draw.LineListStrip.Begin();
-			for (int i = 0; i < 10; i++)
-				Renderer.Draw.LineListStrip.AddVertex(new Vector3(Random.Range(-6f, -2f), Random.Range(-2f, 2f), 0.0f),
-												  new Colour(Random.Range(1f), Random.Range(1f), Random.Range(1f), Random.Range(1f)));
-			Renderer.Draw.LineListStrip.End();
+			// TODO - LineListStrip
+			//Renderer.Draw.LineListStrip.Begin();
+			//for (int i = 0; i < 10; i++)
+			//	Renderer.Draw.LineListStrip.AddVertex(new Vector3(Random.Range(-6f, -2f), Random.Range(-2f, 2f), 0.0f),
+			//									  new Colour(Random.Range(1f), Random.Range(1f), Random.Range(1f), Random.Range(1f)));
+			//Renderer.Draw.LineListStrip.End();
 
-			Renderer.Draw.Circle(new Vector2(0f, -8f), 10f, Colour.Green, Colour.Green.Alpha(0.1f), (int)Math.Lerp(8f, 64f, Math.SinNormalized(Time.TotalSeconds)));
+			//Renderer.Draw.Circle(new Vector2(0f, -8f), 10f, Colour.Green, Colour.Green.Alpha(0.1f), (int)Math.Lerp(8f, 64f, Math.SinNormalized(Time.TotalSeconds)));
 
 			//for (int i = 0; i < 100; i++)
 			//	Renderer.Draw.Pixel(new Vector3(Random.Range(-40f, 40f), Random.Range(-20f, 20f), 0.0f),

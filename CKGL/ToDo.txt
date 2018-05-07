@@ -2,13 +2,12 @@
 
 *** MEMORY LEAK!
 
-- ref it up in Renderer!
+- Vector 2/3 rotate around
+- Quaternion Rotations - for Transform
+- Renderer - add lineloop and any figure out all DrawModes
 - Graphics State - move GL calls into classes/stucts? Or cleanup somehow
-- Instead of giving Renderer.Draw_() a rotation, give it a transform (A Model Matrix)
 - ProjectionMatrix only needs updates if target is changed, not window
 - Platform.SaveJPG is broken
-- Renderer - add lineloop and any figure out all DrawModes
-- Vector 2/3 rotate around
 - Figure out how to proccess Vertex into buffer data
 - Add Texture2dSampler, and CubeMap to Shader Uniform Set - Have generic Set Texture Uniform
 - ResourceHandle? GLResource?
