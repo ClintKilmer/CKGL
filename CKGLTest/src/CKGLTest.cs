@@ -255,6 +255,56 @@ void main()
 			t.Rotation = Quaternion.CreateRotationZ(Math.Sin(Time.TotalSeconds) * 0.01f);
 			Renderer.Draw3D.SetTransform(t);
 
+			//Graphics.State.SetBlendState(BlendState.Additive);
+			Colour gridColour = Colour.Grey.Alpha(0.3f);
+			int length = 100;
+			//for (int yy = -length; yy <= length; yy++)
+			//for (int yy = 0; yy <= 0; yy++)
+			//{
+			//float yy = cameraPosition.Y - 2f;
+			float yy = -5f;
+			for (int i = 0; i <= length; i++)
+			{
+				Renderer.Draw3D.Line(new Vector3(-length, yy, i),
+									 new Vector3(length, yy, i),
+									 gridColour);
+				if (i != 0)
+					Renderer.Draw3D.Line(new Vector3(-length, yy, -i),
+										 new Vector3(length, yy, -i),
+										 gridColour);
+
+				Renderer.Draw3D.Line(new Vector3(i, yy, -length),
+									 new Vector3(i, yy, length),
+									 gridColour);
+				if (i != 0)
+					Renderer.Draw3D.Line(new Vector3(-i, yy, -length),
+									 new Vector3(-i, yy, length),
+									 gridColour);
+			}
+			Renderer.Draw3D.Line(new Vector3(-length, yy, -length),
+								 new Vector3(-length, yy + length, -length),
+								 gridColour);
+			Renderer.Draw3D.Line(new Vector3(length, yy, -length),
+								 new Vector3(length, yy + length, -length),
+								 gridColour);
+			Renderer.Draw3D.Line(new Vector3(-length, yy, length),
+								 new Vector3(-length, yy + length, length),
+								 gridColour);
+			Renderer.Draw3D.Line(new Vector3(length, yy, length),
+								 new Vector3(length, yy + length, length),
+								 gridColour);
+			//}
+			//for (int y = -length; y <= length; y++)
+			//{
+			//	for (int x = -length; x <= length; x++)
+			//	{
+			//		for (int z = -length; z <= length; z++)
+			//		{
+			//			Renderer.Draw.Points.Point(new Vector3(x, y, z), gridColour);
+			//		}
+			//	}
+			//}
+
 			Renderer.Draw.Triangle(new Vector2(0f, 1f),
 					   new Vector2(0f, 1f) * Matrix2D.CreateRotationZ(0.66666f),
 					   new Vector2(0f, 1f) * Matrix2D.CreateRotationZ(0.33333f),
@@ -414,56 +464,6 @@ void main()
 			//Renderer.Draw.RenderTarget(surface, 0,
 			//						   -5f, 5f, 0.1f,
 			//						   Colour.White);
-
-			//Graphics.State.SetBlendState(BlendState.Additive);
-			Colour gridColour = Colour.Grey.Alpha(0.3f);
-			int length = 100;
-			//for (int yy = -length; yy <= length; yy++)
-			//for (int yy = 0; yy <= 0; yy++)
-			//{
-			//float yy = cameraPosition.Y - 2f;
-			float yy = -5f;
-			for (int i = 0; i <= length; i++)
-			{
-				Renderer.Draw3D.Line(new Vector3(-length, yy, i),
-									 new Vector3(length, yy, i),
-									 gridColour);
-				if (i != 0)
-					Renderer.Draw3D.Line(new Vector3(-length, yy, -i),
-										 new Vector3(length, yy, -i),
-										 gridColour);
-
-				Renderer.Draw3D.Line(new Vector3(i, yy, -length),
-									 new Vector3(i, yy, length),
-									 gridColour);
-				if (i != 0)
-					Renderer.Draw3D.Line(new Vector3(-i, yy, -length),
-									 new Vector3(-i, yy, length),
-									 gridColour);
-			}
-			Renderer.Draw3D.Line(new Vector3(-length, yy, -length),
-								 new Vector3(-length, yy + length, -length),
-								 gridColour);
-			Renderer.Draw3D.Line(new Vector3(length, yy, -length),
-								 new Vector3(length, yy + length, -length),
-								 gridColour);
-			Renderer.Draw3D.Line(new Vector3(-length, yy, length),
-								 new Vector3(-length, yy + length, length),
-								 gridColour);
-			Renderer.Draw3D.Line(new Vector3(length, yy, length),
-								 new Vector3(length, yy + length, length),
-								 gridColour);
-			//}
-			//for (int y = -length; y <= length; y++)
-			//{
-			//	for (int x = -length; x <= length; x++)
-			//	{
-			//		for (int z = -length; z <= length; z++)
-			//		{
-			//			Renderer.Draw.Points.Point(new Vector3(x, y, z), gridColour);
-			//		}
-			//	}
-			//}
 
 			Renderer.Flush();
 
