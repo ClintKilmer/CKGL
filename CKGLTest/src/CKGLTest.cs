@@ -502,6 +502,7 @@ void main()
 
 		public override void OnWindowResized()
 		{
+			//ProjectionMatrix = Matrix.CreatePerspectiveFieldOfView(Math.DegreesToRadians(75f), Window.AspectRatio, 0.1f, 1000f);
 		}
 	}
 }
