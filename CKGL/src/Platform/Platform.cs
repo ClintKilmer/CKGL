@@ -150,11 +150,16 @@ namespace CKGL
 			//	);
 			//}
 
+			// SDL Init
 			if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER | SDL_INIT_HAPTIC) < 0)
 			{
 				Destroy();
 				throw new Exception(SDL_GetError());
 			}
+
+			// SDL Version Check
+			if (SDLVersion != SDL2CSVersion)
+				throw new Exception($"SDL2-CS was expecting v{SDL2CSVersion}, but found SDL DLL v{SDLVersion}");
 
 			//// We want to initialize the controllers ASAP!
 			//SDL_Event[] evt = new SDL_Event[1];
@@ -170,7 +175,7 @@ namespace CKGL
 			//	INTERNAL_AddInstance(evt[0].cdevice.which);
 			//}
 
-			//OpenGL attributes
+			// OpenGL attributes
 			SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 			SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_MINOR_VERSION, 1);
 			SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_PROFILE_MASK, (int)SDL_GLprofile.SDL_GL_CONTEXT_PROFILE_CORE);
@@ -184,7 +189,8 @@ namespace CKGL
 			Running = true;
 
 			// Debug
-			Output.WriteLine($"Platform SDL2 Initialized - SDL Version: v{SDLVersion}");
+			Output.WriteLine($"Platform SDL2 Initialized");
+			Output.WriteLine($"SDL DLL Version: v{SDLVersion} | SDL2-CS Version: v{SDL2CSVersion}");
 			Output.WriteLine($"Platform - OS: {OS}");
 			Output.WriteLine($"Platform - Video Driver: {SDL_GetCurrentVideoDriver()}");
 			Output.WriteLine($"Platform - Audio Driver: {SDL_GetCurrentAudioDriver()}");
@@ -322,6 +328,14 @@ namespace CKGL
 			{
 				SDL_GetVersion(out SDL_version ver);
 				return $"{ver.major}.{ver.minor}.{ver.patch}";
+			}
+		}
+
+		public static string SDL2CSVersion
+		{
+			get
+			{
+				return $"{SDL_MAJOR_VERSION}.{SDL_MINOR_VERSION}.{SDL_PATCHLEVEL}";
 			}
 		}
 
