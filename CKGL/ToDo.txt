@@ -1,12 +1,11 @@
 ﻿CKGL TODO List:
 
-*** MEMORY LEAK!
-
+- Memory function seems to force GC
 - Vector 2/3 rotate around
-- Quaternion Rotations - for Transform
 - Renderer - add lineloop and any figure out all DrawModes
 - Graphics State - move GL calls into classes/stucts? Or cleanup somehow
 - ProjectionMatrix only needs updates if target is changed, not window
+	- This would be good in Camera class
 - Platform.SaveJPG is broken
 - Figure out how to proccess Vertex into buffer data
 - Add Texture2dSampler, and CubeMap to Shader Uniform Set - Have generic Set Texture Uniform

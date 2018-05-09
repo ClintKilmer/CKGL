@@ -1129,6 +1129,7 @@ namespace OpenGL
 		Dither = 0x0BD0,
 		PolygonOffsetFill = 0x8037,
 		RasterizerDiscard = 0x8C89,
+		Multisample = 0x809D,
 		SampleAlphaToCoverage = 0x809E,
 		SampleCoverage = 0x80A0,
 		ScissorTest = 0x0C11,

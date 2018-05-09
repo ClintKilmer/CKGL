@@ -404,7 +404,8 @@ namespace CKGL
 	}
 }
 
-//From ckgl.js
+#region ckgl.js example implementation
+// From ckgl.js
 /*
 // ----- Quaternion ----- //
 	var Quaternion = (function() {
@@ -538,3 +539,4 @@ namespace CKGL
 	window.Quaternion = Quaternion;
 // ----- Quaternion ----- //
 */
+#endregion

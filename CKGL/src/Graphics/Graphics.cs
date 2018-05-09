@@ -36,10 +36,7 @@ namespace CKGL
 		public static void SetViewport() => SetViewport(RenderTarget.Current);
 		public static void SetViewport(RenderTarget renderTarget)
 		{
-			if (renderTarget == null)
-				SetViewport(0, 0, Window.Width, Window.Height);
-			else
-				SetViewport(0, 0, renderTarget.Width, renderTarget.Height);
+			SetViewport(0, 0, (renderTarget ?? RenderTarget.Default).Width, (renderTarget ?? RenderTarget.Default).Height);
 		}
 
 		public static void SetViewport(GLint x, GLint y, GLint width, GLint height)
@@ -52,10 +49,7 @@ namespace CKGL
 		public static void SetScissorTest() => SetScissorTest(RenderTarget.Current);
 		public static void SetScissorTest(RenderTarget renderTarget)
 		{
-			if (renderTarget == null)
-				SetScissorTest(0, 0, Window.Width, Window.Height);
-			else
-				SetScissorTest(0, 0, renderTarget.Width, renderTarget.Height);
+			SetScissorTest(0, 0, (renderTarget ?? RenderTarget.Default).Width, (renderTarget ?? RenderTarget.Default).Height);
 		}
 
 		public static void SetScissorTest(GLint x, GLint y, GLint width, GLint height)

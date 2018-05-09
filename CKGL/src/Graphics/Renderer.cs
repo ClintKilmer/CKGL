@@ -462,32 +462,32 @@ namespace CKGL
 			private static Vector2 uvFull4 = new Vector2(1f, 1f);
 			public static void RenderTarget(RenderTarget renderTarget, int texture, float x, float y, Colour colour)
 			{
-				renderTarget.textures[texture].Bind();
-				Rectangle(x, y, renderTarget.Width, renderTarget.Height, colour, colour, colour, colour, uvFull1, uvFull2, uvFull3, uvFull4);
+				(renderTarget ?? CKGL.RenderTarget.Default).textures[texture].Bind();
+				Rectangle(x, y, (renderTarget ?? CKGL.RenderTarget.Default).Width, (renderTarget ?? CKGL.RenderTarget.Default).Height, colour, colour, colour, colour, uvFull1, uvFull2, uvFull3, uvFull4);
 			}
 			public static void RenderTarget(RenderTarget renderTarget, int texture, float x, float y, float rotation, Vector2 origin, Colour colour)
 			{
-				renderTarget.textures[texture].Bind();
-				Rectangle(x, y, renderTarget.Width, renderTarget.Height, colour, colour, colour, colour, uvFull1, uvFull2, uvFull3, uvFull4, rotation, origin);
+				(renderTarget ?? CKGL.RenderTarget.Default).textures[texture].Bind();
+				Rectangle(x, y, (renderTarget ?? CKGL.RenderTarget.Default).Width, (renderTarget ?? CKGL.RenderTarget.Default).Height, colour, colour, colour, colour, uvFull1, uvFull2, uvFull3, uvFull4, rotation, origin);
 			}
 			public static void RenderTarget(RenderTarget renderTarget, int texture, float x, float y, float scale, Colour colour)
 			{
-				renderTarget.textures[texture].Bind();
-				Rectangle(x, y, renderTarget.Width * scale, renderTarget.Height * scale, colour, colour, colour, colour, uvFull1, uvFull2, uvFull3, uvFull4);
+				(renderTarget ?? CKGL.RenderTarget.Default).textures[texture].Bind();
+				Rectangle(x, y, (renderTarget ?? CKGL.RenderTarget.Default).Width * scale, (renderTarget ?? CKGL.RenderTarget.Default).Height * scale, colour, colour, colour, colour, uvFull1, uvFull2, uvFull3, uvFull4);
 			}
 			public static void RenderTarget(RenderTarget renderTarget, int texture, float x, float y, float scale, float rotation, Vector2 origin, Colour colour)
 			{
-				renderTarget.textures[texture].Bind();
-				Rectangle(x, y, renderTarget.Width * scale, renderTarget.Height * scale, colour, colour, colour, colour, uvFull1, uvFull2, uvFull3, uvFull4, rotation, origin);
+				(renderTarget ?? CKGL.RenderTarget.Default).textures[texture].Bind();
+				Rectangle(x, y, (renderTarget ?? CKGL.RenderTarget.Default).Width * scale, (renderTarget ?? CKGL.RenderTarget.Default).Height * scale, colour, colour, colour, colour, uvFull1, uvFull2, uvFull3, uvFull4, rotation, origin);
 			}
 			public static void RenderTarget(RenderTarget renderTarget, int texture, float x, float y, float width, float height, Colour colour)
 			{
-				renderTarget.textures[texture].Bind();
+				(renderTarget ?? CKGL.RenderTarget.Default).textures[texture].Bind();
 				Rectangle(x, y, width, height, colour, colour, colour, colour, uvFull1, uvFull2, uvFull3, uvFull4);
 			}
 			public static void RenderTarget(RenderTarget renderTarget, int texture, Vector2 v1, Vector2 v2, Colour colour)
 			{
-				renderTarget.textures[texture].Bind();
+				(renderTarget ?? CKGL.RenderTarget.Default).textures[texture].Bind();
 				Rectangle(new Vector2(v1.X, v1.Y), new Vector2(v2.X, v2.Y), colour, colour, colour, colour, uvFull1, uvFull2, uvFull3, uvFull4);
 			}
 			#endregion

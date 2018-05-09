@@ -150,10 +150,18 @@ namespace CKGL
 			//	);
 			//}
 
+			// SDL Init
 			if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER | SDL_INIT_HAPTIC) < 0)
 			{
 				Destroy();
 				throw new Exception(SDL_GetError());
+			}
+
+			// SDL Version Check
+			if (SDLVersion != SDL2CSVersion)
+			{
+				Destroy();
+				throw new Exception($"SDL2-CS was expecting v{SDL2CSVersion}, but found SDL DLL v{SDLVersion}");
 			}
 
 			//// We want to initialize the controllers ASAP!
@@ -170,21 +178,27 @@ namespace CKGL
 			//	INTERNAL_AddInstance(evt[0].cdevice.which);
 			//}
 
-			//OpenGL attributes
+			// OpenGL attributes
 			SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 			SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_MINOR_VERSION, 1);
 			SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_PROFILE_MASK, (int)SDL_GLprofile.SDL_GL_CONTEXT_PROFILE_CORE);
 			//SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_FLAGS, (int)SDL_GLcontext.SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
 			SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_DOUBLEBUFFER, 1);
+			SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_RED_SIZE, 8);
+			SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_GREEN_SIZE, 8);
+			SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_BLUE_SIZE, 8);
+			SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_ALPHA_SIZE, 8);
+			SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_BUFFER_SIZE, 32);
 			//SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_DEPTH_SIZE, 24);
 			//SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_STENCIL_SIZE, 8);
 			//SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_MULTISAMPLEBUFFERS, 1);
-			//SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_MULTISAMPLESAMPLES, 3);
+			//SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_MULTISAMPLESAMPLES, 4);
 
 			Running = true;
 
 			// Debug
 			Output.WriteLine($"Platform SDL2 Initialized");
+			Output.WriteLine($"SDL DLL Version: v{SDLVersion} | SDL2-CS Version: v{SDL2CSVersion}");
 			Output.WriteLine($"Platform - OS: {OS}");
 			Output.WriteLine($"Platform - Video Driver: {SDL_GetCurrentVideoDriver()}");
 			Output.WriteLine($"Platform - Audio Driver: {SDL_GetCurrentAudioDriver()}");
@@ -192,8 +206,6 @@ namespace CKGL
 			Output.WriteLine($"Platform - Total RAM: {SDL_GetSystemRAM()}MB");
 
 			Input.Init();
-			// Debug
-			Output.WriteLine($"Platform SDL2 Initialized");
 		}
 
 		public static void Destroy()
@@ -316,6 +328,23 @@ namespace CKGL
 		{
 			get { return SDL_GetRelativeMouseMode() == SDL_bool.SDL_TRUE; }
 			set { SDL_SetRelativeMouseMode(value ? SDL_bool.SDL_TRUE : SDL_bool.SDL_FALSE); }
+		}
+
+		public static string SDLVersion
+		{
+			get
+			{
+				SDL_GetVersion(out SDL_version ver);
+				return $"{ver.major}.{ver.minor}.{ver.patch}";
+			}
+		}
+
+		public static string SDL2CSVersion
+		{
+			get
+			{
+				return $"{SDL_MAJOR_VERSION}.{SDL_MINOR_VERSION}.{SDL_PATCHLEVEL}";
+			}
 		}
 
 		public static void GetGlobalMousePosition(out int x, out int y)

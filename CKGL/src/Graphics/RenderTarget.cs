@@ -12,16 +12,43 @@ namespace CKGL
 		public static Action OnBinding;
 		public static Action OnBound;
 
-		public static RenderTarget Current { get; private set; } = null;
+		public static readonly RenderTarget Default = new RenderTarget();
+		public static RenderTarget Current { get; private set; } = Default;
 
 		public static GLuint Swaps { get; private set; }
 
-		public int Width { get; private set; }
-		public int Height { get; private set; }
+		private int width = 0;
+		private int height = 0;
+		public int Width
+		{
+			get
+			{
+				if (id == 0)
+					return Window.Width;
+
+				return width;
+			}
+		}
+		public int Height
+		{
+			get
+			{
+				if (id == 0)
+					return Window.Height;
+
+				return height;
+			}
+		}
 		public Texture2D[] textures;
 		public Texture2D depthTexture;
 
 		private GLuint id;
+
+		// Default Framebuffer
+		private RenderTarget()
+		{
+			id = 0;
+		}
 
 		public RenderTarget(int width, int height, GLint colourTextures, TextureFormat textureColourFormat, TextureFormat textureDepthFormat) : this(width, height, colourTextures, textureColourFormat)
 		{
@@ -35,7 +62,7 @@ namespace CKGL
 			GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, textureDepthFormat.TextureAttachment(), depthTexture.BindTarget, depthTexture.ID, 0);
 			CheckStatus();
 
-			Bind(originalRenderTarget);
+			originalRenderTarget.Bind();
 		}
 		public RenderTarget(int width, int height, GLint colourTextures, TextureFormat textureColourFormat)
 		{
@@ -46,8 +73,9 @@ namespace CKGL
 			if (textureColourFormat.PixelFormat() == PixelFormat.Depth || textureColourFormat.PixelFormat() == PixelFormat.DepthStencil)
 				throw new Exception("textureColourFormat cannot be a depth(stencil) texture.");
 
-			Width = width;
-			Height = height;
+			this.width = width;
+			this.height = height;
+
 			id = GL.GenFramebuffer();
 
 			RenderTarget originalRenderTarget = Current;
@@ -65,7 +93,7 @@ namespace CKGL
 			GL.DrawBuffers(colourTextures, drawBuffers);
 			CheckStatus();
 
-			Bind(originalRenderTarget);
+			originalRenderTarget.Bind();
 		}
 
 		public static void PreDraw()
@@ -75,32 +103,33 @@ namespace CKGL
 
 		public void Destroy()
 		{
-			for (int i = textures.Length; i == 0; i--)
+			if (id != 0)
 			{
-				textures[i]?.Destroy();
-				textures[i] = null;
-			}
+				for (int i = textures.Length; i == 0; i--)
+				{
+					textures[i]?.Destroy();
+					textures[i] = null;
+				}
 
-			depthTexture?.Destroy();
-			depthTexture = null;
+				depthTexture?.Destroy();
+				depthTexture = null;
 
-			if (id != default(GLuint))
-			{
-				GL.DeleteFramebuffer(id);
-				id = default(GLuint);
+				if (id != default(GLuint))
+				{
+					GL.DeleteFramebuffer(id);
+					id = default(GLuint);
+				}
 			}
 		}
 
 		#region Bind
-		public void Bind() => Bind(this);
-		public static void Bind(RenderTarget renderTarget)
+		public void Bind()
 		{
-			GLuint id = renderTarget?.id ?? 0;
-			if (id != (Current?.id ?? 0))
+			if (id != Current.id)
 			{
 				OnBinding?.Invoke();
 				GL.BindFramebuffer(FramebufferTarget.Framebuffer, id);
-				Current = renderTarget;
+				Current = this;
 				Swaps++;
 				Graphics.SetViewport();
 				Graphics.SetScissorTest();
@@ -117,7 +146,7 @@ namespace CKGL
 				throw new Exception("RenderTarget does not have a texture in slot: " + textureNum);
 
 			GL.BindFramebuffer(FramebufferTarget.Read, id);
-			GL.BindFramebuffer(FramebufferTarget.Draw, target?.id ?? 0);
+			GL.BindFramebuffer(FramebufferTarget.Draw, (target ?? Default).id);
 			Graphics.SetViewport(target);
 			Graphics.SetScissorTest(target);
 			GL.ReadBuffer((ReadBuffer)((uint)ReadBuffer.Colour0 + textureNum));
