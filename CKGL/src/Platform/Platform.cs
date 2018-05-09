@@ -192,8 +192,6 @@ namespace CKGL
 			Output.WriteLine($"Platform - Total RAM: {SDL_GetSystemRAM()}MB");
 
 			Input.Init();
-			// Debug
-			Output.WriteLine($"Platform SDL2 Initialized");
 		}
 
 		public static void Destroy()
