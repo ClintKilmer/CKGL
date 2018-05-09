@@ -159,7 +159,10 @@ namespace CKGL
 
 			// SDL Version Check
 			if (SDLVersion != SDL2CSVersion)
+			{
+				Destroy();
 				throw new Exception($"SDL2-CS was expecting v{SDL2CSVersion}, but found SDL DLL v{SDLVersion}");
+			}
 
 			//// We want to initialize the controllers ASAP!
 			//SDL_Event[] evt = new SDL_Event[1];
