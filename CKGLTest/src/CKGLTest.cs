@@ -223,10 +223,10 @@ void main()
 
 		public override void Draw()
 		{
-			RenderTarget.Bind(null);
+			RenderTarget.Default.Bind();
 			Graphics.Clear(new Colour(0.1f, 0.1f, 0.1f, 1f));
 
-			RenderTarget.Bind(surface);
+			surface.Bind();
 
 			// Clear the screen
 			if (Input.Keyboard.Down(KeyCode.Space))
@@ -468,7 +468,7 @@ void main()
 			Renderer.Flush();
 
 			scale = Math.Max(1, Math.Min(Window.Width / width, Window.Height / height));
-			surface.BlitTextureTo(null, 0, BlitFilter.Nearest, new RectangleI((Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, width * scale, height * scale));
+			surface.BlitTextureTo(RenderTarget.Default, 0, BlitFilter.Nearest, new RectangleI((Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, width * scale, height * scale));
 
 			// Screenshot
 			if (Input.Keyboard.Pressed(KeyCode.F9))
