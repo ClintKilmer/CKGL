@@ -184,7 +184,7 @@ namespace CKGL
 			Running = true;
 
 			// Debug
-			Output.WriteLine($"Platform SDL2 Initialized");
+			Output.WriteLine($"Platform SDL2 Initialized - SDL Version: v{SDLVersion}");
 			Output.WriteLine($"Platform - OS: {OS}");
 			Output.WriteLine($"Platform - Video Driver: {SDL_GetCurrentVideoDriver()}");
 			Output.WriteLine($"Platform - Audio Driver: {SDL_GetCurrentAudioDriver()}");
@@ -316,6 +316,15 @@ namespace CKGL
 		{
 			get { return SDL_GetRelativeMouseMode() == SDL_bool.SDL_TRUE; }
 			set { SDL_SetRelativeMouseMode(value ? SDL_bool.SDL_TRUE : SDL_bool.SDL_FALSE); }
+		}
+
+		public static string SDLVersion
+		{
+			get
+			{
+				SDL_GetVersion(out SDL_version ver);
+				return $"{ver.major}.{ver.minor}.{ver.patch}";
+			}
 		}
 
 		public static void GetGlobalMousePosition(out int x, out int y)
