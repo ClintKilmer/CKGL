@@ -92,6 +92,7 @@ namespace CKGL
 		#endregion
 
 		#region Static Methods
+		public static Quaternion CreateFromEuler(Vector3 v) => CreateFromEuler(v.X, v.Y, v.Z);
 		public static Quaternion CreateFromEuler(float x, float y, float z)
 		{
 			Quaternion result = Identity;
