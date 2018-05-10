@@ -120,6 +120,8 @@ void main()
 		Matrix ViewMatrix = Matrix.Identity;
 		Matrix ProjectionMatrix = Matrix.Identity;
 
+		Camera Camera = new Camera();
+
 		RenderTarget surface;
 
 		public override void Init()
@@ -129,7 +131,10 @@ void main()
 			//Platform.ScreensaverAllowed = true; // Default false
 
 			//ProjectionMatrix = Matrix.CreateOrthographic(Window.Size, -10000f, 10000f);
-			ProjectionMatrix = Matrix.CreatePerspectiveFieldOfView(Math.DegreesToRadians(75f), width / (float)height, 0.1f, 1000f);
+			//ProjectionMatrix = Matrix.CreatePerspectiveFieldOfView(Math.DegreesToRadians(75f), width / (float)height, 0.1f, 1000f);
+			Camera.FoV = 75f;
+			Camera.AspectRatio = width / (float)height;
+			Camera.Position = new Vector3(0f, 2f, -10f);
 
 			// LoadContent()
 			SpriteSheets.SpriteSheet = new SpriteSheet(128);
@@ -205,14 +210,18 @@ void main()
 			if (Input.Keyboard.Down(KeyCode.E))
 				direction += Vector3.Up;
 			//cameraScale += 0.03f * cameraScale;
+			if (Input.Mouse.ScrollY != 0)
+				Camera.FoV -= Input.Mouse.ScrollY;
 
-			cameraPosition += direction.Normalized * speed * Time.DeltaTime;
+			Camera.Position += direction.Normalized * speed * Time.DeltaTime;
 
 			if (Platform.RelativeMouseMode)
 			{
 				var mouseSpeed = 0.0005f;
 				cameraYaw = Math.Clamp(cameraYaw - (Input.Mouse.PositionRelative.Y) * mouseSpeed, -0.249f, 0.249f);
 				cameraPitch = cameraPitch + (Input.Mouse.PositionRelative.X) * mouseSpeed;
+				Camera.RotationX = cameraYaw;
+				Camera.RotationY = cameraPitch;
 			}
 
 			cameraLookat = Vector3.Forward * (Matrix.CreateRotationX(cameraYaw) * Matrix.CreateRotationY(cameraPitch));
@@ -240,7 +249,7 @@ void main()
 			Graphics.State.SetBlendState(BlendState.AlphaBlend);
 			Graphics.State.SetDepthState(DepthState.LessEqual);
 
-			InternalShaders.Renderer.MVP = Matrix.Model * ViewMatrix * ProjectionMatrix;
+			InternalShaders.Renderer.MVP = Matrix.Model * Camera.CombinedMatrix;
 
 			Renderer.Draw.ResetTransform();
 			Renderer.Draw3D.ResetTransform();

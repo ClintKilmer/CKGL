@@ -1,118 +1,178 @@
 ﻿namespace CKGL
 {
-	public static class Camera
+	public class Camera
 	{
-		public static float X
+		private Vector3 position = Vector3.Zero;
+		private float scale = 1f;
+		private Vector3 rotation = Vector3.Zero;
+		private bool viewDirty = true;
+		private Matrix viewMatrix;
+
+		private float fov = 75f;
+		public float AspectRatio = 1f;
+		public float zNearClip = 0.01f;
+		public float zFarClip = 1000f;
+		private bool projectionDirty = true;
+		private Matrix projectionMatrix;
+
+		public Vector3 Position
 		{
-			get { return Position.X; }
+			get { return position; }
 			set
 			{
-				_postition.X = value;
-				_translationMatrix = UpdateTranslationMatrix();
-				_worldMatrix = UpdateWorldMatrix();
+				if (position != value)
+				{
+					position = value;
+					viewDirty = true;
+				}
 			}
 		}
 
-		public static float Y
+		public float X
 		{
-			get { return Position.Y; }
+			get { return position.X; }
 			set
 			{
-				_postition.Y = value;
-				_translationMatrix = UpdateTranslationMatrix();
-				_worldMatrix = UpdateWorldMatrix();
+				if (position.X != value)
+				{
+					position.X = value;
+					viewDirty = true;
+				}
 			}
 		}
 
-		private static Vector2 _postition = Vector2.Zero;
-		public static Vector2 Position
+		public float Y
 		{
-			get { return _postition; }
+			get { return position.Y; }
 			set
 			{
-				_postition = value;
-				_translationMatrix = UpdateTranslationMatrix();
-				_worldMatrix = UpdateWorldMatrix();
+				if (position.Y != value)
+				{
+					position.Y = value;
+					viewDirty = true;
+				}
 			}
 		}
 
-		private static float _rotation = 0f;
-		public static float Rotation
+		public float Z
 		{
-			get { return _rotation; }
+			get { return position.Z; }
 			set
 			{
-				_rotation = value;
-				if (_rotation > 1f)
-					_rotation = _rotation % 1f;
-				else if (_rotation < 0f)
-					_rotation = _rotation % -1f + 1f;
-
-				_rotationMatrix = UpdateRotationMatrix();
-				_worldMatrix = UpdateWorldMatrix();
+				if (position.Z != value)
+				{
+					position.Z = value;
+					viewDirty = true;
+				}
 			}
 		}
-		private static float zoom = 1f;
-		public static float Zoom
+
+		public float Scale
 		{
-			get { return zoom; }
+			get { return scale; }
 			set
 			{
-				zoom = Math.Max(value, 0f);
-
-				_scaleMatrix = UpdateScaleMatrix();
+				if (scale != value)
+				{
+					scale = value;
+					viewDirty = true;
+				}
 			}
 		}
-		public static float zNearClip = -10000f;
-		public static float zFarClip = 10000f;
 
-		private static Matrix _translationMatrix = UpdateTranslationMatrix();
-		public static Matrix UpdateTranslationMatrix()
+		public Vector3 Rotation
 		{
-			return Matrix.CreateTranslation(-Position.X, -Position.Y, 0f);
+			get { return rotation; }
+			set
+			{
+				if (rotation != value)
+				{
+					rotation = value;
+					viewDirty = true;
+				}
+			}
 		}
 
-		private static Matrix _rotationMatrix = UpdateRotationMatrix();
-		public static Matrix UpdateRotationMatrix()
+		public float RotationX
 		{
-			return Matrix.CreateRotationZ(-Rotation);
+			get { return rotation.X; }
+			set
+			{
+				if (rotation.X != value)
+				{
+					rotation.X = value;
+					viewDirty = true;
+				}
+			}
 		}
 
-		private static Matrix _scaleMatrix = UpdateScaleMatrix();
-		public static Matrix UpdateScaleMatrix()
+		public float RotationY
 		{
-			return Matrix.CreateScale(Zoom, Zoom, 1f);
+			get { return rotation.Y; }
+			set
+			{
+				if (rotation.Y != value)
+				{
+					rotation.Y = value;
+					viewDirty = true;
+				}
+			}
 		}
 
-		private static Matrix _worldMatrix = UpdateWorldMatrix();
-		public static Matrix UpdateWorldMatrix()
+		public float RotationZ
 		{
-			return _translationMatrix * _rotationMatrix;
+			get { return rotation.Z; }
+			set
+			{
+				if (rotation.Z != value)
+				{
+					rotation.Z = value;
+					viewDirty = true;
+				}
+			}
 		}
-		public static Matrix WorldMatrix
+
+		public Matrix ViewMatrix
 		{
 			get
 			{
-				return _worldMatrix;
+				if (viewDirty)
+				{
+					viewMatrix = Matrix.CreateLookAt(position, position + Vector3.Forward * (Matrix.CreateRotationX(rotation.X) * Matrix.CreateRotationY(rotation.Y)), Vector3.Up);
+					viewDirty = false;
+				}
+
+				return viewMatrix;
 			}
 		}
 
-		public static Matrix ViewMatrix { get; } = Matrix.CreateLookAt(Vector3.Zero, new Vector3(0f, 0f, 1f), new Vector3(0f, -1f, 0f));
+		public float FoV
+		{
+			get { return fov; }
+			set
+			{
+				if (fov != value)
+				{
+					fov = Math.Clamp(value, 1f, 179f);
+					projectionDirty = true;
+				}
+			}
+		}
 
-		public static Matrix ProjectionMatrix
+		public Matrix ProjectionMatrix
 		{
 			get
 			{
-				return
-					   // Half Pixel Offset
-#if LINUX
-					   Matrix.CreateOrthographicOffCenter(0f - Resolution.Half.Width + 0.5f / Zoom, Resolution.Width - Resolution.Half.Width + 0.5f / Zoom, 0f - Resolution.Half.Height - 0.5f / Zoom, Resolution.Height - Resolution.Half.Height - 0.5f / Zoom, zNearClip, zFarClip) *
-					   //Matrix.CreateOrthographic(Resolution.Width, Resolution.Height, zNearClip, zFarClip) *
-#else
-					   Matrix.CreateOrthographic(Resolution.Width, Resolution.Height, zNearClip, zFarClip) *
-#endif
-					   _scaleMatrix;
+				if (projectionDirty)
+				{
+					projectionMatrix = Matrix.CreatePerspectiveFieldOfView(Math.DegreesToRadians(FoV), AspectRatio, zNearClip, zFarClip);
+					projectionDirty = false;
+				}
+
+				return projectionMatrix;
 			}
 		}
+
+		public Matrix CombinedMatrix => ViewMatrix * ProjectionMatrix;
 	}
 }
