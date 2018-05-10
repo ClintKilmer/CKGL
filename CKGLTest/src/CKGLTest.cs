@@ -82,15 +82,15 @@ void main()
 
 	public class CKGLTest : Game
 	{
-		private static int width = 320;
-		private static int height = 180;
-		private static int scale = 3;
+		//private static int width = 320;
+		//private static int height = 180;
+		//private static int scale = 3;
 		//private static int width = 2560;
 		//private static int height = 1440;
 		//private static int scale = 1;
-		//private static int width = 1778;
-		//private static int height = 1000;
-		//private static int scale = 1;
+		private static int width = 1366;
+		private static int height = 768;
+		private static int scale = 1;
 		//private static int width = 16;
 		//private static int height = 9;
 		//private static int scale = 100;
