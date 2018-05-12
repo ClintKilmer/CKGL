@@ -1,6 +1,5 @@
 ﻿CKGL TODO List:
 
-- Text rendering right align not working with scaling
 - Flush renderer on shader uniform set (if different)?
 - Test Quaternion.CreateLookAt
 - Memory function seems to force GC

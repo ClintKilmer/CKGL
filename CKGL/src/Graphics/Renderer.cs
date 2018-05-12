@@ -373,7 +373,7 @@ namespace CKGL
 											try
 											{
 												modShadow = true;
-												modShadowOffset = new Vector2(float.Parse(value[0]), float.Parse(value[1])) * scale;
+												modShadowOffset = new Vector2(float.Parse(value[0]), float.Parse(value[1]));
 												modShadowDepth = float.Parse(value[2]);
 												modShadowColour = new Colour(float.Parse(value[3]), float.Parse(value[4]), float.Parse(value[5]), float.Parse(value[6]));
 											}
@@ -413,7 +413,7 @@ namespace CKGL
 						{
 							if (c == ' ')
 							{
-								offsetX += font.SpaceWidth * scale.X;
+								offsetX += font.SpaceWidth;
 							}
 							else if (c == '\a')
 							{
@@ -427,8 +427,8 @@ namespace CKGL
 								{
 									float currentDepth = depth;
 									SetDepth(modShadowDepth);
-									Rectangle(position.X + offsetX * scale.X - lineWidth * scale.X * offsetHAlign + modShadowOffset.X,
-											  position.Y + offsetY * scale.Y - totalHeight * scale.Y * offsetVAlign + modShadowOffset.Y,
+									Rectangle(position.X + offsetX * scale.X - lineWidth * scale.X * offsetHAlign + modShadowOffset.X * scale.X,
+											  position.Y + offsetY * scale.Y - totalHeight * scale.Y * offsetVAlign + modShadowOffset.Y * scale.Y,
 											  sprite.Width * scale.X,
 											  sprite.Height * scale.Y,
 											  modShadowColour, modShadowColour, modShadowColour, modShadowColour,
