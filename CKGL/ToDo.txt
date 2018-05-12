@@ -13,6 +13,12 @@
 - Add Texture2dSampler, and CubeMap to Shader Uniform Set - Have generic Set Texture Uniform
 - ResourceHandle? GLResource?
 
+- CPU Bounding Box Culling
+
+- Audio Buffer in Sound class
+- Hide audio stuff in namespace, only expose end-user functions
+
+- Input shortcuts using Action (old engine)
 
 
 
