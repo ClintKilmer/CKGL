@@ -287,7 +287,7 @@ namespace CKGL
 				font.SpriteSheet.Texture.Bind();
 
 				float offsetX = 0;
-				float offsetY = 0;
+				float offsetY = font.LineHeight;
 
 				float offsetHAlign = 0;
 				if (hAlign == HAlign.Center)
