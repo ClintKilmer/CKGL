@@ -426,7 +426,7 @@ namespace CKGL
 								if (modShadow)
 								{
 									float currentDepth = depth;
-									SetDepth(modShadowDepth);
+									SetDepth(currentDepth + modShadowDepth);
 									Rectangle(position.X + offsetX * scale.X - lineWidth * scale.X * offsetHAlign + modShadowOffset.X * scale.X,
 											  position.Y + offsetY * scale.Y - totalHeight * scale.Y * offsetVAlign + modShadowOffset.Y * scale.Y,
 											  sprite.Width * scale.X,
