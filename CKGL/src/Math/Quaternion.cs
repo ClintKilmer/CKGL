@@ -32,63 +32,69 @@ namespace CKGL
 		#endregion
 
 		#region Properties
+		public Matrix Matrix
+		{
+			get
+			{
+				Matrix result = Matrix.Identity;
+
+				float num9 = X * X;
+				float num8 = Y * Y;
+				float num7 = Z * Z;
+				float num6 = X * Y;
+				float num5 = Z * W;
+				float num4 = Z * X;
+				float num3 = Y * W;
+				float num2 = Y * Z;
+				float num = X * W;
+				result.M11 = 1f - (2f * (num8 + num7));
+				result.M12 = 2f * (num6 - num5);
+				result.M13 = 2f * (num4 + num3);
+				result.M14 = 0f;
+				result.M21 = 2f * (num6 + num5);
+				result.M22 = 1f - (2f * (num7 + num9));
+				result.M23 = 2f * (num2 - num);
+				result.M24 = 0f;
+				result.M31 = 2f * (num4 - num3);
+				result.M32 = 2f * (num2 + num);
+				result.M33 = 1f - (2f * (num8 + num9));
+				result.M34 = 0f;
+				result.M41 = 0f;
+				result.M42 = 0f;
+				result.M43 = 0f;
+				result.M44 = 1f;
+
+				return result;
+			}
+		}
+
+		public Matrix2D Matrix2D
+		{
+			get
+			{
+				Matrix2D result = Matrix2D.Identity;
+
+				float num9 = X * X;
+				float num8 = Y * Y;
+				float num7 = Z * Z;
+				float num6 = X * Y;
+				float num5 = Z * W;
+				float num4 = Z * X;
+				float num3 = Y * W;
+				float num2 = Y * Z;
+				float num = X * W;
+				result.M11 = 1f - (2f * (num8 + num7));
+				result.M12 = 2f * (num6 - num5);
+				result.M21 = 2f * (num6 + num5);
+				result.M22 = 1f - (2f * (num7 + num9));
+				result.M31 = 2f * (num4 - num3);
+				result.M32 = 2f * (num2 + num);
+				return result;
+			}
+		}
 		#endregion
 
 		#region Methods
-		public Matrix ToMatrix()
-		{
-			Matrix result = Matrix.Identity;
-
-			float num9 = X * X;
-			float num8 = Y * Y;
-			float num7 = Z * Z;
-			float num6 = X * Y;
-			float num5 = Z * W;
-			float num4 = Z * X;
-			float num3 = Y * W;
-			float num2 = Y * Z;
-			float num = X * W;
-			result.M11 = 1f - (2f * (num8 + num7));
-			result.M12 = 2f * (num6 - num5);
-			result.M13 = 2f * (num4 + num3);
-			result.M14 = 0f;
-			result.M21 = 2f * (num6 + num5);
-			result.M22 = 1f - (2f * (num7 + num9));
-			result.M23 = 2f * (num2 - num);
-			result.M24 = 0f;
-			result.M31 = 2f * (num4 - num3);
-			result.M32 = 2f * (num2 + num);
-			result.M33 = 1f - (2f * (num8 + num9));
-			result.M34 = 0f;
-			result.M41 = 0f;
-			result.M42 = 0f;
-			result.M43 = 0f;
-			result.M44 = 1f;
-
-			return result;
-		}
-
-		public Matrix2D ToMatrix2D()
-		{
-			Matrix2D result = Matrix2D.Identity;
-
-			float num9 = X * X;
-			float num8 = Y * Y;
-			float num7 = Z * Z;
-			float num6 = X * Y;
-			float num5 = Z * W;
-			float num4 = Z * X;
-			float num3 = Y * W;
-			float num2 = Y * Z;
-			float num = X * W;
-			result.M11 = 1f - (2f * (num8 + num7));
-			result.M12 = 2f * (num6 - num5);
-			result.M21 = 2f * (num6 + num5);
-			result.M22 = 1f - (2f * (num7 + num9));
-			result.M31 = 2f * (num4 - num3);
-			result.M32 = 2f * (num2 + num);
-			return result;
-		}
 		#endregion
 
 		#region Static Methods
@@ -141,6 +147,62 @@ namespace CKGL
 		public static Quaternion CreateRotationZ(float rotations)
 		{
 			return CreateFromAxisAngle(Vector3.Forward, rotations);
+		}
+
+		public static Quaternion CreateLookAt(Vector3 forward, Vector3 up)
+		{
+			Vector3 vector = Vector3.Normalize(forward);
+			Vector3 vector2 = Vector3.Normalize(Vector3.Cross(up, vector));
+			Vector3 vector3 = Vector3.Cross(vector, vector2);
+			var m00 = vector2.X;
+			var m01 = vector2.Y;
+			var m02 = vector2.Z;
+			var m10 = vector3.X;
+			var m11 = vector3.Y;
+			var m12 = vector3.Z;
+			var m20 = vector.X;
+			var m21 = vector.Y;
+			var m22 = vector.Z;
+			float num8 = (m00 + m11) + m22;
+
+			Quaternion result = new Quaternion();
+			if (num8 > 0f)
+			{
+				var num = (float)Math.Sqrt(num8 + 1f);
+				result.W = num * 0.5f;
+				num = 0.5f / num;
+				result.X = (m12 - m21) * num;
+				result.Y = (m20 - m02) * num;
+				result.Z = (m01 - m10) * num;
+				return result;
+			}
+			if ((m00 >= m11) && (m00 >= m22))
+			{
+				var num7 = (float)Math.Sqrt(((1f + m00) - m11) - m22);
+				var num4 = 0.5f / num7;
+				result.X = 0.5f * num7;
+				result.Y = (m01 + m10) * num4;
+				result.Z = (m02 + m20) * num4;
+				result.W = (m12 - m21) * num4;
+				return result;
+			}
+			if (m11 > m22)
+			{
+				var num6 = (float)Math.Sqrt(((1f + m11) - m00) - m22);
+				var num3 = 0.5f / num6;
+				result.X = (m10 + m01) * num3;
+				result.Y = 0.5f * num6;
+				result.Z = (m21 + m12) * num3;
+				result.W = (m20 - m02) * num3;
+				return result;
+			}
+			var num5 = (float)Math.Sqrt(((1f + m22) - m00) - m11);
+			var num2 = 0.5f / num5;
+			result.X = (m20 + m02) * num2;
+			result.Y = (m21 + m12) * num2;
+			result.Z = 0.5f * num5;
+			result.W = (m01 - m10) * num2;
+			return result;
 		}
 
 		public static Quaternion CreateFromRotationMatrix(Matrix matrix)

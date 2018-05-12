@@ -31,8 +31,8 @@ namespace CKGL
 		public static readonly Vector3 Left = new Vector3(-1f, 0f, 0f);
 		public static readonly Vector3 Up = new Vector3(0f, 1f, 0f);
 		public static readonly Vector3 Down = new Vector3(0f, -1f, 0f);
-		public static readonly Vector3 Forward = new Vector3(0f, 0f, 1f);
-		public static readonly Vector3 Backward = new Vector3(0f, 0f, -1f);
+		public static readonly Vector3 Forward = new Vector3(0f, 0f, 1f); // Handedness Switch
+		public static readonly Vector3 Backward = new Vector3(0f, 0f, -1f); // Handedness Switch
 		#endregion
 
 		#region Properties
@@ -153,6 +153,7 @@ namespace CKGL
 			return vector1.X * vector2.X + vector1.Y * vector2.Y + vector1.Z * vector2.Z;
 		}
 
+		// This is always the correct handedness
 		public static Vector3 Cross(Vector3 vector1, Vector3 vector2)
 		{
 			return new Vector3(
@@ -236,12 +237,28 @@ namespace CKGL
 		// Pre-multiplication only
 		public static Vector3 operator *(Vector3 v, Quaternion q)
 		{
-			return v * q.ToMatrix();
+			float num1 = q.X * 2f;
+			float num2 = q.Y * 2f;
+			float num3 = q.Z * 2f;
+			float num4 = q.X * num1;
+			float num5 = q.Y * num2;
+			float num6 = q.Z * num3;
+			float num7 = q.X * num2;
+			float num8 = q.X * num3;
+			float num9 = q.Y * num3;
+			float num10 = q.W * num1;
+			float num11 = q.W * num2;
+			float num12 = q.W * num3;
+			Vector3 result;
+			result.X = (float)((1.0 - ((double)num5 + (double)num6)) * (double)v.X + ((double)num7 - (double)num12) * (double)v.Y + ((double)num8 + (double)num11) * (double)v.Z);
+			result.Y = (float)(((double)num7 + (double)num12) * (double)v.X + (1.0 - ((double)num4 + (double)num6)) * (double)v.Y + ((double)num9 - (double)num10) * (double)v.Z);
+			result.Z = (float)(((double)num8 - (double)num11) * (double)v.X + ((double)num9 + (double)num10) * (double)v.Y + (1.0 - ((double)num4 + (double)num5)) * (double)v.Z);
+			return result;
 		}
 		// Pre-multiplication conversion from Post-multiplication order
 		public static Vector3 operator *(Quaternion q, Vector3 v)
 		{
-			return v * q.ToMatrix();
+			return v * q;
 		}
 
 		public static Vector3 operator /(Vector3 a, Vector3 b)

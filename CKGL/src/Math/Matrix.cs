@@ -50,7 +50,7 @@ namespace CKGL
 		public static readonly Matrix Identity = new Matrix(1f, 0f, 0f, 0f, 0f, 1f, 0f, 0f, 0f, 0f, 1f, 0f, 0f, 0f, 0f, 1f);
 
 		// Preferred left-handed coordinate system (Unity)
-		public static readonly Matrix Model = new Matrix(-1f, 0f, 0f, 0f, 0f, 1f, 0f, 0f, 0f, 0f, 1f, 0f, 0f, 0f, 0f, 1f);
+		public static readonly Matrix Model = new Matrix(1f, 0f, 0f, 0f, 0f, 1f, 0f, 0f, 0f, 0f, -1f, 0f, 0f, 0f, 0f, 1f);
 		#endregion
 
 		#region Properties
@@ -285,7 +285,7 @@ namespace CKGL
 				transformMatrix *= CreateScale(scale);
 
 			if (rotation != Quaternion.Identity)
-				transformMatrix *= rotation.ToMatrix();
+				transformMatrix *= rotation.Matrix;
 
 			if (position != Vector3.Zero)
 				transformMatrix *= CreateTranslation(position);
@@ -312,15 +312,15 @@ namespace CKGL
 			float num7 = x * z;
 			float num6 = y * z;
 			result.M11 = num11 + (num * (1f - num11));
-			result.M12 = (num8 - (num * num8)) - (num2 * z);
-			result.M13 = (num7 - (num * num7)) + (num2 * y);
+			result.M12 = (num8 - (num * num8)) + (num2 * z);
+			result.M13 = (num7 - (num * num7)) - (num2 * y);
 			result.M14 = 0;
-			result.M21 = (num8 - (num * num8)) + (num2 * z);
+			result.M21 = (num8 - (num * num8)) - (num2 * z);
 			result.M22 = num10 + (num * (1f - num10));
-			result.M23 = (num6 - (num * num6)) - (num2 * x);
+			result.M23 = (num6 - (num * num6)) + (num2 * x);
 			result.M24 = 0;
-			result.M31 = (num7 - (num * num7)) - (num2 * y);
-			result.M32 = (num6 - (num * num6)) + (num2 * x);
+			result.M31 = (num7 - (num * num7)) + (num2 * y);
+			result.M32 = (num6 - (num * num6)) - (num2 * x);
 			result.M33 = num9 + (num * (1f - num9));
 			result.M34 = 0;
 			result.M41 = 0;
@@ -333,7 +333,7 @@ namespace CKGL
 
 		public static Matrix CreateFromEuler(float x, float y, float z)
 		{
-			return Quaternion.CreateFromEuler(x, y, z).ToMatrix();
+			return Quaternion.CreateFromEuler(x, y, z).Matrix;
 		}
 
 		public static Matrix CreateLookAt(Vector3 cameraPosition, Vector3 cameraTarget, Vector3 cameraUpVector)
@@ -372,12 +372,19 @@ namespace CKGL
 			Matrix result = Identity;
 
 			result.M11 = 2f / width;
-			result.M12 = result.M13 = result.M14 = 0f;
+			result.M12 = 0f;
+			result.M13 = 0f;
+			result.M14 = 0f;
+			result.M21 = 0f;
 			result.M22 = 2f / height;
-			result.M21 = result.M23 = result.M24 = 0f;
+			result.M23 = 0f;
+			result.M24 = 0f;
+			result.M31 = 0f;
+			result.M32 = 0f;
 			result.M33 = 1f / (zNearPlane - zFarPlane);
-			result.M31 = result.M32 = result.M34 = 0f;
-			result.M41 = result.M42 = 0f;
+			result.M34 = 0f;
+			result.M41 = 0f;
+			result.M42 = 0f;
 			result.M43 = zNearPlane / (zNearPlane - zFarPlane);
 			result.M44 = 1f;
 
@@ -392,22 +399,22 @@ namespace CKGL
 		{
 			Matrix result = Identity;
 
-			result.M11 = (float)(2.0 / ((double)right - (double)left));
-			result.M12 = 0.0f;
-			result.M13 = 0.0f;
-			result.M14 = 0.0f;
-			result.M21 = 0.0f;
-			result.M22 = (float)(2.0 / ((double)top - (double)bottom));
-			result.M23 = 0.0f;
-			result.M24 = 0.0f;
-			result.M31 = 0.0f;
-			result.M32 = 0.0f;
-			result.M33 = (float)(1.0 / ((double)zNearPlane - (double)zFarPlane));
-			result.M34 = 0.0f;
-			result.M41 = (float)(((double)left + (double)right) / ((double)left - (double)right));
-			result.M42 = (float)(((double)top + (double)bottom) / ((double)bottom - (double)top));
-			result.M43 = (float)((double)zNearPlane / ((double)zNearPlane - (double)zFarPlane));
-			result.M44 = 1.0f;
+			result.M11 = 2f / (right - left);
+			result.M12 = 0f;
+			result.M13 = 0f;
+			result.M14 = 0f;
+			result.M21 = 0f;
+			result.M22 = 2f / (top - bottom);
+			result.M23 = 0f;
+			result.M24 = 0f;
+			result.M31 = 0f;
+			result.M32 = 0f;
+			result.M33 = 1f / (zNearPlane - zFarPlane);
+			result.M34 = 0f;
+			result.M41 = (left + right) / (left - right);
+			result.M42 = (bottom + top) / (bottom - top);
+			result.M43 = zNearPlane / (zNearPlane - zFarPlane);
+			result.M44 = 1f;
 
 			return result;
 		}
@@ -432,11 +439,11 @@ namespace CKGL
 			result.M12 = result.M13 = result.M14 = 0f;
 			result.M22 = (2f * nearPlaneDistance) / height;
 			result.M21 = result.M23 = result.M24 = 0f;
-			result.M33 = farPlaneDistance / (nearPlaneDistance - farPlaneDistance);
+			result.M33 = nearPlaneDistance / (farPlaneDistance - nearPlaneDistance); // Handedness Switch
 			result.M31 = result.M32 = 0f;
-			result.M34 = -1f;
+			result.M34 = 1; // Handedness Switch
 			result.M41 = result.M42 = result.M44 = 0f;
-			result.M43 = (nearPlaneDistance * farPlaneDistance) / (nearPlaneDistance - farPlaneDistance);
+			result.M43 = (farPlaneDistance * nearPlaneDistance) / (farPlaneDistance - nearPlaneDistance); // Handedness Switch
 
 			return result;
 		}
@@ -468,10 +475,10 @@ namespace CKGL
 			result.M22 = num;
 			result.M21 = result.M23 = result.M24 = 0;
 			result.M31 = result.M32 = 0f;
-			result.M33 = farPlaneDistance / (nearPlaneDistance - farPlaneDistance);
-			result.M34 = -1;
+			result.M33 = nearPlaneDistance / (farPlaneDistance - nearPlaneDistance); // Handedness Switch
+			result.M34 = 1; // Handedness Switch
 			result.M41 = result.M42 = result.M44 = 0;
-			result.M43 = (nearPlaneDistance * farPlaneDistance) / (nearPlaneDistance - farPlaneDistance);
+			result.M43 = (farPlaneDistance * nearPlaneDistance) / (farPlaneDistance - nearPlaneDistance); // Handedness Switch
 
 			return result;
 		}
@@ -502,9 +509,9 @@ namespace CKGL
 			result.M21 = result.M23 = result.M24 = 0;
 			result.M31 = (left + right) / (right - left);
 			result.M32 = (top + bottom) / (top - bottom);
-			result.M33 = farPlaneDistance / (nearPlaneDistance - farPlaneDistance);
-			result.M34 = -1;
-			result.M43 = (nearPlaneDistance * farPlaneDistance) / (nearPlaneDistance - farPlaneDistance);
+			result.M33 = nearPlaneDistance / (farPlaneDistance - nearPlaneDistance); // Handedness Switch
+			result.M34 = 1; // Handedness Switch
+			result.M43 = (farPlaneDistance * nearPlaneDistance) / (farPlaneDistance - nearPlaneDistance); // Handedness Switch
 			result.M41 = result.M42 = result.M44 = 0;
 
 			return result;
@@ -518,8 +525,8 @@ namespace CKGL
 			var sin = Math.Sin(rotations.RotationsToRadians());
 
 			result.M22 = cos;
-			result.M23 = -sin;
-			result.M32 = sin;
+			result.M23 = sin;
+			result.M32 = -sin;
 			result.M33 = cos;
 
 			return result;
@@ -533,8 +540,8 @@ namespace CKGL
 			var sin = Math.Sin(rotations.RotationsToRadians());
 
 			result.M11 = cos;
-			result.M13 = sin;
-			result.M31 = -sin;
+			result.M13 = -sin;
+			result.M31 = sin;
 			result.M33 = cos;
 
 			return result;
@@ -548,8 +555,8 @@ namespace CKGL
 			var sin = Math.Sin(rotations.RotationsToRadians());
 
 			result.M11 = cos;
-			result.M12 = -sin;
-			result.M21 = sin;
+			result.M12 = sin;
+			result.M21 = -sin;
 			result.M22 = cos;
 
 			return result;
@@ -615,22 +622,23 @@ namespace CKGL
 			return result;
 		}
 
-		public static Matrix CreateWorld(Vector3 position, Vector3 forward, Vector3 up)
-		{
-			Matrix result = Identity;
+		// TODO - Remove?
+		//public static Matrix CreateWorld(Vector3 position, Vector3 forward, Vector3 up)
+		//{
+		//	Matrix result = Identity;
 
-			Vector3 z = forward.Normalized;
-			Vector3 x = Vector3.Cross(forward, up).Normalize();
-			Vector3 y = Vector3.Cross(x, forward).Normalize();
+		//	Vector3 z = forward.Normalized;
+		//	Vector3 x = Vector3.Cross(forward, up).Normalize();
+		//	Vector3 y = Vector3.Cross(x, forward).Normalize();
 
-			result.Right = x;
-			result.Up = y;
-			result.Forward = z;
-			result.Translation = position;
-			result.M44 = 1f;
+		//	result.Right = x;
+		//	result.Up = y;
+		//	result.Forward = z;
+		//	result.Translation = position;
+		//	result.M44 = 1f;
 
-			return result;
-		}
+		//	return result;
+		//}
 		#endregion
 
 		#region Overrides
