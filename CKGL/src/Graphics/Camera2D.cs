@@ -1,20 +1,21 @@
 ﻿namespace CKGL
 {
-	public class Camera
+	public class Camera2D
 	{
-		private Vector3 position = Vector3.Zero;
-		private Quaternion rotation = Quaternion.Identity;
+		private Vector2 position = Vector2.Zero;
+		private float rotation = 0f;
+		private float scale = 1f;
 		private bool viewDirty = true;
 		private Matrix viewMatrix;
 
-		private float fov = 75f;
-		private float aspectRatio = 1f;
-		private float zNearClip = 0.01f;
-		private float zFarClip = 1000f;
+		private int width = 100;
+		private int height = 100;
+		private float zNearClip = -10000f;
+		private float zFarClip = 10000f;
 		private bool projectionDirty = true;
 		private Matrix projectionMatrix;
 
-		public Vector3 Position
+		public Vector2 Position
 		{
 			get { return position; }
 			set
@@ -53,20 +54,7 @@
 			}
 		}
 
-		public float Z
-		{
-			get { return position.Z; }
-			set
-			{
-				if (position.Z != value)
-				{
-					position.Z = value;
-					viewDirty = true;
-				}
-			}
-		}
-
-		public Quaternion Rotation
+		public float Rotation
 		{
 			get { return rotation; }
 			set
@@ -74,6 +62,23 @@
 				if (rotation != value)
 				{
 					rotation = value;
+					if (rotation > 1f)
+						rotation = rotation % 1f;
+					else if (rotation < 0f)
+						rotation = rotation % -1f + 1f;
+					viewDirty = true;
+				}
+			}
+		}
+
+		public float Scale
+		{
+			get { return scale; }
+			set
+			{
+				if (scale != value)
+				{
+					scale = Math.Max(value, 0f);
 					viewDirty = true;
 				}
 			}
@@ -85,7 +90,7 @@
 			{
 				if (viewDirty)
 				{
-					viewMatrix = Matrix.CreateTranslation(-position) * rotation.Matrix;
+					viewMatrix = Matrix2D.CreateScale(scale) * Matrix2D.CreateTranslation(-position) * Matrix2D.CreateRotationZ(rotation);
 					viewDirty = false;
 				}
 
@@ -93,27 +98,27 @@
 			}
 		}
 
-		public float FoV
+		public int Width
 		{
-			get { return fov; }
+			get { return width; }
 			set
 			{
-				if (fov != value)
+				if (width != value)
 				{
-					fov = Math.Clamp(value, 1f, 179f);
+					width = Math.Max(value, 0);
 					projectionDirty = true;
 				}
 			}
 		}
 
-		public float AspectRatio
+		public int Height
 		{
-			get { return aspectRatio; }
+			get { return height; }
 			set
 			{
-				if (aspectRatio != value)
+				if (height != value)
 				{
-					aspectRatio = value;
+					height = Math.Max(value, 0);
 					projectionDirty = true;
 				}
 			}
@@ -151,7 +156,8 @@
 			{
 				if (projectionDirty)
 				{
-					projectionMatrix = Matrix.CreatePerspectiveFieldOfView(Math.DegreesToRadians(FoV), aspectRatio, zNearClip, zFarClip);
+					//projectionMatrix = Matrix.CreateOrthographic(width, height, zNearClip, zFarClip);
+					projectionMatrix = Matrix.CreateOrthographicOffCenter(0, width, 0, height, zNearClip, zFarClip);
 					projectionDirty = false;
 				}
 

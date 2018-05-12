@@ -1,5 +1,7 @@
 ﻿CKGL TODO List:
 
+- Text rendering right align not working with scaling
+- Flush renderer on shader uniform set (if different)?
 - Memory function seems to force GC
 - Vector 2/3 rotate around
 - Renderer - add lineloop and any figure out all DrawModes
