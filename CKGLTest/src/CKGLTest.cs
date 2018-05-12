@@ -241,7 +241,7 @@ void main()
 			//Graphics.State.SetCullState(CullState.Back);
 			Graphics.State.SetPolygonModeState(PolygonModeState.FrontFillBackLine);
 			Graphics.State.SetBlendState(BlendState.AlphaBlend);
-			Graphics.State.SetDepthState(DepthState.Always);
+			Graphics.State.SetDepthState(DepthState.LessEqual);
 
 			InternalShaders.Renderer.MVP = Camera.Matrix;
 
