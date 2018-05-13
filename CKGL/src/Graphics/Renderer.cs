@@ -287,7 +287,7 @@ namespace CKGL
 				font.SpriteSheet.Texture.Bind();
 
 				float offsetX = 0;
-				float offsetY = font.LineHeight;
+				float offsetY = 0;
 
 				float offsetHAlign = 0;
 				if (hAlign == HAlign.Center)
@@ -303,7 +303,8 @@ namespace CKGL
 
 				string[] lines = text.Replace("|:", "\a").Replace(":|", "\a").Split('\n');
 
-				float totalHeight = lines.Length * font.LineHeight;
+				float lineHeight = font.LineHeight * scale.Y;
+				float totalHeight = lines.Length * lineHeight;
 
 				bool mod = false;
 				string modData = "";
@@ -326,11 +327,11 @@ namespace CKGL
 						else
 						{
 							if (c == ' ')
-								lineWidth += font.SpaceWidth;
+								lineWidth += font.SpaceWidth * scale.X;
 							else if (c == '\a')
 								mod = true;
 							else
-								lineWidth += font.Glyph(c).Width + font.CharSpacing;
+								lineWidth += (font.Glyph(c).Width + font.CharSpacing) * scale.X;
 						}
 					}
 
@@ -373,7 +374,7 @@ namespace CKGL
 											try
 											{
 												modShadow = true;
-												modShadowOffset = new Vector2(float.Parse(value[0]), float.Parse(value[1]));
+												modShadowOffset = new Vector2(float.Parse(value[0]), float.Parse(value[1])) * scale;
 												modShadowDepth = float.Parse(value[2]);
 												modShadowColour = new Colour(float.Parse(value[3]), float.Parse(value[4]), float.Parse(value[5]), float.Parse(value[6]));
 											}
@@ -427,8 +428,8 @@ namespace CKGL
 								{
 									float currentDepth = depth;
 									SetDepth(currentDepth + modShadowDepth);
-									Rectangle(position.X + offsetX * scale.X - lineWidth * scale.X * offsetHAlign + modShadowOffset.X * scale.X,
-											  position.Y + offsetY * scale.Y - totalHeight * scale.Y * offsetVAlign + modShadowOffset.Y * scale.Y,
+									Rectangle(position.X + modShadowOffset.X + offsetX - lineWidth * offsetHAlign,
+											  position.Y + modShadowOffset.Y + offsetY + (totalHeight - lineHeight) - totalHeight * offsetVAlign,
 											  sprite.Width * scale.X,
 											  sprite.Height * scale.Y,
 											  modShadowColour, modShadowColour, modShadowColour, modShadowColour,
@@ -436,20 +437,20 @@ namespace CKGL
 									SetDepth(currentDepth);
 								}
 
-								Rectangle(position.X + offsetX * scale.X - lineWidth * scale.X * offsetHAlign,
-										  position.Y + offsetY * scale.Y - totalHeight * scale.Y * offsetVAlign,
+								Rectangle(position.X + offsetX - lineWidth * offsetHAlign,
+										  position.Y + offsetY + (totalHeight - lineHeight) - totalHeight * offsetVAlign,
 										  sprite.Width * scale.X,
 										  sprite.Height * scale.Y,
 										  colour, colour, colour, colour,
 										  sprite.UV_BL, sprite.UV_BR, sprite.UV_TL, sprite.UV_TR);
 
-								offsetX += sprite.Width + font.CharSpacing;
+								offsetX += (sprite.Width + font.CharSpacing) * scale.X;
 							}
 						}
 					}
 
 					offsetX = 0;
-					offsetY -= font.LineHeight;
+					offsetY -= lineHeight;
 				}
 			}
 			#endregion
