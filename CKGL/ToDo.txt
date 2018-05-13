@@ -1,5 +1,6 @@
 ﻿CKGL TODO List:
 
+- Reenable and test commented matrix functions
 - Quaternion Euler yRot not converting properly
 - Rotation struct with conversion methods (method chaining)
 - Flush renderer on shader uniform set (if different)?
