@@ -4,22 +4,32 @@
 	{
 		public static float DegreesToRadians(this float degrees)
 		{
-			return degrees * Math.RadianCoefficient;
+			return degrees * Math.DegreesToRadiansCoefficient;
 		}
 
 		public static float RadiansToDegrees(this float radians)
 		{
-			return radians * Math.DegreeCoefficient;
+			return radians * Math.RadiansToDegreesCoefficient;
+		}
+
+		public static float DegreesToRotations(this float degrees)
+		{
+			return degrees * Math.DegreesToRotationsCoefficient;
+		}
+
+		public static float RotationsToDegrees(this float rotations)
+		{
+			return rotations * Math.RotationsToDegreesCoefficient;
 		}
 
 		public static float RotationsToRadians(this float rotations)
 		{
-			return rotations * Math.RotationCoefficient;
+			return rotations * Math.RotationsToRadiansCoefficient;
 		}
 
 		public static float RadiansToRotations(this float radians)
 		{
-			return radians / Math.RotationCoefficient;
+			return radians / Math.RotationsToRadiansCoefficient;
 		}
 
 		internal static int Min(this int a, int b)

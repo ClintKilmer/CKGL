@@ -184,6 +184,8 @@ void main()
 				Camera2D.Rotation -= 0.01f;
 			if (Input.Keyboard.Down(KeyCode.C))
 				Camera2D.Rotation += 0.01f;
+			if (Input.Keyboard.Down(KeyCode.Z) && Input.Keyboard.Down(KeyCode.C))
+				Camera2D.Rotation = 0f;
 			Vector3 direction = Vector3.Zero;
 			if (Input.Keyboard.Down(KeyCode.A))
 				direction += Vector3.Cross(cameraLookatNoVertical, Vector3.Up).Normalized;
@@ -208,7 +210,6 @@ void main()
 				Camera.FoV -= Input.Mouse.ScrollY;
 
 			Camera.Position += direction.Normalized * speed * Time.DeltaTime;
-			Output.WriteLine($"{Camera.Position}");
 
 			if (Platform.RelativeMouseMode)
 			{
@@ -219,8 +220,8 @@ void main()
 
 			//Camera.Rotation = Quaternion.CreateLookAt(cameraLookat, Vector3.Up);
 			Camera.Rotation = Quaternion.CreateRotationY(cameraPitch) * Quaternion.CreateRotationX(cameraYaw);
-
-			cameraLookat = Vector3.Forward * (Quaternion.CreateRotationY(cameraPitch) * Quaternion.CreateRotationX(cameraYaw));
+			
+			cameraLookat = Vector3.Forward * Camera.Rotation;
 			cameraLookatNoVertical = new Vector3(cameraLookat.X, 0f, cameraLookat.Z).Normalized;
 		}
 
@@ -309,97 +310,110 @@ void main()
 			//}
 
 			Renderer.Draw.Triangle(new Vector2(0f, 1f),
-					   new Vector2(0f, 1f) * Matrix2D.CreateRotationZ(0.66666f),
 					   new Vector2(0f, 1f) * Matrix2D.CreateRotationZ(0.33333f),
+					   new Vector2(0f, 1f) * Matrix2D.CreateRotationZ(0.66666f),
 					   Colour.Red,
 					   Colour.Green,
 					   Colour.Blue,
 					   null,
 					   null,
 					   null,
-					   Time.TotalSeconds * 0.5f,
+					   -Time.TotalSeconds * 0.5f,
 					   Vector2.Zero);
 
 			// Right
 			Renderer.Draw3D.Triangle(new Vector3(20f, 10f, 0f),
-									 new Vector3(20f, 10f, 0f) * Matrix.CreateRotationX(0.66666f),
-									 new Vector3(20f, 10f, 0f) * Matrix.CreateRotationX(0.33333f),
+									 new Vector3(20f, 10f, 0f) * Quaternion.CreateRotationX(0.33333f),
+									 new Vector3(20f, 10f, 0f) * Quaternion.CreateRotationX(0.66666f),
 									 Colour.Red,
 									 Colour.Green,
 									 Colour.Blue);
 			Renderer.Draw3D.Triangle(new Vector3(50f, 50f, 0f),
-									 new Vector3(50f, 50f, 0f) * Quaternion.CreateRotationX(0.66666f),
 									 new Vector3(50f, 50f, 0f) * Quaternion.CreateRotationX(0.33333f),
+									 new Vector3(50f, 50f, 0f) * Quaternion.CreateRotationX(0.66666f),
 									 Colour.Red,
 									 Colour.Green,
 									 Colour.Blue);
 
 			// Left
 			Renderer.Draw3D.Triangle(new Vector3(-20f, 10f, 0f),
-									 new Vector3(-20f, 10f, 0f) * Matrix.CreateRotationX(0.33333f),
-									 new Vector3(-20f, 10f, 0f) * Matrix.CreateRotationX(0.66666f),
+									 new Vector3(-20f, 10f, 0f) * Quaternion.CreateRotationX(0.66666f),
+									 new Vector3(-20f, 10f, 0f) * Quaternion.CreateRotationX(0.33333f),
 									 Colour.Red,
 									 Colour.Green,
 									 Colour.Blue);
 			Renderer.Draw3D.Triangle(new Vector3(-50f, 50f, 0f),
-									 new Vector3(-50f, 50f, 0f) * Quaternion.CreateFromAxisAngle(Vector3.Left, 0.66666f),
 									 new Vector3(-50f, 50f, 0f) * Quaternion.CreateFromAxisAngle(Vector3.Left, 0.33333f),
+									 new Vector3(-50f, 50f, 0f) * Quaternion.CreateFromAxisAngle(Vector3.Left, 0.66666f),
 									 Colour.Red,
 									 Colour.Green,
 									 Colour.Blue);
 
 			// Forward
-			Renderer.Draw3D.Triangle(new Vector3(0f, 10f, 20f),
-									 new Vector3(0f, 10f, 20f) * Matrix.CreateRotationZ(0.66666f),
-									 new Vector3(0f, 10f, 20f) * Matrix.CreateRotationZ(0.33333f),
-									 Colour.Red,
-									 Colour.Green,
-									 Colour.Blue);
-			Renderer.Draw3D.Triangle(new Vector3(0f, 50f, 50f),
-									 new Vector3(0f, 50f, 50f) * Quaternion.CreateRotationZ(0.66666f),
-									 new Vector3(0f, 50f, 50f) * Quaternion.CreateRotationZ(0.33333f),
-									 Colour.Red,
-									 Colour.Green,
-									 Colour.Blue);
+			//Renderer.Draw3D.Triangle(new Vector3(0f, 2f, 10f),
+			//						 new Vector3(0f, 2f, 10f) * Quaternion.CreateRotationZ(0.33333f),
+			//						 new Vector3(0f, 2f, 10f) * Quaternion.CreateRotationZ(0.66666f),
+			//						 Colour.Red,
+			//						 Colour.Green,
+			//						 Colour.Blue);
+			//Renderer.Draw3D.Triangle(new Vector3(0f, 10f, 20f),
+			//						 new Vector3(0f, 10f, 20f) * Quaternion.CreateRotationZ(0.33333f),
+			//						 new Vector3(0f, 10f, 20f) * Quaternion.CreateRotationZ(0.66666f),
+			//						 Colour.Red,
+			//						 Colour.Green,
+			//						 Colour.Blue);
+			//Renderer.Draw3D.Triangle(new Vector3(0f, 50f, 50f),
+			//						 new Vector3(0f, 50f, 50f) * Quaternion.CreateRotationZ(0.33333f).Matrix,
+			//						 new Vector3(0f, 50f, 50f) * Quaternion.CreateRotationZ(0.66666f).Matrix,
+			//						 Colour.Red,
+			//						 Colour.Green,
+			//						 Colour.Blue);
+			for (int i = 0; i < 500; i++)
+				Renderer.Draw3D.Triangle(new Vector3(0f, i * 0.1f, i * 0.1f) * Quaternion.CreateRotationZ(0.00000f + i * 0.001f),
+										 new Vector3(0f, i * 0.1f, i * 0.1f) * Quaternion.CreateRotationZ(0.33333f + i * 0.001f),
+										 new Vector3(0f, i * 0.1f, i * 0.1f) * Quaternion.CreateRotationZ(0.66666f + i * 0.001f),
+										 Colour.Red,
+										 Colour.Green,
+										 Colour.Blue);
 
 			// Backward
 			Renderer.Draw3D.Triangle(new Vector3(0f, 10f, -20f),
-									 new Vector3(0f, 10f, -20f) * Matrix.CreateRotationZ(0.33333f),
-									 new Vector3(0f, 10f, -20f) * Matrix.CreateRotationZ(0.66666f),
+									 new Vector3(0f, 10f, -20f) * Quaternion.CreateRotationZ(0.66666f),
+									 new Vector3(0f, 10f, -20f) * Quaternion.CreateRotationZ(0.33333f),
 									 Colour.Red,
 									 Colour.Green,
 									 Colour.Blue);
 			Renderer.Draw3D.Triangle(new Vector3(0f, 50f, -50f),
-									 new Vector3(0f, 50f, -50f) * Quaternion.CreateFromAxisAngle(Vector3.Backward, 0.66666f),
 									 new Vector3(0f, 50f, -50f) * Quaternion.CreateFromAxisAngle(Vector3.Backward, 0.33333f),
+									 new Vector3(0f, 50f, -50f) * Quaternion.CreateFromAxisAngle(Vector3.Backward, 0.66666f),
 									 Colour.Red,
 									 Colour.Green,
 									 Colour.Blue);
 
 			// Up
 			Renderer.Draw3D.Triangle(new Vector3(0f, 20f, -10f),
-									 new Vector3(0f, 20f, -10f) * Matrix.CreateRotationY(0.66666f),
-									 new Vector3(0f, 20f, -10f) * Matrix.CreateRotationY(0.33333f),
+									 new Vector3(0f, 20f, -10f) * Quaternion.CreateRotationY(0.33333f),
+									 new Vector3(0f, 20f, -10f) * Quaternion.CreateRotationY(0.66666f),
 									 Colour.Red,
 									 Colour.Green,
 									 Colour.Blue);
 			Renderer.Draw3D.Triangle(new Vector3(0f, 50f, -50f),
-									 new Vector3(0f, 50f, -50f) * Quaternion.CreateRotationY(0.66666f),
 									 new Vector3(0f, 50f, -50f) * Quaternion.CreateRotationY(0.33333f),
+									 new Vector3(0f, 50f, -50f) * Quaternion.CreateRotationY(0.66666f),
 									 Colour.Red,
 									 Colour.Green,
 									 Colour.Blue);
 
 			// Down
 			Renderer.Draw3D.Triangle(new Vector3(0f, -20f, -10f),
-									 new Vector3(0f, -20f, -10f) * Matrix.CreateRotationY(0.33333f),
-									 new Vector3(0f, -20f, -10f) * Matrix.CreateRotationY(0.66666f),
+									 new Vector3(0f, -20f, -10f) * Quaternion.CreateRotationY(0.66666f),
+									 new Vector3(0f, -20f, -10f) * Quaternion.CreateRotationY(0.33333f),
 									 Colour.Red,
 									 Colour.Green,
 									 Colour.Blue);
 			Renderer.Draw3D.Triangle(new Vector3(0f, -50f, -50f),
-									 new Vector3(0f, -50f, -50f) * Quaternion.CreateFromAxisAngle(Vector3.Down, 0.66666f),
 									 new Vector3(0f, -50f, -50f) * Quaternion.CreateFromAxisAngle(Vector3.Down, 0.33333f),
+									 new Vector3(0f, -50f, -50f) * Quaternion.CreateFromAxisAngle(Vector3.Down, 0.66666f),
 									 Colour.Red,
 									 Colour.Green,
 									 Colour.Blue);
@@ -417,7 +431,7 @@ void main()
 									new Vector2(1f, 0f),
 									new Vector2(0f, 1f),
 									new Vector2(1f, 1f),
-									Time.TotalSeconds * 0.5f,
+									-Time.TotalSeconds * 0.5f,
 									new Vector2(2.5f, 0f));
 
 			Renderer.Draw.Sprite(Sprites.Test1,
@@ -436,7 +450,7 @@ void main()
 								 Colour.White);
 
 			Renderer.Draw.Text(SpriteFonts.Font,
-							   "|:shadow=0,-1,0.01,1,1,1,0.5:|ABCDEFGHIJKLMNOPQRSTUVWXYZ\nabcdefghijklmnopqrstuvwxyz\n1234567890\n_-+=(){}[]<>\\|/;:'\"?.,!@#$%^&*~`",
+							   "|:shadow=0,-1,0.01,0,0,0,0.5:|ABCDEFGHIJKLMNOPQRSTUVWXYZ\nabcdefghijklmnopqrstuvwxyz\n1234567890\n_-+=(){}[]<>\\|/;:'\"?.,!@#$%^&*~`",
 							   new Vector2(0f, 4f),
 							   Vector2.One / 7f,
 							   Colour.White,
@@ -454,60 +468,61 @@ void main()
 			InternalShaders.Renderer.MVP = Camera2D.Matrix;
 
 			Renderer.Draw.Text(SpriteFonts.Font,
-							   "|:shadow=0,-1,0.01,0,0,0,0.5:|Test Test\nStill testing...",
+							   $"|:shadow=0,-1,0.01,0,0,0,0.5:|{Camera.Position.X:n1}, {Camera.Position.Y:n1}, {Camera.Position.Z:n1}\n{Camera.Rotation.Euler}",
 							   new Vector2(2, height - 1),
-							   Vector2.One * (1f + Math.SinNormalized(Time.TotalSeconds * 2f)),
+							   Vector2.One,
+							   //Vector2.One * (1f + Math.SinNormalized(Time.TotalSeconds * 2f)),
 							   Colour.White,
 							   HAlign.Left,
 							   VAlign.Top);
 
-			Renderer.Draw.Text(SpriteFonts.Font,
-							   "|:shadow=0,-1,0.01,0,0,0,0.5:|Test Test\nStill testing...",
-							   new Vector2(2, 1),
-							   Vector2.One * (1f + Math.SinNormalized(Time.TotalSeconds * 2f)),
-							   Colour.White,
-							   HAlign.Left,
-							   VAlign.Bottom);
+			//Renderer.Draw.Text(SpriteFonts.Font,
+			//				   $"|:shadow=0,-1,0.01,0,0,0,0.5:|{Camera.Rotation}\nStill testing...",
+			//				   new Vector2(2, 1),
+			//				   Vector2.One * (1f + Math.SinNormalized(Time.TotalSeconds * 2f)),
+			//				   Colour.White,
+			//				   HAlign.Left,
+			//				   VAlign.Bottom);
 
-			Renderer.Draw.Text(SpriteFonts.Font,
-							   "|:shadow=0,-1,0.01,0,0,0,0.5:|Test Test\nStill testing...",
-							   new Vector2(width - 1, 1),
-							   Vector2.One * (1f + Math.SinNormalized(Time.TotalSeconds * 2f)),
-							   Colour.White,
-							   HAlign.Right,
-							   VAlign.Bottom);
+			//Renderer.Draw.Text(SpriteFonts.Font,
+			//				   "|:shadow=0,-1,0.01,0,0,0,0.5:|Test Test",
+			//				   new Vector2(width - 1, 1),
+			//				   Vector2.One * (1f + Math.SinNormalized(Time.TotalSeconds * 2f)),
+			//				   Colour.White,
+			//				   HAlign.Right,
+			//				   VAlign.Bottom);
 
-			Renderer.Draw.Text(SpriteFonts.Font,
-							   "|:shadow=0,-1,0.01,0,0,0,0.5:|Test Test\nStill testing...",
-							   new Vector2(width - 1, height - 1),
-							   Vector2.One * (1f + Math.SinNormalized(Time.TotalSeconds * 2f)),
-							   Colour.White,
-							   HAlign.Right,
-							   VAlign.Top);
+			//Renderer.Draw.Text(SpriteFonts.Font,
+			//				   "|:shadow=0,-1,0.01,0,0,0,0.5:|Test Test\nStill testing...\nhhhheeeelllloooo",
+			//				   new Vector2(width - 1, height - 1),
+			//				   Vector2.One * (1f + Math.SinNormalized(Time.TotalSeconds * 2f)),
+			//				   Colour.White,
+			//				   HAlign.Right,
+			//				   VAlign.Top);
 
-			Renderer.Draw.Text(SpriteFonts.Font,
-							   "|:shadow=0,-1,0.01,0,0,0,0.5:|Test Test\nStill testing...",
-							   new Vector2(width / 2, height / 2),
-							   Vector2.One * (1f + Math.SinNormalized(Time.TotalSeconds * 2f)),
-							   Colour.White,
-							   HAlign.Center,
-							   VAlign.Middle);
+			//Renderer.Draw.Text(SpriteFonts.Font,
+			//				   "|:shadow=0,-1,0.01,0,0,0,0.5:|Test Test\nStill testing...",
+			//				   new Vector2(width / 2, height / 2),
+			//				   Vector2.One * (1f + Math.SinNormalized(Time.TotalSeconds * 2f)),
+			//				   Colour.White,
+			//				   HAlign.Center,
+			//				   VAlign.Middle);
 
-			Renderer.Draw.Text(SpriteFonts.Font,
-							   "|:shadow=0,-1,0.01,0,0,0,0.5:|Test Test\nStill testing...",
-							   new Vector2(width / 2, height / 2 + 50),
-							   Vector2.One * (1f + Math.SinNormalized(Time.TotalSeconds * 2f) * 3f),
-							   Colour.White,
-							   HAlign.Center,
-							   VAlign.Middle);
+			//Renderer.Draw.Text(SpriteFonts.Font,
+			//				   "|:shadow=0,-1,0.01,0,0,0,0.5:|Test Test\nStill testing...",
+			//				   new Vector2(width / 2, height / 2 + 50),
+			//				   Vector2.One * (1f + Math.SinNormalized(Time.TotalSeconds * 2f) * 3f),
+			//				   Colour.White,
+			//				   HAlign.Center,
+			//				   VAlign.Middle);
 
-			Renderer.Draw.Text(SpriteFonts.Font,
-							   "|:shadow=0,-1,0.01,0,0,0,0.5:|Test Test\nStill testing...",
-							   new Vector2(width / 2, height / 2 - 50),
-							   Vector2.One * (1f + Math.SinNormalized(Time.TotalSeconds * 2f) * 2f),
-							   Colour.White,
-							   HAlign.Center,
-							   VAlign.Middle);
+			//Renderer.Draw.Text(SpriteFonts.Font,
+			//				   "|:shadow=0,-1,0.01,0,0,0,0.5:|Test Test\nStill testing...",
+			//				   new Vector2(width / 2, height / 2 - 50),
+			//				   Vector2.One * (1f + Math.SinNormalized(Time.TotalSeconds * 2f) * 2f),
+			//				   Colour.White,
+			//				   HAlign.Center,
+			//				   VAlign.Middle);
 
 			//Renderer.Draw.TriangleListStrip.Begin();
 			////int ii = Random.Range(1000, 10000);

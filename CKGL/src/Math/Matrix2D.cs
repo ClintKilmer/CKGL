@@ -298,10 +298,10 @@ namespace CKGL
 			float sin = Math.Sin(rotations.RotationsToRadians());
 
 			result.M11 = cos;
-			result.M12 = -sin;
+			result.M12 = sin;
 
-			result.M21 = sin;
-			result.M22 = cos;
+			result.M21 = -sin; // Handedness Switch
+			result.M22 = cos; // Handedness Switch
 
 			result.M31 = 0;
 			result.M32 = 0;

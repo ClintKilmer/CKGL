@@ -32,6 +32,57 @@ namespace CKGL
 		#endregion
 
 		#region Properties
+		public Vector3 Euler
+		{
+			get
+			{
+				float xsqr = X * X;
+				float ysqr = Y * Y;
+				float zsqr = Z * Z;
+
+				float t0 = 2f * (W * X + Y * Z);
+				float t1 = 1f - 2f * (xsqr + ysqr);
+				float x = Math.Atan2(t0, t1);
+				
+				float t2 = 2f * (W * Y - Z * X);
+				t2 = t2 > 1f ? 1f : t2;
+				t2 = t2 < -1f ? 1f : t2;
+				float y = Math.Asin(t2);
+				
+				float t3 = 2f * (W * Z + X * Y);
+				float t4 = 1f - 2f * (ysqr + zsqr);
+				float z = Math.Atan2(t3, t4);
+
+				Vector3 euler = new Vector3(x, y, z) * Math.RadiansToDegreesCoefficient;
+
+				// Unity - EulerMakePositive - Makes euler angles positive 0/360 with 0.0001 hacked to support old behaviour of QuaternionToEuler
+				float negativeFlip = -0.0001f.RadiansToDegrees();
+				float positiveFlip = 360.0f + negativeFlip;
+
+				if (euler.X < negativeFlip)
+					euler.X += 360.0f;
+				else if (euler.X > positiveFlip)
+					euler.X -= 360.0f;
+
+				if (euler.Y < negativeFlip)
+					euler.Y += 360.0f;
+				else if (euler.Y > positiveFlip)
+					euler.Y -= 360.0f;
+
+				if (euler.Z < negativeFlip)
+					euler.Z += 360.0f;
+				else if (euler.Z > positiveFlip)
+					euler.Z -= 360.0f;
+
+				return euler * Math.DegreesToRotationsCoefficient;
+			}
+
+			set
+			{
+				this = CreateFromEuler(value);
+			}
+		}
+
 		public Matrix Matrix
 		{
 			get
@@ -48,21 +99,39 @@ namespace CKGL
 				float num2 = Y * Z;
 				float num = X * W;
 				result.M11 = 1f - (2f * (num8 + num7));
-				result.M12 = 2f * (num6 - num5);
-				result.M13 = 2f * (num4 + num3);
+				result.M12 = 2f * (num6 + num5); // Handedness Switch
+				result.M13 = 2f * (num4 - num3); // Handedness Switch
 				result.M14 = 0f;
-				result.M21 = 2f * (num6 + num5);
+				result.M21 = 2f * (num6 - num5); // Handedness Switch
 				result.M22 = 1f - (2f * (num7 + num9));
-				result.M23 = 2f * (num2 - num);
+				result.M23 = 2f * (num2 + num); // Handedness Switch
 				result.M24 = 0f;
-				result.M31 = 2f * (num4 - num3);
-				result.M32 = 2f * (num2 + num);
+				result.M31 = 2f * (num4 + num3); // Handedness Switch
+				result.M32 = 2f * (num2 - num); // Handedness Switch
 				result.M33 = 1f - (2f * (num8 + num9));
 				result.M34 = 0f;
 				result.M41 = 0f;
 				result.M42 = 0f;
 				result.M43 = 0f;
 				result.M44 = 1f;
+
+				// Unity
+				//m.m00 = 1.0f - (yy + zz);
+				//m.m10 = xy + wz;
+				//m.m20 = xz - wy;
+				//m.m30 = 0.0F;
+				//m.m01 = xy - wz;
+				//m.m11 = 1.0f - (xx + zz);
+				//m.m21 = yz + wx;
+				//m.m31 = 0.0F;
+				//m.m02 = xz + wy;
+				//m.m12 = yz - wx;
+				//m.m22 = 1.0f - (xx + yy);
+				//m.m32 = 0.0F;
+				//m.m03 = 0.0F;
+				//m.m13 = 0.0F;
+				//m.m23 = 0.0F;
+				//m.m33 = 1.0F;
 
 				return result;
 			}
@@ -95,6 +164,14 @@ namespace CKGL
 		#endregion
 
 		#region Methods
+		public Quaternion Normalized
+		{
+			get
+			{
+				float mult = 1f / ((float)Math.Sqrt(X * X + Y * Y + Z * Z + W * W));
+				return new Quaternion(X * mult, Y * mult, Z * mult, W * mult);
+			}
+		}
 		#endregion
 
 		#region Static Methods

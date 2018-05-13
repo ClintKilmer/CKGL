@@ -85,7 +85,16 @@
 			{
 				if (viewDirty)
 				{
-					viewMatrix = Matrix.CreateTranslation(-position) * rotation.Matrix;
+					// Flip Right Handedness to Left Handedness
+					// Unity - Camera.worldToCameraMatrix
+					// https://docs.unity3d.com/ScriptReference/Camera-worldToCameraMatrix.html
+					// https://forum.unity.com/threads/reproducing-cameras-worldtocameramatrix.365645/
+					viewMatrix = rotation.Matrix * Matrix.CreateTranslation(position);
+					viewMatrix = viewMatrix.Invert();
+					viewMatrix.M13 *= -1f;
+					viewMatrix.M23 *= -1f;
+					viewMatrix.M33 *= -1f;
+					viewMatrix.M43 *= -1f;
 					viewDirty = false;
 				}
 
@@ -159,6 +168,6 @@
 			}
 		}
 
-		public Matrix Matrix => Matrix.Model * ViewMatrix * ProjectionMatrix;
+		public Matrix Matrix => ViewMatrix * ProjectionMatrix;
 	}
 }

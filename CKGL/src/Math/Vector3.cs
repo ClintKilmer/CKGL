@@ -100,7 +100,7 @@ namespace CKGL
 		{
 			return new Vector3(
 				Y * vector.Z - vector.Y * Z,
-				-(X * vector.Z - vector.X * Z),
+				X * vector.Z - vector.X * Z,
 				X * vector.Y - vector.X * Y
 			);
 		}
@@ -154,12 +154,12 @@ namespace CKGL
 		}
 
 		// This is always the correct handedness
-		public static Vector3 Cross(Vector3 vector1, Vector3 vector2)
+		public static Vector3 Cross(Vector3 lhs, Vector3 rhs)
 		{
 			return new Vector3(
-				vector1.Y * vector2.Z - vector2.Y * vector1.Z,
-				-(vector1.X * vector2.Z - vector2.X * vector1.Z),
-				vector1.X * vector2.Y - vector2.X * vector1.Y
+				lhs.Y * rhs.Z - rhs.Y * lhs.Z,
+				lhs.X * rhs.Z - rhs.X * lhs.Z,
+				lhs.X * rhs.Y - rhs.X * lhs.Y
 			);
 		}
 		#endregion
@@ -237,23 +237,38 @@ namespace CKGL
 		// Pre-multiplication only
 		public static Vector3 operator *(Vector3 v, Quaternion q)
 		{
-			float num1 = q.X * 2f;
-			float num2 = q.Y * 2f;
-			float num3 = q.Z * 2f;
-			float num4 = q.X * num1;
-			float num5 = q.Y * num2;
-			float num6 = q.Z * num3;
-			float num7 = q.X * num2;
-			float num8 = q.X * num3;
-			float num9 = q.Y * num3;
-			float num10 = q.W * num1;
-			float num11 = q.W * num2;
-			float num12 = q.W * num3;
+			// Matrix
+			//return v * q.Matrix;
+
+			// Monogame
+			float x = q.X * 2F;
+			float y = q.Y * 2F;
+			float z = q.Z * 2F;
+			float xx = q.X * x;
+			float yy = q.Y * y;
+			float zz = q.Z * z;
+			float xy = q.X * y;
+			float xz = q.X * z;
+			float yz = q.Y * z;
+			float wx = q.W * x;
+			float wy = q.W * y;
+			float wz = q.W * z;
+
 			Vector3 result;
-			result.X = (float)((1.0 - ((double)num5 + (double)num6)) * (double)v.X + ((double)num7 - (double)num12) * (double)v.Y + ((double)num8 + (double)num11) * (double)v.Z);
-			result.Y = (float)(((double)num7 + (double)num12) * (double)v.X + (1.0 - ((double)num4 + (double)num6)) * (double)v.Y + ((double)num9 - (double)num10) * (double)v.Z);
-			result.Z = (float)(((double)num8 - (double)num11) * (double)v.X + ((double)num9 + (double)num10) * (double)v.Y + (1.0 - ((double)num4 + (double)num5)) * (double)v.Z);
+			result.X = (1F - (yy + zz)) * v.X + (xy - wz) * v.Y + (xz + wy) * v.Z;
+			result.Y = (xy + wz) * v.X + (1F - (xx + zz)) * v.Y + (yz - wx) * v.Z;
+			result.Z = (xz - wy) * v.X + (yz + wx) * v.Y + (1F - (xx + yy)) * v.Z;
 			return result;
+
+			// Rise
+			//float x = (q.Y * v.Z - q.Z * v.Y) * 2f;
+			//float y = (q.Z * v.X - q.X * v.Z) * 2f;
+			//float z = (q.X * v.Y - q.Y * v.X) * 2f;
+			//return new Vector3(
+			//	v.X + x * q.W + (q.Y * z - q.Z * y),
+			//	v.Y + y * q.W + (q.Z * x - q.X * z),
+			//	v.Z + z * q.W + (q.X * y - q.Y * x)
+			//);
 		}
 		// Pre-multiplication conversion from Post-multiplication order
 		public static Vector3 operator *(Quaternion q, Vector3 v)

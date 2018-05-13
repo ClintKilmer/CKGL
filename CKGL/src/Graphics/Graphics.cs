@@ -16,8 +16,6 @@ namespace CKGL
 			GL.Init();
 			State.Init();
 
-			SetDepthRange(1f, 0f); // Handedness Switch
-
 			Platform.Events.OnWinResized += () =>
 			{
 				SetViewport();

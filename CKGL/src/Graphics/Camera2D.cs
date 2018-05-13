@@ -90,7 +90,7 @@
 			{
 				if (viewDirty)
 				{
-					viewMatrix = Matrix2D.CreateScale(scale) * Matrix2D.CreateTranslation(-position) * Matrix2D.CreateRotationZ(rotation);
+					viewMatrix = Matrix2D.CreateScale(scale) * Matrix2D.CreateTranslation(-position) * Matrix2D.CreateRotationZ(-rotation);
 					viewDirty = false;
 				}
 
@@ -165,6 +165,6 @@
 			}
 		}
 
-		public Matrix Matrix => Matrix.Model * ViewMatrix * ProjectionMatrix;
+		public Matrix Matrix => ViewMatrix * ProjectionMatrix;
 	}
 }
