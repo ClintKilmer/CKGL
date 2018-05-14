@@ -6,7 +6,7 @@
 		private Vector2 origin = Vector2.Zero;
 		private Vector2 position = Vector2.Zero;
 		private Vector2 scale = Vector2.One;
-		private float rotation = 0f;
+		private Rotation rotation = 0f;
 		private Matrix2D matrix;
 		private bool dirty = true;
 
@@ -140,7 +140,7 @@
 			}
 		}
 
-		public float Rotation
+		public Rotation Rotation
 		{
 			get { return rotation; }
 			set

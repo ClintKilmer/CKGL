@@ -43,12 +43,12 @@ namespace CKGL
 				float t0 = 2f * (W * X + Y * Z);
 				float t1 = 1f - 2f * (xsqr + ysqr);
 				float x = Math.Atan2(t0, t1);
-				
+
 				float t2 = 2f * (W * Y - Z * X);
 				t2 = t2 > 1f ? 1f : t2;
 				t2 = t2 < -1f ? 1f : t2;
 				float y = Math.Asin(t2);
-				
+
 				float t3 = 2f * (W * Z + X * Y);
 				float t4 = 1f - 2f * (ysqr + zsqr);
 				float z = Math.Atan2(t3, t4);

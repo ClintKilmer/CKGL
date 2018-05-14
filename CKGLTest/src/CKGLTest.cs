@@ -181,9 +181,9 @@ void main()
 
 			var speed = 10f;
 			if (Input.Keyboard.Down(KeyCode.Z))
-				Camera2D.Rotation -= 0.01f;
-			if (Input.Keyboard.Down(KeyCode.C))
 				Camera2D.Rotation += 0.01f;
+			if (Input.Keyboard.Down(KeyCode.C))
+				Camera2D.Rotation -= 0.01f;
 			if (Input.Keyboard.Down(KeyCode.Z) && Input.Keyboard.Down(KeyCode.C))
 				Camera2D.Rotation = 0f;
 			Vector3 direction = Vector3.Zero;
@@ -220,7 +220,7 @@ void main()
 
 			//Camera.Rotation = Quaternion.CreateLookAt(cameraLookat, Vector3.Up);
 			Camera.Rotation = Quaternion.CreateRotationY(cameraPitch) * Quaternion.CreateRotationX(cameraYaw);
-			
+
 			cameraLookat = Vector3.Forward * Camera.Rotation;
 			cameraLookatNoVertical = new Vector3(cameraLookat.X, 0f, cameraLookat.Z).Normalized;
 		}
@@ -310,8 +310,8 @@ void main()
 			//}
 
 			Renderer.Draw.Triangle(new Vector2(0f, 1f),
-					   new Vector2(0f, 1f) * Matrix2D.CreateRotationZ(0.33333f),
-					   new Vector2(0f, 1f) * Matrix2D.CreateRotationZ(0.66666f),
+					   new Vector2(0f, 1f) * Matrix2D.CreateRotationZ(Rotation.Third),
+					   new Vector2(0f, 1f) * Matrix2D.CreateRotationZ(Rotation.TwoThirds),
 					   Colour.Red,
 					   Colour.Green,
 					   Colour.Blue,
@@ -323,97 +323,97 @@ void main()
 
 			// Right
 			Renderer.Draw3D.Triangle(new Vector3(20f, 10f, 0f),
-									 new Vector3(20f, 10f, 0f) * Quaternion.CreateRotationX(0.33333f),
-									 new Vector3(20f, 10f, 0f) * Quaternion.CreateRotationX(0.66666f),
+									 new Vector3(20f, 10f, 0f) * Quaternion.CreateRotationX(Rotation.Third),
+									 new Vector3(20f, 10f, 0f) * Quaternion.CreateRotationX(Rotation.TwoThirds),
 									 Colour.Red,
 									 Colour.Green,
 									 Colour.Blue);
 			Renderer.Draw3D.Triangle(new Vector3(50f, 50f, 0f),
-									 new Vector3(50f, 50f, 0f) * Quaternion.CreateRotationX(0.33333f),
-									 new Vector3(50f, 50f, 0f) * Quaternion.CreateRotationX(0.66666f),
+									 new Vector3(50f, 50f, 0f) * Quaternion.CreateRotationX(Rotation.Third),
+									 new Vector3(50f, 50f, 0f) * Quaternion.CreateRotationX(Rotation.TwoThirds),
 									 Colour.Red,
 									 Colour.Green,
 									 Colour.Blue);
 
 			// Left
 			Renderer.Draw3D.Triangle(new Vector3(-20f, 10f, 0f),
-									 new Vector3(-20f, 10f, 0f) * Quaternion.CreateRotationX(0.66666f),
-									 new Vector3(-20f, 10f, 0f) * Quaternion.CreateRotationX(0.33333f),
+									 new Vector3(-20f, 10f, 0f) * Quaternion.CreateRotationX(Rotation.TwoThirds),
+									 new Vector3(-20f, 10f, 0f) * Quaternion.CreateRotationX(Rotation.Third),
 									 Colour.Red,
 									 Colour.Green,
 									 Colour.Blue);
 			Renderer.Draw3D.Triangle(new Vector3(-50f, 50f, 0f),
-									 new Vector3(-50f, 50f, 0f) * Quaternion.CreateFromAxisAngle(Vector3.Left, 0.33333f),
-									 new Vector3(-50f, 50f, 0f) * Quaternion.CreateFromAxisAngle(Vector3.Left, 0.66666f),
+									 new Vector3(-50f, 50f, 0f) * Quaternion.CreateFromAxisAngle(Vector3.Left, Rotation.Third),
+									 new Vector3(-50f, 50f, 0f) * Quaternion.CreateFromAxisAngle(Vector3.Left, Rotation.TwoThirds),
 									 Colour.Red,
 									 Colour.Green,
 									 Colour.Blue);
 
 			// Forward
 			//Renderer.Draw3D.Triangle(new Vector3(0f, 2f, 10f),
-			//						 new Vector3(0f, 2f, 10f) * Quaternion.CreateRotationZ(0.33333f),
-			//						 new Vector3(0f, 2f, 10f) * Quaternion.CreateRotationZ(0.66666f),
+			//						 new Vector3(0f, 2f, 10f) * Quaternion.CreateRotationZ(Rotation.Third),
+			//						 new Vector3(0f, 2f, 10f) * Quaternion.CreateRotationZ(Rotation.TwoThirds),
 			//						 Colour.Red,
 			//						 Colour.Green,
 			//						 Colour.Blue);
 			//Renderer.Draw3D.Triangle(new Vector3(0f, 10f, 20f),
-			//						 new Vector3(0f, 10f, 20f) * Quaternion.CreateRotationZ(0.33333f),
-			//						 new Vector3(0f, 10f, 20f) * Quaternion.CreateRotationZ(0.66666f),
+			//						 new Vector3(0f, 10f, 20f) * Quaternion.CreateRotationZ(Rotation.Third),
+			//						 new Vector3(0f, 10f, 20f) * Quaternion.CreateRotationZ(Rotation.TwoThirds),
 			//						 Colour.Red,
 			//						 Colour.Green,
 			//						 Colour.Blue);
 			//Renderer.Draw3D.Triangle(new Vector3(0f, 50f, 50f),
-			//						 new Vector3(0f, 50f, 50f) * Quaternion.CreateRotationZ(0.33333f).Matrix,
-			//						 new Vector3(0f, 50f, 50f) * Quaternion.CreateRotationZ(0.66666f).Matrix,
+			//						 new Vector3(0f, 50f, 50f) * Quaternion.CreateRotationZ(Rotation.Third).Matrix,
+			//						 new Vector3(0f, 50f, 50f) * Quaternion.CreateRotationZ(Rotation.TwoThirds).Matrix,
 			//						 Colour.Red,
 			//						 Colour.Green,
 			//						 Colour.Blue);
 			for (int i = 0; i < 500; i++)
-				Renderer.Draw3D.Triangle(new Vector3(0f, i * 0.1f, i * 0.1f) * Quaternion.CreateRotationZ(0.00000f + i * 0.001f),
-										 new Vector3(0f, i * 0.1f, i * 0.1f) * Quaternion.CreateRotationZ(0.33333f + i * 0.001f),
-										 new Vector3(0f, i * 0.1f, i * 0.1f) * Quaternion.CreateRotationZ(0.66666f + i * 0.001f),
+				Renderer.Draw3D.Triangle(new Vector3(0f, i * 0.1f, i * 0.1f) * Quaternion.CreateRotationZ(Rotation.Zero + i * 0.001f),
+										 new Vector3(0f, i * 0.1f, i * 0.1f) * Quaternion.CreateRotationZ(Rotation.Third + i * 0.001f),
+										 new Vector3(0f, i * 0.1f, i * 0.1f) * Quaternion.CreateRotationZ(Rotation.TwoThirds + i * 0.001f),
 										 Colour.Red,
 										 Colour.Green,
 										 Colour.Blue);
 
 			// Backward
 			Renderer.Draw3D.Triangle(new Vector3(0f, 10f, -20f),
-									 new Vector3(0f, 10f, -20f) * Quaternion.CreateRotationZ(0.66666f),
-									 new Vector3(0f, 10f, -20f) * Quaternion.CreateRotationZ(0.33333f),
+									 new Vector3(0f, 10f, -20f) * Quaternion.CreateRotationZ(Rotation.TwoThirds),
+									 new Vector3(0f, 10f, -20f) * Quaternion.CreateRotationZ(Rotation.Third),
 									 Colour.Red,
 									 Colour.Green,
 									 Colour.Blue);
 			Renderer.Draw3D.Triangle(new Vector3(0f, 50f, -50f),
-									 new Vector3(0f, 50f, -50f) * Quaternion.CreateFromAxisAngle(Vector3.Backward, 0.33333f),
-									 new Vector3(0f, 50f, -50f) * Quaternion.CreateFromAxisAngle(Vector3.Backward, 0.66666f),
+									 new Vector3(0f, 50f, -50f) * Quaternion.CreateFromAxisAngle(Vector3.Backward, Rotation.Third),
+									 new Vector3(0f, 50f, -50f) * Quaternion.CreateFromAxisAngle(Vector3.Backward, Rotation.TwoThirds),
 									 Colour.Red,
 									 Colour.Green,
 									 Colour.Blue);
 
 			// Up
 			Renderer.Draw3D.Triangle(new Vector3(0f, 20f, -10f),
-									 new Vector3(0f, 20f, -10f) * Quaternion.CreateRotationY(0.33333f),
-									 new Vector3(0f, 20f, -10f) * Quaternion.CreateRotationY(0.66666f),
+									 new Vector3(0f, 20f, -10f) * Quaternion.CreateRotationY(Rotation.Third),
+									 new Vector3(0f, 20f, -10f) * Quaternion.CreateRotationY(Rotation.TwoThirds),
 									 Colour.Red,
 									 Colour.Green,
 									 Colour.Blue);
 			Renderer.Draw3D.Triangle(new Vector3(0f, 50f, -50f),
-									 new Vector3(0f, 50f, -50f) * Quaternion.CreateRotationY(0.33333f),
-									 new Vector3(0f, 50f, -50f) * Quaternion.CreateRotationY(0.66666f),
+									 new Vector3(0f, 50f, -50f) * Quaternion.CreateRotationY(Rotation.Third),
+									 new Vector3(0f, 50f, -50f) * Quaternion.CreateRotationY(Rotation.TwoThirds),
 									 Colour.Red,
 									 Colour.Green,
 									 Colour.Blue);
 
 			// Down
 			Renderer.Draw3D.Triangle(new Vector3(0f, -20f, -10f),
-									 new Vector3(0f, -20f, -10f) * Quaternion.CreateRotationY(0.66666f),
-									 new Vector3(0f, -20f, -10f) * Quaternion.CreateRotationY(0.33333f),
+									 new Vector3(0f, -20f, -10f) * Quaternion.CreateRotationY(Rotation.TwoThirds),
+									 new Vector3(0f, -20f, -10f) * Quaternion.CreateRotationY(Rotation.Third),
 									 Colour.Red,
 									 Colour.Green,
 									 Colour.Blue);
 			Renderer.Draw3D.Triangle(new Vector3(0f, -50f, -50f),
-									 new Vector3(0f, -50f, -50f) * Quaternion.CreateFromAxisAngle(Vector3.Down, 0.33333f),
-									 new Vector3(0f, -50f, -50f) * Quaternion.CreateFromAxisAngle(Vector3.Down, 0.66666f),
+									 new Vector3(0f, -50f, -50f) * Quaternion.CreateFromAxisAngle(Vector3.Down, Rotation.Third),
+									 new Vector3(0f, -50f, -50f) * Quaternion.CreateFromAxisAngle(Vector3.Down, Rotation.TwoThirds),
 									 Colour.Red,
 									 Colour.Green,
 									 Colour.Blue);

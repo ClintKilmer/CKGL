@@ -3,7 +3,7 @@
 	public class Camera2D
 	{
 		private Vector2 position = Vector2.Zero;
-		private float rotation = 0f;
+		private Rotation rotation = 0f;
 		private float scale = 1f;
 		private bool viewDirty = true;
 		private Matrix viewMatrix;
@@ -54,7 +54,7 @@
 			}
 		}
 
-		public float Rotation
+		public Rotation Rotation
 		{
 			get { return rotation; }
 			set
@@ -62,10 +62,6 @@
 				if (rotation != value)
 				{
 					rotation = value;
-					if (rotation > 1f)
-						rotation = rotation % 1f;
-					else if (rotation < 0f)
-						rotation = rotation % -1f + 1f;
 					viewDirty = true;
 				}
 			}

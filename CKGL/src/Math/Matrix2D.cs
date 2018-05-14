@@ -54,13 +54,13 @@ namespace CKGL
 			}
 		}
 
-		public float Rotation
+		public Rotation Rotation
 		{
-			get { return Math.Atan2(M21, M11).RadiansToRotations(); }
+			get { return Rotation.FromRadians(Math.Atan2(M21, M11)); }
 			set
 			{
-				var cos = Math.Cos(value.RotationsToRadians());
-				var sin = Math.Sin(value.RotationsToRadians());
+				var cos = Math.Cos(value.Radians);
+				var sin = Math.Sin(value.Radians);
 
 				M11 = cos;
 				M12 = -sin;
