@@ -308,10 +308,16 @@ namespace CKGL
 
 				bool mod = false;
 				string modData = "";
+				// Shadow
 				bool modShadow = false;
 				Vector2 modShadowOffset = Vector2.Zero;
 				float modShadowDepth = 0f;
 				Colour modShadowColour = Colour.White;
+				// Outline
+				bool modOutline = false;
+				bool modOutlineCorners = false;
+				float modOutlineDepth = 0f;
+				Colour modOutlineColour = Colour.White;
 
 				foreach (string line in lines)
 				{
@@ -392,6 +398,33 @@ namespace CKGL
 											throw new Exception("Unrecognized text modifier value.");
 										}
 									}
+									else if (tag[0] == "outline")
+									{
+										string[] value = tag[1].Split(',');
+
+										if (value.Length == 6)
+										{
+											try
+											{
+												modOutline = true;
+												modOutlineCorners = float.Parse(value[0]) != 0;
+												modOutlineDepth = float.Parse(value[1]);
+												modOutlineColour = new Colour(float.Parse(value[2]), float.Parse(value[3]), float.Parse(value[4]), float.Parse(value[5]));
+											}
+											catch
+											{
+												throw new Exception("Text modifier value parse error.");
+											}
+										}
+										else if (value.Length == 1 && (value[0] == "disable" || value[0] == "off"))
+										{
+											modOutline = false;
+										}
+										else
+										{
+											throw new Exception("Unrecognized text modifier value.");
+										}
+									}
 									else
 									{
 										throw new Exception("Unrecognized text modifier key.");
@@ -434,6 +467,64 @@ namespace CKGL
 											  sprite.Height * scale.Y,
 											  modShadowColour, modShadowColour, modShadowColour, modShadowColour,
 											  sprite.UV_BL, sprite.UV_BR, sprite.UV_TL, sprite.UV_TR);
+									SetDepth(currentDepth);
+								}
+
+								if (modOutline)
+								{
+									float currentDepth = depth;
+									SetDepth(currentDepth + modOutlineDepth);
+									Rectangle(position.X - scale.X + offsetX - lineWidth * offsetHAlign,
+											  position.Y + offsetY + (totalHeight - lineHeight) - totalHeight * offsetVAlign,
+											  sprite.Width * scale.X,
+											  sprite.Height * scale.Y,
+											  modOutlineColour, modOutlineColour, modOutlineColour, modOutlineColour,
+											  sprite.UV_BL, sprite.UV_BR, sprite.UV_TL, sprite.UV_TR);
+									Rectangle(position.X + scale.X + offsetX - lineWidth * offsetHAlign,
+											  position.Y + offsetY + (totalHeight - lineHeight) - totalHeight * offsetVAlign,
+											  sprite.Width * scale.X,
+											  sprite.Height * scale.Y,
+											  modOutlineColour, modOutlineColour, modOutlineColour, modOutlineColour,
+											  sprite.UV_BL, sprite.UV_BR, sprite.UV_TL, sprite.UV_TR);
+									Rectangle(position.X + offsetX - lineWidth * offsetHAlign,
+											  position.Y - scale.Y + offsetY + (totalHeight - lineHeight) - totalHeight * offsetVAlign,
+											  sprite.Width * scale.X,
+											  sprite.Height * scale.Y,
+											  modOutlineColour, modOutlineColour, modOutlineColour, modOutlineColour,
+											  sprite.UV_BL, sprite.UV_BR, sprite.UV_TL, sprite.UV_TR);
+									Rectangle(position.X + offsetX - lineWidth * offsetHAlign,
+											  position.Y + scale.Y + offsetY + (totalHeight - lineHeight) - totalHeight * offsetVAlign,
+											  sprite.Width * scale.X,
+											  sprite.Height * scale.Y,
+											  modOutlineColour, modOutlineColour, modOutlineColour, modOutlineColour,
+											  sprite.UV_BL, sprite.UV_BR, sprite.UV_TL, sprite.UV_TR);
+									if (modOutlineCorners)
+									{
+										Rectangle(position.X - scale.X + offsetX - lineWidth * offsetHAlign,
+												  position.Y - scale.Y + offsetY + (totalHeight - lineHeight) - totalHeight * offsetVAlign,
+												  sprite.Width * scale.X,
+												  sprite.Height * scale.Y,
+												  modOutlineColour, modOutlineColour, modOutlineColour, modOutlineColour,
+												  sprite.UV_BL, sprite.UV_BR, sprite.UV_TL, sprite.UV_TR);
+										Rectangle(position.X + scale.X + offsetX - lineWidth * offsetHAlign,
+												  position.Y - scale.Y + offsetY + (totalHeight - lineHeight) - totalHeight * offsetVAlign,
+												  sprite.Width * scale.X,
+												  sprite.Height * scale.Y,
+												  modOutlineColour, modOutlineColour, modOutlineColour, modOutlineColour,
+												  sprite.UV_BL, sprite.UV_BR, sprite.UV_TL, sprite.UV_TR);
+										Rectangle(position.X - scale.X + offsetX - lineWidth * offsetHAlign,
+												  position.Y + scale.Y + offsetY + (totalHeight - lineHeight) - totalHeight * offsetVAlign,
+												  sprite.Width * scale.X,
+												  sprite.Height * scale.Y,
+												  modOutlineColour, modOutlineColour, modOutlineColour, modOutlineColour,
+												  sprite.UV_BL, sprite.UV_BR, sprite.UV_TL, sprite.UV_TR);
+										Rectangle(position.X + scale.X + offsetX - lineWidth * offsetHAlign,
+												  position.Y + scale.Y + offsetY + (totalHeight - lineHeight) - totalHeight * offsetVAlign,
+												  sprite.Width * scale.X,
+												  sprite.Height * scale.Y,
+												  modOutlineColour, modOutlineColour, modOutlineColour, modOutlineColour,
+												  sprite.UV_BL, sprite.UV_BR, sprite.UV_TL, sprite.UV_TR);
+									}
 									SetDepth(currentDepth);
 								}
 
