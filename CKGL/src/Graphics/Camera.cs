@@ -1,14 +1,26 @@
 ﻿namespace CKGL
 {
-	public class Camera
+	class Camera
 	{
+		public enum ProjectionType
+		{
+			Orthographic,
+			Perspective
+		}
+
 		private Vector3 position = Vector3.Zero;
 		private Quaternion rotation = Quaternion.Identity;
 		private bool viewDirty = true;
 		private Matrix viewMatrix;
 
+		private ProjectionType projectionType = ProjectionType.Perspective;
+		// Orthographic
+		private int width = 100;
+		private int height = 100;
+		// Perspective
 		private float fov = 75f;
 		private float aspectRatio = 1f;
+		// Both
 		private float zNearClip = 0.01f;
 		private float zFarClip = 1000f;
 		private bool projectionDirty = true;
@@ -102,6 +114,45 @@
 			}
 		}
 
+		public ProjectionType Type
+		{
+			get { return projectionType; }
+			set
+			{
+				if (projectionType != value)
+				{
+					projectionType = value;
+					projectionDirty = true;
+				}
+			}
+		}
+
+		public int Width
+		{
+			get { return width; }
+			set
+			{
+				if (width != value)
+				{
+					width = Math.Max(value, 0);
+					projectionDirty = true;
+				}
+			}
+		}
+
+		public int Height
+		{
+			get { return height; }
+			set
+			{
+				if (height != value)
+				{
+					height = Math.Max(value, 0);
+					projectionDirty = true;
+				}
+			}
+		}
+
 		public float FoV
 		{
 			get { return fov; }
@@ -160,7 +211,10 @@
 			{
 				if (projectionDirty)
 				{
-					projectionMatrix = Matrix.CreatePerspectiveFieldOfView(Math.DegreesToRadians(FoV), aspectRatio, zNearClip, zFarClip);
+					if (projectionType == ProjectionType.Orthographic)
+						projectionMatrix = Matrix.CreateOrthographic(width, height, zNearClip, zFarClip);
+					else if (projectionType == ProjectionType.Perspective)
+						projectionMatrix = Matrix.CreatePerspectiveFieldOfView(Math.DegreesToRadians(FoV), aspectRatio, zNearClip, zFarClip);
 					projectionDirty = false;
 				}
 

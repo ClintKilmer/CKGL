@@ -53,6 +53,10 @@ namespace CKGL
 				return height;
 			}
 		}
+		public float AspectRatio
+		{
+			get { return Width / (float)Height; }
+		}
 		public Texture2D[] textures;
 		public Texture2D depthTexture;
 
