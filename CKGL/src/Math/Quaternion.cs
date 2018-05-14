@@ -76,11 +76,6 @@ namespace CKGL
 
 				return euler * Math.DegreesToRotationsCoefficient;
 			}
-
-			set
-			{
-				this = CreateFromEuler(value);
-			}
 		}
 
 		public Matrix Matrix
