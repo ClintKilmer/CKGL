@@ -211,7 +211,7 @@ namespace CKGL
 					OnStateChanging?.Invoke();
 					if (polygonModeState.FrontAndBack)
 					{
-						GL.PolygonMode(Face.FrontAndBack, polygonModeState.BackPolygonMode);
+						GL.PolygonMode(Face.FrontAndBack, polygonModeState.FrontPolygonMode);
 					}
 					else
 					{
