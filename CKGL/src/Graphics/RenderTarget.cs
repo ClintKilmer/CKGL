@@ -17,6 +17,20 @@ namespace CKGL
 
 		public static GLuint Swaps { get; private set; }
 
+		private Camera2D camera2D = new Camera2D();
+		public Camera2D Camera2D
+		{
+			get
+			{
+				if (id == 0)
+				{
+					camera2D.Width = Width;
+					camera2D.Height = Height;
+				}
+				return camera2D;
+			}
+		}
+
 		private int width = 0;
 		private int height = 0;
 		public int Width
@@ -75,6 +89,9 @@ namespace CKGL
 
 			this.width = width;
 			this.height = height;
+
+			camera2D.Width = width;
+			camera2D.Height = height;
 
 			id = GL.GenFramebuffer();
 
@@ -145,8 +162,10 @@ namespace CKGL
 			if (textures[textureNum].ID == 0)
 				throw new Exception("RenderTarget does not have a texture in slot: " + textureNum);
 
+			target.Bind();
 			GL.BindFramebuffer(FramebufferTarget.Read, id);
-			GL.BindFramebuffer(FramebufferTarget.Draw, (target ?? Default).id);
+			// Bound above as RenderTarget.Bind() binds both Read and Draw
+			//GL.BindFramebuffer(FramebufferTarget.Draw, (target ?? Default).id);
 			Graphics.SetViewport(target);
 			Graphics.SetScissorTest(target);
 			GL.ReadBuffer((ReadBuffer)((uint)ReadBuffer.Colour0 + textureNum));

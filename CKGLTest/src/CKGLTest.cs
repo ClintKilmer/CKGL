@@ -467,14 +467,13 @@ void main()
 			Camera2D.Height = RenderTarget.Current.Height;
 			InternalShaders.Renderer.MVP = Camera2D.Matrix;
 
-			Renderer.Draw.Text(SpriteFonts.Font,
-							   $"|:shadow=0,-1,0.01,0,0,0,0.5:|{Camera.Position.X:n1}, {Camera.Position.Y:n1}, {Camera.Position.Z:n1}\n{Camera.Rotation.Euler}",
-							   new Vector2(2, height - 1),
-							   Vector2.One,
-							   //Vector2.One * (1f + Math.SinNormalized(Time.TotalSeconds * 2f)),
-							   Colour.White,
-							   HAlign.Left,
-							   VAlign.Top);
+			//Renderer.Draw.Text(SpriteFonts.Font,
+			//				   "|:shadow=0,-1,0.01,0,0,0,0.5:|Test Test\nStill testing...\nhhhheeeelllloooo",
+			//				   new Vector2(2, height - 1),
+			//				   Vector2.One * (1f + Math.SinNormalized(Time.TotalSeconds * 2f)),
+			//				   Colour.White,
+			//				   HAlign.Left,
+			//				   VAlign.Top);
 
 			//Renderer.Draw.Text(SpriteFonts.Font,
 			//				   $"|:shadow=0,-1,0.01,0,0,0,0.5:|{Camera.Rotation}\nStill testing...",
@@ -548,6 +547,14 @@ void main()
 			//Renderer.Draw.RenderTarget(surface, 0,
 			//						   -5f, 5f, 0.1f,
 			//						   Colour.White);
+
+			Renderer.Draw.Text(SpriteFonts.Font,
+							   $"|:shadow=0,-1,0.01,0,0,0,0.5:|Cam Pos: {Camera.Position.X:n1}, {Camera.Position.Y:n1}, {Camera.Position.Z:n1}\nCam Rot: {Camera.Rotation.Euler.X:n2}, {Camera.Rotation.Euler.Y:n2}, {Camera.Rotation.Euler.Z:n2}\nMem: {RAM:n1}MB\nVSync: {Window.GetVSyncMode()}\n{Time.UPS:n0}ups | {Time.FPSSmoothed:n0}fps\nDraw Calls: {Graphics.DrawCalls}\nState Changes: {Graphics.State.Changes}\nRenderTarget Swaps: {RenderTarget.Swaps}\nTexture Swaps: {Texture.Swaps}\nShader Swaps: {Shader.Swaps}\nWinPos: [{Window.X}, {Window.Y}]\nSize: [{Window.Size}]\nMouse Global: [{Input.Mouse.PositionDisplay}]\nMouse: [{Input.Mouse.Position}]\nMouse Relative: [{Input.Mouse.PositionRelative}]",
+							   new Vector2(2, RenderTarget.Current.Height - 1),
+							   Vector2.One,
+							   Colour.White,
+							   HAlign.Left,
+							   VAlign.Top);
 
 			Renderer.Flush();
 
