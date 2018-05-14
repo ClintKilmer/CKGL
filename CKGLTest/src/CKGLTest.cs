@@ -557,6 +557,19 @@ void main()
 			scale = Math.Max(1, Math.Min(Window.Width / width, Window.Height / height));
 			surface.BlitTextureTo(RenderTarget.Default, 0, BlitFilter.Nearest, new RectangleI((Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, width * scale, height * scale));
 
+			//RenderTarget.Default.Bind();
+			//InternalShaders.Renderer.MVP = RenderTarget.Default.Camera2D.Matrix;
+			////Graphics.State.SetFrontFaceState(FrontFaceState.Clockwise);
+			//Graphics.State.SetPolygonModeState(PolygonModeState.Default);
+
+			//Renderer.Draw.Text(SpriteFonts.Font,
+			//				   $"|:shadow=0,-1,0.01,0,0,0,0.5:|Cam Pos: {Camera.Position.X:n1}, {Camera.Position.Y:n1}, {Camera.Position.Z:n1}\nCam Rot: {Camera.Rotation.Euler.X:n2}, {Camera.Rotation.Euler.Y:n2}, {Camera.Rotation.Euler.Z:n2}\nMem: {RAM:n1}MB\nVSync: {Window.GetVSyncMode()}\n{Time.UPS:n0}ups | {Time.FPSSmoothed:n0}fps\nDraw Calls: {Graphics.DrawCalls}\nState Changes: {Graphics.State.Changes}\nRenderTarget Swaps: {RenderTarget.Swaps}\nTexture Swaps: {Texture.Swaps}\nShader Swaps: {Shader.Swaps}\nWinPos: [{Window.X}, {Window.Y}]\nSize: [{Window.Size}]\nMouse Global: [{Input.Mouse.PositionDisplay}]\nMouse: [{Input.Mouse.Position}]\nMouse Relative: [{Input.Mouse.PositionRelative}]",
+			//				   new Vector2(2, RenderTarget.Current.Height - 1),
+			//				   Vector2.One * 3f,
+			//				   Colour.White,
+			//				   HAlign.Left,
+			//				   VAlign.Top);
+
 			// Screenshot
 			if (Input.Keyboard.Pressed(KeyCode.F9))
 			{
