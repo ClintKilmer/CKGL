@@ -189,23 +189,16 @@ void main()
 			Vector3 direction = Vector3.Zero;
 			if (Input.Keyboard.Down(KeyCode.A))
 				direction += Vector3.Cross(cameraLookatNoVertical, Vector3.Up).Normalized;
-			//direction += Vector3.Left;
 			if (Input.Keyboard.Down(KeyCode.D))
 				direction += Vector3.Cross(Vector3.Up, cameraLookatNoVertical).Normalized;
-			//direction += Vector3.Right;
 			if (Input.Keyboard.Down(KeyCode.W))
 				direction += cameraLookatNoVertical;
-			//direction += Vector3.Forward;
 			if (Input.Keyboard.Down(KeyCode.S))
 				direction -= cameraLookatNoVertical;
-			//direction += Vector3.Backward;
-			//cameraTranslationMatrix = Matrix.CreateTranslation(-cameraPosition);
 			if (Input.Keyboard.Down(KeyCode.Q))
 				direction += Vector3.Down;
-			//cameraScale -= 0.03f * cameraScale;
 			if (Input.Keyboard.Down(KeyCode.E))
 				direction += Vector3.Up;
-			//cameraScale += 0.03f * cameraScale;
 			if (Input.Mouse.ScrollY != 0)
 				Camera.FoV -= Input.Mouse.ScrollY;
 
