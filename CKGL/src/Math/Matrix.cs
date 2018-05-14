@@ -293,72 +293,73 @@ namespace CKGL
 			return transformMatrix;
 		}
 
-		//public static Matrix CreateFromAxisAngle(Vector3 axis, float rotations)
-		//{
-		//	Matrix result = Identity;
+		public static Matrix CreateFromAxisAngle(Vector3 axis, float rotations)
+		{
+			Matrix result = Identity;
 
-		//	float x = axis.X;
-		//	float y = axis.Y;
-		//	float z = axis.Z;
-		//	float num2 = Math.Sin(rotations.RotationsToRadians());
-		//	float num = Math.Cos(rotations.RotationsToRadians());
-		//	float num11 = x * x;
-		//	float num10 = y * y;
-		//	float num9 = z * z;
-		//	float num8 = x * y;
-		//	float num7 = x * z;
-		//	float num6 = y * z;
-		//	result.M11 = num11 + (num * (1f - num11));
-		//	result.M12 = (num8 - (num * num8)) + (num2 * z); // Handedness Switch
-		//	result.M13 = (num7 - (num * num7)) - (num2 * y); // Handedness Switch
-		//	result.M14 = 0;
-		//	result.M21 = (num8 - (num * num8)) - (num2 * z); // Handedness Switch
-		//	result.M22 = num10 + (num * (1f - num10));
-		//	result.M23 = (num6 - (num * num6)) + (num2 * x); // Handedness Switch
-		//	result.M24 = 0;
-		//	result.M31 = (num7 - (num * num7)) + (num2 * y); // Handedness Switch
-		//	result.M32 = (num6 - (num * num6)) - (num2 * x); // Handedness Switch
-		//	result.M33 = num9 + (num * (1f - num9));
-		//	result.M34 = 0;
-		//	result.M41 = 0;
-		//	result.M42 = 0;
-		//	result.M43 = 0;
-		//	result.M44 = 1;
+			float x = axis.X;
+			float y = axis.Y;
+			float z = axis.Z;
+			float num2 = Math.Sin(rotations.RotationsToRadians());
+			float num = Math.Cos(rotations.RotationsToRadians());
+			float num11 = x * x;
+			float num10 = y * y;
+			float num9 = z * z;
+			float num8 = x * y;
+			float num7 = x * z;
+			float num6 = y * z;
+			result.M11 = num11 + (num * (1f - num11));
+			result.M12 = (num8 - (num * num8)) + (num2 * z); // Handedness Switch
+			result.M13 = (num7 - (num * num7)) - (num2 * y); // Handedness Switch
+			result.M14 = 0;
+			result.M21 = (num8 - (num * num8)) - (num2 * z); // Handedness Switch
+			result.M22 = num10 + (num * (1f - num10));
+			result.M23 = (num6 - (num * num6)) + (num2 * x); // Handedness Switch
+			result.M24 = 0;
+			result.M31 = (num7 - (num * num7)) + (num2 * y); // Handedness Switch
+			result.M32 = (num6 - (num * num6)) - (num2 * x); // Handedness Switch
+			result.M33 = num9 + (num * (1f - num9));
+			result.M34 = 0;
+			result.M41 = 0;
+			result.M42 = 0;
+			result.M43 = 0;
+			result.M44 = 1;
 
-		//	return result;
-		//}
+			return result;
+		}
 
-		//public static Matrix CreateFromEuler(float x, float y, float z)
-		//{
-		//	return Quaternion.CreateFromEuler(x, y, z).Matrix;
-		//}
+		public static Matrix CreateFromEuler(Vector3 euler) => CreateFromEuler(euler.X, euler.Y, euler.Z);
+		public static Matrix CreateFromEuler(float x, float y, float z)
+		{
+			return Quaternion.CreateFromEuler(x, y, z).Matrix;
+		}
 
-		//public static Matrix CreateLookAt(Vector3 cameraPosition, Vector3 cameraTarget, Vector3 cameraUpVector)
-		//{
-		//	Matrix result = Identity;
+		public static Matrix CreateLookAt(Vector3 cameraPosition, Vector3 cameraTarget, Vector3 cameraUpVector)
+		{
+			Matrix result = Identity;
 
-		//	var vector = Vector3.Normalize(cameraPosition - cameraTarget);
-		//	var vector2 = Vector3.Normalize(Vector3.Cross(cameraUpVector, vector));
-		//	var vector3 = Vector3.Cross(vector, vector2);
-		//	result.M11 = vector2.X;
-		//	result.M12 = vector3.X;
-		//	result.M13 = vector.X;
-		//	result.M14 = 0f;
-		//	result.M21 = vector2.Y;
-		//	result.M22 = vector3.Y;
-		//	result.M23 = vector.Y;
-		//	result.M24 = 0f;
-		//	result.M31 = vector2.Z;
-		//	result.M32 = vector3.Z;
-		//	result.M33 = vector.Z;
-		//	result.M34 = 0f;
-		//	result.M41 = -Vector3.Dot(vector2, cameraPosition);
-		//	result.M42 = -Vector3.Dot(vector3, cameraPosition);
-		//	result.M43 = -Vector3.Dot(vector, cameraPosition);
-		//	result.M44 = 1f;
+			var vector = Vector3.Normalize(cameraPosition - cameraTarget);
+			var vector2 = Vector3.Normalize(Vector3.Cross(cameraUpVector, vector));
+			var vector3 = Vector3.Cross(vector, vector2);
+			result.M11 = vector2.X;
+			result.M12 = vector3.X;
+			result.M13 = vector.X;
+			result.M14 = 0f;
+			result.M21 = vector2.Y;
+			result.M22 = vector3.Y;
+			result.M23 = vector.Y;
+			result.M24 = 0f;
+			result.M31 = vector2.Z;
+			result.M32 = vector3.Z;
+			result.M33 = vector.Z;
+			result.M34 = 0f;
+			result.M41 = -Vector3.Dot(vector2, cameraPosition);
+			result.M42 = -Vector3.Dot(vector3, cameraPosition);
+			result.M43 = -Vector3.Dot(vector, cameraPosition);
+			result.M44 = 1f;
 
-		//	return result;
-		//}
+			return result;
+		}
 
 		public static Matrix CreateOrthographic(Point2 size, float zNearPlane, float zFarPlane)
 		{
@@ -514,50 +515,50 @@ namespace CKGL
 			return result;
 		}
 
-		//public static Matrix CreateRotationX(float rotations)
-		//{
-		//	Matrix result = Identity;
+		public static Matrix CreateRotationX(float rotations)
+		{
+			Matrix result = Identity;
 
-		//	var cos = Math.Cos(rotations.RotationsToRadians());
-		//	var sin = Math.Sin(rotations.RotationsToRadians());
+			var cos = Math.Cos(rotations.RotationsToRadians());
+			var sin = Math.Sin(rotations.RotationsToRadians());
 
-		//	result.M22 = cos;
-		//	result.M23 = sin; // Handedness Switch
-		//	result.M32 = -sin; // Handedness Switch
-		//	result.M33 = cos;
+			result.M22 = cos;
+			result.M23 = sin; // Handedness Switch
+			result.M32 = -sin; // Handedness Switch
+			result.M33 = cos;
 
-		//	return result;
-		//}
+			return result;
+		}
 
-		//public static Matrix CreateRotationY(float rotations)
-		//{
-		//	Matrix result = Identity;
+		public static Matrix CreateRotationY(float rotations)
+		{
+			Matrix result = Identity;
 
-		//	var cos = Math.Cos(rotations.RotationsToRadians());
-		//	var sin = Math.Sin(rotations.RotationsToRadians());
+			var cos = Math.Cos(rotations.RotationsToRadians());
+			var sin = Math.Sin(rotations.RotationsToRadians());
 
-		//	result.M11 = cos;
-		//	result.M13 = -sin; // Handedness Switch
-		//	result.M31 = sin; // Handedness Switch
-		//	result.M33 = cos;
+			result.M11 = cos;
+			result.M13 = -sin; // Handedness Switch
+			result.M31 = sin; // Handedness Switch
+			result.M33 = cos;
 
-		//	return result;
-		//}
+			return result;
+		}
 
-		//public static Matrix CreateRotationZ(float rotations)
-		//{
-		//	Matrix result = Identity;
+		public static Matrix CreateRotationZ(float rotations)
+		{
+			Matrix result = Identity;
 
-		//	var cos = Math.Cos(rotations.RotationsToRadians());
-		//	var sin = Math.Sin(rotations.RotationsToRadians());
+			var cos = Math.Cos(rotations.RotationsToRadians());
+			var sin = Math.Sin(rotations.RotationsToRadians());
 
-		//	result.M11 = cos;
-		//	result.M12 = sin; // Handedness Switch
-		//	result.M21 = -sin; // Handedness Switch
-		//	result.M22 = cos;
+			result.M11 = cos;
+			result.M12 = sin; // Handedness Switch
+			result.M21 = -sin; // Handedness Switch
+			result.M22 = cos;
 
-		//	return result;
-		//}
+			return result;
+		}
 
 		public static Matrix CreateScale(Vector3 scale)
 		{
