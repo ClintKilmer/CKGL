@@ -634,7 +634,8 @@ void main()
 			if (Input.Keyboard.Pressed(KeyCode.F9))
 			{
 				string s = @"X:\Dropbox\Clint\Gamedev\2018-03-22 CKGL\screenshots\";
-				//string s = @"C:\Users\Clint Kilmer\Dropbox\Clint\Gamedev\2018-03-22 CKGL\screenshots\";
+				if (!System.IO.File.Exists(s))
+					s = @"C:\Users\Clint Kilmer\Dropbox\Clint\Gamedev\2018-03-22 CKGL\screenshots\";
 
 				int sequentialNumber = 1;
 				while (System.IO.File.Exists($@"{s}{System.DateTime.Now:yyyy-MM-dd HH.mm.ss}-{sequentialNumber} [CKGL].png"))
