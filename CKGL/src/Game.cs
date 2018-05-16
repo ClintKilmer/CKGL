@@ -6,12 +6,13 @@
 		{
 			get
 			{
-				long ram = 0;
-				using (System.Diagnostics.Process process = System.Diagnostics.Process.GetCurrentProcess())
-				{
-					ram = process.PrivateMemorySize64;
-				}
-				return ram * 0.000001f;
+				//long ram = 0;
+				//using (System.Diagnostics.Process process = System.Diagnostics.Process.GetCurrentProcess())
+				//{
+				//	ram = process.PrivateMemorySize64;
+				//}
+				//return ram * 0.000001f;
+				return 0f;
 			}
 		}
 
