@@ -202,8 +202,8 @@ namespace CKGL
 			Output.WriteLine($"Platform - OS: {OS}");
 			Output.WriteLine($"Platform - Video Driver: {SDL_GetCurrentVideoDriver()}");
 			Output.WriteLine($"Platform - Audio Driver: {SDL_GetCurrentAudioDriver()}");
-			Output.WriteLine($"Platform - # of CPUs: {SDL_GetCPUCount()}");
-			Output.WriteLine($"Platform - Total RAM: {SDL_GetSystemRAM()}MB");
+			Output.WriteLine($"Platform - # of CPUs: {CPUCount}");
+			Output.WriteLine($"Platform - Total RAM: {RAMTotalMB}MB");
 
 			Input.Init();
 		}
@@ -349,7 +349,7 @@ namespace CKGL
 
 		public static int CPUCount => SDL_GetCPUCount();
 
-		public static int RAMTotal => SDL_GetSystemRAM();
+		public static int RAMTotalMB => SDL_GetSystemRAM();
 
 		public static void GetGlobalMousePosition(out int x, out int y)
 		{
