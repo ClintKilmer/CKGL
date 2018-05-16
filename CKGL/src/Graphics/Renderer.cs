@@ -959,6 +959,22 @@ namespace CKGL
 			}
 			#endregion
 
+			#region Rectangle
+			public static void Rectangle(Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4) => Rectangle(v1, v2, v3, v4, null, null, null, null, null, null, null, null);
+			public static void Rectangle(Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4, Colour? colour) => Rectangle(v1, v2, v3, v4, colour, colour, colour, colour, null, null, null, null);
+			public static void Rectangle(Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4, Colour? colour, Vector3? uv1, Vector3? uv2, Vector3? uv3, Vector3? uv4) => Rectangle(v1, v2, v3, v4, colour, colour, colour, colour, uv1, uv2, uv3, uv4);
+			public static void Rectangle(Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4, Colour? c1, Colour? c2, Colour? c3, Colour? c4) => Rectangle(v1, v2, v3, v4, c1, c2, c3, c4, null, null, null, null);
+			public static void Rectangle(Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4, Colour? c1, Colour? c2, Colour? c3, Colour? c4, Vector3? uv1, Vector3? uv2, Vector3? uv3, Vector3? uv4)
+			{
+				AddVertex(DrawMode.TriangleList, v1, c1, uv1);
+				AddVertex(DrawMode.TriangleList, v2, c2, uv2);
+				AddVertex(DrawMode.TriangleList, v3, c3, uv3);
+				AddVertex(DrawMode.TriangleList, v3, c3, uv3);
+				AddVertex(DrawMode.TriangleList, v2, c2, uv2);
+				AddVertex(DrawMode.TriangleList, v4, c4, uv4);
+			}
+			#endregion
+
 			#region Point
 			public static void Point(float x, float y, float z) => Point(x, y, z, null);
 			public static void Point(float x, float y, float z, Colour? c) => Point(new Vector3(x, y, z), c);
@@ -977,6 +993,67 @@ namespace CKGL
 			{
 				AddVertex(DrawMode.LineList, v1, c1, uv1);
 				AddVertex(DrawMode.LineList, v2, c2, uv2);
+			}
+			#endregion
+
+			#region Cube
+			public static void Cube(Colour? colour) => Cube(colour, colour, colour, colour, colour, colour);
+			public static void Cube(Colour? l, Colour? r, Colour? d, Colour? u, Colour? b, Colour? f)
+			{
+				Vector3 ldb = new Vector3(-1f, -1f, -1f);
+				Vector3 rdb = new Vector3(1f, -1f, -1f);
+				Vector3 lub = new Vector3(-1f, 1f, -1f);
+				Vector3 rub = new Vector3(1f, 1f, -1f);
+				Vector3 ldf = new Vector3(-1f, -1f, 1f);
+				Vector3 rdf = new Vector3(1f, -1f, 1f);
+				Vector3 luf = new Vector3(-1f, 1f, 1f);
+				Vector3 ruf = new Vector3(1f, 1f, 1f);
+
+				Rectangle(ldf, ldb, luf, lub, l, l, l, l); // Left
+				Rectangle(rdb, rdf, rub, ruf, r, r, r, r); // Right
+				Rectangle(rdb, ldb, rdf, ldf, d, d, d, d); // Down
+				Rectangle(lub, rub, luf, ruf, u, u, u, u); // Up
+				Rectangle(ldb, rdb, lub, rub, b, b, b, b); // Back
+				Rectangle(rdf, ldf, ruf, luf, f, f, f, f); // Front
+			}
+
+			//public static void Cube(Colour? colour) => Cube(colour, colour, colour, colour, colour, colour, colour, colour);
+			public static void Cube(Colour? c_ldb, Colour? c_rdb, Colour? c_lub, Colour? c_rub, Colour? c_ldf, Colour? c_rdf, Colour? c_luf, Colour? c_ruf)
+			{
+				Vector3 ldb = new Vector3(-1f, -1f, -1f);
+				Vector3 rdb = new Vector3(1f, -1f, -1f);
+				Vector3 lub = new Vector3(-1f, 1f, -1f);
+				Vector3 rub = new Vector3(1f, 1f, -1f);
+				Vector3 ldf = new Vector3(-1f, -1f, 1f);
+				Vector3 rdf = new Vector3(1f, -1f, 1f);
+				Vector3 luf = new Vector3(-1f, 1f, 1f);
+				Vector3 ruf = new Vector3(1f, 1f, 1f);
+
+				Rectangle(ldf, ldb, luf, lub, c_ldf, c_ldb, c_luf, c_lub); // Left
+				Rectangle(rdb, rdf, rub, ruf, c_rdb, c_rdf, c_rub, c_ruf); // Right
+				Rectangle(rdb, ldb, rdf, ldf, c_rdb, c_ldb, c_rdf, c_ldf); // Bottom
+				Rectangle(lub, rub, luf, ruf, c_lub, c_rub, c_luf, c_ruf); // Top
+				Rectangle(ldb, rdb, lub, rub, c_ldb, c_rdb, c_lub, c_rub); // Back
+				Rectangle(rdf, ldf, ruf, luf, c_rdf, c_ldf, c_ruf, c_luf); // Front
+			}
+
+			public static void CubeWireframe(Colour? colour) => CubeWireframe(colour, colour, colour, colour, colour, colour, colour, colour);
+			public static void CubeWireframe(Colour? lbb, Colour? rbb, Colour? ltb, Colour? rtb, Colour? lbf, Colour? rbf, Colour? ltf, Colour? rtf)
+			{
+				Line(new Vector3(-1f, -1f, -1f), new Vector3(1f, -1f, -1f), lbb, rbb);
+				Line(new Vector3(1f, -1f, -1f), new Vector3(1f, 1f, -1f), rbb, rtb);
+				Line(new Vector3(1f, 1f, -1f), new Vector3(-1f, 1f, -1f), rtb, ltb);
+				Line(new Vector3(-1f, 1f, -1f), new Vector3(-1f, -1f, -1f), ltb, lbb);
+
+				Line(new Vector3(-1f, -1f, 1f), new Vector3(1f, -1f, 1f), lbf, rbf);
+				Line(new Vector3(1f, -1f, 1f), new Vector3(1f, 1f, 1f), rbf, rtf);
+				Line(new Vector3(1f, 1f, 1f), new Vector3(-1f, 1f, 1f), rtf, ltf);
+				Line(new Vector3(-1f, 1f, 1f), new Vector3(-1f, -1f, 1f), ltf, lbf);
+
+				Line(new Vector3(-1f, -1f, -1f), new Vector3(-1f, -1f, 1f), lbb, lbf);
+				Line(new Vector3(1f, -1f, -1f), new Vector3(1f, -1f, 1f), rbb, rbf);
+				Line(new Vector3(1f, 1f, -1f), new Vector3(1f, 1f, 1f), rtb, rtf);
+				Line(new Vector3(-1f, 1f, -1f), new Vector3(-1f, 1f, 1f), ltb, ltf);
 			}
 			#endregion
 		}
