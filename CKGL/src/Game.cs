@@ -15,7 +15,7 @@
 			}
 		}
 
-		public bool UnfocusedFrameLimiter = true;
+		public bool UnfocusedFrameLimiter = false;
 		public uint UnfocusedFrameLimiterSleep = 33;
 		private bool focused = true;
 
