@@ -347,6 +347,10 @@ namespace CKGL
 			}
 		}
 
+		public static int CPUCount => SDL_GetCPUCount();
+
+		public static int RAMTotal => SDL_GetSystemRAM();
+
 		public static void GetGlobalMousePosition(out int x, out int y)
 		{
 			SDL_GetGlobalMouseState(out x, out y);
