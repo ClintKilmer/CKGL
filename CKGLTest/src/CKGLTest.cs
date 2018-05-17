@@ -250,8 +250,8 @@ void main()
 				Graphics.Clear(Colour.Black);
 
 			//Graphics.State.SetFrontFaceState(FrontFaceState.Clockwise);
-			Graphics.State.SetCullState(CullState.Back);
-			//Graphics.State.SetPolygonModeState(PolygonModeState.FrontFillBackLine);
+			Graphics.State.SetCullState(CullState.Default);
+			Graphics.State.SetPolygonModeState(PolygonModeState.Default);
 			Graphics.State.SetBlendState(BlendState.AlphaBlend);
 			Graphics.State.SetDepthState(DepthState.LessEqual);
 
@@ -291,7 +291,6 @@ void main()
 					{
 						Transform cubeGridTransformParent = new Transform();
 						cubeGridTransformParent.Position = new Vector3(80, 0, 80);
-						cubeGridTransformParent.Scale = new Vector3(0.1f, 0.1f, 0.1f);
 						Transform cubeGridTransform = new Transform();
 						cubeGridTransform.Parent = cubeGridTransformParent;
 						cubeGridTransform.Position = new Vector3(x * 6, y * 6, z * 6);
@@ -319,6 +318,9 @@ void main()
 				}
 			}
 			Renderer.Draw3D.ResetTransform();
+
+			Graphics.State.SetCullState(CullState.Off);
+			Graphics.State.SetPolygonModeState(PolygonModeState.FrontFillBackLine);
 
 			Transform2D t2D = new Transform2D();
 			//t2D.Rotation = Math.Sin(Time.TotalSeconds) * 0.03f;
