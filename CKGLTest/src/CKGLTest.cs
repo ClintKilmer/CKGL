@@ -649,7 +649,7 @@ void main()
 			if (Input.Keyboard.Pressed(KeyCode.F9))
 			{
 				string s = @"X:\Dropbox\Clint\Gamedev\2018-03-22 CKGL\screenshots\";
-				if (!System.IO.File.Exists(s))
+				if (!System.IO.Directory.Exists(s))
 					s = @"C:\Users\Clint Kilmer\Dropbox\Clint\Gamedev\2018-03-22 CKGL\screenshots\";
 
 				int sequentialNumber = 1;
