@@ -1,5 +1,6 @@
 ﻿CKGL TODO List:
 
+- Look into flat shading in GLSL (flat qualifier, provoking vertex)
 - Rendertarget blit fails if backbuffer is multisampled
 - State - set defaults, automatically reset at end of Draw()
 - Move Swaps++ to Graphics.Metrics
