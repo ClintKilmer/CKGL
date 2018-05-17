@@ -13,10 +13,13 @@ namespace CKGL
 	{
 		public static Action OnBinding;
 		public static Action OnBound;
+		public static Action OnUniformChanging;
+		public static Action OnUniformChanged;
 
 		private static GLuint currentlyBoundShader;
 
 		public static GLuint Swaps { get; private set; }
+		public static GLuint UniformSwaps { get; private set; }
 
 		private GLuint id;
 		private Dictionary<string, Uniform> uniforms = new Dictionary<string, Uniform>(StringComparer.Ordinal);
@@ -128,6 +131,7 @@ namespace CKGL
 		public static void PreDraw()
 		{
 			Swaps = 0;
+			UniformSwaps = 0;
 		}
 
 		public void Destroy()
@@ -152,12 +156,16 @@ namespace CKGL
 		}
 
 		#region Uniform
-		private struct Uniform
+		private class Uniform
 		{
 			public int Index;
 			public string Name;
 			public UniformType Type;
 			public int Location;
+			private object value1;
+			private object value2;
+			private object value3;
+			private object value4;
 
 			public Uniform(int index, string name, UniformType type, GLint location)
 			{
@@ -170,62 +178,174 @@ namespace CKGL
 			#region GL Set Calls
 			public void SetUniform(bool value)
 			{
-				GL.Uniform1I(Location, value ? 1 : 0);
+				if (value1 == null || (bool)value1 != value)
+				{
+					OnUniformChanging.Invoke();
+					GL.Uniform1I(Location, value ? 1 : 0);
+					UniformSwaps++;
+					value1 = value;
+					OnUniformChanged.Invoke();
+				}
 			}
 			public void SetUniform(int value)
 			{
-				GL.Uniform1I(Location, value);
+				if (value1 == null || (int)value1 != value)
+				{
+					OnUniformChanging.Invoke();
+					GL.Uniform1I(Location, value);
+					UniformSwaps++;
+					value1 = value;
+					OnUniformChanged.Invoke();
+				}
 			}
 			public void SetUniform(float value)
 			{
-				GL.Uniform1F(Location, value);
+				if (value1 == null || (float)value1 != value)
+				{
+					OnUniformChanging.Invoke();
+					GL.Uniform1F(Location, value);
+					UniformSwaps++;
+					value1 = value;
+					OnUniformChanged.Invoke();
+				}
 			}
 			public void SetUniform(float x, float y)
 			{
-				GL.Uniform2F(Location, x, y);
+				if ((value1 == null || (float)value1 != x) &&
+					(value2 == null || (float)value2 != y))
+				{
+					OnUniformChanging.Invoke();
+					GL.Uniform2F(Location, x, y);
+					UniformSwaps++;
+					value1 = x;
+					value2 = y;
+					OnUniformChanged.Invoke();
+				}
 			}
 			public void SetUniform(float x, float y, float z)
 			{
-				GL.Uniform3F(Location, x, y, z);
+				if ((value1 == null || (float)value1 != x) &&
+					(value2 == null || (float)value2 != y) &&
+					(value3 == null || (float)value3 != z))
+				{
+					OnUniformChanging.Invoke();
+					GL.Uniform3F(Location, x, y, z);
+					UniformSwaps++;
+					value1 = x;
+					value2 = y;
+					value3 = z;
+					OnUniformChanged.Invoke();
+				}
 			}
 			public void SetUniform(float x, float y, float z, float w)
 			{
-				GL.Uniform4F(Location, x, y, z, w);
+				if ((value1 == null || (float)value1 != x) &&
+					(value2 == null || (float)value2 != y) &&
+					(value3 == null || (float)value3 != z) &&
+					(value4 == null || (float)value4 != w))
+				{
+					OnUniformChanging.Invoke();
+					GL.Uniform4F(Location, x, y, z, w);
+					UniformSwaps++;
+					value1 = x;
+					value2 = y;
+					value3 = z;
+					value4 = w;
+					OnUniformChanged.Invoke();
+				}
 			}
 			public void SetUniform(Vector2 value)
 			{
-				GL.Uniform2F(Location, value.X, value.Y);
+				if (value1 == null || (Vector2)value1 != value)
+				{
+					OnUniformChanging.Invoke();
+					GL.Uniform2F(Location, value.X, value.Y);
+					UniformSwaps++;
+					value1 = value;
+					OnUniformChanged.Invoke();
+				}
 			}
 			public void SetUniform(Vector3 value)
 			{
-				GL.Uniform3F(Location, value.X, value.Y, value.Z);
+				if (value1 == null || (Vector3)value1 != value)
+				{
+					OnUniformChanging.Invoke();
+					GL.Uniform3F(Location, value.X, value.Y, value.Z);
+					UniformSwaps++;
+					value1 = value;
+					OnUniformChanged.Invoke();
+				}
 			}
 			public void SetUniform(Vector4 value)
 			{
-				GL.Uniform4F(Location, value.X, value.Y, value.Z, value.W);
+				if (value1 == null || (Vector4)value1 != value)
+				{
+					OnUniformChanging.Invoke();
+					GL.Uniform4F(Location, value.X, value.Y, value.Z, value.W);
+					UniformSwaps++;
+					value1 = value;
+					OnUniformChanged.Invoke();
+				}
 			}
 			public void SetUniform(Matrix2D value)
 			{
-				GL.UniformMatrix3x2FV(Location, 1, false, value.ToArrayColumnMajor());
+				if (value1 == null || (Matrix2D)value1 != value)
+				{
+					OnUniformChanging.Invoke();
+					GL.UniformMatrix3x2FV(Location, 1, false, value.ToArrayColumnMajor());
+					UniformSwaps++;
+					value1 = value;
+					OnUniformChanged.Invoke();
+				}
 			}
 			public void SetUniform(Matrix value)
 			{
-				GL.UniformMatrix4FV(Location, 1, false, value.ToArrayColumnMajor());
+				if (value1 == null || (Matrix)value1 != value)
+				{
+					OnUniformChanging.Invoke();
+					GL.UniformMatrix4FV(Location, 1, false, value.ToArrayColumnMajor());
+					UniformSwaps++;
+					value1 = value;
+					OnUniformChanged.Invoke();
+				}
 			}
 			public void SetUniform(Texture value, GLuint textureSlot)
 			{
-				value.Bind(textureSlot);
-				GL.Uniform1I(Location, (GLint)textureSlot);
+				if ((value1 == null || (Texture)value1 != value) &&
+					(value2 == null || (GLuint)value2 != textureSlot))
+				{
+					OnUniformChanging.Invoke();
+					value.Bind(textureSlot);
+					GL.Uniform1I(Location, (GLint)textureSlot);
+					UniformSwaps++;
+					value1 = value;
+					value2 = textureSlot;
+					OnUniformChanged.Invoke();
+				}
 			}
 			//public void SetUniform(UniformSampler2D value)
 			//{
-			//	int slot = Texture.Bind(value.ID, value.BindTarget);
-			//	GL.Uniform1I(Location, slot);
+			//	if (value1 == null || (UniformSampler2D)value1 != value)
+			//	{
+			//		OnUniformChanging.Invoke();
+			//		int slot = Texture.Bind(value.ID, value.BindTarget);
+			//		GL.Uniform1I(Location, slot);
+			//		UniformSwaps++;
+			//		value1 = value;
+			//		OnUniformChanged.Invoke();
+			//	}
 			//}
 			//public void SetUniform(UniformSamplerCube value)
 			//{
-			//	int slot = Texture.Bind(value.ID, TextureTarget.TextureCubeMap);
-			//	GL.Uniform1I(Location, slot);
+			//	if (value1 == null || (UniformSamplerCube)value1 != value)
+			//	{
+			//		OnUniformChanging.Invoke();
+			//		int slot = Texture.Bind(value.ID, TextureTarget.TextureCubeMap);
+			//		GL.Uniform1I(Location, slot);
+			//		UniformSwaps++;
+			//		value1 = value;
+			//		OnUniformChanged.Invoke();
+			//	}
 			//}
 			#endregion
 		}

@@ -2,14 +2,14 @@
 
 - Transforms, include world switch vs local space (rotations and shear (scale?))
 	- Is this just a parent transform?
+- Clean up InternalShaders
+- Graphics State - move GL calls into classes/stucts? Or cleanup somehow
 - Rotation struct everywhere
 - Quaternion Euler yRot not converting properly
-- Flush renderer on shader uniform set (if different)?
 - Test Quaternion.CreateLookAt
 - Memory function seems to force GC
 - Vector 2/3 rotate around
 - Renderer - add lineloop and any figure out all DrawModes
-- Graphics State - move GL calls into classes/stucts? Or cleanup somehow
 - ProjectionMatrix only needs updates if target is changed, not window
 	- This would be good in Camera class
 - Platform.SaveJPG is broken

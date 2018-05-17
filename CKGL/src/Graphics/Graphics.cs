@@ -152,10 +152,12 @@ namespace CKGL
 				ResetDepthState();
 
 				Shader.OnBinding += () => { OnStateChanging?.Invoke(); };
+				Shader.OnUniformChanging += () => { OnStateChanging?.Invoke(); };
 				RenderTarget.OnBinding += () => { OnStateChanging?.Invoke(); };
 				Texture.OnBinding += () => { OnStateChanging?.Invoke(); };
 
 				Shader.OnBound += () => { OnStateChanged?.Invoke(); };
+				Shader.OnUniformChanged += () => { OnStateChanged?.Invoke(); };
 				RenderTarget.OnBound += () => { OnStateChanged?.Invoke(); };
 				Texture.OnBound += () => { OnStateChanged?.Invoke(); };
 			}
