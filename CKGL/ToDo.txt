@@ -1,5 +1,8 @@
 ﻿CKGL TODO List:
 
+- Rendertarget blit fails if backbuffer is multisampled
+- State - set defaults, automatically reset at end of Draw()
+- Move Swaps++ to Graphics.Metrics
 - Clean up InternalShaders
 - Graphics State - move GL calls into classes/stucts? Or cleanup somehow
 - Rotation struct everywhere
