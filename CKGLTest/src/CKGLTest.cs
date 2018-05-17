@@ -292,12 +292,16 @@ void main()
 				{
 					for (int z = 0; z < 5; z++)
 					{
+						Transform cubeGridTransformParent = new Transform();
+						cubeGridTransformParent.Position = new Vector3(80, 0, 80);
+						cubeGridTransformParent.Scale = new Vector3(0.1f, 0.1f, 0.1f);
 						Transform cubeGridTransform = new Transform();
-						cubeGridTransform.Position = new Vector3(80 + x * 6, y * 6, 80 + z * 6);
+						cubeGridTransform.Parent = cubeGridTransformParent;
+						cubeGridTransform.Position = new Vector3(x * 6, y * 6, z * 6);
 						cubeGridTransform.Rotation = Quaternion.CreateFromEuler(new Vector3(-Time.TotalSeconds * 0.3f * x, -Time.TotalSeconds * 0.25f * y, -Time.TotalSeconds * 0.09f * z));
-						cubeGridTransform.Shear = new Shear3D(Math.Sin(x * Time.TotalSeconds * 1.7f) * 0.2f, x * Math.Sin(Time.TotalSeconds * 1.9f) * 0.4f,
-															  Math.Sin(y * Time.TotalSeconds * 1.8f) * 0.3f, y * Math.Sin(Time.TotalSeconds * 1.8f) * 0.3f,
-															  Math.Sin(z * Time.TotalSeconds * 1.9f) * 0.4f, z * Math.Sin(Time.TotalSeconds * 1.7f) * 0.2f);
+						cubeGridTransform.Shear = new Shear3D(Math.Sin(y * Time.TotalSeconds * 1.7f) * 0.2f, z * Math.Sin(Time.TotalSeconds * 1.9f) * 0.4f,
+															  Math.Sin(x * Time.TotalSeconds * 1.8f) * 0.3f, z * Math.Sin(Time.TotalSeconds * 1.8f) * 0.3f,
+															  Math.Sin(x * Time.TotalSeconds * 1.9f) * 0.4f, y * Math.Sin(Time.TotalSeconds * 1.7f) * 0.2f);
 						Renderer.Draw3D.SetTransform(cubeGridTransform);
 						//Renderer.Draw3D.CubeLines(new Colour(Math.SinNormalized(x + Time.TotalSeconds * 1.5f), Math.SinNormalized(y + Time.TotalSeconds * 1.4f), Math.SinNormalized(z + Time.TotalSeconds * 1.3f), 1f));
 						Renderer.Draw3D.Cube(Colour.Cyan,
@@ -324,7 +328,6 @@ void main()
 			t2D.ShearX = Math.Sin(Time.TotalSeconds) * 0.4f;
 			t2D.ShearY = Math.Sin(Time.TotalSeconds * 0.7f) * 0.5f;
 			Renderer.Draw.SetTransform(t2D);
-
 			Transform t = new Transform();
 			//t.Rotation = Quaternion.CreateRotationZ(Math.Sin(Time.TotalSeconds) * 0.01f);
 			//t.Shear = new Shear3D(0, 0, Math.Sin(Time.TotalSeconds * 0.7f) * 0.5f, Math.Cos(Time.TotalSeconds * 0.7f) * 0.5f, 0, 0);

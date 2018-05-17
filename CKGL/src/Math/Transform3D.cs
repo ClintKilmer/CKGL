@@ -214,7 +214,7 @@
 				{
 					matrix = Matrix.CreateTransform(origin, position, rotation, scale, shear);
 					if (parent != null)
-						matrix = parent.Matrix * matrix;
+						matrix = matrix * parent.Matrix;
 					dirty = false;
 				}
 
