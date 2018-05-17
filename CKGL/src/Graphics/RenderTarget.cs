@@ -73,7 +73,7 @@ namespace CKGL
 		{
 			if (!(textureDepthFormat.PixelFormat() == PixelFormat.Depth || textureDepthFormat.PixelFormat() == PixelFormat.DepthStencil))
 				throw new Exception("textureDepthFormat is not a depth(stencil) texture.");
-			
+
 			Bind();
 
 			depthTexture = new Texture2D(Width, Height, textureDepthFormat);
@@ -96,7 +96,7 @@ namespace CKGL
 			camera2D.Height = height;
 
 			id = GL.GenFramebuffer();
-			
+
 			Bind();
 
 			textures = new Texture2D[colourTextures];
@@ -165,7 +165,7 @@ namespace CKGL
 			OnBinding.Invoke();
 
 			RenderTarget originalRenderTarget = Current;
-			
+
 			GL.BindFramebuffer(FramebufferTarget.Read, id);
 			GL.BindFramebuffer(FramebufferTarget.Draw, (target ?? Default).id);
 
