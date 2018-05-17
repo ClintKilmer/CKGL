@@ -1,5 +1,7 @@
 ﻿CKGL TODO List:
 
+- Transforms, include world switch vs local space (rotations and shear (scale?))
+	- Is this just a parent transform?
 - Rotation struct everywhere
 - Quaternion Euler yRot not converting properly
 - Flush renderer on shader uniform set (if different)?

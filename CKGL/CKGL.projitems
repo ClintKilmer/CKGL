@@ -62,6 +62,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\Transform3D.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\Vector2.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\Rotation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Math\Shear3D.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\Vector3.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\Vector4.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Platform\Output.cs" />

@@ -5,8 +5,9 @@
 		private Transform parent;
 		private Vector3 origin = Vector3.Zero;
 		private Vector3 position = Vector3.Zero;
-		private Vector3 scale = Vector3.One;
 		private Quaternion rotation = Quaternion.Identity;
+		private Vector3 scale = Vector3.One;
+		private Shear3D shear = Shear3D.Identity;
 		private Matrix matrix;
 		private bool dirty = true;
 
@@ -127,6 +128,19 @@
 			}
 		}
 
+		public Quaternion Rotation
+		{
+			get { return rotation; }
+			set
+			{
+				if (rotation != value)
+				{
+					rotation = value;
+					dirty = true;
+				}
+			}
+		}
+
 		public Vector3 Scale
 		{
 			get { return scale; }
@@ -179,14 +193,14 @@
 			}
 		}
 
-		public Quaternion Rotation
+		public Shear3D Shear
 		{
-			get { return rotation; }
+			get { return shear; }
 			set
 			{
-				if (rotation != value)
+				if (shear != value)
 				{
-					rotation = value;
+					shear = value;
 					dirty = true;
 				}
 			}
@@ -198,7 +212,7 @@
 			{
 				if (dirty)
 				{
-					matrix = Matrix.CreateTransform(origin, position, rotation, scale);
+					matrix = Matrix.CreateTransform(origin, position, rotation, scale, shear);
 					if (parent != null)
 						matrix = parent.Matrix * matrix;
 					dirty = false;

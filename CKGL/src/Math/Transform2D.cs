@@ -5,8 +5,9 @@
 		private Transform2D parent;
 		private Vector2 origin = Vector2.Zero;
 		private Vector2 position = Vector2.Zero;
-		private Vector2 scale = Vector2.One;
 		private Rotation rotation = 0f;
+		private Vector2 scale = Vector2.One;
+		private Vector2 shear = Vector2.Zero;
 		private Matrix2D matrix;
 		private bool dirty = true;
 
@@ -101,6 +102,19 @@
 			}
 		}
 
+		public Rotation Rotation
+		{
+			get { return rotation; }
+			set
+			{
+				if (rotation != value)
+				{
+					rotation = value;
+					dirty = true;
+				}
+			}
+		}
+
 		public Vector2 Scale
 		{
 			get { return scale; }
@@ -140,14 +154,40 @@
 			}
 		}
 
-		public Rotation Rotation
+		public Vector2 Shear
 		{
-			get { return rotation; }
+			get { return shear; }
 			set
 			{
-				if (rotation != value)
+				if (shear != value)
 				{
-					rotation = value;
+					shear = value;
+					dirty = true;
+				}
+			}
+		}
+
+		public float ShearX
+		{
+			get { return shear.X; }
+			set
+			{
+				if (shear.X != value)
+				{
+					shear.X = value;
+					dirty = true;
+				}
+			}
+		}
+
+		public float ShearY
+		{
+			get { return shear.Y; }
+			set
+			{
+				if (shear.Y != value)
+				{
+					shear.Y = value;
 					dirty = true;
 				}
 			}
@@ -159,7 +199,7 @@
 			{
 				if (dirty)
 				{
-					matrix = Matrix2D.CreateTransform(origin, position, rotation, scale);
+					matrix = Matrix2D.CreateTransform(origin, position, rotation, scale, shear);
 					if (parent != null)
 						matrix = matrix * parent.Matrix;
 					dirty = false;

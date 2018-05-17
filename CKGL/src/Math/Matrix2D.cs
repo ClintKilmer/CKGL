@@ -16,8 +16,8 @@ namespace CKGL
 	{
 		// Column-Major Storage Order
 		public float M11; // X Scale		// Z Rotation
-		public float M12;                   // Z Rotation
-		public float M21;                   // Z Rotation
+		public float M12;                   // Z Rotation	// Z Axis - Y Shear
+		public float M21;                   // Z Rotation	// Z Axis - X Shear
 		public float M22; // Y Scale		// Z Rotation
 		public float M31; // X Translation
 		public float M32; // Y Translation
@@ -217,12 +217,15 @@ namespace CKGL
 
 		#region Static Methods
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static Matrix2D CreateTransform(Vector2 origin, Vector2 position, float rotations, Vector2 scale)
+		public static Matrix2D CreateTransform(Vector2 origin, Vector2 position, float rotations, Vector2 scale, Vector2 shear)
 		{
 			Matrix2D transformMatrix = Identity;
 
 			if (origin != Vector2.Zero)
 				transformMatrix *= CreateTranslation(-origin);
+
+			if (shear != Vector2.Zero)
+				transformMatrix *= CreateShear(shear);
 
 			if (scale != Vector2.One)
 				transformMatrix *= CreateScale(scale);
@@ -240,7 +243,7 @@ namespace CKGL
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static Matrix2D CreateFrom(Vector2 position, float rotations, Vector2? scale = null, Vector2? origin = null)
+		public static Matrix2D CreateFrom(Vector2 position, float rotations, Vector2? scale = null, Vector2? shear = null, Vector2? origin = null)
 		{
 			Matrix2D transformMatrix = Identity;
 
@@ -248,6 +251,12 @@ namespace CKGL
 			{
 				transformMatrix.M31 = -origin.Value.X;
 				transformMatrix.M32 = -origin.Value.Y;
+			}
+
+			if (shear.HasValue)
+			{
+				var shearMatrix = CreateShear(shear.Value);
+				transformMatrix = transformMatrix * shearMatrix;
 			}
 
 			if (scale.HasValue)
@@ -327,6 +336,27 @@ namespace CKGL
 
 			result.M21 = 0;
 			result.M22 = scaleY;
+
+			result.M31 = 0;
+			result.M32 = 0;
+
+			return result;
+		}
+
+		public static Matrix2D CreateShear(Vector2 shear)
+		{
+			return CreateShear(shear.X, shear.Y);
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static Matrix2D CreateShear(float shearX, float shearY)
+		{
+			Matrix2D result = Identity;
+
+			result.M11 = 1;
+			result.M12 = shearY;
+
+			result.M21 = shearX;
+			result.M22 = 1;
 
 			result.M31 = 0;
 			result.M32 = 0;

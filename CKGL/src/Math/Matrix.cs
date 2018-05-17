@@ -17,21 +17,21 @@ namespace CKGL
 	{
 		// Column-Major Storage Order
 		public float M11; // X Scale		// Y/Z Rotation
-		public float M12;                   // Z   Rotation
-		public float M13;                   // Y   Rotation
-		public float M14;                                       // Always 0
-		public float M21;                   // Z   Rotation
+		public float M12;                   // Z   Rotation		// X Axis - Y Shear
+		public float M13;                   // Y   Rotation		// X Axis - Z Shear
+		public float M14;                                                               // Always 0
+		public float M21;                   // Z   Rotation		// Y Axis - X Shear
 		public float M22; // Y Scale		// X/Z Rotation
-		public float M23;                   // X   Rotation
-		public float M24;                                       // Always 0
-		public float M31;                   // Y   Rotation
-		public float M32;                   // X   Rotation
+		public float M23;                   // X   Rotation		// Y Axis - Z Shear
+		public float M24;                                                               // Always 0
+		public float M31;                   // Y   Rotation		// Z Axis - X Shear
+		public float M32;                   // X   Rotation		// Z Axis - Y Shear
 		public float M33; // Z Scale		// X/Y Rotation
-		public float M34;                                       // Always 0
+		public float M34;                                                               // Always 0
 		public float M41; // X Translation
 		public float M42; // Y Translation
 		public float M43; // Z Translation
-		public float M44;                                       // Always 1
+		public float M44;                                                               // Always 1
 
 		#region Constructors
 		public Matrix(float m11, float m12, float m13, float m14,
@@ -271,12 +271,15 @@ namespace CKGL
 
 		#region Static Methods
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static Matrix CreateTransform(Vector3 origin, Vector3 position, Quaternion rotation, Vector3 scale)
+		public static Matrix CreateTransform(Vector3 origin, Vector3 position, Quaternion rotation, Vector3 scale, Shear3D shear)
 		{
 			Matrix transformMatrix = Identity;
 
 			if (origin != Vector3.Zero)
 				transformMatrix *= CreateTranslation(-origin);
+
+			if (shear != Shear3D.Identity)
+				transformMatrix *= CreateShear(shear);
 
 			if (scale != Vector3.One)
 				transformMatrix *= CreateScale(scale);
@@ -583,6 +586,30 @@ namespace CKGL
 			result.M31 = 0;
 			result.M32 = 0;
 			result.M33 = scaleZ;
+			result.M34 = 0;
+			result.M41 = 0;
+			result.M42 = 0;
+			result.M43 = 0;
+			result.M44 = 1;
+
+			return result;
+		}
+
+		public static Matrix CreateShear(Shear3D shear)
+		{
+			Matrix result = Identity;
+
+			result.M11 = 1;
+			result.M12 = shear.XY;
+			result.M13 = shear.XZ;
+			result.M14 = 0;
+			result.M21 = shear.YX;
+			result.M22 = 1;
+			result.M23 = shear.YZ;
+			result.M24 = 0;
+			result.M31 = shear.ZX;
+			result.M32 = shear.ZY;
+			result.M33 = 1;
 			result.M34 = 0;
 			result.M41 = 0;
 			result.M42 = 0;

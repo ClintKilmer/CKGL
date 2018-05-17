@@ -220,10 +220,16 @@ void main()
 			cameraLookat = Vector3.Forward * Camera.Rotation;
 			cameraLookatNoVertical = new Vector3(cameraLookat.X, 0f, cameraLookat.Z).Normalized;
 
-			test.Position = new Vector3(0f, 2f, -4f);
-			//test.Rotation = Quaternion.CreateFromEuler(new Vector3(-Time.TotalSeconds * 0.3f, -Time.TotalSeconds * 0.25f, -Time.TotalSeconds * 0.09f));
-			test.Rotation = Quaternion.CreateFromEuler(new Vector3(-Time.TotalSeconds * 0.73f, -Time.TotalSeconds * 0.525f, -Time.TotalSeconds * 0.22f));
+			test.Position = new Vector3(-15f, 2f, 5f);
+			test.Position += new Vector3(Math.Sin(Time.TotalSeconds * 3.7f) * 2f,
+										 Math.Sin(Time.TotalSeconds * 3.5f) * 2f,
+										 Math.Sin(Time.TotalSeconds * 3.3f) * 2f);
+			test.Rotation = Quaternion.CreateFromEuler(new Vector3(-Time.TotalSeconds * 0.3f, -Time.TotalSeconds * 0.25f, -Time.TotalSeconds * 0.09f));
+			//test.Rotation = Quaternion.CreateFromEuler(new Vector3(-Time.TotalSeconds * 0.73f, -Time.TotalSeconds * 0.525f, -Time.TotalSeconds * 0.22f));
 			test.Scale = Vector3.One + Vector3.One * Math.SinNormalized(Time.TotalSeconds) * 1f;
+			test.Shear = new Shear3D(Math.Sin(Time.TotalSeconds * 1.7f) * 0.2f, Math.Sin(Time.TotalSeconds * 1.9f) * 0.4f,
+									 Math.Sin(Time.TotalSeconds * 1.8f) * 0.3f, Math.Sin(Time.TotalSeconds * 1.8f) * 0.3f,
+									 Math.Sin(Time.TotalSeconds * 1.9f) * 0.4f, Math.Sin(Time.TotalSeconds * 1.7f) * 0.2f);
 
 			test2.Position = new Vector3(0f, 2f, -4f);
 			//test2.Rotation = Quaternion.CreateFromEuler(new Vector3(Time.TotalSeconds * 0.3f, Time.TotalSeconds * 0.25f, Time.TotalSeconds * 0.09f));
@@ -268,6 +274,7 @@ void main()
 								 Colour.Blue,
 								 Colour.Green,
 								 Colour.Magenta);
+			Renderer.Draw3D.ResetTransform();
 			//Renderer.Draw3D.Cube(new Colour(0f, 0f, 0f, 1f),
 			//					 new Colour(1f, 0f, 0f, 1f),
 			//					 new Colour(0f, 1f, 0f, 1f),
@@ -285,9 +292,13 @@ void main()
 				{
 					for (int z = 0; z < 5; z++)
 					{
-						test.Position = new Vector3(x * 6, y * 6, z * 6);
-						test.Rotation = Quaternion.CreateFromEuler(new Vector3(-Time.TotalSeconds * 0.3f * x, -Time.TotalSeconds * 0.25f * y, -Time.TotalSeconds * 0.09f * z));
-						Renderer.Draw3D.SetTransform(test);
+						Transform cubeGridTransform = new Transform();
+						cubeGridTransform.Position = new Vector3(80 + x * 6, y * 6, 80 + z * 6);
+						cubeGridTransform.Rotation = Quaternion.CreateFromEuler(new Vector3(-Time.TotalSeconds * 0.3f * x, -Time.TotalSeconds * 0.25f * y, -Time.TotalSeconds * 0.09f * z));
+						cubeGridTransform.Shear = new Shear3D(Math.Sin(x * Time.TotalSeconds * 1.7f) * 0.2f, x * Math.Sin(Time.TotalSeconds * 1.9f) * 0.4f,
+															  Math.Sin(y * Time.TotalSeconds * 1.8f) * 0.3f, y * Math.Sin(Time.TotalSeconds * 1.8f) * 0.3f,
+															  Math.Sin(z * Time.TotalSeconds * 1.9f) * 0.4f, z * Math.Sin(Time.TotalSeconds * 1.7f) * 0.2f);
+						Renderer.Draw3D.SetTransform(cubeGridTransform);
 						//Renderer.Draw3D.CubeLines(new Colour(Math.SinNormalized(x + Time.TotalSeconds * 1.5f), Math.SinNormalized(y + Time.TotalSeconds * 1.4f), Math.SinNormalized(z + Time.TotalSeconds * 1.3f), 1f));
 						Renderer.Draw3D.Cube(Colour.Cyan,
 											 Colour.Yellow,
@@ -306,13 +317,17 @@ void main()
 					}
 				}
 			}
+			Renderer.Draw3D.ResetTransform();
 
 			Transform2D t2D = new Transform2D();
-			t2D.Rotation = Math.Sin(Time.TotalSeconds) * 0.03f;
+			//t2D.Rotation = Math.Sin(Time.TotalSeconds) * 0.03f;
+			t2D.ShearX = Math.Sin(Time.TotalSeconds) * 0.4f;
+			t2D.ShearY = Math.Sin(Time.TotalSeconds * 0.7f) * 0.5f;
 			Renderer.Draw.SetTransform(t2D);
 
 			Transform t = new Transform();
-			t.Rotation = Quaternion.CreateRotationZ(Math.Sin(Time.TotalSeconds) * 0.01f);
+			//t.Rotation = Quaternion.CreateRotationZ(Math.Sin(Time.TotalSeconds) * 0.01f);
+			//t.Shear = new Shear3D(0, 0, Math.Sin(Time.TotalSeconds * 0.7f) * 0.5f, Math.Cos(Time.TotalSeconds * 0.7f) * 0.5f, 0, 0);
 			Renderer.Draw3D.SetTransform(t);
 
 			//Graphics.State.SetBlendState(BlendState.Additive);
@@ -424,10 +439,10 @@ void main()
 			//						 Colour.Red,
 			//						 Colour.Green,
 			//						 Colour.Blue);
-			for (int i = 0; i < 500; i++)
-				Renderer.Draw3D.Triangle(new Vector3(0f, i * 0.1f, i * 0.1f) * Quaternion.CreateRotationZ(Rotation.Zero + i * 0.001f),
-										 new Vector3(0f, i * 0.1f, i * 0.1f) * Quaternion.CreateRotationZ(Rotation.Third + i * 0.001f),
-										 new Vector3(0f, i * 0.1f, i * 0.1f) * Quaternion.CreateRotationZ(Rotation.TwoThirds + i * 0.001f),
+			for (int i = 500; i > 0; i--)
+				Renderer.Draw3D.Triangle(new Vector3(0f, i * 0.2f, i * 0.5f) * Quaternion.CreateRotationZ(Rotation.Zero + i * 0.001f - Time.TotalSeconds * 0.1f),
+										 new Vector3(0f, i * 0.2f, i * 0.5f) * Quaternion.CreateRotationZ(Rotation.Third + i * 0.001f - Time.TotalSeconds * 0.1f),
+										 new Vector3(0f, i * 0.2f, i * 0.5f) * Quaternion.CreateRotationZ(Rotation.TwoThirds + i * 0.001f - Time.TotalSeconds * 0.1f),
 										 Colour.Red,
 										 Colour.Green,
 										 Colour.Blue);
