@@ -128,7 +128,7 @@ void main()
 			Camera.FoV = 75f;
 			Camera.AspectRatio = width / (float)height;
 			Camera.Position = new Vector3(0f, 2f, -10f);
-			//Camera.Type = Camera.ProjectionType.Orthographic;
+			//Camera.Projection = Projection.Orthographic;
 			//Camera.Width = Window.Width / 10;
 			//Camera.Height = Window.Height / 10;
 
@@ -686,7 +686,7 @@ void main()
 
 		public override void OnWindowResized()
 		{
-			//Camera.AspectRatio = Window.AspectRatio;
+			Camera.AspectRatio = Window.AspectRatio;
 		}
 	}
 }

@@ -1,19 +1,19 @@
 ﻿namespace CKGL
 {
+	public enum Projection
+	{
+		Orthographic,
+		Perspective
+	}
+
 	class Camera
 	{
-		public enum ProjectionType
-		{
-			Orthographic,
-			Perspective
-		}
-
 		private Vector3 position = Vector3.Zero;
 		private Quaternion rotation = Quaternion.Identity;
 		private bool viewDirty = true;
 		private Matrix viewMatrix;
 
-		private ProjectionType projectionType = ProjectionType.Perspective;
+		private Projection projection = Projection.Perspective;
 		// Orthographic
 		private int width = 100;
 		private int height = 100;
@@ -114,14 +114,14 @@
 			}
 		}
 
-		public ProjectionType Type
+		public Projection Projection
 		{
-			get { return projectionType; }
+			get { return projection; }
 			set
 			{
-				if (projectionType != value)
+				if (projection != value)
 				{
-					projectionType = value;
+					projection = value;
 					projectionDirty = true;
 				}
 			}
@@ -135,7 +135,7 @@
 				if (width != value)
 				{
 					width = Math.Max(value, 0);
-					projectionDirty = true;
+					projectionDirty = projection == Projection.Orthographic;
 				}
 			}
 		}
@@ -148,7 +148,7 @@
 				if (height != value)
 				{
 					height = Math.Max(value, 0);
-					projectionDirty = true;
+					projectionDirty = projection == Projection.Orthographic;
 				}
 			}
 		}
@@ -161,7 +161,7 @@
 				if (fov != value)
 				{
 					fov = Math.Clamp(value, 1f, 179f);
-					projectionDirty = true;
+					projectionDirty = projection == Projection.Perspective;
 				}
 			}
 		}
@@ -174,7 +174,7 @@
 				if (aspectRatio != value)
 				{
 					aspectRatio = value;
-					projectionDirty = true;
+					projectionDirty = projection == Projection.Perspective;
 				}
 			}
 		}
@@ -211,9 +211,9 @@
 			{
 				if (projectionDirty)
 				{
-					if (projectionType == ProjectionType.Orthographic)
+					if (projection == Projection.Orthographic)
 						projectionMatrix = Matrix.CreateOrthographic(width, height, zNearClip, zFarClip);
-					else if (projectionType == ProjectionType.Perspective)
+					else if (projection == Projection.Perspective)
 						projectionMatrix = Matrix.CreatePerspectiveFieldOfView(Math.DegreesToRadians(FoV), aspectRatio, zNearClip, zFarClip);
 					projectionDirty = false;
 				}
