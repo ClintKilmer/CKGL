@@ -105,6 +105,8 @@ void main()
 				   windowBorderless: false)
 		{ }
 
+		string debugString = "";
+
 		// Variable for moving window on mouse click and drag
 		Point2 windowDraggingPosition = Point2.Zero;
 
@@ -147,10 +149,6 @@ void main()
 
 		public override void Update()
 		{
-			//Window.Title = $"{Time.DeltaTime:n1}ms - Info: {Platform.OS} | {Time.TotalSeconds:n1} - Buffers: {Audio.BufferCount} - Sources: {Audio.SourceCount} - Position: [{Window.X}, {Window.Y}] - Size: [{Window.Width}, {Window.Height}] - Mouse: [{Input.Mouse.Position.X}, {Input.Mouse.Position.Y}]";
-			//Window.Title = $"{Time.DeltaTime:n1}ms | Position: [{Window.X}, {Window.Y}] | Size: [{Window.Width}, {Window.Height}] | Mouse: [{Input.Mouse.Position.X}, {Input.Mouse.Position.Y}]";
-			Window.Title = $"Mem: {RAM:n1}MB | VSync: {Window.GetVSyncMode()} | {Time.UPS:n0}ups | {Time.FPSSmoothed:n0}fps | Draw Calls: {Graphics.DrawCalls} | State Changes: {Graphics.State.Changes} | RenderTarget Swaps: {RenderTarget.Swaps} | Texture Swaps: {Texture.Swaps} | Shader/Uniform Swaps: {Shader.Swaps}/{Shader.UniformSwaps} | WinPos: [{Window.X}, {Window.Y}] | Size: [{Window.Size}] | Mouse Global: [{Input.Mouse.PositionDisplay}] | Mouse: [{Input.Mouse.Position}] | Mouse Relative: [{Input.Mouse.PositionRelative}]";
-
 			if (Input.Keyboard.Down(KeyCode.Backspace))
 				Platform.Quit();
 
@@ -235,16 +233,14 @@ void main()
 			//test2.Rotation = Quaternion.CreateFromEuler(new Vector3(Time.TotalSeconds * 0.3f, Time.TotalSeconds * 0.25f, Time.TotalSeconds * 0.09f));
 			test2.Rotation = test.Rotation;
 			test2.Scale = Vector3.One + Vector3.One * Math.SinNormalized(-Time.TotalSeconds) * 1f;
+			
+			debugString = $"|:outline=1,0.01,0,0,0,1:|Cam Pos: {Camera.Position.X:n1}, {Camera.Position.Y:n1}, {Camera.Position.Z:n1}\nCam Rot: {Camera.Rotation.Euler.X:n2}, {Camera.Rotation.Euler.Y:n2}, {Camera.Rotation.Euler.Z:n2}\nMem: {RAM:n1}MB\nVSync: {Window.GetVSyncMode()}\n{Time.UPS:n0}ups | {Time.FPSSmoothed:n0}fps\nDraw Calls: {Graphics.DrawCalls}\nState Changes: {Graphics.State.Changes}\nRenderTarget Swaps/Blits: {RenderTarget.Swaps}/{RenderTarget.Blits}\nTexture Swaps: {Texture.Swaps}\nShader/Uniform Swaps: {Shader.Swaps}/{Shader.UniformSwaps}\nWinPos: [{Window.X}, {Window.Y}]\nSize: [{Window.Size}]\nMouse Global: [{Input.Mouse.PositionDisplay}]\nMouse: [{Input.Mouse.Position}]\nMouse Relative: [{Input.Mouse.PositionRelative}]";
 		}
 
 		Transform test = new Transform();
 		Transform test2 = new Transform();
 		public override void Draw()
 		{
-			Output.WriteLine("Frame Start");
-			RenderTarget.Default.Bind();
-			Graphics.Clear(new Colour(0.1f, 0.1f, 0.1f, 1f));
-
 			surface.Bind();
 
 			// Clear the screen
@@ -534,7 +530,8 @@ void main()
 
 			Renderer.Draw.ResetTransform();
 
-			Renderer.Flush();
+
+			// GUI Layer
 
 			Graphics.State.SetDepthState(DepthState.Off);
 
@@ -624,30 +621,35 @@ void main()
 			//						   Colour.White);
 
 			Renderer.Draw.Text(SpriteFonts.Font,
-							   $"|:outline=1,0.01,0,0,0,1:|Cam Pos: {Camera.Position.X:n1}, {Camera.Position.Y:n1}, {Camera.Position.Z:n1}\nCam Rot: {Camera.Rotation.Euler.X:n2}, {Camera.Rotation.Euler.Y:n2}, {Camera.Rotation.Euler.Z:n2}\nMem: {RAM:n1}MB\nVSync: {Window.GetVSyncMode()}\n{Time.UPS:n0}ups | {Time.FPSSmoothed:n0}fps\nDraw Calls: {Graphics.DrawCalls}\nState Changes: {Graphics.State.Changes}\nRenderTarget Swaps: {RenderTarget.Swaps}\nTexture Swaps: {Texture.Swaps}\nShader/Uniform Swaps: {Shader.Swaps}/{Shader.UniformSwaps}\nWinPos: [{Window.X}, {Window.Y}]\nSize: [{Window.Size}]\nMouse Global: [{Input.Mouse.PositionDisplay}]\nMouse: [{Input.Mouse.Position}]\nMouse Relative: [{Input.Mouse.PositionRelative}]",
+							   debugString,
 							   new Vector2(2, RenderTarget.Current.Height - 1),
 							   Vector2.One,
 							   Colour.White,
 							   HAlign.Left,
 							   VAlign.Top);
 
-			Renderer.Flush();
+
+			// Draw to Screen
+			RenderTarget.Default.Bind();
+			Graphics.Clear(new Colour(0.1f, 0.1f, 0.1f, 1f));
 
 			scale = Math.Max(1, Math.Min(Window.Width / width, Window.Height / height));
 			surface.BlitTextureTo(RenderTarget.Default, 0, BlitFilter.Nearest, new RectangleI((Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, width * scale, height * scale));
 
 			//RenderTarget.Default.Bind();
 			//InternalShaders.Renderer.MVP = RenderTarget.Default.Camera2D.Matrix;
-			////Graphics.State.SetFrontFaceState(FrontFaceState.Clockwise);
+			//Graphics.State.SetFrontFaceState(FrontFaceState.Clockwise);
 			//Graphics.State.SetPolygonModeState(PolygonModeState.Default);
-
+			//
 			//Renderer.Draw.Text(SpriteFonts.Font,
-			//				   $"|:shadow=0,-1,0.01,0,0,0,0.5:|Cam Pos: {Camera.Position.X:n1}, {Camera.Position.Y:n1}, {Camera.Position.Z:n1}\nCam Rot: {Camera.Rotation.Euler.X:n2}, {Camera.Rotation.Euler.Y:n2}, {Camera.Rotation.Euler.Z:n2}\nMem: {RAM:n1}MB\nVSync: {Window.GetVSyncMode()}\n{Time.UPS:n0}ups | {Time.FPSSmoothed:n0}fps\nDraw Calls: {Graphics.DrawCalls}\nState Changes: {Graphics.State.Changes}\nRenderTarget Swaps: {RenderTarget.Swaps}\nTexture Swaps: {Texture.Swaps}\nShader Swaps: {Shader.Swaps}\nWinPos: [{Window.X}, {Window.Y}]\nSize: [{Window.Size}]\nMouse Global: [{Input.Mouse.PositionDisplay}]\nMouse: [{Input.Mouse.Position}]\nMouse Relative: [{Input.Mouse.PositionRelative}]",
+			//				   debugString,
 			//				   new Vector2(2, RenderTarget.Current.Height - 1),
 			//				   Vector2.One * 3f,
 			//				   Colour.White,
 			//				   HAlign.Left,
 			//				   VAlign.Top);
+			//
+			//Renderer.Flush();
 
 			// Screenshot
 			if (Input.Keyboard.Pressed(KeyCode.F9))

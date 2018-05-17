@@ -149,8 +149,8 @@ namespace CKGL
 			{
 				OnBinding?.Invoke();
 				GL.UseProgram(id);
-				currentlyBoundShader = id;
 				Swaps++;
+				currentlyBoundShader = id;
 				OnBound?.Invoke();
 			}
 		}

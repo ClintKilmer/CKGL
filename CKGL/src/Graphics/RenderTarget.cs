@@ -16,6 +16,7 @@ namespace CKGL
 		public static RenderTarget Current { get; private set; } = Default;
 
 		public static GLuint Swaps { get; private set; }
+		public static GLuint Blits { get; private set; }
 
 		private Camera2D camera2D = new Camera2D();
 		public Camera2D Camera2D
@@ -72,15 +73,12 @@ namespace CKGL
 		{
 			if (!(textureDepthFormat.PixelFormat() == PixelFormat.Depth || textureDepthFormat.PixelFormat() == PixelFormat.DepthStencil))
 				throw new Exception("textureDepthFormat is not a depth(stencil) texture.");
-
-			RenderTarget originalRenderTarget = Current;
+			
 			Bind();
 
 			depthTexture = new Texture2D(Width, Height, textureDepthFormat);
 			GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, textureDepthFormat.TextureAttachment(), depthTexture.BindTarget, depthTexture.ID, 0);
 			CheckStatus();
-
-			originalRenderTarget.Bind();
 		}
 		public RenderTarget(int width, int height, GLint colourTextures, TextureFormat textureColourFormat)
 		{
@@ -98,8 +96,7 @@ namespace CKGL
 			camera2D.Height = height;
 
 			id = GL.GenFramebuffer();
-
-			RenderTarget originalRenderTarget = Current;
+			
 			Bind();
 
 			textures = new Texture2D[colourTextures];
@@ -113,13 +110,12 @@ namespace CKGL
 			}
 			GL.DrawBuffers(colourTextures, drawBuffers);
 			CheckStatus();
-
-			originalRenderTarget.Bind();
 		}
 
 		public static void PreDraw()
 		{
 			Swaps = 0;
+			Blits = 0;
 		}
 
 		public void Destroy()
@@ -150,8 +146,8 @@ namespace CKGL
 			{
 				OnBinding?.Invoke();
 				GL.BindFramebuffer(FramebufferTarget.Framebuffer, id);
-				Current = this;
 				Swaps++;
+				Current = this;
 				Graphics.SetViewport();
 				Graphics.SetScissorTest();
 				OnBound?.Invoke();
@@ -166,14 +162,24 @@ namespace CKGL
 			if (textures[textureNum].ID == 0)
 				throw new Exception("RenderTarget does not have a texture in slot: " + textureNum);
 
-			target.Bind();
+			OnBinding.Invoke();
+
+			RenderTarget originalRenderTarget = Current;
+			
 			GL.BindFramebuffer(FramebufferTarget.Read, id);
-			// Bound above as RenderTarget.Bind() binds both Read and Draw
-			//GL.BindFramebuffer(FramebufferTarget.Draw, (target ?? Default).id);
+			GL.BindFramebuffer(FramebufferTarget.Draw, (target ?? Default).id);
+
 			Graphics.SetViewport(target);
 			Graphics.SetScissorTest(target);
 			GL.ReadBuffer((ReadBuffer)((uint)ReadBuffer.Colour0 + textureNum));
 			GL.BlitFramebuffer(new RectangleI(Width, Height), rect, BufferBit.Colour, filter);
+
+			// Reset Framebuffer
+			GL.BindFramebuffer(FramebufferTarget.Framebuffer, (originalRenderTarget ?? Default).id);
+
+			Blits++;
+
+			OnBound.Invoke();
 		}
 
 		private void CheckStatus()

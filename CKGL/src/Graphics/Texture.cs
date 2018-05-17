@@ -139,10 +139,10 @@ namespace CKGL
 				OnBinding?.Invoke();
 				GL.ActiveTexture(textureSlot);
 				GL.BindTexture(BindTarget, id);
+				Swaps++;
 
 				bindings[textureSlot].ID = id;
 				bindings[textureSlot].Target = BindTarget;
-				Swaps++;
 				OnBound?.Invoke();
 			}
 		}
