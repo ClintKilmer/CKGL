@@ -58,7 +58,6 @@ namespace CKGL
 			Sprite sprite = new Sprite(this, offset.X, offset.Y, source.W, source.H);
 			Sprites.Add(sprite);
 			aabbs.Add(new AABBi(sprite.X, sprite.Y, sprite.Width + padding, sprite.Height + padding));
-			Output.WriteLine($"Packed Sprite into SpriteSheet");
 			return sprite;
 		}
 
@@ -108,7 +107,6 @@ namespace CKGL
 			Sprite sprite = new Sprite(this, offset.X, offset.Y, spriteWidth, source.H);
 			Sprites.Add(sprite);
 			aabbs.Add(new AABBi(sprite.X, sprite.Y, sprite.Width + padding, sprite.Height + padding));
-			Output.WriteLine($"Packed SpriteFont Glyph into SpriteSheet");
 			return sprite;
 		}
 
