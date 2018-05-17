@@ -194,8 +194,14 @@ namespace CKGL
 			SDL_GL_SwapWindow(IntPtr);
 		}
 
-		public static void Create(string title, int width, int height, bool vsync, bool fullscreen, bool resizable, bool borderless)
+		public static void Create(string title, int width, int height, bool vsync, bool fullscreen, bool resizable, bool borderless, int msaa)
 		{
+			if (msaa < 0 || msaa > OpenGL.GL.MaxSamples)
+				throw new ArgumentOutOfRangeException($"msaa out of range: (0 - {OpenGL.GL.MaxSamples})");
+
+			SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_MULTISAMPLEBUFFERS, msaa > 0 ? 1 : 0);
+			SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_MULTISAMPLESAMPLES, msaa);
+
 			SDL_WindowFlags flags = SDL_WindowFlags.SDL_WINDOW_SHOWN |
 									SDL_WindowFlags.SDL_WINDOW_OPENGL |
 									SDL_WindowFlags.SDL_WINDOW_ALLOW_HIGHDPI;

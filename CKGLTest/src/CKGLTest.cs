@@ -102,7 +102,8 @@ void main()
 				   windowVSync: true,
 				   windowFullscreen: false,
 				   windowResizable: true,
-				   windowBorderless: false)
+				   windowBorderless: false,
+				   msaa: 0)
 		{ }
 
 		string debugString = "";
@@ -332,7 +333,6 @@ void main()
 			//t.Shear = new Shear3D(0, 0, Math.Sin(Time.TotalSeconds * 0.7f) * 0.5f, Math.Cos(Time.TotalSeconds * 0.7f) * 0.5f, 0, 0);
 			Renderer.Draw3D.SetTransform(t);
 
-			//Graphics.State.SetBlendState(BlendState.Additive);
 			Colour gridColour = Colour.Grey.Alpha(0.3f);
 			int length = 100;
 			//for (int yy = -length; yy <= length; yy++)
@@ -622,13 +622,13 @@ void main()
 			//						   -5f, 5f, 0.1f,
 			//						   Colour.White);
 
-			Renderer.Draw.Text(SpriteFonts.Font,
-							   debugString,
-							   new Vector2(2, RenderTarget.Current.Height - 1),
-							   Vector2.One,
-							   Colour.White,
-							   HAlign.Left,
-							   VAlign.Top);
+			//Renderer.Draw.Text(SpriteFonts.Font,
+			//				   debugString,
+			//				   new Vector2(2, RenderTarget.Current.Height - 1),
+			//				   Vector2.One,
+			//				   Colour.White,
+			//				   HAlign.Left,
+			//				   VAlign.Top);
 
 
 			// Draw to Screen
@@ -636,22 +636,24 @@ void main()
 			Graphics.Clear(new Colour(0.1f, 0.1f, 0.1f, 1f));
 
 			scale = Math.Max(1, Math.Min(Window.Width / width, Window.Height / height));
-			surface.BlitTextureTo(RenderTarget.Default, 0, BlitFilter.Nearest, new RectangleI((Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, width * scale, height * scale));
 
-			//RenderTarget.Default.Bind();
-			//InternalShaders.Renderer.MVP = RenderTarget.Default.Camera2D.Matrix;
-			//Graphics.State.SetFrontFaceState(FrontFaceState.Clockwise);
-			//Graphics.State.SetPolygonModeState(PolygonModeState.Default);
-			//
-			//Renderer.Draw.Text(SpriteFonts.Font,
-			//				   debugString,
-			//				   new Vector2(2, RenderTarget.Current.Height - 1),
-			//				   Vector2.One * 3f,
-			//				   Colour.White,
-			//				   HAlign.Left,
-			//				   VAlign.Top);
-			//
-			//Renderer.Flush();
+			// Render RenderTarget
+			InternalShaders.Renderer.MVP = RenderTarget.Default.Camera2D.Matrix;
+			Renderer.Draw.RenderTarget(surface, 0, (Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, scale, Colour.White);
+			//Renderer.Draw.RenderTarget(surface, 0, (Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, scale, Math.Sin(Time.TotalSeconds) * 0.03f, new Vector2(Window.Width / 2f, Window.Height / 2f), Colour.White);
+
+			// Blit RenderTarget
+			//surface.BlitTextureTo(RenderTarget.Default, 0, BlitFilter.Nearest, new RectangleI((Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, width * scale, height * scale));
+
+			Renderer.Draw.Text(SpriteFonts.Font,
+							   debugString,
+							   new Vector2(2, RenderTarget.Current.Height - 1),
+							   Vector2.One * 3f,
+							   Colour.White,
+							   HAlign.Left,
+							   VAlign.Top);
+
+			Renderer.Flush();
 
 			// Screenshot
 			if (Input.Keyboard.Pressed(KeyCode.F9))
@@ -686,7 +688,8 @@ void main()
 
 		public override void OnWindowResized()
 		{
-			Camera.AspectRatio = Window.AspectRatio;
+			Camera.AspectRatio = surface.AspectRatio;
+			//Camera.AspectRatio = Window.AspectRatio;
 		}
 	}
 }
