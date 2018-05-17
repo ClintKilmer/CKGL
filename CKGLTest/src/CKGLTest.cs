@@ -133,7 +133,7 @@ void main()
 			//Camera.Height = Window.Height / 10;
 
 			// LoadContent()
-			SpriteSheets.SpriteSheet = new SpriteSheet(128);
+			SpriteSheets.SpriteSheet = new SpriteSheet(128, 1);
 			SpriteFonts.Font = new SpriteFont(SpriteSheets.SpriteSheet, "Sprites/font[5x7].png", 5, 7, '!', '~', 1, 3, 7, true);
 			Sprites.Test1 = SpriteSheets.SpriteSheet.AddSprite(Texture2D.CreateFromFile($"Sprites/Character1.png"));
 			Sprites.Test2 = SpriteSheets.SpriteSheet.AddSprite(Texture2D.CreateFromFile($"Sprites/Character2.png"));
@@ -233,7 +233,7 @@ void main()
 			//test2.Rotation = Quaternion.CreateFromEuler(new Vector3(Time.TotalSeconds * 0.3f, Time.TotalSeconds * 0.25f, Time.TotalSeconds * 0.09f));
 			test2.Rotation = test.Rotation;
 			test2.Scale = Vector3.One + Vector3.One * Math.SinNormalized(-Time.TotalSeconds) * 1f;
-			
+
 			debugString = $"|:outline=1,0.01,0,0,0,1:|Cam Pos: {Camera.Position.X:n1}, {Camera.Position.Y:n1}, {Camera.Position.Z:n1}\nCam Rot: {Camera.Rotation.Euler.X:n2}, {Camera.Rotation.Euler.Y:n2}, {Camera.Rotation.Euler.Z:n2}\nMem: {RAM:n1}MB\nVSync: {Window.GetVSyncMode()}\n{Time.UPS:n0}ups | {Time.FPSSmoothed:n0}fps\nDraw Calls: {Graphics.DrawCalls}\nState Changes: {Graphics.State.Changes}\nRenderTarget Swaps/Blits: {RenderTarget.Swaps}/{RenderTarget.Blits}\nTexture Swaps: {Texture.Swaps}\nShader/Uniform Swaps: {Shader.Swaps}/{Shader.UniformSwaps}\nWinPos: [{Window.X}, {Window.Y}]\nSize: [{Window.Size}]\nMouse Global: [{Input.Mouse.PositionDisplay}]\nMouse: [{Input.Mouse.Position}]\nMouse Relative: [{Input.Mouse.PositionRelative}]";
 		}
 

@@ -12,11 +12,17 @@ namespace CKGL
 		public int Width { get { return Texture.Width; } }
 		public int Height { get { return Texture.Height; } }
 
+		private int padding;
 		private Colour[,] data;
 
-		public SpriteSheet(int size) : this(size, size) { }
-		public SpriteSheet(int width, int height)
+		public SpriteSheet(int size, int padding) : this(size, size, padding) { }
+		public SpriteSheet(int width, int height, int padding)
 		{
+			if (padding < 0)
+				throw new Exception("Padding must be greater or equal to 0");
+			else if (padding >= Math.Min(width, height))
+				throw new Exception("Padding cannot be larger than the width or height of SpriteSheet.Texture");
+
 			Texture = new Texture2D(width, height, TextureFormat.RGBA8, TextureFilter.Nearest, TextureWrap.Clamp);
 			data = new Colour[Texture.Width, Texture.Height];
 
@@ -24,6 +30,8 @@ namespace CKGL
 			for (int y = 0; y < Texture.Height; y++)
 				for (int x = 0; x < Texture.Width; x++)
 					data[x, y] = Colour.Transparent;
+
+			this.padding = padding;
 		}
 
 		public Sprite AddSprite(Texture2D texture)
@@ -49,7 +57,8 @@ namespace CKGL
 
 			Sprite sprite = new Sprite(this, offset.X, offset.Y, source.W, source.H);
 			Sprites.Add(sprite);
-			aabbs.Add(new AABBi(sprite.X, sprite.Y, sprite.Width, sprite.Height));
+			aabbs.Add(new AABBi(sprite.X, sprite.Y, sprite.Width + padding, sprite.Height + padding));
+			Output.WriteLine($"Packed Sprite into SpriteSheet");
 			return sprite;
 		}
 
@@ -98,17 +107,21 @@ namespace CKGL
 
 			Sprite sprite = new Sprite(this, offset.X, offset.Y, spriteWidth, source.H);
 			Sprites.Add(sprite);
-			aabbs.Add(new AABBi(sprite.X, sprite.Y, sprite.Width, sprite.Height));
+			aabbs.Add(new AABBi(sprite.X, sprite.Y, sprite.Width + padding, sprite.Height + padding));
+			Output.WriteLine($"Packed SpriteFont Glyph into SpriteSheet");
 			return sprite;
 		}
 
 		//Slow, pixel-sweep version
 		private Point2 GetValidPlacement(int width, int height)
 		{
+			width += padding;
+			height += padding;
+
 			AABBi aabb = new AABBi(0, 0, width, height);
-			for (int y = 0; y < Texture.Height - height; y++)
+			for (int y = padding; y <= Texture.Height - height; y++)
 			{
-				for (int x = 0; x < Texture.Width - width; x++)
+				for (int x = padding; x <= Texture.Width - width; x++)
 				{
 					aabb.X = x;
 					aabb.Y = y;
@@ -136,14 +149,19 @@ namespace CKGL
 		// Fast, naive version
 		private int _offsetX = 0;
 		private int _offsetY = 0;
-		private int _offsetYMax = 0;
+		private int _offsetYRowMax = 0;
 		private Point2 GetValidPlacementNaive(int width, int height)
 		{
+			width += padding;
+			height += padding;
+			_offsetX = _offsetX.Max(padding);
+			_offsetY = _offsetY.Max(padding);
+
 			if (_offsetX + width > Texture.Width)
 			{
-				_offsetY += _offsetYMax;
-				_offsetX = 0;
-				_offsetYMax = 0;
+				_offsetY += _offsetYRowMax;
+				_offsetX = padding;
+				_offsetYRowMax = 0;
 			}
 
 			if (_offsetY + height > Texture.Height)
@@ -154,7 +172,7 @@ namespace CKGL
 			Point2 Point2 = new Point2(_offsetX, _offsetY);
 
 			_offsetX += width;
-			_offsetYMax = Math.Max(_offsetYMax, height);
+			_offsetYRowMax = Math.Max(_offsetYRowMax, height);
 
 			return Point2;
 		}
