@@ -96,7 +96,7 @@ namespace OpenGL
 		static void CheckError()
 		{
 			var err = glGetError();
-			Debug.Assert(err == ErrorCode.NoError, string.Format("OpenGL error: {0} ({1:X})", err.ToString(), (int)err));
+			Debug.Assert(err == ErrorCode.NoError, $"OpenGL Error {(int)err:X}: {err.ToString()}");
 		}
 
 		delegate ErrorCode _glGetError();
