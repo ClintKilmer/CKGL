@@ -1,7 +1,5 @@
 ﻿CKGL TODO List:
 
-- Transforms, include world switch vs local space (rotations and shear (scale?))
-	- Is this just a parent transform?
 - Clean up InternalShaders
 - Graphics State - move GL calls into classes/stucts? Or cleanup somehow
 - Rotation struct everywhere
@@ -10,8 +8,6 @@
 - Memory function seems to force GC
 - Vector 2/3 rotate around
 - Renderer - add lineloop and any figure out all DrawModes
-- ProjectionMatrix only needs updates if target is changed, not window
-	- This would be good in Camera class
 - Platform.SaveJPG is broken
 - Figure out how to proccess Vertex into buffer data
 - Add Texture2dSampler, and CubeMap to Shader Uniform Set - Have generic Set Texture Uniform
