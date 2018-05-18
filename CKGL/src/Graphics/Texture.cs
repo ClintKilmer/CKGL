@@ -1,7 +1,5 @@
 ﻿using System;
-
 using OpenGL;
-
 using GLint = System.Int32;
 using GLuint = System.UInt32;
 
@@ -19,7 +17,7 @@ namespace CKGL
 		}
 		private static Binding[] bindings = new Binding[GL.MaxTextureUnits];
 
-		public static GLuint Swaps { get; private set; }
+		public static int Swaps { get; private set; }
 
 		public static TextureFilter DefaultMinFilter = TextureFilter.Nearest;
 		public static TextureFilter DefaultMagFilter = TextureFilter.Nearest;

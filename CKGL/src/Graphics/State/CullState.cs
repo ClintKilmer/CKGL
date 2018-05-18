@@ -1,4 +1,5 @@
-﻿using OpenGL;
+﻿using System;
+using OpenGL;
 
 namespace CKGL
 {
@@ -7,9 +8,17 @@ namespace CKGL
 		public readonly bool On;
 		public readonly Face Face;
 
-		public static CullState Default { get { return Off; } }
+		public static Action OnStateChanging;
+		public static Action OnStateChanged;
+		public static CullState Default { get; private set; }
+		public static CullState Current { get; private set; }
 
 		#region Static Constructors
+		static CullState()
+		{
+			Default = Off;
+			Reset();
+		}
 		public static readonly CullState Off = new CullState(false, Face.Back);
 		public static readonly CullState Back = new CullState(true, Face.Back);
 		public static readonly CullState Front = new CullState(true, Face.Front);
@@ -22,6 +31,25 @@ namespace CKGL
 			On = on;
 			Face = cullFace;
 		}
+		#endregion
+
+		#region Static Methods
+		public static void Set(CullState cullState)
+		{
+			if (Current != cullState)
+			{
+				OnStateChanging?.Invoke();
+				if (cullState.On)
+					GL.Enable(EnableCap.CullFace);
+				else
+					GL.Disable(EnableCap.CullFace);
+				GL.CullFace(cullState.Face);
+				Current = cullState;
+				OnStateChanged?.Invoke();
+			}
+		}
+		public static void Reset() => Set(Default);
+		public static void SetDefault(CullState cullState) => Default = cullState;
 		#endregion
 
 		#region Overrides

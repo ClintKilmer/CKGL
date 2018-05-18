@@ -1,4 +1,5 @@
-﻿using OpenGL;
+﻿using System;
+using OpenGL;
 
 namespace CKGL
 {
@@ -7,9 +8,17 @@ namespace CKGL
 		public readonly bool On;
 		public readonly DepthFunc DepthFunc;
 
-		public static DepthState Default { get { return Off; } }
+		public static Action OnStateChanging;
+		public static Action OnStateChanged;
+		public static DepthState Default { get; private set; }
+		public static DepthState Current { get; private set; }
 
 		#region Static Constructors
+		static DepthState()
+		{
+			Default = Off;
+			Reset();
+		}
 		public static readonly DepthState Off = new DepthState(false);
 		public static readonly DepthState Never = new DepthState(true, DepthFunc.Never);
 		public static readonly DepthState Less = new DepthState(true, DepthFunc.Less);
@@ -27,6 +36,30 @@ namespace CKGL
 		{
 			On = on;
 			DepthFunc = depthFunc;
+		}
+		#endregion
+
+		#region Static Methods
+		public static void Set(DepthState depthState)
+		{
+			if (Current != depthState)
+			{
+				OnStateChanging?.Invoke();
+				if (depthState.On)
+					GL.Enable(EnableCap.DepthTest);
+				else
+					GL.Disable(EnableCap.DepthTest);
+				GL.DepthFunc(depthState.DepthFunc);
+				Current = depthState;
+				OnStateChanged?.Invoke();
+			}
+		}
+		public static void Reset() => Set(Default);
+		public static void SetDefault(DepthState depthState) => Default = depthState;
+
+		public static void SetDepthRange(float near, float far)
+		{
+			GL.DepthRange(near.Clamp(0f, 1f), far.Clamp(0f, 1f));
 		}
 		#endregion
 

@@ -1,4 +1,5 @@
-﻿using OpenGL;
+﻿using System;
+using OpenGL;
 
 namespace CKGL
 {
@@ -8,9 +9,17 @@ namespace CKGL
 		public readonly PolygonMode BackPolygonMode;
 		public readonly bool FrontAndBack;
 
-		public static PolygonModeState Default { get { return FrontFillBackFill; } }
+		public static Action OnStateChanging;
+		public static Action OnStateChanged;
+		public static PolygonModeState Default { get; private set; }
+		public static PolygonModeState Current { get; private set; }
 
 		#region Static Constructors
+		static PolygonModeState()
+		{
+			Default = FrontFillBackFill;
+			Reset();
+		}
 		public static readonly PolygonModeState FrontPointBackPoint = new PolygonModeState(PolygonMode.Point, PolygonMode.Point);
 		public static readonly PolygonModeState FrontPointBackLine = new PolygonModeState(PolygonMode.Point, PolygonMode.Line);
 		public static readonly PolygonModeState FrontPointBackFill = new PolygonModeState(PolygonMode.Point, PolygonMode.Fill);
@@ -29,6 +38,29 @@ namespace CKGL
 			BackPolygonMode = backPolygonMode;
 			FrontAndBack = FrontPolygonMode == BackPolygonMode;
 		}
+		#endregion
+
+		#region Static Methods
+		public static void Set(PolygonModeState polygonModeState)
+		{
+			if (Current != polygonModeState)
+			{
+				OnStateChanging?.Invoke();
+				if (polygonModeState.FrontAndBack)
+				{
+					GL.PolygonMode(Face.FrontAndBack, polygonModeState.FrontPolygonMode);
+				}
+				else
+				{
+					GL.PolygonMode(Face.Front, polygonModeState.FrontPolygonMode);
+					GL.PolygonMode(Face.Back, polygonModeState.BackPolygonMode);
+				}
+				Current = polygonModeState;
+				OnStateChanged?.Invoke();
+			}
+		}
+		public static void Reset() => Set(Default);
+		public static void SetDefault(PolygonModeState polygonModeState) => Default = polygonModeState;
 		#endregion
 
 		#region Overrides

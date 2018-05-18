@@ -1,12 +1,13 @@
 ﻿CKGL TODO List:
 
+- Viewport static class?
+- ScissorTest static class?
+- State - automatically reset at end of Draw()?
+- Move Swaps++ to Graphics.Metrics
 - Move rest of the OpenGL attributes into Window?
 - Look into flat shading in GLSL (flat qualifier, provoking vertex)
 - Rendertarget blit fails if backbuffer is multisampled
-- State - set defaults, automatically reset at end of Draw()
-- Move Swaps++ to Graphics.Metrics
 - Clean up InternalShaders
-- Graphics State - move GL calls into classes/stucts? Or cleanup somehow
 - Rotation struct everywhere
 - Quaternion Euler yRot not converting properly
 - Test Quaternion.CreateLookAt
@@ -17,6 +18,8 @@
 - Figure out how to proccess Vertex into buffer data
 - Add Texture2dSampler, and CubeMap to Shader Uniform Set - Have generic Set Texture Uniform
 - ResourceHandle? GLResource?
+
+- Speed up SpriteSheet Packing
 
 - CPU Bounding Box Culling
 

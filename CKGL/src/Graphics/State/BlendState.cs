@@ -1,18 +1,29 @@
-﻿namespace CKGL
+﻿using System;
+using OpenGL;
+
+namespace CKGL
 {
 	public struct BlendState
 	{
-		public bool On;
-		public BlendFactor ColourSource;
-		public BlendFactor AlphaSource;
-		public BlendFactor ColourDestination;
-		public BlendFactor AlphaDestination;
-		public BlendEquation ColourEquation;
-		public BlendEquation AlphaEquation;
+		public readonly bool On;
+		public readonly BlendFactor ColourSource;
+		public readonly BlendFactor AlphaSource;
+		public readonly BlendFactor ColourDestination;
+		public readonly BlendFactor AlphaDestination;
+		public readonly BlendEquation ColourEquation;
+		public readonly BlendEquation AlphaEquation;
 
-		public static BlendState Default { get { return Off; } }
+		public static Action OnStateChanging;
+		public static Action OnStateChanged;
+		public static BlendState Default { get; private set; }
+		public static BlendState Current { get; private set; }
 
 		#region Static Constructors
+		static BlendState()
+		{
+			Default = Off;
+			Reset();
+		}
 		public static readonly BlendState Off = new BlendState(false);
 		public static readonly BlendState Opaque = new BlendState(true, BlendFactor.One, BlendFactor.Zero);
 		public static readonly BlendState AlphaBlend = new BlendState(true, BlendFactor.SrcAlpha, BlendFactor.OneMinusSrcAlpha);
@@ -77,6 +88,26 @@
 			BlendEquation.Add,
 			BlendEquation.Add)
 		{ }
+		#endregion
+
+		#region Static Methods
+		public static void Set(BlendState blendState)
+		{
+			if (Current != blendState)
+			{
+				OnStateChanging?.Invoke();
+				if (blendState.On)
+					GL.Enable(EnableCap.Blend);
+				else
+					GL.Disable(EnableCap.Blend);
+				GL.BlendFuncSeparate(blendState.ColourSource, blendState.ColourDestination, blendState.AlphaSource, blendState.AlphaDestination);
+				GL.BlendEquationSeparate(blendState.ColourEquation, blendState.AlphaEquation);
+				Current = blendState;
+				OnStateChanged?.Invoke();
+			}
+		}
+		public static void Reset() => Set(Default);
+		public static void SetDefault(BlendState blendState) => Default = blendState;
 		#endregion
 
 		#region Overrides

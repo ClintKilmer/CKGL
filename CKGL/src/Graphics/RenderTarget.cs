@@ -1,7 +1,5 @@
 ﻿using System;
-
 using OpenGL;
-
 using GLint = System.Int32;
 using GLuint = System.UInt32;
 
@@ -15,8 +13,8 @@ namespace CKGL
 		public static readonly RenderTarget Default = new RenderTarget();
 		public static RenderTarget Current { get; private set; } = Default;
 
-		public static GLuint Swaps { get; private set; }
-		public static GLuint Blits { get; private set; }
+		public static int Swaps { get; private set; }
+		public static int Blits { get; private set; }
 
 		private Camera2D camera2D = new Camera2D();
 		public Camera2D Camera2D

@@ -146,6 +146,8 @@ void main()
 			//SpriteSheets.SpriteSheet.Texture.SavePNG("SpriteSheet.png");
 
 			surface = new RenderTarget(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth24);
+
+			BlendState.SetDefault(BlendState.AlphaBlend);
 		}
 
 		public override void Update()
@@ -250,11 +252,12 @@ void main()
 			else
 				Graphics.Clear(Colour.Black);
 
-			//Graphics.State.SetFrontFaceState(FrontFaceState.Clockwise);
-			Graphics.State.SetCullState(CullState.Default);
-			Graphics.State.SetPolygonModeState(PolygonModeState.Default);
-			Graphics.State.SetBlendState(BlendState.AlphaBlend);
-			Graphics.State.SetDepthState(DepthState.LessEqual);
+			Graphics.State.Reset();
+			//FrontFaceState.Set(FrontFaceState.Clockwise);
+			CullState.Set(CullState.Back);
+			//PolygonModeState.Reset();
+			//BlendState.Reset();
+			DepthState.Set(DepthState.LessEqual);
 
 			InternalShaders.Renderer.MVP = Camera.Matrix;
 
@@ -320,8 +323,8 @@ void main()
 			}
 			Renderer.Draw3D.ResetTransform();
 
-			Graphics.State.SetCullState(CullState.Off);
-			Graphics.State.SetPolygonModeState(PolygonModeState.FrontFillBackLine);
+			CullState.Set(CullState.Off);
+			PolygonModeState.Set(PolygonModeState.FrontFillBackLine);
 
 			Transform2D t2D = new Transform2D();
 			//t2D.Rotation = Math.Sin(Time.TotalSeconds) * 0.03f;
@@ -535,7 +538,7 @@ void main()
 
 			// GUI Layer
 
-			Graphics.State.SetDepthState(DepthState.Off);
+			DepthState.Set(DepthState.Off);
 
 			Camera2D.Width = RenderTarget.Current.Width;
 			Camera2D.Height = RenderTarget.Current.Height;

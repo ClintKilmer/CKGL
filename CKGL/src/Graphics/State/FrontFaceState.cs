@@ -1,4 +1,5 @@
-﻿using OpenGL;
+﻿using System;
+using OpenGL;
 
 namespace CKGL
 {
@@ -6,9 +7,17 @@ namespace CKGL
 	{
 		public readonly FrontFace FrontFace;
 
-		public static FrontFaceState Default { get { return CounterClockwise; } }
+		public static Action OnStateChanging;
+		public static Action OnStateChanged;
+		public static FrontFaceState Default { get; private set; }
+		public static FrontFaceState Current { get; private set; }
 
 		#region Static Constructors
+		static FrontFaceState()
+		{
+			Default = CounterClockwise;
+			Reset();
+		}
 		public static readonly FrontFaceState Clockwise = new FrontFaceState(FrontFace.Clockwise);
 		public static readonly FrontFaceState CounterClockwise = new FrontFaceState(FrontFace.CounterClockwise);
 		#endregion
@@ -18,6 +27,21 @@ namespace CKGL
 		{
 			FrontFace = frontFace;
 		}
+		#endregion
+
+		#region Static Methods
+		public static void Set(FrontFaceState frontFaceState)
+		{
+			if (Current != frontFaceState)
+			{
+				OnStateChanging?.Invoke();
+				GL.FrontFace(frontFaceState.FrontFace);
+				Current = frontFaceState;
+				OnStateChanged?.Invoke();
+			}
+		}
+		public static void Reset() => Set(Default);
+		public static void SetDefault(FrontFaceState frontFaceState) => Default = frontFaceState;
 		#endregion
 
 		#region Overrides

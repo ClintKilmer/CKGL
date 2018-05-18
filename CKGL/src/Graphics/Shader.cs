@@ -1,9 +1,7 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
-
+using System.IO;
 using OpenGL;
-
 using GLint = System.Int32;
 using GLuint = System.UInt32;
 
@@ -18,8 +16,8 @@ namespace CKGL
 
 		private static GLuint currentlyBoundShader;
 
-		public static GLuint Swaps { get; private set; }
-		public static GLuint UniformSwaps { get; private set; }
+		public static int Swaps { get; private set; }
+		public static int UniformSwaps { get; private set; }
 
 		private GLuint id;
 		private Dictionary<string, Uniform> uniforms = new Dictionary<string, Uniform>(StringComparer.Ordinal);
