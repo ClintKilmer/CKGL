@@ -16,7 +16,6 @@ namespace CKGL
 		static FrontFaceState()
 		{
 			Default = CounterClockwise;
-			Reset();
 		}
 		public static readonly FrontFaceState Clockwise = new FrontFaceState(FrontFace.Clockwise);
 		public static readonly FrontFaceState CounterClockwise = new FrontFaceState(FrontFace.CounterClockwise);

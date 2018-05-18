@@ -17,7 +17,6 @@ namespace CKGL
 		static DepthState()
 		{
 			Default = Off;
-			Reset();
 		}
 		public static readonly DepthState Off = new DepthState(false);
 		public static readonly DepthState Never = new DepthState(true, DepthFunc.Never);

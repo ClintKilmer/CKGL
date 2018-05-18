@@ -18,7 +18,6 @@ namespace CKGL
 		static PolygonModeState()
 		{
 			Default = FrontFillBackFill;
-			Reset();
 		}
 		public static readonly PolygonModeState FrontPointBackPoint = new PolygonModeState(PolygonMode.Point, PolygonMode.Point);
 		public static readonly PolygonModeState FrontPointBackLine = new PolygonModeState(PolygonMode.Point, PolygonMode.Line);

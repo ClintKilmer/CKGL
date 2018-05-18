@@ -22,7 +22,6 @@ namespace CKGL
 		static BlendState()
 		{
 			Default = Off;
-			Reset();
 		}
 		public static readonly BlendState Off = new BlendState(false);
 		public static readonly BlendState Opaque = new BlendState(true, BlendFactor.One, BlendFactor.Zero);

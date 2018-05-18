@@ -17,7 +17,6 @@ namespace CKGL
 		static CullState()
 		{
 			Default = Off;
-			Reset();
 		}
 		public static readonly CullState Off = new CullState(false, Face.Back);
 		public static readonly CullState Back = new CullState(true, Face.Back);

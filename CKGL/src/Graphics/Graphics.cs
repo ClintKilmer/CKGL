@@ -127,6 +127,8 @@ namespace CKGL
 
 			public static void Init()
 			{
+				Reset();
+
 				FrontFaceState.OnStateChanging += () => { OnStateChanging?.Invoke(); };
 				FrontFaceState.OnStateChanged += () => { OnStateChanged?.Invoke(); };
 				CullState.OnStateChanging += () => { OnStateChanging?.Invoke(); };
