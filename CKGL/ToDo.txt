@@ -11,7 +11,7 @@
 - Rotation struct everywhere
 - Quaternion Euler yRot not converting properly
 - Test Quaternion.CreateLookAt
-- Memory function seems to force GC
+- RAM function seems to force GC
 - Vector 2/3 rotate around
 - Renderer - add lineloop and any figure out all DrawModes
 - Platform.SaveJPG is broken
