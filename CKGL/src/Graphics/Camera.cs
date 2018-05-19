@@ -21,8 +21,8 @@
 		private float fov = 75f;
 		private float aspectRatio = 1f;
 		// Both
-		private float zNearClip = 0.01f;
-		private float zFarClip = 1000f;
+		private float znear = 0.01f;
+		private float zfar = 1000f;
 		private bool projectionDirty = true;
 		private Matrix projectionMatrix;
 
@@ -179,27 +179,27 @@
 			}
 		}
 
-		public float ZNearClip
+		public float zNear
 		{
-			get { return zNearClip; }
+			get { return znear; }
 			set
 			{
-				if (zNearClip != value)
+				if (znear != value)
 				{
-					zNearClip = Math.Max(value, 0f);
+					znear = Math.Max(value, 0f);
 					projectionDirty = true;
 				}
 			}
 		}
 
-		public float ZFarClip
+		public float zFar
 		{
-			get { return zFarClip; }
+			get { return zfar; }
 			set
 			{
-				if (zFarClip != value)
+				if (zfar != value)
 				{
-					zFarClip = Math.Max(value, 0f);
+					zfar = Math.Max(value, 0f);
 					projectionDirty = true;
 				}
 			}
@@ -212,9 +212,9 @@
 				if (projectionDirty)
 				{
 					if (projection == Projection.Orthographic)
-						projectionMatrix = Matrix.CreateOrthographic(width, height, zNearClip, zFarClip);
+						projectionMatrix = Matrix.CreateOrthographic(width, height, znear, zfar);
 					else if (projection == Projection.Perspective)
-						projectionMatrix = Matrix.CreatePerspectiveFieldOfView(Math.DegreesToRadians(FoV), aspectRatio, zNearClip, zFarClip);
+						projectionMatrix = Matrix.CreatePerspectiveFieldOfView(Math.DegreesToRadians(FoV), aspectRatio, znear, zfar);
 					projectionDirty = false;
 				}
 

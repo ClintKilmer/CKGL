@@ -10,8 +10,8 @@
 
 		private int width = 100;
 		private int height = 100;
-		private float zNearClip = -10000f;
-		private float zFarClip = 10000f;
+		private float znear = -10000f;
+		private float zfar = 10000f;
 		private bool projectionDirty = true;
 		private Matrix projectionMatrix;
 
@@ -129,27 +129,27 @@
 			}
 		}
 
-		public float ZNearClip
+		public float zNear
 		{
-			get { return zNearClip; }
+			get { return znear; }
 			set
 			{
-				if (zNearClip != value)
+				if (znear != value)
 				{
-					zNearClip = Math.Max(value, 0f);
+					znear = Math.Max(value, 0f);
 					projectionDirty = true;
 				}
 			}
 		}
 
-		public float ZFarClip
+		public float zFar
 		{
-			get { return zFarClip; }
+			get { return zfar; }
 			set
 			{
-				if (zFarClip != value)
+				if (zfar != value)
 				{
-					zFarClip = Math.Max(value, 0f);
+					zfar = Math.Max(value, 0f);
 					projectionDirty = true;
 				}
 			}
@@ -161,7 +161,7 @@
 			{
 				if (projectionDirty)
 				{
-					projectionMatrix = Matrix.CreateOrthographicOffCenter(0, width, 0, height, zNearClip, zFarClip);
+					projectionMatrix = Matrix.CreateOrthographicOffCenter(0, width, 0, height, znear, zfar);
 					projectionDirty = false;
 				}
 

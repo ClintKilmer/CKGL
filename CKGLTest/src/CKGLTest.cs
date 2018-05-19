@@ -253,11 +253,7 @@ void main()
 				Graphics.Clear(Colour.Black);
 
 			Graphics.State.Reset();
-			//FrontFaceState.Clockwise.Set();
 			CullState.Back.Set();
-			//PolygonModeState.Reset();
-			//BlendState.Reset();
-			BlendState.Additive.Set();
 			DepthState.LessEqual.Set();
 
 			InternalShaders.Renderer.MVP = Camera.Matrix;
@@ -649,6 +645,18 @@ void main()
 
 			// Blit RenderTarget
 			//surface.BlitTextureTo(RenderTarget.Default, 0, BlitFilter.Nearest, new RectangleI((Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, width * scale, height * scale));
+
+			if (Input.Keyboard.Down(KeyCode.F1))
+			{
+				InternalShaders.LinearizeDepth.Bind();
+				InternalShaders.LinearizeDepth.MVP = RenderTarget.Default.Camera2D.Matrix;
+				InternalShaders.LinearizeDepth.zNear = Camera.zNear;
+				InternalShaders.LinearizeDepth.zFar = Camera.zFar;
+				Renderer.Draw.RenderTarget(surface, -1, (Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, scale, Colour.White);
+
+				InternalShaders.Renderer.Bind();
+				InternalShaders.Renderer.MVP = RenderTarget.Default.Camera2D.Matrix;
+			}
 
 			Renderer.Draw.Text(SpriteFonts.Font,
 							   debugString,
