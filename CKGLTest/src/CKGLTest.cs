@@ -637,6 +637,7 @@ void main()
 			// Draw to Screen
 			RenderTarget.Default.Bind();
 			Graphics.Clear(new Colour(0.1f, 0.1f, 0.1f, 1f));
+			Graphics.State.Reset();
 
 			scale = Math.Max(1, Math.Min(Window.Width / width, Window.Height / height));
 
