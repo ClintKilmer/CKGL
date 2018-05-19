@@ -1,5 +1,19 @@
 ﻿CKGL TODO List:
 
+Features:
+- State.Last with method state.Revert()
+	- Will make RenderTarget.Blit easier (and a few others)
+	- Graphics.Revert? How?
+- Separate 3D/2D ecs systems? Maybe combined with depth for 2d?
+	- Transparent flag for sorting opaque-front-to-back - transparent-back-to-front
+- Shader Includes (Regular Math library too...)
+	- noise
+	- easings
+- Meshes
+- Lighting
+
+Random:
+
 - Refactor shader uniforms into inherited classes
 - Viewport static class?
 - ScissorTest static class?
