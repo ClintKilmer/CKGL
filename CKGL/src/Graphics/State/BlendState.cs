@@ -89,6 +89,18 @@ namespace CKGL
 		{ }
 		#endregion
 
+		#region Methods
+		public void Set()
+		{
+			Set(this);
+		}
+
+		public void SetDefault()
+		{
+			SetDefault(this);
+		}
+		#endregion
+
 		#region Static Methods
 		public static void Set(BlendState blendState)
 		{

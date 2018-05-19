@@ -147,7 +147,7 @@ void main()
 
 			surface = new RenderTarget(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth24);
 
-			BlendState.SetDefault(BlendState.AlphaBlend);
+			BlendState.AlphaBlend.SetDefault();
 		}
 
 		public override void Update()
@@ -253,11 +253,12 @@ void main()
 				Graphics.Clear(Colour.Black);
 
 			Graphics.State.Reset();
-			//FrontFaceState.Set(FrontFaceState.Clockwise);
-			CullState.Set(CullState.Back);
+			//FrontFaceState.Clockwise.Set();
+			CullState.Back.Set();
 			//PolygonModeState.Reset();
 			//BlendState.Reset();
-			DepthState.Set(DepthState.LessEqual);
+			BlendState.Additive.Set();
+			DepthState.LessEqual.Set();
 
 			InternalShaders.Renderer.MVP = Camera.Matrix;
 
@@ -323,8 +324,8 @@ void main()
 			}
 			Renderer.Draw3D.ResetTransform();
 
-			CullState.Set(CullState.Off);
-			PolygonModeState.Set(PolygonModeState.FrontFillBackLine);
+			CullState.Off.Set();
+			PolygonModeState.FrontFillBackLine.Set();
 
 			Transform2D t2D = new Transform2D();
 			//t2D.Rotation = Math.Sin(Time.TotalSeconds) * 0.03f;
@@ -538,7 +539,7 @@ void main()
 
 			// GUI Layer
 
-			DepthState.Set(DepthState.Off);
+			DepthState.Off.Set();
 
 			Camera2D.Width = RenderTarget.Current.Width;
 			Camera2D.Height = RenderTarget.Current.Height;
