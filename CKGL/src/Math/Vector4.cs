@@ -239,6 +239,11 @@ namespace CKGL
 		{
 			return new Vector4(v.X, v.Y, v.Z, 0f);
 		}
+
+		public static implicit operator Vector4(Colour c)
+		{
+			return new Vector4(c.R, c.G, c.B, c.A);
+		}
 		#endregion
 	}
 }

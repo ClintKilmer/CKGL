@@ -30,14 +30,6 @@ namespace CKGL
 		{
 			Compile(ref source);
 		}
-		public Shader(ref string vertSource, ref string fragSource)
-		{
-			Compile(ref vertSource, ref fragSource);
-		}
-		public Shader(string vertSource, string fragSource)
-		{
-			Compile(ref vertSource, ref fragSource);
-		}
 		public static Shader FromFile(string file)
 		{
 			if (!File.Exists(file))
@@ -48,11 +40,11 @@ namespace CKGL
 		#region Compile
 		private void CompileShader(GLuint shaderID, string source)
 		{
-			//Populate the shader and compile it
+			// Populate the shader and compile it
 			GL.ShaderSource(shaderID, source);
 			GL.CompileShader(shaderID);
 
-			//Check for shader compile errors
+			// Check for shader compile errors
 			GL.GetShader(shaderID, ShaderParam.CompileStatus, out GLint status);
 			if (status == 0)
 				throw new Exception("Shader compile error: " + GL.GetShaderInfoLog(shaderID));
@@ -60,41 +52,51 @@ namespace CKGL
 
 		private void Compile(ref string source)
 		{
-			int i = source.IndexOf("...", StringComparison.Ordinal);
-			if (i < 0)
-				throw new Exception("Shader source text must separate vertex and fragment shaders with \"...\"");
+			int vertex = source.IndexOf("#vertex", StringComparison.Ordinal);
+			int fragment = source.IndexOf("#fragment", StringComparison.Ordinal);
 
-			string vertSource = source.Substring(0, i);
-			string fragSource = source.Substring(i + 3);
+			if (vertex == -1)
+				throw new Exception("Shader source must contain a vertex shader definition.");
 
-			Compile(ref vertSource, ref fragSource);
-		}
-		private void Compile(ref string vertSource, ref string fragSource)
-		{
-			//Create the shaders and compile them
+			bool hasFragmentDefinition = fragment != -1;
+
+			string vertSource = hasFragmentDefinition ? source.Substring(vertex, fragment - vertex) : source.Substring(vertex);
+			string fragSource = hasFragmentDefinition ? source.Substring(fragment) : "";
+
+			// Create the shaders and compile them
+			GLuint fragID = 0;
 			GLuint vertID = GL.CreateShader(ShaderType.Vertex);
-			GLuint fragID = GL.CreateShader(ShaderType.Fragment);
-			CompileShader(vertID, vertSource);
-			CompileShader(fragID, fragSource);
+			//Output.WriteLine(vertSource.Replace("#vertex", ShaderIncludes.Vertex));
+			CompileShader(vertID, vertSource.Replace("#vertex", ShaderIncludes.Vertex));
+			if (hasFragmentDefinition)
+			{
+				fragID = GL.CreateShader(ShaderType.Fragment);
+				//Output.WriteLine(fragSource.Replace("#fragment", ShaderIncludes.Fragment));
+				CompileShader(fragID, fragSource.Replace("#fragment", ShaderIncludes.Fragment));
+			}
 
-			//Create the program and attach the shaders to it
+			// Create the program and attach the shaders to it
 			id = GL.CreateProgram();
 			GL.AttachShader(id, vertID);
-			GL.AttachShader(id, fragID);
+			if (hasFragmentDefinition)
+				GL.AttachShader(id, fragID);
 
-			//Link the program and check for errors
+			// Link the program and check for errors
 			GL.LinkProgram(id);
 			GL.GetProgram(id, ProgramParam.LinkStatus, out GLint status);
 			if (status == 0)
 				throw new Exception("Program link error: " + GL.GetProgramInfoLog(id));
 
-			//Once linked, we can detach and delete the shaders
+			// Once linked, we can detach and delete the shaders
 			GL.DetachShader(id, vertID);
-			GL.DetachShader(id, fragID);
 			GL.DeleteShader(vertID);
-			GL.DeleteShader(fragID);
+			if (hasFragmentDefinition)
+			{
+				GL.DetachShader(id, fragID);
+				GL.DeleteShader(fragID);
+			}
 
-			//Get all the uniforms the shader has and store their information
+			// Get all the uniforms the shader has and store their information
 			GL.GetProgram(id, ProgramParam.ActiveUniforms, out GLint numUniforms);
 			for (int i = 0; i < numUniforms; ++i)
 			{
@@ -171,6 +173,7 @@ namespace CKGL
 			private Vector2 Vector2Value;
 			private Vector3 Vector3Value;
 			private Vector4 Vector4Value;
+			private Colour ColourValue;
 			private Matrix2D Matrix2DValue;
 			private Matrix MatrixValue;
 			private Texture TextureValue;
@@ -292,6 +295,17 @@ namespace CKGL
 					OnUniformChanged.Invoke();
 				}
 			}
+			public void SetUniform(Colour value)
+			{
+				if (ColourValue != value)
+				{
+					OnUniformChanging.Invoke();
+					GL.Uniform4F(Location, value.R, value.G, value.B, value.A);
+					UniformSwaps++;
+					ColourValue = value;
+					OnUniformChanged.Invoke();
+				}
+			}
 			public void SetUniform(Matrix2D value)
 			{
 				if (Matrix2DValue != value)
@@ -405,6 +419,11 @@ namespace CKGL
 			GetUniform(name).SetUniform(value);
 		}
 		public void SetUniform(string name, Vector4 value)
+		{
+			Bind();
+			GetUniform(name).SetUniform(value);
+		}
+		public void SetUniform(string name, Colour value)
 		{
 			Bind();
 			GetUniform(name).SetUniform(value);

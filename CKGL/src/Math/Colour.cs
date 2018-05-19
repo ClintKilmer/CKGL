@@ -279,28 +279,6 @@ namespace CKGL
 		#endregion
 
 		#region Implicit Conversion Operators
-		//public override bool Equals(object obj)
-		//{
-		//	return obj is Colour && Equals((Colour)obj);
-		//}
-		//public bool Equals(Colour other)
-		//{
-		//	return r == other.r && g == other.g && b == other.b && a == other.a;
-		//}
-
-		//public override int GetHashCode()
-		//{
-		//	unchecked
-		//	{
-		//		int hash = 17;
-		//		hash = hash * 23 + r;
-		//		hash = hash * 23 + g;
-		//		hash = hash * 23 + b;
-		//		hash = hash * 23 + a;
-		//		return hash;
-		//	}
-		//}
-
 		public static implicit operator UInt32(Colour val)
 		{
 			return ((UInt32)val.r << 24) | ((UInt32)val.g << 16) | ((UInt32)val.b << 8) | val.a;
@@ -313,6 +291,11 @@ namespace CKGL
 				(byte)((val >> 8) & 0xff),
 				(byte)(val & 0xff)
 			);
+		}
+
+		public static implicit operator Colour(Vector4 v)
+		{
+			return new Colour(v.X, v.Y, v.Z, v.W);
 		}
 		#endregion
 	}

@@ -256,7 +256,20 @@ void main()
 			CullState.Back.Set();
 			DepthState.LessEqual.Set();
 
-			InternalShaders.Renderer.MVP = Camera.Matrix;
+			if (Input.Mouse.RightDown)
+			{
+				InternalShaders.RendererFog.Bind();
+				InternalShaders.RendererFog.MVP = Camera.Matrix;
+				InternalShaders.RendererFog.MV = Camera.ViewMatrix;
+				InternalShaders.RendererFog.FogColour = Colour.Black;
+				//InternalShaders.RendererFog.FogStart = 40f;
+				//InternalShaders.RendererFog.FogEnd = 60f;
+			}
+			else
+			{
+				InternalShaders.Renderer.Bind();
+				InternalShaders.Renderer.MVP = Camera.Matrix;
+			}
 
 			Renderer.Draw.ResetTransform();
 			Renderer.Draw3D.ResetTransform();
@@ -539,6 +552,7 @@ void main()
 
 			Camera2D.Width = RenderTarget.Current.Width;
 			Camera2D.Height = RenderTarget.Current.Height;
+			InternalShaders.Renderer.Bind();
 			InternalShaders.Renderer.MVP = Camera2D.Matrix;
 
 			//Renderer.Draw.Text(SpriteFonts.Font,
@@ -639,6 +653,7 @@ void main()
 			scale = Math.Max(1, Math.Min(Window.Width / width, Window.Height / height));
 
 			// Render RenderTarget
+			InternalShaders.Renderer.Bind();
 			InternalShaders.Renderer.MVP = RenderTarget.Default.Camera2D.Matrix;
 			Renderer.Draw.RenderTarget(surface, 0, (Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, scale, Colour.White);
 			//Renderer.Draw.RenderTarget(surface, 0, (Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, scale, Math.Sin(Time.TotalSeconds) * 0.03f, new Vector2(Window.Width / 2f, Window.Height / 2f), Colour.White);

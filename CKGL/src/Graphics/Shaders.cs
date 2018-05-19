@@ -1,56 +1,61 @@
 ﻿namespace CKGL
 {
+	public static class ShaderIncludes
+	{
+		#region Common
+		private static string Common = @"#version 330 core";
+		#endregion
+
+		#region Vertex
+		public static string Vertex = Common + @"
+float fog_linear(const float dist, const float start, const float end)
+{
+	return 1.0 - clamp((end - dist) / (end - start), 0.0, 1.0);
+}";
+		#endregion
+
+		#region Fragment
+		public static string Fragment = Common + @"
+float fog_exp(const float dist, const float density)
+{
+	return 1.0 - clamp(exp(-density * dist), 0.0, 1.0);
+}
+
+float fog_exp2(const float dist, const float density)
+{
+	const float LOG2 = -1.442695;
+	float d = density * dist;
+	return 1.0 - clamp(exp2(d * d * LOG2), 0.0, 1.0);
+}
+
+float LinearizeDepth(const float depth, const float zNear, const float zFar)
+{
+    return (2.0 * zNear) / (zFar + zNear - depth * (zFar - zNear));
+}";
+		#endregion
+	}
+
 	public static class InternalShaders
 	{
 		#region Renderer
-		#region Original - Commented out
-		//		public static Shader Renderer = new Shader(@"
-		//#version 330 core
-		//uniform mat4 MVP;
-		//layout(location = 0) in vec3 position;
-		//layout(location = 1) in vec4 colour;
-		//layout(location = 2) in vec2 texCoord;
-		//layout(location = 3) in float textured;
-		//out vec4 v_colour;
-		//out vec2 v_texCoord;
-		//out float v_textured;
-		//void main()
-		//{
-		//	gl_Position = vec4(position.xyz, 1.0) * MVP;
-		//	v_colour = colour;
-		//	v_texCoord = texCoord;
-		//	v_textured = textured;
-		//}
-		//...
-		//#version 330 core
-		//uniform sampler2D Texture;
-		//in vec4 v_colour;
-		//in vec2 v_texCoord;
-		//in float v_textured;
-		//layout(location = 0) out vec4 colour;
-		//void main()
-		//{
-		//	if (v_textured > 0.0)
-		//		colour = texture(Texture, v_texCoord) * v_colour;
-		//	else
-		//		colour = v_colour;
-		//}");
-		#endregion
-
 		public static RendererShader Renderer = new RendererShader();
 		public class RendererShader : Shader
 		{
 			#region GLSL
 			private static string glsl = @"
-#version 330 core
+#vertex
+
 uniform mat4 MVP;
+
 layout(location = 0) in vec3 position;
 layout(location = 1) in vec4 colour;
 layout(location = 2) in vec2 texCoord;
 layout(location = 3) in float textured;
+
 out vec4 v_colour;
 out vec2 v_texCoord;
 out float v_textured;
+
 void main()
 {
 	gl_Position = vec4(position.xyz, 1.0) * MVP;
@@ -58,13 +63,18 @@ void main()
 	v_texCoord = texCoord;
 	v_textured = textured;
 }
-...
-#version 330 core
+
+
+#fragment
+
 uniform sampler2D Texture;
+
 in vec4 v_colour;
 in vec2 v_texCoord;
 in float v_textured;
+
 layout(location = 0) out vec4 colour;
+
 void main()
 {
     if (v_textured > 0.0)
@@ -74,24 +84,83 @@ void main()
 }";
 			#endregion
 
-			private Matrix mvp;
-			public Matrix MVP
-			{
-				get { return mvp; }
-				set
-				{
-					if (mvp != value)
-					{
-						mvp = value;
-						SetUniform("MVP", value);
-					}
-				}
-			}
+			public Matrix MVP { set { SetUniform("MVP", value); } }
 
-			public RendererShader() : base(glsl)
-			{
-				MVP = Matrix.Identity;
-			}
+			public RendererShader() : base(glsl) { }
+		}
+		#endregion
+
+		#region RendererFog
+		public static RendererFogShader RendererFog = new RendererFogShader();
+		public class RendererFogShader : Shader
+		{
+			#region GLSL
+			private static string glsl = @"
+#vertex
+
+uniform mat4 MVP;
+uniform mat4 MV;
+uniform float FogStart = 20.0;
+uniform float FogEnd = 50.0;
+
+layout(location = 0) in vec3 position;
+layout(location = 1) in vec4 colour;
+layout(location = 2) in vec2 texCoord;
+layout(location = 3) in float textured;
+
+out vec4 v_colour;
+out vec2 v_texCoord;
+out float v_textured;
+out float v_fogAmount;
+out vec4 v_viewSpace;
+
+void main()
+{
+	gl_Position = vec4(position.xyz, 1.0) * MVP;
+	v_colour = colour;
+	v_texCoord = texCoord;
+	v_textured = textured;
+	v_viewSpace = vec4(position.xyz, 1.0) * MV;
+	v_fogAmount = fog_linear(length(gl_Position.xyz), FogStart, FogEnd);
+}
+
+
+#fragment
+
+uniform sampler2D Texture;
+uniform vec4 FogColour = vec4(0.0, 0.3, 0.5, 1.0);
+
+in vec4 v_colour;
+in vec2 v_texCoord;
+in float v_textured;
+in vec4 v_viewSpace;
+in float v_fogAmount;
+
+layout(location = 0) out vec4 colour;
+
+void main()
+{
+    if (v_textured > 0.0)
+		colour = texture(Texture, v_texCoord) * v_colour;
+    else
+        colour = v_colour;
+	
+	// Fog - Linear
+	//colour = mix(colour, FogColour, v_fogAmount);
+	// Fog - Exponential
+	//colour = mix(colour, FogColour, fog_exp(length(v_viewSpace), 0.01));
+	// Fog - Exponential2
+	colour = mix(colour, FogColour, fog_exp2(length(v_viewSpace), 0.03));
+}";
+			#endregion
+
+			public Matrix MVP { set { SetUniform("MVP", value); } }
+			public Matrix MV { set { SetUniform("MV", value); } }
+			public Colour FogColour { set { SetUniform("FogColour", value); } }
+			public float FogStart { set { SetUniform("FogStart", value); } }
+			public float FogEnd { set { SetUniform("FogEnd", value); } }
+
+			public RendererFogShader() : base(glsl) { }
 		}
 		#endregion
 
@@ -101,15 +170,19 @@ void main()
 		{
 			#region GLSL
 			private static string glsl = @"
-#version 330 core
+#vertex
+
 uniform mat4 MVP;
+
 layout(location = 0) in vec3 position;
 layout(location = 1) in vec4 colour;
 layout(location = 2) in vec2 texCoord;
 layout(location = 3) in float textured;
+
 out vec4 v_colour;
 out vec2 v_texCoord;
 out float v_textured;
+
 void main()
 {
 	gl_Position = vec4(position.xyz, 1.0) * MVP;
@@ -117,19 +190,20 @@ void main()
 	v_texCoord = texCoord;
 	v_textured = textured;
 }
-...
-#version 330 core
+
+
+#fragment
+
 uniform sampler2D Texture;
 uniform float zNear;
 uniform float zFar;
+
 in vec4 v_colour;
 in vec2 v_texCoord;
 in float v_textured;
+
 layout(location = 0) out vec4 colour;
-float LinearizeDepth(in float depth, in float zNear, in float zFar)
-{
-    return (2.0 * zNear) / (zFar + zNear - depth * (zFar - zNear));
-}
+
 void main()
 {
 	float c = LinearizeDepth(texture(Texture, v_texCoord).x, zNear, zFar);
@@ -137,52 +211,11 @@ void main()
 }";
 			#endregion
 
-			private Matrix mvp;
-			public Matrix MVP
-			{
-				get { return mvp; }
-				set
-				{
-					if (mvp != value)
-					{
-						mvp = value;
-						SetUniform("MVP", value);
-					}
-				}
-			}
+			public Matrix MVP { set { SetUniform("MVP", value); } }
+			public float zNear { set { SetUniform("zNear", value); } }
+			public float zFar { set { SetUniform("zFar", value); } }
 
-			private float znear;
-			public float zNear
-			{
-				get { return znear; }
-				set
-				{
-					if (znear != value)
-					{
-						znear = value;
-						SetUniform("zNear", value);
-					}
-				}
-			}
-
-			private float zfar;
-			public float zFar
-			{
-				get { return zfar; }
-				set
-				{
-					if (zfar != value)
-					{
-						zfar = value;
-						SetUniform("zFar", value);
-					}
-				}
-			}
-
-			public LinearizeDepthShader() : base(glsl)
-			{
-				MVP = Matrix.Identity;
-			}
+			public LinearizeDepthShader() : base(glsl) { }
 		}
 		#endregion
 	}
