@@ -132,6 +132,8 @@ void main()
 			//Camera.Projection = Projection.Orthographic;
 			//Camera.Width = Window.Width / 10;
 			//Camera.Height = Window.Height / 10;
+			Camera.zNear = 0.1f;
+			Camera.zFar = 150f;
 
 			// LoadContent()
 			SpriteSheets.SpriteSheet = new SpriteSheet(128, 1);
@@ -261,9 +263,11 @@ void main()
 				InternalShaders.RendererFog.Bind();
 				InternalShaders.RendererFog.MVP = Camera.Matrix;
 				InternalShaders.RendererFog.MV = Camera.ViewMatrix;
+				InternalShaders.RendererFog.FogType = InternalShaders.FogType.Linear;
+				//InternalShaders.RendererFog.FogDensity = 0.013f;
 				InternalShaders.RendererFog.FogColour = Colour.Black;
-				//InternalShaders.RendererFog.FogStart = 40f;
-				//InternalShaders.RendererFog.FogEnd = 60f;
+				InternalShaders.RendererFog.FogStart = Camera.zNear;
+				InternalShaders.RendererFog.FogEnd = Camera.zFar;
 			}
 			else
 			{

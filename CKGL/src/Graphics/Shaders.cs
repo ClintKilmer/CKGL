@@ -3,15 +3,16 @@
 	public static class ShaderIncludes
 	{
 		#region Common
-		private static string Common = @"#version 330 core";
-		#endregion
+		private static string Common = @"#version 330 core
 
-		#region Vertex
-		public static string Vertex = Common + @"
 float fog_linear(const float dist, const float start, const float end)
 {
 	return 1.0 - clamp((end - dist) / (end - start), 0.0, 1.0);
 }";
+		#endregion
+
+		#region Vertex
+		public static string Vertex = Common + @"";
 		#endregion
 
 		#region Fragment
@@ -91,6 +92,13 @@ void main()
 		#endregion
 
 		#region RendererFog
+		public enum FogType
+		{
+			LinearVertex,
+			Linear,
+			Exponential,
+			Exponential2
+		}
 		public static RendererFogShader RendererFog = new RendererFogShader();
 		public class RendererFogShader : Shader
 		{
@@ -111,7 +119,7 @@ layout(location = 3) in float textured;
 out vec4 v_colour;
 out vec2 v_texCoord;
 out float v_textured;
-out float v_fogAmount;
+out float v_linearFogAmount;
 out vec4 v_viewSpace;
 
 void main()
@@ -121,20 +129,24 @@ void main()
 	v_texCoord = texCoord;
 	v_textured = textured;
 	v_viewSpace = vec4(position.xyz, 1.0) * MV;
-	v_fogAmount = fog_linear(length(gl_Position.xyz), FogStart, FogEnd);
+	v_linearFogAmount = fog_linear(length(v_viewSpace), FogStart, FogEnd);
 }
 
 
 #fragment
 
 uniform sampler2D Texture;
+uniform int FogType = 0;
 uniform vec4 FogColour = vec4(0.0, 0.3, 0.5, 1.0);
+uniform float FogDensity = 0.03;
+uniform float FogStart = 20.0;
+uniform float FogEnd = 50.0;
 
 in vec4 v_colour;
 in vec2 v_texCoord;
 in float v_textured;
 in vec4 v_viewSpace;
-in float v_fogAmount;
+in float v_linearFogAmount;
 
 layout(location = 0) out vec4 colour;
 
@@ -145,18 +157,22 @@ void main()
     else
         colour = v_colour;
 	
-	// Fog - Linear
-	//colour = mix(colour, FogColour, v_fogAmount);
-	// Fog - Exponential
-	//colour = mix(colour, FogColour, fog_exp(length(v_viewSpace), 0.01));
-	// Fog - Exponential2
-	colour = mix(colour, FogColour, fog_exp2(length(v_viewSpace), 0.03));
+	if(FogType == 0) // Fog - Linear Vertex
+		colour.rgb = mix(colour.rgb, FogColour.rgb, v_linearFogAmount);
+	else if(FogType == 1) // Fog - Linear
+		colour.rgb = mix(colour.rgb, FogColour.rgb, fog_linear(length(v_viewSpace), FogStart, FogEnd));
+	else if(FogType == 2) // Fog - Exponential
+		colour.rgb = mix(colour.rgb, FogColour.rgb, fog_exp(length(v_viewSpace), FogDensity));
+	else if(FogType == 3) // Fog - Exponential2
+		colour.rgb = mix(colour.rgb, FogColour.rgb, fog_exp2(length(v_viewSpace), FogDensity));
 }";
 			#endregion
 
 			public Matrix MVP { set { SetUniform("MVP", value); } }
 			public Matrix MV { set { SetUniform("MV", value); } }
+			public FogType FogType { set { SetUniform("FogType", (int)value); } }
 			public Colour FogColour { set { SetUniform("FogColour", value); } }
+			public float FogDensity { set { SetUniform("FogDensity", value); } }
 			public float FogStart { set { SetUniform("FogStart", value); } }
 			public float FogEnd { set { SetUniform("FogEnd", value); } }
 
