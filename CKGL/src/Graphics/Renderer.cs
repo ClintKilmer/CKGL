@@ -53,7 +53,6 @@ namespace CKGL
 		private static VertexBuffer vbo;
 		private static VertexBufferLayout vboLayout;
 		private static DrawMode currentDrawMode = DrawMode.TriangleList;
-		private static Shader DefaultShader { get; } = InternalShaders.Renderer; // TODO - Default Renderer Shader
 		private const int bufferSize = 1998; // Divisible by 3 and 2 for no vertex wrapping per batch
 		private static Vertex[] vertices = new Vertex[bufferSize];
 		private static int vertexCount = 0;

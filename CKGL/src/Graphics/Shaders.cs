@@ -39,7 +39,7 @@ float LinearizeDepth(const float depth, const float zNear, const float zFar)
 	public static class InternalShaders
 	{
 		#region Renderer
-		public static RendererShader Renderer = new RendererShader();
+		//public static RendererShader Renderer = new RendererShader();
 		public class RendererShader : Shader
 		{
 			#region GLSL
@@ -99,7 +99,7 @@ void main()
 			Exponential,
 			Exponential2
 		}
-		public static RendererFogShader RendererFog = new RendererFogShader();
+		//public static RendererFogShader RendererFog = new RendererFogShader();
 		public class RendererFogShader : Shader
 		{
 			#region GLSL
@@ -181,7 +181,7 @@ void main()
 		#endregion
 
 		#region LinearizeDepth
-		public static LinearizeDepthShader LinearizeDepth = new LinearizeDepthShader();
+		//public static LinearizeDepthShader LinearizeDepth = new LinearizeDepthShader();
 		public class LinearizeDepthShader : Shader
 		{
 			#region GLSL

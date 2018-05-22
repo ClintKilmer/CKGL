@@ -5,40 +5,9 @@ namespace CKGLTest
 	#region Shaders
 	public static class Shaders
 	{
-		#region Test
-		public static Shader Test = new Shader(@"
-#version 330 core
-uniform vec3 offset;
-layout(location = 0) in vec3 position;
-layout(location = 1) in vec4 colour;
-out vec4 vertexColour;
-/*mat4 rotationMatrix(vec3 axis, float angle)
-{
-    axis = normalize(axis);
-    float s = sin(angle);
-    float c = cos(angle);
-    float oc = 1.0 - c;
-    
-    return mat4(oc * axis.x * axis.x + c,           oc * axis.x * axis.y - axis.z * s,  oc * axis.z * axis.x + axis.y * s,  0.0,
-                oc * axis.x * axis.y + axis.z * s,  oc * axis.y * axis.y + c,           oc * axis.y * axis.z - axis.x * s,  0.0,
-                oc * axis.z * axis.x - axis.y * s,  oc * axis.y * axis.z + axis.x * s,  oc * axis.z * axis.z + c,           0.0,
-                0.0,                                0.0,                                0.0,                                1.0);
-}*/
-void main()
-{
-	vertexColour = colour;
-	gl_Position = vec4(position.xyz, 1.0);
-	//gl_Position = vec4(position.xyz, 1.0) * rotationMatrix(vec3(1.0, 0.0, 0.0), offset.x) * rotationMatrix(vec3(0.0, 1.0, 0.0), offset.y) * rotationMatrix(vec3(0.0, 0.0, 1.0), offset.z);
-}
-...
-#version 330 core
-in vec4 vertexColour;
-layout(location = 0) out vec4 colour;
-void main()
-{
-	colour = vertexColour;
-}");
-		#endregion
+		public static InternalShaders.RendererShader Renderer;
+		public static InternalShaders.RendererFogShader RendererFog;
+		public static InternalShaders.LinearizeDepthShader LinearizeDepth;
 	}
 	#endregion
 
@@ -136,6 +105,9 @@ void main()
 			Camera.zFar = 150f;
 
 			// LoadContent()
+			Shaders.Renderer = new InternalShaders.RendererShader();
+			Shaders.RendererFog = new InternalShaders.RendererFogShader();
+			Shaders.LinearizeDepth = new InternalShaders.LinearizeDepthShader();
 			SpriteSheets.SpriteSheet = new SpriteSheet(128, 1);
 			SpriteFonts.Font = new SpriteFont(SpriteSheets.SpriteSheet, "Sprites/font[5x7].png", 5, 7, '!', '~', 1, 3, 7, true);
 			Sprites.Test1 = SpriteSheets.SpriteSheet.AddSprite(Texture2D.CreateFromFile($"Sprites/Character1.png"));
@@ -260,19 +232,19 @@ void main()
 
 			if (Input.Mouse.RightDown)
 			{
-				InternalShaders.RendererFog.Bind();
-				InternalShaders.RendererFog.MVP = Camera.Matrix;
-				InternalShaders.RendererFog.MV = Camera.ViewMatrix;
-				InternalShaders.RendererFog.FogType = InternalShaders.FogType.Linear;
-				//InternalShaders.RendererFog.FogDensity = 0.013f;
-				InternalShaders.RendererFog.FogColour = Colour.Black;
-				InternalShaders.RendererFog.FogStart = Camera.zNear;
-				InternalShaders.RendererFog.FogEnd = Camera.zFar;
+				Shaders.RendererFog.Bind();
+				Shaders.RendererFog.MVP = Camera.Matrix;
+				Shaders.RendererFog.MV = Camera.ViewMatrix;
+				Shaders.RendererFog.FogType = InternalShaders.FogType.Linear;
+				//Shaders.RendererFog.FogDensity = 0.013f;
+				Shaders.RendererFog.FogColour = Colour.Black;
+				Shaders.RendererFog.FogStart = Camera.zNear;
+				Shaders.RendererFog.FogEnd = Camera.zFar;
 			}
 			else
 			{
-				InternalShaders.Renderer.Bind();
-				InternalShaders.Renderer.MVP = Camera.Matrix;
+				Shaders.Renderer.Bind();
+				Shaders.Renderer.MVP = Camera.Matrix;
 			}
 
 			Renderer.Draw.ResetTransform();
@@ -458,7 +430,7 @@ void main()
 			//						 Colour.Red,
 			//						 Colour.Green,
 			//						 Colour.Blue);
-			for (int i = 500; i > 0; i--)
+			for (int i = 500; i > 0; i -= 50)
 				Renderer.Draw3D.Triangle(new Vector3(0f, i * 0.2f, i * 0.5f) * Quaternion.CreateRotationZ(Rotation.Zero + i * 0.001f - Time.TotalSeconds * 0.1f),
 										 new Vector3(0f, i * 0.2f, i * 0.5f) * Quaternion.CreateRotationZ(Rotation.Third + i * 0.001f - Time.TotalSeconds * 0.1f),
 										 new Vector3(0f, i * 0.2f, i * 0.5f) * Quaternion.CreateRotationZ(Rotation.TwoThirds + i * 0.001f - Time.TotalSeconds * 0.1f),
@@ -556,8 +528,8 @@ void main()
 
 			Camera2D.Width = RenderTarget.Current.Width;
 			Camera2D.Height = RenderTarget.Current.Height;
-			InternalShaders.Renderer.Bind();
-			InternalShaders.Renderer.MVP = Camera2D.Matrix;
+			Shaders.Renderer.Bind();
+			Shaders.Renderer.MVP = Camera2D.Matrix;
 
 			//Renderer.Draw.Text(SpriteFonts.Font,
 			//				   "|:shadow=0,-1,0.01,0,0,0,0.5:|Test Test\nStill testing...\nhhhheeeelllloooo",
@@ -657,8 +629,8 @@ void main()
 			scale = Math.Max(1, Math.Min(Window.Width / width, Window.Height / height));
 
 			// Render RenderTarget
-			InternalShaders.Renderer.Bind();
-			InternalShaders.Renderer.MVP = RenderTarget.Default.Camera2D.Matrix;
+			Shaders.Renderer.Bind();
+			Shaders.Renderer.MVP = RenderTarget.Default.Camera2D.Matrix;
 			Renderer.Draw.RenderTarget(surface, 0, (Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, scale, Colour.White);
 			//Renderer.Draw.RenderTarget(surface, 0, (Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, scale, Math.Sin(Time.TotalSeconds) * 0.03f, new Vector2(Window.Width / 2f, Window.Height / 2f), Colour.White);
 
@@ -667,14 +639,14 @@ void main()
 
 			if (Input.Keyboard.Down(KeyCode.F1))
 			{
-				InternalShaders.LinearizeDepth.Bind();
-				InternalShaders.LinearizeDepth.MVP = RenderTarget.Default.Camera2D.Matrix;
-				InternalShaders.LinearizeDepth.zNear = Camera.zNear;
-				InternalShaders.LinearizeDepth.zFar = Camera.zFar;
+				Shaders.LinearizeDepth.Bind();
+				Shaders.LinearizeDepth.MVP = RenderTarget.Default.Camera2D.Matrix;
+				Shaders.LinearizeDepth.zNear = Camera.zNear;
+				Shaders.LinearizeDepth.zFar = Camera.zFar;
 				Renderer.Draw.RenderTarget(surface, -1, (Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, scale, Colour.White);
 
-				InternalShaders.Renderer.Bind();
-				InternalShaders.Renderer.MVP = RenderTarget.Default.Camera2D.Matrix;
+				Shaders.Renderer.Bind();
+				Shaders.Renderer.MVP = RenderTarget.Default.Camera2D.Matrix;
 			}
 
 			Renderer.Draw.Text(SpriteFonts.Font,
