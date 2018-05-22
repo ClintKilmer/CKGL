@@ -46,42 +46,48 @@ float LinearizeDepth(const float depth, const float zNear, const float zFar)
 			private static string glsl = @"
 #vertex
 
-uniform mat4 MVP;
-
 layout(location = 0) in vec3 position;
 layout(location = 1) in vec4 colour;
-layout(location = 2) in vec2 texCoord;
+layout(location = 2) in vec2 uv;
 layout(location = 3) in float textured;
 
-out vec4 v_colour;
-out vec2 v_texCoord;
-out float v_textured;
+uniform mat4 MVP;
+
+out DATA
+{
+	vec4 colour;
+	vec2 uv;
+	float textured;
+} vs_out;
 
 void main()
 {
 	gl_Position = vec4(position.xyz, 1.0) * MVP;
-	v_colour = colour;
-	v_texCoord = texCoord;
-	v_textured = textured;
+	vs_out.colour = colour;
+	vs_out.uv = uv;
+	vs_out.textured = textured;
 }
 
 
 #fragment
 
+layout(location = 0) out vec4 colour;
+
 uniform sampler2D Texture;
 
-in vec4 v_colour;
-in vec2 v_texCoord;
-in float v_textured;
-
-layout(location = 0) out vec4 colour;
+in DATA
+{
+	vec4 colour;
+	vec2 uv;
+	float textured;
+} fs_in;
 
 void main()
 {
-    if (v_textured > 0.0)
-		colour = texture(Texture, v_texCoord) * v_colour;
+    if (fs_in.textured > 0.0)
+		colour = texture(Texture, fs_in.uv) * fs_in.colour;
     else
-        colour = v_colour;
+        colour = fs_in.colour;
 }";
 			#endregion
 
@@ -106,34 +112,39 @@ void main()
 			private static string glsl = @"
 #vertex
 
+layout(location = 0) in vec3 position;
+layout(location = 1) in vec4 colour;
+layout(location = 2) in vec2 uv;
+layout(location = 3) in float textured;
+
 uniform mat4 MVP;
 uniform mat4 MV;
 uniform float FogStart = 20.0;
 uniform float FogEnd = 50.0;
 
-layout(location = 0) in vec3 position;
-layout(location = 1) in vec4 colour;
-layout(location = 2) in vec2 texCoord;
-layout(location = 3) in float textured;
-
-out vec4 v_colour;
-out vec2 v_texCoord;
-out float v_textured;
-out float v_linearFogAmount;
-out vec4 v_viewSpace;
+out DATA
+{
+	vec4 colour;
+	vec2 uv;
+	float textured;
+	vec4 viewSpace;
+	float linearFogAmount;
+} vs_out;
 
 void main()
 {
 	gl_Position = vec4(position.xyz, 1.0) * MVP;
-	v_colour = colour;
-	v_texCoord = texCoord;
-	v_textured = textured;
-	v_viewSpace = vec4(position.xyz, 1.0) * MV;
-	v_linearFogAmount = fog_linear(length(v_viewSpace), FogStart, FogEnd);
+	vs_out.colour = colour;
+	vs_out.uv = uv;
+	vs_out.textured = textured;
+	vs_out.viewSpace = vec4(position.xyz, 1.0) * MV;
+	vs_out.linearFogAmount = fog_linear(length(vs_out.viewSpace), FogStart, FogEnd);
 }
 
 
 #fragment
+
+layout(location = 0) out vec4 colour;
 
 uniform sampler2D Texture;
 uniform int FogType = 0;
@@ -142,29 +153,30 @@ uniform float FogDensity = 0.03;
 uniform float FogStart = 20.0;
 uniform float FogEnd = 50.0;
 
-in vec4 v_colour;
-in vec2 v_texCoord;
-in float v_textured;
-in vec4 v_viewSpace;
-in float v_linearFogAmount;
-
-layout(location = 0) out vec4 colour;
+in DATA
+{
+	vec4 colour;
+	vec2 uv;
+	float textured;
+	vec4 viewSpace;
+	float linearFogAmount;
+} fs_in;
 
 void main()
 {
-    if (v_textured > 0.0)
-		colour = texture(Texture, v_texCoord) * v_colour;
+    if (fs_in.textured > 0.0)
+		colour = texture(Texture, fs_in.uv) * fs_in.colour;
     else
-        colour = v_colour;
+        colour = fs_in.colour;
 	
 	if(FogType == 0) // Fog - Linear Vertex
-		colour.rgb = mix(colour.rgb, FogColour.rgb, v_linearFogAmount);
+		colour.rgb = mix(colour.rgb, FogColour.rgb, fs_in.linearFogAmount);
 	else if(FogType == 1) // Fog - Linear
-		colour.rgb = mix(colour.rgb, FogColour.rgb, fog_linear(length(v_viewSpace), FogStart, FogEnd));
+		colour.rgb = mix(colour.rgb, FogColour.rgb, fog_linear(length(fs_in.viewSpace), FogStart, FogEnd));
 	else if(FogType == 2) // Fog - Exponential
-		colour.rgb = mix(colour.rgb, FogColour.rgb, fog_exp(length(v_viewSpace), FogDensity));
+		colour.rgb = mix(colour.rgb, FogColour.rgb, fog_exp(length(fs_in.viewSpace), FogDensity));
 	else if(FogType == 3) // Fog - Exponential2
-		colour.rgb = mix(colour.rgb, FogColour.rgb, fog_exp2(length(v_viewSpace), FogDensity));
+		colour.rgb = mix(colour.rgb, FogColour.rgb, fog_exp2(length(fs_in.viewSpace), FogDensity));
 }";
 			#endregion
 
@@ -188,42 +200,44 @@ void main()
 			private static string glsl = @"
 #vertex
 
-uniform mat4 MVP;
-
 layout(location = 0) in vec3 position;
 layout(location = 1) in vec4 colour;
-layout(location = 2) in vec2 texCoord;
-layout(location = 3) in float textured;
+layout(location = 2) in vec2 uv;
 
-out vec4 v_colour;
-out vec2 v_texCoord;
-out float v_textured;
+uniform mat4 MVP;
+
+out DATA
+{
+	vec4 colour;
+	vec2 uv;
+} vs_out;
 
 void main()
 {
 	gl_Position = vec4(position.xyz, 1.0) * MVP;
-	v_colour = colour;
-	v_texCoord = texCoord;
-	v_textured = textured;
+	vs_out.colour = colour;
+	vs_out.uv = uv;
 }
 
 
 #fragment
 
+layout(location = 0) out vec4 colour;
+
 uniform sampler2D Texture;
 uniform float zNear;
 uniform float zFar;
 
-in vec4 v_colour;
-in vec2 v_texCoord;
-in float v_textured;
-
-layout(location = 0) out vec4 colour;
+in DATA
+{
+	vec4 colour;
+	vec2 uv;
+} fs_in;
 
 void main()
 {
-	float c = LinearizeDepth(texture(Texture, v_texCoord).x, zNear, zFar);
-	colour = vec4(c, c, c, 1.0) * v_colour;
+	float c = LinearizeDepth(texture(Texture, fs_in.uv).x, zNear, zFar);
+	colour = vec4(c, c, c, 1.0) * fs_in.colour;
 }";
 			#endregion
 
