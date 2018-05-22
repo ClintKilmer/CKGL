@@ -620,6 +620,18 @@ namespace CKGLTest
 			//				   HAlign.Left,
 			//				   VAlign.Top);
 
+			// Draw Depth Buffer
+			if (Input.Keyboard.Down(KeyCode.F1))
+			{
+				Shaders.LinearizeDepth.Bind();
+				Shaders.LinearizeDepth.MVP = RenderTarget.Default.Camera2D.Matrix;
+				Shaders.LinearizeDepth.zNear = Camera.zNear;
+				Shaders.LinearizeDepth.zFar = Camera.zFar;
+				Renderer.Draw.RenderTarget(surface, -1, (Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, scale, Colour.White);
+
+				Shaders.Renderer.Bind();
+				Shaders.Renderer.MVP = RenderTarget.Default.Camera2D.Matrix;
+			}
 
 			// Draw to Screen
 			RenderTarget.Default.Bind();
@@ -636,18 +648,6 @@ namespace CKGLTest
 
 			// Blit RenderTarget
 			//surface.BlitTextureTo(RenderTarget.Default, 0, BlitFilter.Nearest, new RectangleI((Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, width * scale, height * scale));
-
-			if (Input.Keyboard.Down(KeyCode.F1))
-			{
-				Shaders.LinearizeDepth.Bind();
-				Shaders.LinearizeDepth.MVP = RenderTarget.Default.Camera2D.Matrix;
-				Shaders.LinearizeDepth.zNear = Camera.zNear;
-				Shaders.LinearizeDepth.zFar = Camera.zFar;
-				Renderer.Draw.RenderTarget(surface, -1, (Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, scale, Colour.White);
-
-				Shaders.Renderer.Bind();
-				Shaders.Renderer.MVP = RenderTarget.Default.Camera2D.Matrix;
-			}
 
 			Renderer.Draw.Text(SpriteFonts.Font,
 							   debugString,
