@@ -551,45 +551,41 @@ namespace CKGL
 			private static Vector2 uvFull2 = new Vector2(1f, 0f);
 			private static Vector2 uvFull3 = new Vector2(0f, 1f);
 			private static Vector2 uvFull4 = new Vector2(1f, 1f);
-			private static void RenderTargetBindTexture(RenderTarget renderTarget, int texture)
+			private static void RenderTargetBindTexture(RenderTarget renderTarget, RenderTarget.TextureSlot textureSlot)
 			{
-				if (texture >= 0)
-					(renderTarget ?? CKGL.RenderTarget.Default).textures[texture].Bind();
-				else if (texture == -1)
-					(renderTarget ?? CKGL.RenderTarget.Default).depthTexture.Bind();
-				//else if (texture == -2)
-				//	(renderTarget ?? CKGL.RenderTarget.Default).stencilTexture.Bind();
-				else
-					throw new ArgumentOutOfRangeException($"No suitable texture found for index {texture}");
+				if (renderTarget == null)
+					throw new Exception("Can't bind default framebuffer textures, use a RenderTarget instead.");
+
+				renderTarget.GetTexture(textureSlot).Bind();
 			}
-			public static void RenderTarget(RenderTarget renderTarget, int texture, float x, float y, Colour colour)
+			public static void RenderTarget(RenderTarget renderTarget, RenderTarget.TextureSlot textureSlot, float x, float y, Colour colour)
 			{
-				RenderTargetBindTexture(renderTarget, texture);
+				RenderTargetBindTexture(renderTarget, textureSlot);
 				Rectangle(x, y, (renderTarget ?? CKGL.RenderTarget.Default).Width, (renderTarget ?? CKGL.RenderTarget.Default).Height, colour, colour, colour, colour, uvFull1, uvFull2, uvFull3, uvFull4);
 			}
-			public static void RenderTarget(RenderTarget renderTarget, int texture, float x, float y, float rotation, Vector2 origin, Colour colour)
+			public static void RenderTarget(RenderTarget renderTarget, RenderTarget.TextureSlot textureSlot, float x, float y, float rotation, Vector2 origin, Colour colour)
 			{
-				RenderTargetBindTexture(renderTarget, texture);
+				RenderTargetBindTexture(renderTarget, textureSlot);
 				Rectangle(x, y, (renderTarget ?? CKGL.RenderTarget.Default).Width, (renderTarget ?? CKGL.RenderTarget.Default).Height, colour, colour, colour, colour, uvFull1, uvFull2, uvFull3, uvFull4, rotation, origin);
 			}
-			public static void RenderTarget(RenderTarget renderTarget, int texture, float x, float y, float scale, Colour colour)
+			public static void RenderTarget(RenderTarget renderTarget, RenderTarget.TextureSlot textureSlot, float x, float y, float scale, Colour colour)
 			{
-				RenderTargetBindTexture(renderTarget, texture);
+				RenderTargetBindTexture(renderTarget, textureSlot);
 				Rectangle(x, y, (renderTarget ?? CKGL.RenderTarget.Default).Width * scale, (renderTarget ?? CKGL.RenderTarget.Default).Height * scale, colour, colour, colour, colour, uvFull1, uvFull2, uvFull3, uvFull4);
 			}
-			public static void RenderTarget(RenderTarget renderTarget, int texture, float x, float y, float scale, float rotation, Vector2 origin, Colour colour)
+			public static void RenderTarget(RenderTarget renderTarget, RenderTarget.TextureSlot textureSlot, float x, float y, float scale, float rotation, Vector2 origin, Colour colour)
 			{
-				RenderTargetBindTexture(renderTarget, texture);
+				RenderTargetBindTexture(renderTarget, textureSlot);
 				Rectangle(x, y, (renderTarget ?? CKGL.RenderTarget.Default).Width * scale, (renderTarget ?? CKGL.RenderTarget.Default).Height * scale, colour, colour, colour, colour, uvFull1, uvFull2, uvFull3, uvFull4, rotation, origin);
 			}
-			public static void RenderTarget(RenderTarget renderTarget, int texture, float x, float y, float width, float height, Colour colour)
+			public static void RenderTarget(RenderTarget renderTarget, RenderTarget.TextureSlot textureSlot, float x, float y, float width, float height, Colour colour)
 			{
-				RenderTargetBindTexture(renderTarget, texture);
+				RenderTargetBindTexture(renderTarget, textureSlot);
 				Rectangle(x, y, width, height, colour, colour, colour, colour, uvFull1, uvFull2, uvFull3, uvFull4);
 			}
-			public static void RenderTarget(RenderTarget renderTarget, int texture, Vector2 v1, Vector2 v2, Colour colour)
+			public static void RenderTarget(RenderTarget renderTarget, RenderTarget.TextureSlot textureSlot, Vector2 v1, Vector2 v2, Colour colour)
 			{
-				RenderTargetBindTexture(renderTarget, texture);
+				RenderTargetBindTexture(renderTarget, textureSlot);
 				Rectangle(new Vector2(v1.X, v1.Y), new Vector2(v2.X, v2.Y), colour, colour, colour, colour, uvFull1, uvFull2, uvFull3, uvFull4);
 			}
 			#endregion

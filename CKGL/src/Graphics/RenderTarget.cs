@@ -17,7 +17,7 @@ namespace CKGL
 		public static int Blits { get; private set; }
 
 		private Camera2D camera2D = new Camera2D();
-		public Camera2D Camera2D
+		public Matrix Matrix
 		{
 			get
 			{
@@ -26,7 +26,31 @@ namespace CKGL
 					camera2D.Width = Width;
 					camera2D.Height = Height;
 				}
-				return camera2D;
+				return camera2D.Matrix;
+			}
+		}
+		public Matrix ViewMatrix
+		{
+			get
+			{
+				if (id == 0)
+				{
+					camera2D.Width = Width;
+					camera2D.Height = Height;
+				}
+				return camera2D.ViewMatrix;
+			}
+		}
+		public Matrix ProjectionMatrix
+		{
+			get
+			{
+				if (id == 0)
+				{
+					camera2D.Width = Width;
+					camera2D.Height = Height;
+				}
+				return camera2D.ProjectionMatrix;
 			}
 		}
 
@@ -60,6 +84,27 @@ namespace CKGL
 		public Texture2D depthTexture;
 
 		private GLuint id;
+
+		public enum TextureSlot : int
+		{
+			Depth = -1,
+			Colour0 = 0,
+			Colour1,
+			Colour2,
+			Colour3,
+			Colour4,
+			Colour5,
+			Colour6,
+			Colour7,
+			Colour8,
+			Colour9,
+			Colour10,
+			Colour11,
+			Colour12,
+			Colour13,
+			Colour14,
+			Colour15
+		}
 
 		// Default Framebuffer
 		private RenderTarget()
@@ -153,12 +198,27 @@ namespace CKGL
 		}
 		#endregion
 
-		public void BlitTextureTo(RenderTarget target, int textureNum, BlitFilter filter) => BlitTextureTo(target, textureNum, filter, new RectangleI(Width, Height));
-		public void BlitTextureTo(RenderTarget target, int textureNum, BlitFilter filter, int x, int y) => BlitTextureTo(target, textureNum, filter, new RectangleI(x, y, Width, Height));
-		public void BlitTextureTo(RenderTarget target, int textureNum, BlitFilter filter, RectangleI rect)
+		public Texture GetTexture(TextureSlot textureSlot)
 		{
-			if (textures[textureNum].ID == 0)
-				throw new Exception("RenderTarget does not have a texture in slot: " + textureNum);
+			Texture result = null;
+			if (textureSlot == TextureSlot.Depth)
+				result = depthTexture;
+			else
+				result = textures[(int)textureSlot];
+
+			if (result == null)
+				throw new ArgumentOutOfRangeException($"No suitable texture found in RenderTarget texture slot {textureSlot}.");
+
+			return result;
+		}
+
+		// TODO - Figure out Depth Texture Blitting
+		public void BlitTextureTo(RenderTarget target, TextureSlot textureSlot, BlitFilter filter) => BlitTextureTo(target, textureSlot, filter, new RectangleI(Width, Height));
+		public void BlitTextureTo(RenderTarget target, TextureSlot textureSlot, BlitFilter filter, int x, int y) => BlitTextureTo(target, textureSlot, filter, new RectangleI(x, y, Width, Height));
+		public void BlitTextureTo(RenderTarget target, TextureSlot textureSlot, BlitFilter filter, RectangleI rect)
+		{
+			if (textureSlot < 0)
+				throw new ArgumentOutOfRangeException($"Can't blit a depth texture.");
 
 			OnBinding.Invoke();
 
@@ -169,8 +229,9 @@ namespace CKGL
 
 			Graphics.SetViewport(target);
 			Graphics.SetScissorTest(target);
-			GL.ReadBuffer((ReadBuffer)((uint)ReadBuffer.Colour0 + textureNum));
+			GL.ReadBuffer((ReadBuffer)((uint)ReadBuffer.Colour0 + (uint)textureSlot));
 			GL.BlitFramebuffer(new RectangleI(Width, Height), rect, BufferBit.Colour, filter);
+			//GL.BlitFramebuffer(new RectangleI(Width, Height), rect, textureSlot >= 0 ? BufferBit.Colour : BufferBit.Depth, filter);
 
 			// Reset Framebuffer
 			GL.BindFramebuffer(FramebufferTarget.Framebuffer, (originalRenderTarget ?? Default).id);

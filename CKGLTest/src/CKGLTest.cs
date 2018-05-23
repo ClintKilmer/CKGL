@@ -623,14 +623,15 @@ namespace CKGLTest
 			// Draw Depth Buffer
 			if (Input.Keyboard.Down(KeyCode.F1))
 			{
+				Graphics.State.Reset();
 				Shaders.LinearizeDepth.Bind();
-				Shaders.LinearizeDepth.MVP = RenderTarget.Default.Camera2D.Matrix;
+				Shaders.LinearizeDepth.MVP = surface.Matrix;
 				Shaders.LinearizeDepth.zNear = Camera.zNear;
 				Shaders.LinearizeDepth.zFar = Camera.zFar;
-				Renderer.Draw.RenderTarget(surface, -1, (Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, scale, Colour.White);
+				Renderer.Draw.RenderTarget(surface, RenderTarget.TextureSlot.Depth, 0, 0, Colour.White);
 
 				Shaders.Renderer.Bind();
-				Shaders.Renderer.MVP = RenderTarget.Default.Camera2D.Matrix;
+				Shaders.Renderer.MVP = RenderTarget.Default.Matrix;
 			}
 
 			// Draw to Screen
@@ -642,12 +643,12 @@ namespace CKGLTest
 
 			// Render RenderTarget
 			Shaders.Renderer.Bind();
-			Shaders.Renderer.MVP = RenderTarget.Default.Camera2D.Matrix;
-			Renderer.Draw.RenderTarget(surface, 0, (Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, scale, Colour.White);
-			//Renderer.Draw.RenderTarget(surface, 0, (Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, scale, Math.Sin(Time.TotalSeconds) * 0.03f, new Vector2(Window.Width / 2f, Window.Height / 2f), Colour.White);
+			Shaders.Renderer.MVP = RenderTarget.Default.Matrix;
+			Renderer.Draw.RenderTarget(surface, RenderTarget.TextureSlot.Colour0, (Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, scale, Colour.White);
+			//Renderer.Draw.RenderTarget(surface, RenderTarget.TextureSlot.Colour0, (Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, scale, Math.Sin(Time.TotalSeconds) * 0.03f, new Vector2(Window.Width / 2f, Window.Height / 2f), Colour.White);
 
 			// Blit RenderTarget
-			//surface.BlitTextureTo(RenderTarget.Default, 0, BlitFilter.Nearest, new RectangleI((Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, width * scale, height * scale));
+			//surface.BlitTextureTo(RenderTarget.Default, RenderTarget.TextureSlot.Colour0, BlitFilter.Nearest, new RectangleI((Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, width * scale, height * scale));
 
 			Renderer.Draw.Text(SpriteFonts.Font,
 							   debugString,
