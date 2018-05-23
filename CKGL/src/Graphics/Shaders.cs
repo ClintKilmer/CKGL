@@ -225,8 +225,8 @@ void main()
 layout(location = 0) out vec4 colour;
 
 uniform sampler2D Texture;
-uniform float zNear;
-uniform float zFar;
+uniform float zNear = 0.5;
+uniform float zFar = 1000;
 
 in DATA
 {
