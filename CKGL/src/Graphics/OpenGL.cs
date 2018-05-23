@@ -1632,7 +1632,11 @@ namespace CKGL
 		UnsignedShort = 0x1403,
 		Int = 0x1404,
 		UnsignedInt = 0x1405,
-		Float = 0x1406
+		Float = 0x1406,
+		Double = 0x140A,
+		HalfFloat = 0x140B,
+		UnsignedInt_2_10_10_10_Rev = 0x8368,
+		Int_2_10_10_10_Rev = 0x8D9F
 	}
 
 	public enum VertexType : GLuint
@@ -1643,6 +1647,10 @@ namespace CKGL
 		UnsignedShort = 0x1403,
 		Int = 0x1404,
 		UnsignedInt = 0x1405,
-		Float = 0x1406
+		Float = 0x1406,
+		Double = 0x140A,
+		HalfFloat = 0x140B,
+		UnsignedInt_2_10_10_10_Rev = 0x8368,
+		Int_2_10_10_10_Rev = 0x8D9F
 	}
 }

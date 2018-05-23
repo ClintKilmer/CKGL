@@ -25,27 +25,32 @@ namespace CKGL
 				Textured = textured;
 			}
 
-			public static int FloatStride = 10;
+			//public static readonly int Stride = sizeof(float) * 3 + sizeof(byte) * 4 + sizeof(ushort) * 2 + sizeof(float) * 1;
+			public static readonly int Stride = sizeof(float) * 3 + sizeof(byte) * 4 + sizeof(ushort) * 2 + sizeof(uint) * 1;
 
-			public static float[] GetVBO(Vertex[] vertices)
+			public static byte[] GetVBO(Vertex[] vertices, int vertexCount)
 			{
-				float[] vbo = new float[FloatStride * bufferSize];
+				byte[] buffer = new byte[Stride * vertexCount];
+
+				int offset = 0;
+
+				void put(byte[] bytes)
+				{
+					Buffer.BlockCopy(bytes, 0, buffer, offset, bytes.Length);
+					offset += bytes.Length;
+
+					//Output.WriteLine($"offset: {offset} / {buffer.Length} - {offset / (float)buffer.Length * 100f:n0}%");
+				}
 
 				for (int i = 0; i < vertexCount; i++)
 				{
-					vbo[i * FloatStride + 0] = vertices[i].Position.X;
-					vbo[i * FloatStride + 1] = vertices[i].Position.Y;
-					vbo[i * FloatStride + 2] = vertices[i].Position.Z;
-					vbo[i * FloatStride + 3] = vertices[i].Colour.R;
-					vbo[i * FloatStride + 4] = vertices[i].Colour.G;
-					vbo[i * FloatStride + 5] = vertices[i].Colour.B;
-					vbo[i * FloatStride + 6] = vertices[i].Colour.A;
-					vbo[i * FloatStride + 7] = vertices[i].UV.X;
-					vbo[i * FloatStride + 8] = vertices[i].UV.Y;
-					vbo[i * FloatStride + 9] = vertices[i].Textured ? 1.0f : 0.0f;
+					put(vertices[i].Position.FloatByteArray);
+					put(vertices[i].Colour.ByteByteArray);
+					put(vertices[i].UV.UshortByteArray);
+					put(BitConverter.GetBytes(vertices[i].Textured ? 1u : 0u));
 				}
 
-				return vbo;
+				return buffer;
 			}
 		}
 
@@ -53,7 +58,8 @@ namespace CKGL
 		private static VertexBuffer vbo;
 		private static VertexBufferLayout vboLayout;
 		private static DrawMode currentDrawMode = DrawMode.TriangleList;
-		private const int bufferSize = 1998; // Divisible by 3 and 2 for no vertex wrapping per batch
+		private const int bufferSize = 150000;
+		//private const int bufferSize = 1998; // Divisible by 3 and 2 for no vertex wrapping per batch
 		private static Vertex[] vertices = new Vertex[bufferSize];
 		private static int vertexCount = 0;
 
@@ -62,10 +68,10 @@ namespace CKGL
 			vao = new VertexArray();
 			vbo = new VertexBuffer();
 			vboLayout = new VertexBufferLayout();
-			vboLayout.Push<float>(3); // position
-			vboLayout.Push<float>(4); // colour
-			vboLayout.Push<float>(2); // uvs
-			vboLayout.Push<float>(1); // textured
+			vboLayout.Push<float>(3, false); // position
+			vboLayout.Push<byte>(4, true); // colour
+			vboLayout.Push<ushort>(2, true); // uvs
+			vboLayout.Push<uint>(1, true); // textured
 			vao.AddBuffer(vbo, vboLayout);
 
 			Graphics.State.OnStateChanging += () => { Flush(); };
@@ -86,10 +92,18 @@ namespace CKGL
 
 		public static void Flush()
 		{
-			if (vertexCount > 0)
+			if (
+				(currentDrawMode == DrawMode.TriangleList && vertexCount >= 3) ||
+				(currentDrawMode == DrawMode.TriangleStrip && vertexCount >= 3) ||
+				(currentDrawMode == DrawMode.TriangleFan && vertexCount >= 3) ||
+				(currentDrawMode == DrawMode.LineList && vertexCount >= 2) ||
+				(currentDrawMode == DrawMode.LineStrip && vertexCount >= 2) ||
+				(currentDrawMode == DrawMode.LineLoop && vertexCount >= 2) ||
+				(currentDrawMode == DrawMode.PointList && vertexCount >= 1)
+			)
 			{
 				vao.Bind();
-				vbo.LoadData(Vertex.GetVBO(vertices), BufferUsage.DynamicDraw);
+				vbo.LoadData(Vertex.GetVBO(vertices, vertexCount), BufferUsage.DynamicDraw);
 
 				Graphics.DrawVertexArrays(currentDrawMode, 0, vertexCount);
 			}

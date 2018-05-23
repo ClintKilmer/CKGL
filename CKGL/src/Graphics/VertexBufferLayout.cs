@@ -29,6 +29,18 @@ namespace CKGL
 		{
 			switch (vertexType)
 			{
+				case VertexType.UnsignedByte:
+					return sizeof(byte);
+				case VertexType.Byte:
+					return sizeof(sbyte);
+				case VertexType.UnsignedShort:
+					return sizeof(ushort);
+				case VertexType.Short:
+					return sizeof(short);
+				case VertexType.UnsignedInt:
+					return sizeof(uint);
+				case VertexType.Int:
+					return sizeof(int);
 				case VertexType.Float:
 					return sizeof(float);
 				default:
@@ -44,10 +56,22 @@ namespace CKGL
 
 		public VertexBufferLayout() { }
 
-		public void Push<T>(GLint count)
+		public void Push<T>(GLint count, bool normalized)
 		{
-			if (typeof(T) == typeof(float))
-				Push(VertexType.Float, count, false);
+			if (typeof(T) == typeof(byte))
+				Push(VertexType.UnsignedByte, count, normalized);
+			else if (typeof(T) == typeof(sbyte))
+				Push(VertexType.Byte, count, normalized);
+			else if (typeof(T) == typeof(ushort))
+				Push(VertexType.UnsignedShort, count, normalized);
+			else if (typeof(T) == typeof(short))
+				Push(VertexType.Short, count, normalized);
+			else if (typeof(T) == typeof(uint))
+				Push(VertexType.UnsignedInt, count, normalized);
+			else if (typeof(T) == typeof(int))
+				Push(VertexType.Int, count, normalized);
+			else if (typeof(T) == typeof(float))
+				Push(VertexType.Float, count, normalized);
 			else
 				throw new NotImplementedException();
 		}

@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 
 namespace CKGL
 {
@@ -31,6 +32,28 @@ namespace CKGL
 		#endregion
 
 		#region Properties
+		public byte[] UshortByteArray
+		{
+			get
+			{
+				byte[] buffer = new byte[sizeof(ushort) * 2];
+				Buffer.BlockCopy(BitConverter.GetBytes((ushort)(X * ushort.MaxValue)), 0, buffer, 0 * sizeof(ushort), sizeof(ushort));
+				Buffer.BlockCopy(BitConverter.GetBytes((ushort)(Y * ushort.MaxValue)), 0, buffer, 1 * sizeof(ushort), sizeof(ushort));
+				return buffer;
+			}
+		}
+
+		public byte[] FloatByteArray
+		{
+			get
+			{
+				byte[] buffer = new byte[sizeof(float) * 2];
+				Buffer.BlockCopy(BitConverter.GetBytes(X), 0, buffer, 0 * sizeof(float), sizeof(float));
+				Buffer.BlockCopy(BitConverter.GetBytes(Y), 0, buffer, 1 * sizeof(float), sizeof(float));
+				return buffer;
+			}
+		}
+
 		public Vector2 Normalized
 		{
 			get

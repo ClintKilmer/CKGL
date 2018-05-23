@@ -40,6 +40,12 @@ namespace CKGL
 			GL.BufferData(BufferTarget.Array, sizeInBytes, vertices, bufferUsage);
 		}
 
+		public void LoadData(byte[] vertices, BufferUsage bufferUsage)
+		{
+			Bind();
+			GL.BufferData(BufferTarget.Array, sizeof(byte) * vertices.Length, vertices, bufferUsage);
+		}
+
 		public void LoadData(float[] vertices, BufferUsage bufferUsage)
 		{
 			Bind();
