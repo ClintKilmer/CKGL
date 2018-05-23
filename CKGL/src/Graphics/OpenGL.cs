@@ -4,17 +4,15 @@
  * Modified for use in CKGL
  */
 
-using CKGL;
-
 using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
-
-using GLuint = System.UInt32;
+using CKGL;
 using GLint = System.Int32;
+using GLuint = System.UInt32;
 
 namespace OpenGL
 {
