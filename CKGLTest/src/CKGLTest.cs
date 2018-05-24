@@ -430,7 +430,7 @@ namespace CKGLTest
 			//						 Colour.Red,
 			//						 Colour.Green,
 			//						 Colour.Blue);
-			for (int i = 500; i > 0; i -= 50)
+			for (int i = 0; i < 500; i += 5)
 				Renderer.Draw3D.Triangle(new Vector3(0f, i * 0.2f, i * 0.5f) * Quaternion.CreateRotationZ(Rotation.Zero + i * 0.001f - Time.TotalSeconds * 0.1f),
 										 new Vector3(0f, i * 0.2f, i * 0.5f) * Quaternion.CreateRotationZ(Rotation.Third + i * 0.001f - Time.TotalSeconds * 0.1f),
 										 new Vector3(0f, i * 0.2f, i * 0.5f) * Quaternion.CreateRotationZ(Rotation.TwoThirds + i * 0.001f - Time.TotalSeconds * 0.1f),
