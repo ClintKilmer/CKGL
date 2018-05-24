@@ -39,7 +39,6 @@ float LinearizeDepth(const float depth, const float zNear, const float zFar)
 	public static class InternalShaders
 	{
 		#region Renderer
-		//public static RendererShader Renderer = new RendererShader();
 		public class RendererShader : Shader
 		{
 			#region GLSL
@@ -58,14 +57,14 @@ out DATA
 	vec4 colour;
 	vec2 uv;
 	float textured;
-} vs_out;
+} o;
 
 void main()
 {
 	gl_Position = vec4(position.xyz, 1.0) * MVP;
-	vs_out.colour = colour;
-	vs_out.uv = uv;
-	vs_out.textured = textured;
+	o.colour = colour;
+	o.uv = uv;
+	o.textured = textured;
 }
 
 
@@ -80,14 +79,14 @@ in DATA
 	vec4 colour;
 	vec2 uv;
 	float textured;
-} fs_in;
+} i;
 
 void main()
 {
-    if (fs_in.textured > 0.0)
-		colour = texture(Texture, fs_in.uv) * fs_in.colour;
+    if (i.textured > 0.0)
+		colour = texture(Texture, i.uv) * i.colour;
     else
-        colour = fs_in.colour;
+        colour = i.colour;
 }";
 			#endregion
 
@@ -105,7 +104,7 @@ void main()
 			Exponential,
 			Exponential2
 		}
-		//public static RendererFogShader RendererFog = new RendererFogShader();
+
 		public class RendererFogShader : Shader
 		{
 			#region GLSL
@@ -129,16 +128,16 @@ out DATA
 	float textured;
 	vec4 viewSpace;
 	float linearFogAmount;
-} vs_out;
+} o;
 
 void main()
 {
 	gl_Position = vec4(position.xyz, 1.0) * MVP;
-	vs_out.colour = colour;
-	vs_out.uv = uv;
-	vs_out.textured = textured;
-	vs_out.viewSpace = vec4(position.xyz, 1.0) * MV;
-	vs_out.linearFogAmount = fog_linear(length(vs_out.viewSpace), FogStart, FogEnd);
+	o.colour = colour;
+	o.uv = uv;
+	o.textured = textured;
+	o.viewSpace = vec4(position.xyz, 1.0) * MV;
+	o.linearFogAmount = fog_linear(length(o.viewSpace), FogStart, FogEnd);
 }
 
 
@@ -160,23 +159,23 @@ in DATA
 	float textured;
 	vec4 viewSpace;
 	float linearFogAmount;
-} fs_in;
+} i;
 
 void main()
 {
-    if (fs_in.textured > 0.0)
-		colour = texture(Texture, fs_in.uv) * fs_in.colour;
+    if (i.textured > 0.0)
+		colour = texture(Texture, i.uv) * i.colour;
     else
-        colour = fs_in.colour;
+        colour = i.colour;
 	
 	if(FogType == 0) // Fog - Linear Vertex
-		colour.rgb = mix(colour.rgb, FogColour.rgb, fs_in.linearFogAmount);
+		colour.rgb = mix(colour.rgb, FogColour.rgb, i.linearFogAmount);
 	else if(FogType == 1) // Fog - Linear
-		colour.rgb = mix(colour.rgb, FogColour.rgb, fog_linear(length(fs_in.viewSpace), FogStart, FogEnd));
+		colour.rgb = mix(colour.rgb, FogColour.rgb, fog_linear(length(i.viewSpace), FogStart, FogEnd));
 	else if(FogType == 2) // Fog - Exponential
-		colour.rgb = mix(colour.rgb, FogColour.rgb, fog_exp(length(fs_in.viewSpace), FogDensity));
+		colour.rgb = mix(colour.rgb, FogColour.rgb, fog_exp(length(i.viewSpace), FogDensity));
 	else if(FogType == 3) // Fog - Exponential2
-		colour.rgb = mix(colour.rgb, FogColour.rgb, fog_exp2(length(fs_in.viewSpace), FogDensity));
+		colour.rgb = mix(colour.rgb, FogColour.rgb, fog_exp2(length(i.viewSpace), FogDensity));
 }";
 			#endregion
 
@@ -193,7 +192,6 @@ void main()
 		#endregion
 
 		#region LinearizeDepth
-		//public static LinearizeDepthShader LinearizeDepth = new LinearizeDepthShader();
 		public class LinearizeDepthShader : Shader
 		{
 			#region GLSL
@@ -210,13 +208,13 @@ out DATA
 {
 	vec4 colour;
 	vec2 uv;
-} vs_out;
+} o;
 
 void main()
 {
 	gl_Position = vec4(position.xyz, 1.0) * MVP;
-	vs_out.colour = colour;
-	vs_out.uv = uv;
+	o.colour = colour;
+	o.uv = uv;
 }
 
 
@@ -232,12 +230,12 @@ in DATA
 {
 	vec4 colour;
 	vec2 uv;
-} fs_in;
+} i;
 
 void main()
 {
-	float c = LinearizeDepth(texture(Texture, fs_in.uv).x, zNear, zFar);
-	colour = vec4(c, c, c, 1.0) * fs_in.colour;
+	float c = LinearizeDepth(texture(Texture, i.uv).x, zNear, zFar);
+	colour = vec4(c, c, c, 1.0) * i.colour;
 }";
 			#endregion
 
