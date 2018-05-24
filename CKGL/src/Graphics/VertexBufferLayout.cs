@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-
 using OpenGL;
 using GLint = System.Int32;
 using GLuint = System.UInt32;
@@ -52,7 +51,7 @@ namespace CKGL
 	public class VertexBufferLayout
 	{
 		private List<VertexBufferElement> elements = new List<VertexBufferElement>();
-		private GLint stride = 0;
+		public GLint Stride { get; private set; } = 0;
 
 		public VertexBufferLayout() { }
 
@@ -79,7 +78,7 @@ namespace CKGL
 		public void Push(VertexType vertexType, GLint count, bool normalized)
 		{
 			elements.Add(new VertexBufferElement(vertexType, count, normalized));
-			stride += count * VertexBufferElement.GetSizeOfType(vertexType);
+			Stride += count * VertexBufferElement.GetSizeOfType(vertexType);
 		}
 
 		public void SetLayout(VertexBuffer vertexBuffer)
@@ -90,7 +89,7 @@ namespace CKGL
 			for (GLuint i = 0; i < elements.Count; i++)
 			{
 				GL.EnableVertexAttribArray(i);
-				GL.VertexAttribPointer(i, elements[(int)i].Count, elements[(int)i].VertexType, elements[(int)i].Normalized, stride, offset);
+				GL.VertexAttribPointer(i, elements[(int)i].Count, elements[(int)i].VertexType, elements[(int)i].Normalized, Stride, offset);
 				offset += elements[(int)i].Count * elements[(int)i].Size;
 			}
 		}
