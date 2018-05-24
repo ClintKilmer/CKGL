@@ -117,6 +117,14 @@ namespace CKGL
 		}
 		#endregion
 
+		// TODO - Move SetDepthRange() to own state
+		#region DepthRange
+		public static void SetDepthRange(float near, float far)
+		{
+			GL.DepthRange(near.Clamp(0f, 1f), far.Clamp(0f, 1f));
+		}
+		#endregion
+
 		#region State
 		public static class State
 		{
@@ -139,6 +147,8 @@ namespace CKGL
 				BlendState.OnStateChanged += () => { OnStateChanged?.Invoke(); };
 				DepthState.OnStateChanging += () => { OnStateChanging?.Invoke(); };
 				DepthState.OnStateChanged += () => { OnStateChanged?.Invoke(); };
+				MaskState.OnStateChanging += () => { OnStateChanging?.Invoke(); };
+				MaskState.OnStateChanged += () => { OnStateChanged?.Invoke(); };
 
 				Shader.OnBinding += () => { OnStateChanging?.Invoke(); };
 				Shader.OnBound += () => { OnStateChanged?.Invoke(); };
@@ -159,6 +169,7 @@ namespace CKGL
 				PolygonModeState.Reset();
 				BlendState.Reset();
 				DepthState.Reset();
+				MaskState.Reset();
 			}
 
 			public static void PreDraw()

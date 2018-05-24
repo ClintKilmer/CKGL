@@ -5,7 +5,7 @@ namespace CKGL
 {
 	public struct CullState
 	{
-		public readonly bool On;
+		public readonly bool Enabled;
 		public readonly Face Face;
 
 		public static Action OnStateChanging;
@@ -25,9 +25,9 @@ namespace CKGL
 		#endregion
 
 		#region Constructors
-		private CullState(bool on, Face cullFace)
+		private CullState(bool enabled, Face cullFace)
 		{
-			On = on;
+			Enabled = enabled;
 			Face = cullFace;
 		}
 		#endregion
@@ -50,7 +50,7 @@ namespace CKGL
 			if (Current != cullState)
 			{
 				OnStateChanging?.Invoke();
-				if (cullState.On)
+				if (cullState.Enabled)
 					GL.Enable(EnableCap.CullFace);
 				else
 					GL.Disable(EnableCap.CullFace);
@@ -61,23 +61,33 @@ namespace CKGL
 		}
 		public static void Reset() => Set(Default);
 		public static void SetDefault(CullState cullState) => Default = cullState;
+
+		public static void SetEnabled(bool enabled)
+		{
+			Set(new CullState(enabled, Current.Face));
+		}
+
+		public static void SetFace(Face face)
+		{
+			Set(new CullState(Current.Enabled, face));
+		}
 		#endregion
 
 		#region Overrides
 		public override string ToString()
 		{
-			return $"CullState: [Enabled: {On}, Face: {Face}]";
+			return $"CullState: [Enabled: {Enabled}, Face: {Face}]";
 		}
 		#endregion
 
 		#region Operators
 		public static bool operator ==(CullState a, CullState b)
 		{
-			return a.On == b.On && a.Face == b.Face;
+			return a.Enabled == b.Enabled && a.Face == b.Face;
 		}
 		public static bool operator !=(CullState a, CullState b)
 		{
-			return a.On != b.On || a.Face != b.Face;
+			return a.Enabled != b.Enabled || a.Face != b.Face;
 		}
 		#endregion
 	}

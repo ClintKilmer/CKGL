@@ -38,8 +38,6 @@ namespace CKGL
 				{
 					Buffer.BlockCopy(bytes, 0, buffer, offset, bytes.Length);
 					offset += bytes.Length;
-
-					//Output.WriteLine($"offset: {offset} / {buffer.Length} - {offset / (float)buffer.Length * 100f:n0}%");
 				}
 
 				for (int i = 0; i < vertexCount; i++)

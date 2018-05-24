@@ -53,6 +53,11 @@ namespace CKGL
 		}
 		public static void Reset() => Set(Default);
 		public static void SetDefault(FrontFaceState frontFaceState) => Default = frontFaceState;
+
+		public static void Set(FrontFace frontFace)
+		{
+			Set(frontFace);
+		}
 		#endregion
 
 		#region Overrides

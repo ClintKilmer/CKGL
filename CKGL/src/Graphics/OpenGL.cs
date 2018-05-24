@@ -160,6 +160,22 @@ namespace OpenGL
 			CheckError();
 		}
 
+		delegate void _glColorMask(bool red​, bool green​, bool blue​, bool alpha);
+		static _glColorMask glColorMask;
+		public static void ColourMask(bool red​, bool green​, bool blue​, bool alpha​)
+		{
+			glColorMask(red​, green​, blue​, alpha​);
+			CheckError();
+		}
+
+		delegate void _glColorMaski(GLuint buf, bool red​, bool green​, bool blue​, bool alpha​);
+		static _glColorMaski glColorMaski;
+		public static void ColourMask(GLuint buf, bool red​, bool green​, bool blue​, bool alpha​)
+		{
+			glColorMaski(buf, red​, green​, blue​, alpha​);
+			CheckError();
+		}
+
 		delegate void _glViewport(int x, int y, GLint width, GLint height);
 		static _glViewport glViewport;
 		public static void Viewport(int x, int y, GLint width, GLint height)

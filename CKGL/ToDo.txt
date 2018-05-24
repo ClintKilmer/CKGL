@@ -4,6 +4,7 @@ Features:
 - State.Last with method state.Revert()
 	- Will make RenderTarget.Blit easier (and a few others)
 	- Graphics.Revert? How?
+		- Graphics.State.Save(save_index); Graphics.State.Load(save_index);
 - Separate 3D/2D ecs systems? Maybe combined with depth for 2d?
 	- Transparent flag for sorting opaque-front-to-back - transparent-back-to-front
 - Shader Includes (Regular Math library too...)

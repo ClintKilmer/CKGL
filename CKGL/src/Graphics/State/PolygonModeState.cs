@@ -72,6 +72,16 @@ namespace CKGL
 		}
 		public static void Reset() => Set(Default);
 		public static void SetDefault(PolygonModeState polygonModeState) => Default = polygonModeState;
+
+		public static void SetFront(PolygonMode polygonMode)
+		{
+			Set(new PolygonModeState(polygonMode, Current.BackPolygonMode));
+		}
+
+		public static void SetBack(PolygonMode polygonMode)
+		{
+			Set(new PolygonModeState(Current.FrontPolygonMode, polygonMode));
+		}
 		#endregion
 
 		#region Overrides

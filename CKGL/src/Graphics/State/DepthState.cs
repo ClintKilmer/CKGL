@@ -5,7 +5,7 @@ namespace CKGL
 {
 	public struct DepthState
 	{
-		public readonly bool On;
+		public readonly bool Enabled;
 		public readonly DepthFunc DepthFunc;
 
 		public static Action OnStateChanging;
@@ -30,10 +30,10 @@ namespace CKGL
 		#endregion
 
 		#region Constructors
-		private DepthState(bool on) : this(on, DepthFunc.Less) { }
-		private DepthState(bool on, DepthFunc depthFunc)
+		private DepthState(bool enabled) : this(enabled, DepthFunc.Less) { }
+		private DepthState(bool enabled, DepthFunc depthFunc)
 		{
-			On = on;
+			Enabled = enabled;
 			DepthFunc = depthFunc;
 		}
 		#endregion
@@ -56,7 +56,7 @@ namespace CKGL
 			if (Current != depthState)
 			{
 				OnStateChanging?.Invoke();
-				if (depthState.On)
+				if (depthState.Enabled)
 					GL.Enable(EnableCap.DepthTest);
 				else
 					GL.Disable(EnableCap.DepthTest);
@@ -68,27 +68,32 @@ namespace CKGL
 		public static void Reset() => Set(Default);
 		public static void SetDefault(DepthState depthState) => Default = depthState;
 
-		public static void SetDepthRange(float near, float far)
+		public static void SetEnabled(bool enabled)
 		{
-			GL.DepthRange(near.Clamp(0f, 1f), far.Clamp(0f, 1f));
+			Set(new DepthState(enabled, Current.DepthFunc));
+		}
+
+		public static void SetDepthFunc(DepthFunc depthFunc)
+		{
+			Set(new DepthState(Current.Enabled, depthFunc));
 		}
 		#endregion
 
 		#region Overrides
 		public override string ToString()
 		{
-			return $"DepthState: [Enabled: {On}, Func: {DepthFunc}]";
+			return $"DepthState: [Enabled: {Enabled}, Func: {DepthFunc}]";
 		}
 		#endregion
 
 		#region Operators
 		public static bool operator ==(DepthState a, DepthState b)
 		{
-			return a.On == b.On && a.DepthFunc == b.DepthFunc;
+			return a.Enabled == b.Enabled && a.DepthFunc == b.DepthFunc;
 		}
 		public static bool operator !=(DepthState a, DepthState b)
 		{
-			return a.On != b.On || a.DepthFunc != b.DepthFunc;
+			return a.Enabled != b.Enabled || a.DepthFunc != b.DepthFunc;
 		}
 		#endregion
 	}

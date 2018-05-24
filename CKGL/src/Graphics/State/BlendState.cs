@@ -5,7 +5,7 @@ namespace CKGL
 {
 	public struct BlendState
 	{
-		public readonly bool On;
+		public readonly bool Enabled;
 		public readonly BlendFactor ColourSource;
 		public readonly BlendFactor AlphaSource;
 		public readonly BlendFactor ColourDestination;
@@ -32,7 +32,7 @@ namespace CKGL
 
 		#region Constructors
 		public BlendState(
-			bool on,
+			bool enabled,
 			BlendFactor colourSource,
 			BlendFactor alphaSource,
 			BlendFactor colourDestination,
@@ -40,7 +40,7 @@ namespace CKGL
 			BlendEquation colourEquation,
 			BlendEquation alphaEquation)
 		{
-			On = on;
+			Enabled = enabled;
 			ColourSource = colourSource;
 			AlphaSource = alphaSource;
 			ColourDestination = colourDestination;
@@ -49,13 +49,13 @@ namespace CKGL
 			AlphaEquation = alphaEquation;
 		}
 		public BlendState(
-			bool on,
+			bool enabled,
 			BlendFactor colourSource,
 			BlendFactor colourDestination,
 			BlendFactor alphaSource,
 			BlendFactor alphaDestination)
 		: this(
-			on,
+			enabled,
 			colourSource,
 			alphaSource,
 			colourDestination,
@@ -64,11 +64,11 @@ namespace CKGL
 			BlendEquation.Add)
 		{ }
 		public BlendState(
-			bool on,
+			bool enabled,
 			BlendFactor source,
 			BlendFactor destination)
 		: this(
-			on,
+			enabled,
 			source,
 			source,
 			destination,
@@ -77,9 +77,9 @@ namespace CKGL
 			BlendEquation.Add)
 		{ }
 		public BlendState(
-			bool on)
+			bool enabled)
 		: this(
-			on,
+			enabled,
 			BlendFactor.One,
 			BlendFactor.One,
 			BlendFactor.Zero,
@@ -107,7 +107,7 @@ namespace CKGL
 			if (Current != blendState)
 			{
 				OnStateChanging?.Invoke();
-				if (blendState.On)
+				if (blendState.Enabled)
 					GL.Enable(EnableCap.Blend);
 				else
 					GL.Disable(EnableCap.Blend);
@@ -119,19 +119,49 @@ namespace CKGL
 		}
 		public static void Reset() => Set(Default);
 		public static void SetDefault(BlendState blendState) => Default = blendState;
+
+		public static void SetEnabled(bool enabled)
+		{
+			Set(new BlendState(enabled, Current.ColourSource, Current.AlphaSource, Current.ColourDestination, Current.AlphaDestination, Current.ColourEquation, Current.AlphaEquation));
+		}
+
+		public static void SetBlendFactor(BlendFactor source, BlendFactor destination)
+		{
+			Set(new BlendState(Current.Enabled, source, source, destination, destination, Current.ColourEquation, Current.AlphaEquation));
+		}
+
+		public static void SetBlendFactor(
+			BlendFactor colourSource,
+			BlendFactor colourDestination,
+			BlendFactor alphaSource,
+			BlendFactor alphaDestination)
+		{
+			Set(new BlendState(Current.Enabled, colourSource, alphaSource, colourDestination, alphaDestination, Current.ColourEquation, Current.AlphaEquation));
+		}
+
+		public static void SetBlend(
+			BlendFactor colourSource,
+			BlendFactor colourDestination,
+			BlendFactor alphaSource,
+			BlendFactor alphaDestination,
+			BlendEquation colourEquation,
+			BlendEquation alphaEquation)
+		{
+			Set(new BlendState(Current.Enabled, colourSource, alphaSource, colourDestination, alphaDestination, colourEquation, alphaEquation));
+		}
 		#endregion
 
 		#region Overrides
 		public override string ToString()
 		{
-			return $"BlendState: [Enabled: {On}, ColourSource: {ColourSource}, AlphaSource: {AlphaSource}, ColourDestination: {ColourDestination}, AlphaDestination: {AlphaDestination}, ColourEquation: {ColourEquation}, AlphaEquation: {AlphaEquation}]";
+			return $"BlendState: [Enabled: {Enabled}, ColourSource: {ColourSource}, AlphaSource: {AlphaSource}, ColourDestination: {ColourDestination}, AlphaDestination: {AlphaDestination}, ColourEquation: {ColourEquation}, AlphaEquation: {AlphaEquation}]";
 		}
 		#endregion
 
 		#region Operators
 		public static bool operator ==(BlendState a, BlendState b)
 		{
-			return a.On == b.On &&
+			return a.Enabled == b.Enabled &&
 				   a.ColourSource == b.ColourSource &&
 				   a.AlphaSource == b.AlphaSource &&
 				   a.ColourDestination == b.ColourDestination &&
@@ -141,7 +171,7 @@ namespace CKGL
 		}
 		public static bool operator !=(BlendState a, BlendState b)
 		{
-			return a.On != b.On ||
+			return a.Enabled != b.Enabled ||
 				   a.ColourSource != b.ColourSource ||
 				   a.AlphaSource != b.AlphaSource ||
 				   a.ColourDestination != b.ColourDestination ||
