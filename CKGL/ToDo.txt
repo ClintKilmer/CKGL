@@ -16,9 +16,8 @@ Features:
 
 Random:
 
-- Masks - MaskState
 - DepthRange - Somewhere else - maybe own state
-- Refactor shader uniforms into inherited classes
+- Refactor Shader SetUniforms into inherited classes
 - Viewport static class?
 - ScissorTest static class?
 - Move Swaps++ to Graphics.Metrics
