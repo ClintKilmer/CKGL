@@ -37,10 +37,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\SpriteFont.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\SpriteSheet.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\State\BlendState.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\State\MaskState.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\State\CullState.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\State\DepthState.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\State\FrontFaceState.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\State\MaskState.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\State\PolygonModeState.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\Texture.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\Texture2D.cs" />
