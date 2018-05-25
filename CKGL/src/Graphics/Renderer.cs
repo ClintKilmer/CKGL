@@ -10,52 +10,39 @@ namespace CKGL
 		//		>( . )<
 
 		[StructLayout(LayoutKind.Sequential, Pack = 1)]
-		public struct Vertex
+		public struct Vertex : IVertex
 		{
 			public Vector3 Position;
 			public Colour Colour;
-			public Vector2 UV;
-			public bool Textured;
+			public UV UV;
+			public uint Textured;
 
-			public Vertex(Vector3 position, Colour colour, Vector2 uv, bool textured)
+			public Vertex(Vector3 position, Colour colour, UV uv, bool textured)
 			{
 				Position = position;
 				Colour = colour;
 				UV = uv;
-				Textured = textured;
+				Textured = textured ? 1u : 0u;
 			}
 
-			//public static readonly int Stride = sizeof(float) * 3 + sizeof(byte) * 4 + sizeof(ushort) * 2 + sizeof(float) * 1;
-			public static readonly int Stride = sizeof(float) * 3 + sizeof(byte) * 4 + sizeof(ushort) * 2 + sizeof(uint) * 1;
+			public readonly static VertexAttributeLayout AttributeLayout = new VertexAttributeLayout
+			(
+				new VertexAttribute(VertexType.Float, 3, false),          // position
+				new VertexAttribute(VertexType.UnsignedByte, 4, true),    // colour
+				new VertexAttribute(VertexType.UnsignedShort, 2, true),   // uvs
+				new VertexAttribute(VertexType.UnsignedInt, 1, true)      // textured
+			);
 
-			public static byte[] GetVBO(Vertex[] vertices, int vertexCount)
+			VertexAttributeLayout IVertex.AttributeLayout
 			{
-				byte[] buffer = new byte[Stride * vertexCount];
-
-				int offset = 0;
-
-				void put(byte[] bytes)
-				{
-					Buffer.BlockCopy(bytes, 0, buffer, offset, bytes.Length);
-					offset += bytes.Length;
-				}
-
-				for (int i = 0; i < vertexCount; i++)
-				{
-					put(vertices[i].Position.FloatByteArray);
-					put(vertices[i].Colour.ByteByteArray);
-					put(vertices[i].UV.UshortByteArray);
-					put(BitConverter.GetBytes(vertices[i].Textured ? 1u : 0u));
-				}
-
-				return buffer;
+				get { return AttributeLayout; }
 			}
 		}
 
 		private static VertexArray vao;
 		private static VertexBuffer vbo;
-		private static VertexBufferLayout vboLayout;
 		private static DrawMode currentDrawMode = DrawMode.TriangleList;
+		// TODO - Find good Renderer buffersize
 		private const int bufferSize = 150000;
 		//private const int bufferSize = 1998; // Divisible by 3 and 2 for no vertex wrapping per batch
 		private static Vertex[] vertices = new Vertex[bufferSize];
@@ -65,12 +52,7 @@ namespace CKGL
 		{
 			vao = new VertexArray();
 			vbo = new VertexBuffer();
-			vboLayout = new VertexBufferLayout();
-			vboLayout.Push<float>(3, false); // position
-			vboLayout.Push<byte>(4, true); // colour
-			vboLayout.Push<ushort>(2, true); // uvs
-			vboLayout.Push<uint>(1, true); // textured
-			vao.AddBuffer(vbo, vboLayout);
+			vao.AddBuffer(vbo, Vertex.AttributeLayout);
 
 			Graphics.State.OnStateChanging += () => { Flush(); };
 
@@ -85,7 +67,6 @@ namespace CKGL
 
 			vao = null;
 			vbo = null;
-			vboLayout = null;
 		}
 
 		public static void Flush()
@@ -101,8 +82,7 @@ namespace CKGL
 			)
 			{
 				vao.Bind();
-				vbo.LoadData(Vertex.GetVBO(vertices, vertexCount), BufferUsage.DynamicDraw);
-
+				vbo.LoadData(Vertex.AttributeLayout, ref vertices, vertexCount, BufferUsage.DynamicDraw);
 				Graphics.DrawVertexArrays(currentDrawMode, 0, vertexCount);
 			}
 
@@ -127,7 +107,7 @@ namespace CKGL
 			vertexCount = remainder;
 		}
 
-		private static void AddVertex(DrawMode type, Vector3 position, Colour? colour, Vector2? uv)
+		private static void AddVertex(DrawMode type, Vector3 position, Colour? colour, UV? uv)
 		{
 			if (currentDrawMode != type)
 			{
@@ -140,10 +120,7 @@ namespace CKGL
 			if (vertexCount >= bufferSize)
 				Flush();
 
-			vertices[vertexCount].Position = position;
-			vertices[vertexCount].Colour = colour ?? Colour.White;
-			vertices[vertexCount].UV = uv ?? Vector2.Zero;
-			vertices[vertexCount].Textured = uv != null;
+			vertices[vertexCount] = new Vertex(position, colour ?? Colour.White, uv ?? UV.Zero, uv != null);
 			vertexCount++;
 		}
 
@@ -181,12 +158,12 @@ namespace CKGL
 			#region AddVertex
 			public static void AddVertex(DrawMode type, Vector2 position) => AddVertex(type, position, null, null);
 			public static void AddVertex(DrawMode type, Vector2 position, Colour? colour) => AddVertex(type, position, colour, null);
-			public static void AddVertex(DrawMode type, Vector2 position, Colour? colour, Vector2? uv)
+			public static void AddVertex(DrawMode type, Vector2 position, Colour? colour, UV? uv)
 			{
 				Vector3 positionDepth = new Vector3(position.X, position.Y, depth);
 				Renderer.AddVertex(type, positionDepth * transform?.Matrix ?? positionDepth, colour, uv);
 			}
-			public static void AddVertex(DrawMode type, Vector2 position, Colour? colour, Vector2? uv, float rotation, Vector2? origin)
+			public static void AddVertex(DrawMode type, Vector2 position, Colour? colour, UV? uv, float rotation, Vector2? origin)
 			{
 				if (rotation != 0f)
 					AddVertex(type, position * (Matrix2D.CreateTranslation(-origin ?? Vector2.Zero) * Matrix2D.CreateRotationZ(rotation) * Matrix2D.CreateTranslation(origin ?? Vector2.Zero)), colour, uv);
@@ -199,13 +176,13 @@ namespace CKGL
 			public static void Triangle(Vector2 v1, Vector2 v2, Vector2 v3) => Triangle(v1, v2, v3, null, null, null, null, null, null);
 			public static void Triangle(Vector2 v1, Vector2 v2, Vector2 v3, Colour? colour) => Triangle(v1, v2, v3, colour, colour, colour, null, null, null);
 			public static void Triangle(Vector2 v1, Vector2 v2, Vector2 v3, Colour? c1, Colour? c2, Colour? c3) => Triangle(v1, v2, v3, c1, c2, c3, null, null, null);
-			public static void Triangle(Vector2 v1, Vector2 v2, Vector2 v3, Colour? c1, Colour? c2, Colour? c3, Vector2? uv1, Vector2? uv2, Vector2? uv3)
+			public static void Triangle(Vector2 v1, Vector2 v2, Vector2 v3, Colour? c1, Colour? c2, Colour? c3, UV? uv1, UV? uv2, UV? uv3)
 			{
 				AddVertex(DrawMode.TriangleList, v1, c1, uv1);
 				AddVertex(DrawMode.TriangleList, v2, c2, uv2);
 				AddVertex(DrawMode.TriangleList, v3, c3, uv3);
 			}
-			public static void Triangle(Vector2 v1, Vector2 v2, Vector2 v3, Colour? c1, Colour? c2, Colour? c3, Vector2? uv1, Vector2? uv2, Vector2? uv3, float rotation, Vector2? origin)
+			public static void Triangle(Vector2 v1, Vector2 v2, Vector2 v3, Colour? c1, Colour? c2, Colour? c3, UV? uv1, UV? uv2, UV? uv3, float rotation, Vector2? origin)
 			{
 				if (rotation != 0f)
 				{
@@ -224,18 +201,18 @@ namespace CKGL
 			public static void Rectangle(float x, float y, float width, float height) => Rectangle(x, y, width, height, null, null, null, null, null, null, null, null);
 			public static void Rectangle(float x, float y, float width, float height, Colour? colour) => Rectangle(x, y, width, height, colour, colour, colour, colour, null, null, null, null);
 			public static void Rectangle(float x, float y, float width, float height, Colour? c1, Colour? c2, Colour? c3, Colour? c4) => Rectangle(x, y, width, height, c1, c2, c3, c4, null, null, null, null);
-			public static void Rectangle(float x, float y, float width, float height, Colour? c1, Colour? c2, Colour? c3, Colour? c4, Vector2? uv1, Vector2? uv2, Vector2? uv3, Vector2? uv4) => Rectangle(new Vector2(x, y), new Vector2(x + width, y), new Vector2(x, y + height), new Vector2(x + width, y + height), c1, c2, c3, c4, uv1, uv2, uv3, uv4);
+			public static void Rectangle(float x, float y, float width, float height, Colour? c1, Colour? c2, Colour? c3, Colour? c4, UV? uv1, UV? uv2, UV? uv3, UV? uv4) => Rectangle(new Vector2(x, y), new Vector2(x + width, y), new Vector2(x, y + height), new Vector2(x + width, y + height), c1, c2, c3, c4, uv1, uv2, uv3, uv4);
 
 			public static void Rectangle(float x, float y, float width, float height, float rotation, Vector2? origin) => Rectangle(x, y, width, height, null, null, null, null, null, null, null, null, rotation, origin);
 			public static void Rectangle(float x, float y, float width, float height, Colour? colour, float rotation, Vector2? origin) => Rectangle(x, y, width, height, colour, colour, colour, colour, null, null, null, null, rotation, origin);
 			public static void Rectangle(float x, float y, float width, float height, Colour? c1, Colour? c2, Colour? c3, Colour? c4, float rotation, Vector2? origin) => Rectangle(x, y, width, height, c1, c2, c3, c4, null, null, null, null, rotation, origin);
-			public static void Rectangle(float x, float y, float width, float height, Colour? c1, Colour? c2, Colour? c3, Colour? c4, Vector2? uv1, Vector2? uv2, Vector2? uv3, Vector2? uv4, float rotation, Vector2? origin) => Rectangle(new Vector2(x, y), new Vector2(x + width, y), new Vector2(x, y + height), new Vector2(x + width, y + height), c1, c2, c3, c4, uv1, uv2, uv3, uv4, rotation, origin);
+			public static void Rectangle(float x, float y, float width, float height, Colour? c1, Colour? c2, Colour? c3, Colour? c4, UV? uv1, UV? uv2, UV? uv3, UV? uv4, float rotation, Vector2? origin) => Rectangle(new Vector2(x, y), new Vector2(x + width, y), new Vector2(x, y + height), new Vector2(x + width, y + height), c1, c2, c3, c4, uv1, uv2, uv3, uv4, rotation, origin);
 
 			public static void Rectangle(Vector2 v1, Vector2 v2) => Rectangle(v1, v2, null, null, null, null, null, null, null, null);
 			public static void Rectangle(Vector2 v1, Vector2 v2, Colour? colour) => Rectangle(v1, v2, colour, colour, colour, colour, null, null, null, null);
 			public static void Rectangle(Vector2 v1, Vector2 v2, Colour? c1, Colour? c2, Colour? c3, Colour? c4) => Rectangle(v1, v2, c1, c2, c3, c4, null, null, null, null);
-			public static void Rectangle(Vector2 v1, Vector2 v2, Colour? c1, Colour? c2, Colour? c3, Colour? c4, Vector2? uv1, Vector2? uv2, Vector2? uv3, Vector2? uv4) => Rectangle(new Vector2(v1.X, v1.Y), new Vector2(v2.X, v1.Y), new Vector2(v1.X, v2.Y), new Vector2(v2.X, v2.Y), c1, c2, c3, c4, uv1, uv2, uv3, uv4);
-			public static void Rectangle(Vector2 v1, Vector2 v2, Vector2 v3, Vector2 v4, Colour? c1, Colour? c2, Colour? c3, Colour? c4, Vector2? uv1, Vector2? uv2, Vector2? uv3, Vector2? uv4)
+			public static void Rectangle(Vector2 v1, Vector2 v2, Colour? c1, Colour? c2, Colour? c3, Colour? c4, UV? uv1, UV? uv2, UV? uv3, UV? uv4) => Rectangle(new Vector2(v1.X, v1.Y), new Vector2(v2.X, v1.Y), new Vector2(v1.X, v2.Y), new Vector2(v2.X, v2.Y), c1, c2, c3, c4, uv1, uv2, uv3, uv4);
+			public static void Rectangle(Vector2 v1, Vector2 v2, Vector2 v3, Vector2 v4, Colour? c1, Colour? c2, Colour? c3, Colour? c4, UV? uv1, UV? uv2, UV? uv3, UV? uv4)
 			{
 				AddVertex(DrawMode.TriangleList, v1, c1, uv1);
 				AddVertex(DrawMode.TriangleList, v2, c2, uv2);
@@ -248,8 +225,8 @@ namespace CKGL
 			public static void Rectangle(Vector2 v1, Vector2 v2, float rotation, Vector2 origin) => Rectangle(v1, v2, null, null, null, null, null, null, null, null, rotation, origin);
 			public static void Rectangle(Vector2 v1, Vector2 v2, Colour? colour, float rotation, Vector2 origin) => Rectangle(v1, v2, colour, colour, colour, colour, null, null, null, null, rotation, origin);
 			public static void Rectangle(Vector2 v1, Vector2 v2, Colour? c1, Colour? c2, Colour? c3, Colour? c4, float rotation, Vector2 origin) => Rectangle(v1, v2, c1, c2, c3, c4, null, null, null, null, rotation, origin);
-			public static void Rectangle(Vector2 v1, Vector2 v2, Colour? c1, Colour? c2, Colour? c3, Colour? c4, Vector2? uv1, Vector2? uv2, Vector2? uv3, Vector2? uv4, float rotation, Vector2 origin) => Rectangle(new Vector2(v1.X, v1.Y), new Vector2(v2.X, v1.Y), new Vector2(v1.X, v2.Y), new Vector2(v2.X, v2.Y), c1, c2, c3, c4, uv1, uv2, uv3, uv4, rotation, origin);
-			public static void Rectangle(Vector2 v1, Vector2 v2, Vector2 v3, Vector2 v4, Colour? c1, Colour? c2, Colour? c3, Colour? c4, Vector2? uv1, Vector2? uv2, Vector2? uv3, Vector2? uv4, float rotation, Vector2? origin)
+			public static void Rectangle(Vector2 v1, Vector2 v2, Colour? c1, Colour? c2, Colour? c3, Colour? c4, UV? uv1, UV? uv2, UV? uv3, UV? uv4, float rotation, Vector2 origin) => Rectangle(new Vector2(v1.X, v1.Y), new Vector2(v2.X, v1.Y), new Vector2(v1.X, v2.Y), new Vector2(v2.X, v2.Y), c1, c2, c3, c4, uv1, uv2, uv3, uv4, rotation, origin);
+			public static void Rectangle(Vector2 v1, Vector2 v2, Vector2 v3, Vector2 v4, Colour? c1, Colour? c2, Colour? c3, Colour? c4, UV? uv1, UV? uv2, UV? uv3, UV? uv4, float rotation, Vector2? origin)
 			{
 				if (rotation != 0f)
 				{
@@ -559,10 +536,6 @@ namespace CKGL
 
 			// TODO - Fix RenderTarget method cascading
 			#region RenderTarget
-			private static Vector2 uvFull1 = new Vector2(0f, 0f);
-			private static Vector2 uvFull2 = new Vector2(1f, 0f);
-			private static Vector2 uvFull3 = new Vector2(0f, 1f);
-			private static Vector2 uvFull4 = new Vector2(1f, 1f);
 			private static void RenderTargetBindTexture(RenderTarget renderTarget, RenderTarget.TextureSlot textureSlot)
 			{
 				if (renderTarget == null)
@@ -573,32 +546,32 @@ namespace CKGL
 			public static void RenderTarget(RenderTarget renderTarget, RenderTarget.TextureSlot textureSlot, float x, float y, Colour colour)
 			{
 				RenderTargetBindTexture(renderTarget, textureSlot);
-				Rectangle(x, y, (renderTarget ?? CKGL.RenderTarget.Default).Width, (renderTarget ?? CKGL.RenderTarget.Default).Height, colour, colour, colour, colour, uvFull1, uvFull2, uvFull3, uvFull4);
+				Rectangle(x, y, (renderTarget ?? CKGL.RenderTarget.Default).Width, (renderTarget ?? CKGL.RenderTarget.Default).Height, colour, colour, colour, colour, UV.BottomLeft, UV.BottomRight, UV.TopLeft, UV.TopRight);
 			}
 			public static void RenderTarget(RenderTarget renderTarget, RenderTarget.TextureSlot textureSlot, float x, float y, float rotation, Vector2 origin, Colour colour)
 			{
 				RenderTargetBindTexture(renderTarget, textureSlot);
-				Rectangle(x, y, (renderTarget ?? CKGL.RenderTarget.Default).Width, (renderTarget ?? CKGL.RenderTarget.Default).Height, colour, colour, colour, colour, uvFull1, uvFull2, uvFull3, uvFull4, rotation, origin);
+				Rectangle(x, y, (renderTarget ?? CKGL.RenderTarget.Default).Width, (renderTarget ?? CKGL.RenderTarget.Default).Height, colour, colour, colour, colour, UV.BottomLeft, UV.BottomRight, UV.TopLeft, UV.TopRight, rotation, origin);
 			}
 			public static void RenderTarget(RenderTarget renderTarget, RenderTarget.TextureSlot textureSlot, float x, float y, float scale, Colour colour)
 			{
 				RenderTargetBindTexture(renderTarget, textureSlot);
-				Rectangle(x, y, (renderTarget ?? CKGL.RenderTarget.Default).Width * scale, (renderTarget ?? CKGL.RenderTarget.Default).Height * scale, colour, colour, colour, colour, uvFull1, uvFull2, uvFull3, uvFull4);
+				Rectangle(x, y, (renderTarget ?? CKGL.RenderTarget.Default).Width * scale, (renderTarget ?? CKGL.RenderTarget.Default).Height * scale, colour, colour, colour, colour, UV.BottomLeft, UV.BottomRight, UV.TopLeft, UV.TopRight);
 			}
 			public static void RenderTarget(RenderTarget renderTarget, RenderTarget.TextureSlot textureSlot, float x, float y, float scale, float rotation, Vector2 origin, Colour colour)
 			{
 				RenderTargetBindTexture(renderTarget, textureSlot);
-				Rectangle(x, y, (renderTarget ?? CKGL.RenderTarget.Default).Width * scale, (renderTarget ?? CKGL.RenderTarget.Default).Height * scale, colour, colour, colour, colour, uvFull1, uvFull2, uvFull3, uvFull4, rotation, origin);
+				Rectangle(x, y, (renderTarget ?? CKGL.RenderTarget.Default).Width * scale, (renderTarget ?? CKGL.RenderTarget.Default).Height * scale, colour, colour, colour, colour, UV.BottomLeft, UV.BottomRight, UV.TopLeft, UV.TopRight, rotation, origin);
 			}
 			public static void RenderTarget(RenderTarget renderTarget, RenderTarget.TextureSlot textureSlot, float x, float y, float width, float height, Colour colour)
 			{
 				RenderTargetBindTexture(renderTarget, textureSlot);
-				Rectangle(x, y, width, height, colour, colour, colour, colour, uvFull1, uvFull2, uvFull3, uvFull4);
+				Rectangle(x, y, width, height, colour, colour, colour, colour, UV.BottomLeft, UV.BottomRight, UV.TopLeft, UV.TopRight);
 			}
 			public static void RenderTarget(RenderTarget renderTarget, RenderTarget.TextureSlot textureSlot, Vector2 v1, Vector2 v2, Colour colour)
 			{
 				RenderTargetBindTexture(renderTarget, textureSlot);
-				Rectangle(new Vector2(v1.X, v1.Y), new Vector2(v2.X, v2.Y), colour, colour, colour, colour, uvFull1, uvFull2, uvFull3, uvFull4);
+				Rectangle(new Vector2(v1.X, v1.Y), new Vector2(v2.X, v2.Y), colour, colour, colour, colour, UV.BottomLeft, UV.BottomRight, UV.TopLeft, UV.TopRight);
 			}
 			#endregion
 
@@ -656,12 +629,12 @@ namespace CKGL
 			public static void Line(float x1, float y1, float x2, float y2) => Line(new Vector2(x1, y1), new Vector2(x2, y2), null, null, null, null);
 			public static void Line(float x1, float y1, float x2, float y2, Colour? colour) => Line(new Vector2(x1, y1), new Vector2(x2, y2), colour, colour, null, null);
 			public static void Line(float x1, float y1, float x2, float y2, Colour? c1, Colour? c2) => Line(new Vector2(x1, y1), new Vector2(x2, y2), c1, c2, null, null);
-			public static void Line(float x1, float y1, float x2, float y2, Colour? c1, Colour? c2, Vector2? uv1, Vector2? uv2) => Line(new Vector2(x1, y1), new Vector2(x2, y2), c1, c2, uv1, uv2);
+			public static void Line(float x1, float y1, float x2, float y2, Colour? c1, Colour? c2, UV? uv1, UV? uv2) => Line(new Vector2(x1, y1), new Vector2(x2, y2), c1, c2, uv1, uv2);
 
 			public static void Line(Vector2 v1, Vector2 v2) => Line(v1, v2, null, null, null, null);
 			public static void Line(Vector2 v1, Vector2 v2, Colour? colour) => Line(v1, v2, colour, colour, null, null);
 			public static void Line(Vector2 v1, Vector2 v2, Colour? c1, Colour? c2) => Line(v1, v2, c1, c2, null, null);
-			public static void Line(Vector2 v1, Vector2 v2, Colour? c1, Colour? c2, Vector2? uv1, Vector2? uv2)
+			public static void Line(Vector2 v1, Vector2 v2, Colour? c1, Colour? c2, UV? uv1, UV? uv2)
 			{
 				AddVertex(DrawMode.LineList, v1, c1, uv1);
 				AddVertex(DrawMode.LineList, v2, c2, uv2);
@@ -794,11 +767,11 @@ namespace CKGL
 				{
 					Draw.AddVertex(DrawMode.LineStrip, position, colour);
 				}
-				public static void AddVertex(Vector2 position, Colour? colour, Vector2? uv)
+				public static void AddVertex(Vector2 position, Colour? colour, UV? uv)
 				{
 					Draw.AddVertex(DrawMode.LineStrip, position, colour, uv);
 				}
-				public static void AddVertex(Vector2 position, Colour? colour, Vector2? uv, float rotation, Vector2? origin)
+				public static void AddVertex(Vector2 position, Colour? colour, UV? uv, float rotation, Vector2? origin)
 				{
 					Draw.AddVertex(DrawMode.LineStrip, position, colour, uv, rotation, origin);
 				}
@@ -837,7 +810,7 @@ namespace CKGL
 			//	{
 			//		AddVertex(position, colour, Vector2.Zero);
 			//	}
-			//	public static void AddVertex(Vector2 position, Colour colour, Vector2 uv)
+			//	public static void AddVertex(Vector2 position, Colour colour, UV uv)
 			//	{
 			//		if (!working)
 			//			throw new Exception("Begin must be called before AddVertex can be called.");
@@ -867,11 +840,11 @@ namespace CKGL
 				{
 					Draw.AddVertex(DrawMode.TriangleStrip, position, colour);
 				}
-				public static void AddVertex(Vector2 position, Colour? colour, Vector2? uv)
+				public static void AddVertex(Vector2 position, Colour? colour, UV? uv)
 				{
 					Draw.AddVertex(DrawMode.TriangleStrip, position, colour, uv);
 				}
-				public static void AddVertex(Vector2 position, Colour? colour, Vector2? uv, float rotation, Vector2? origin)
+				public static void AddVertex(Vector2 position, Colour? colour, UV? uv, float rotation, Vector2? origin)
 				{
 					Draw.AddVertex(DrawMode.TriangleStrip, position, colour, uv, rotation, origin);
 				}
@@ -913,7 +886,7 @@ namespace CKGL
 			//	{
 			//		AddVertex(position, colour, Vector2.Zero);
 			//	}
-			//	public static void AddVertex(Vector2 position, Colour colour, Vector2 uv)
+			//	public static void AddVertex(Vector2 position, Colour colour, UV uv)
 			//	{
 			//		if (!working)
 			//			throw new Exception("Begin must be called before AddVertex can be called.");
@@ -959,7 +932,7 @@ namespace CKGL
 			#region AddVertex
 			public static void AddVertex(DrawMode type, Vector3 position) => AddVertex(type, position, null, null);
 			public static void AddVertex(DrawMode type, Vector3 position, Colour? colour) => AddVertex(type, position, colour, null);
-			public static void AddVertex(DrawMode type, Vector3 position, Colour? colour, Vector2? uv)
+			public static void AddVertex(DrawMode type, Vector3 position, Colour? colour, UV? uv)
 			{
 				Renderer.AddVertex(type, position * transform?.Matrix ?? position, colour, uv);
 			}
@@ -969,7 +942,7 @@ namespace CKGL
 			public static void Triangle(Vector3 v1, Vector3 v2, Vector3 v3) => Triangle(v1, v2, v3, null, null, null, null, null, null);
 			public static void Triangle(Vector3 v1, Vector3 v2, Vector3 v3, Colour? colour) => Triangle(v1, v2, v3, colour, colour, colour, null, null, null);
 			public static void Triangle(Vector3 v1, Vector3 v2, Vector3 v3, Colour? c1, Colour? c2, Colour? c3) => Triangle(v1, v2, v3, c1, c2, c3, null, null, null);
-			public static void Triangle(Vector3 v1, Vector3 v2, Vector3 v3, Colour? c1, Colour? c2, Colour? c3, Vector2? uv1, Vector2? uv2, Vector2? uv3)
+			public static void Triangle(Vector3 v1, Vector3 v2, Vector3 v3, Colour? c1, Colour? c2, Colour? c3, UV? uv1, UV? uv2, UV? uv3)
 			{
 				AddVertex(DrawMode.TriangleList, v1, c1, uv1);
 				AddVertex(DrawMode.TriangleList, v2, c2, uv2);
@@ -980,9 +953,9 @@ namespace CKGL
 			#region Rectangle
 			public static void Rectangle(Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4) => Rectangle(v1, v2, v3, v4, null, null, null, null, null, null, null, null);
 			public static void Rectangle(Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4, Colour? colour) => Rectangle(v1, v2, v3, v4, colour, colour, colour, colour, null, null, null, null);
-			public static void Rectangle(Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4, Colour? colour, Vector3? uv1, Vector3? uv2, Vector3? uv3, Vector3? uv4) => Rectangle(v1, v2, v3, v4, colour, colour, colour, colour, uv1, uv2, uv3, uv4);
+			public static void Rectangle(Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4, Colour? colour, UV? uv1, UV? uv2, UV? uv3, UV? uv4) => Rectangle(v1, v2, v3, v4, colour, colour, colour, colour, uv1, uv2, uv3, uv4);
 			public static void Rectangle(Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4, Colour? c1, Colour? c2, Colour? c3, Colour? c4) => Rectangle(v1, v2, v3, v4, c1, c2, c3, c4, null, null, null, null);
-			public static void Rectangle(Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4, Colour? c1, Colour? c2, Colour? c3, Colour? c4, Vector3? uv1, Vector3? uv2, Vector3? uv3, Vector3? uv4)
+			public static void Rectangle(Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4, Colour? c1, Colour? c2, Colour? c3, Colour? c4, UV? uv1, UV? uv2, UV? uv3, UV? uv4)
 			{
 				AddVertex(DrawMode.TriangleList, v1, c1, uv1);
 				AddVertex(DrawMode.TriangleList, v2, c2, uv2);
@@ -1007,7 +980,7 @@ namespace CKGL
 			public static void Line(Vector3 v1, Vector3 v2) => Line(v1, v2, null, null, null, null);
 			public static void Line(Vector3 v1, Vector3 v2, Colour? colour) => Line(v1, v2, colour, colour, null, null);
 			public static void Line(Vector3 v1, Vector3 v2, Colour? c1, Colour? c2) => Line(v1, v2, c1, c2, null, null);
-			public static void Line(Vector3 v1, Vector3 v2, Colour? c1, Colour? c2, Vector2? uv1, Vector2? uv2)
+			public static void Line(Vector3 v1, Vector3 v2, Colour? c1, Colour? c2, UV? uv1, UV? uv2)
 			{
 				AddVertex(DrawMode.LineList, v1, c1, uv1);
 				AddVertex(DrawMode.LineList, v2, c2, uv2);

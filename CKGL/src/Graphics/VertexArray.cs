@@ -1,6 +1,4 @@
 ﻿using OpenGL;
-
-using GLint = System.Int32;
 using GLuint = System.UInt32;
 
 namespace CKGL
@@ -34,10 +32,11 @@ namespace CKGL
 			}
 		}
 
-		public void AddBuffer(VertexBuffer vertexBuffer, VertexBufferLayout vertexBufferLayout)
+		public void AddBuffer(VertexBuffer vertexBuffer, VertexAttributeLayout vertexDeclaration)
 		{
 			Bind();
-			vertexBufferLayout.SetLayout(vertexBuffer);
+			vertexBuffer.Bind();
+			vertexDeclaration.SetVertexAttributes();
 		}
 	}
 }

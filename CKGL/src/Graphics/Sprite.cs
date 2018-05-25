@@ -7,10 +7,10 @@
 		public int Y { get; private set; }
 		public int Width { get; private set; }
 		public int Height { get; private set; }
-		public Vector2 UV_BL { get; private set; }
-		public Vector2 UV_BR { get; private set; }
-		public Vector2 UV_TL { get; private set; }
-		public Vector2 UV_TR { get; private set; }
+		public UV UV_BL { get; private set; }
+		public UV UV_BR { get; private set; }
+		public UV UV_TL { get; private set; }
+		public UV UV_TR { get; private set; }
 
 		public Vector2 Position { get { return new Vector2(X, Y); } }
 		public Vector2 Size { get { return new Vector2(Width, Height); } }
@@ -23,14 +23,14 @@
 			Y = y;
 			Width = width;
 			Height = height;
-			UV_BL = new Vector2(X / (float)SpriteSheet.Width,
-								Y / (float)SpriteSheet.Height);
-			UV_BR = new Vector2((X + Width) / (float)SpriteSheet.Width,
-								Y / (float)SpriteSheet.Height);
-			UV_TL = new Vector2(X / (float)SpriteSheet.Width,
-								(Y + Height) / (float)SpriteSheet.Height);
-			UV_TR = new Vector2((X + Width) / (float)SpriteSheet.Width,
-								(Y + Height) / (float)SpriteSheet.Height);
+			UV_BL = new UV(X / (float)SpriteSheet.Width,
+						   Y / (float)SpriteSheet.Height);
+			UV_BR = new UV((X + Width) / (float)SpriteSheet.Width,
+						   Y / (float)SpriteSheet.Height);
+			UV_TL = new UV(X / (float)SpriteSheet.Width,
+						  (Y + Height) / (float)SpriteSheet.Height);
+			UV_TR = new UV((X + Width) / (float)SpriteSheet.Width,
+						  (Y + Height) / (float)SpriteSheet.Height);
 		}
 	}
 }

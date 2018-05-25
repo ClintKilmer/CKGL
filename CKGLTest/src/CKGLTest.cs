@@ -490,10 +490,10 @@ namespace CKGLTest
 									Colour.White,
 									Colour.White,
 									Colour.White,
-									new Vector2(0f, 0f),
-									new Vector2(1f, 0f),
-									new Vector2(0f, 1f),
-									new Vector2(1f, 1f),
+									UV.BottomLeft,
+									UV.BottomRight,
+									UV.TopLeft,
+									UV.TopRight,
 									-Time.TotalSeconds * 0.5f,
 									new Vector2(2.5f, 0f));
 

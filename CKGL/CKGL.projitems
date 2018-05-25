@@ -46,7 +46,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\Texture2D.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\VertexArray.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\VertexBuffer.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\VertexBufferLayout.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\VertexAttributeLayout.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Input\Input.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Input\KeyCode.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Input\ScanCode.cs" />
@@ -61,6 +61,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\RectangleI.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\Transform2D.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\Transform3D.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Math\UV.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\Vector2.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\Rotation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\Shear3D.cs" />

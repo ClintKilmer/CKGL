@@ -1,6 +1,6 @@
-﻿using OpenGL;
-
-using GLint = System.Int32;
+﻿using System;
+using System.Runtime.InteropServices;
+using OpenGL;
 using GLuint = System.UInt32;
 
 namespace CKGL
@@ -34,22 +34,27 @@ namespace CKGL
 			}
 		}
 
-		public void LoadData<T>(GLint sizeInBytes, T[] vertices, BufferUsage bufferUsage) where T : struct
+		// TODO - Do we need this: VertexBuffer.LoadData(byte[] buffer, BufferUsage bufferUsage)
+		public void LoadData(byte[] buffer, BufferUsage bufferUsage)
 		{
 			Bind();
-			GL.BufferData(BufferTarget.Array, sizeInBytes, vertices, bufferUsage);
+			GL.BufferData(BufferTarget.Array, sizeof(byte) * buffer.Length, buffer, bufferUsage);
 		}
 
-		public void LoadData(byte[] vertices, BufferUsage bufferUsage)
+		public void LoadData<T>(VertexAttributeLayout vertexAttributeLayout, ref T[] buffer, int vertexCount, BufferUsage bufferUsage) where T : struct
 		{
-			Bind();
-			GL.BufferData(BufferTarget.Array, sizeof(byte) * vertices.Length, vertices, bufferUsage);
-		}
+			if (buffer == null)
+				throw new ArgumentNullException("data");
 
-		public void LoadData(float[] vertices, BufferUsage bufferUsage)
-		{
+			if (buffer.Length < vertexCount)
+				throw new ArgumentOutOfRangeException("vertexCount", "This parameter must be a valid index within the array.");
+
+			int bufferSize = Marshal.SizeOf(typeof(T));
+			if (vertexAttributeLayout.Stride != bufferSize)
+				throw new ArgumentOutOfRangeException("The VertexAttributeLayout.Stride does not match the Marshalled size of a buffer element.");
+
 			Bind();
-			GL.BufferData(BufferTarget.Array, sizeof(float) * vertices.Length, vertices, bufferUsage);
+			GL.BufferData(BufferTarget.Array, bufferSize * vertexCount, buffer, bufferUsage);
 		}
 	}
 }

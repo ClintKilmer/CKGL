@@ -11,14 +11,10 @@ namespace CKGL
 		private byte b;
 		private byte a;
 
-		#region Properties
 		public float R { get { return r / 255f; } set { r = (byte)(value * 255); } }
 		public float G { get { return g / 255f; } set { g = (byte)(value * 255); } }
 		public float B { get { return b / 255f; } set { b = (byte)(value * 255); } }
 		public float A { get { return a / 255f; } set { a = (byte)(value * 255); } }
-
-		public byte[] ByteByteArray { get { return new byte[] { r, g, b, a }; } }
-		#endregion
 
 		#region Constructors
 		public Colour(byte r, byte g, byte b, byte a)
