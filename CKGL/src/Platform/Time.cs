@@ -164,6 +164,11 @@
 				end = Platform.PerformanceCounter;
 				return ((end - start) / (double)Platform.PerformanceFrequency);
 			}
+
+			public static void StopWithOutput()
+			{
+				Output.WriteLine($"Stopwatch: {Stop() * 1000.0}");
+			}
 		}
 	}
 }
