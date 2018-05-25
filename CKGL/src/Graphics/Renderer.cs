@@ -5,10 +5,6 @@ namespace CKGL
 {
 	public static class Renderer
 	{
-		//	  code crab...
-		//		  ^ ^
-		//		>( . )<
-
 		[StructLayout(LayoutKind.Sequential, Pack = 1)]
 		public struct Vertex : IVertex
 		{
