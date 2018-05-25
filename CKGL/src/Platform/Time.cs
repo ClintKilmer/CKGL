@@ -165,9 +165,14 @@
 				return ((end - start) / (double)Platform.PerformanceFrequency);
 			}
 
-			public static void StopWithOutput()
+			public static void StopWithMillisecondOutput()
 			{
-				Output.WriteLine($"Stopwatch: {Stop() * 1000.0}");
+				Output.WriteLine($"Stopwatch: {Stop()}ms");
+			}
+
+			public static void StopWithMicrosecondOutput()
+			{
+				Output.WriteLine($"Stopwatch: {Stop() * 1000.0}µs");
 			}
 		}
 	}
