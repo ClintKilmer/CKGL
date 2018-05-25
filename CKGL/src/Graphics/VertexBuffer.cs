@@ -53,6 +53,8 @@ namespace CKGL
 			if (vertexAttributeLayout.Stride != bufferSize)
 				throw new ArgumentOutOfRangeException("The VertexAttributeLayout.Stride does not match the Marshalled size of a buffer element.");
 
+			//Output.WriteLine($"vertexAttributeLayout.Stride: {vertexAttributeLayout.Stride} - bufferSize: {bufferSize}");
+
 			Bind();
 			GL.BufferData(BufferTarget.Array, bufferSize * vertexCount, buffer, bufferUsage);
 		}

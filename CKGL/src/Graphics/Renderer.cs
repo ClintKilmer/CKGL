@@ -11,22 +11,22 @@ namespace CKGL
 			public Vector3 Position;
 			public Colour Colour;
 			public UV UV;
-			public uint Textured;
+			public byte Textured;
 
 			public Vertex(Vector3 position, Colour colour, UV uv, bool textured)
 			{
 				Position = position;
 				Colour = colour;
 				UV = uv;
-				Textured = textured ? 1u : 0u;
+				Textured = (byte)(textured ? 1 : 0);
 			}
 
 			public readonly static VertexAttributeLayout AttributeLayout = new VertexAttributeLayout
 			(
-				new VertexAttribute(VertexType.Float, 3, false),          // position
-				new VertexAttribute(VertexType.UnsignedByte, 4, true),    // colour
-				new VertexAttribute(VertexType.UnsignedShort, 2, true),   // uvs
-				new VertexAttribute(VertexType.UnsignedInt, 1, true)      // textured
+				new VertexAttribute(VertexType.Float, 3, false),        // Position
+				new VertexAttribute(VertexType.UnsignedByte, 4, true),  // Colour
+				new VertexAttribute(VertexType.UnsignedShort, 2, true), // UV
+				new VertexAttribute(VertexType.UnsignedByte, 1, false)  // Textured
 			);
 
 			VertexAttributeLayout IVertex.AttributeLayout
@@ -120,7 +120,7 @@ namespace CKGL
 				Flush();
 
 				// Adaptive vertex buffer size
-				if(bufferSize < maxBufferSize)
+				if (bufferSize < maxBufferSize)
 				{
 					bufferSize *= 2;
 					if (bufferSize > maxBufferSize)
