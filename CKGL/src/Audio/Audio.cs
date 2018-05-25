@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-
 using OpenAL;
 using static SDL2.SDL;
 
@@ -50,6 +49,9 @@ namespace CKGL
 				Destroy();
 				throw new InvalidOperationException("Could not make OpenAL Listener");
 			}
+
+			// Debug
+			Output.WriteLine($"OpenAL Initialized");
 		}
 
 		public static void Destroy()
@@ -175,7 +177,6 @@ namespace CKGL
 						break;
 					default:
 						SDL_FreeWAV(audioBuffer);
-						//return false;
 						throw new InvalidOperationException($"SDL failed parsing wav: {file}");
 				}
 

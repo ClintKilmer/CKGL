@@ -45,8 +45,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\Texture.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\Texture2D.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\VertexArray.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\VertexBuffer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\VertexAttributeLayout.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\VertexBuffer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Input\Input.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Input\KeyCode.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Input\ScanCode.cs" />
