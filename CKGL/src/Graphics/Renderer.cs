@@ -42,8 +42,10 @@ namespace CKGL
 		private static VertexArray vao;
 		private static VertexBuffer vbo;
 		private static DrawMode currentDrawMode = DrawMode.TriangleList;
-		// TODO - Find good Renderer buffersize
-		private const int bufferSize = 150000;
+		// Adaptive vertex buffer size
+		//private static int bufferSize = 16384; // Performant on Laptop
+		private static int bufferSize = 1024;
+		private const int maxBufferSize = 128000;
 		//private const int bufferSize = 1998; // Divisible by 3 and 2 for no vertex wrapping per batch
 		private static Vertex[] vertices = new Vertex[bufferSize];
 		private static int vertexCount = 0;
@@ -118,7 +120,21 @@ namespace CKGL
 			}
 
 			if (vertexCount >= bufferSize)
+			{
 				Flush();
+
+				// Adaptive vertex buffer size
+				if(bufferSize < maxBufferSize)
+				{
+					bufferSize *= 2;
+					if (bufferSize > maxBufferSize)
+						bufferSize = maxBufferSize;
+
+					Array.Resize(ref vertices, bufferSize);
+
+					Output.WriteLine($"Renderer - VertexBuffer size: {bufferSize:n0}");
+				}
+			}
 
 			vertices[vertexCount] = new Vertex(position, colour ?? Colour.White, uv ?? UV.Zero, uv != null);
 			vertexCount++;
