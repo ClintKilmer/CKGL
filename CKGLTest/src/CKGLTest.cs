@@ -322,7 +322,7 @@ namespace CKGLTest
 			//t.Shear = new Shear3D(0, 0, Math.Sin(Time.TotalSeconds * 0.7f) * 0.5f, Math.Cos(Time.TotalSeconds * 0.7f) * 0.5f, 0, 0);
 			Renderer.Draw3D.SetTransform(t);
 
-			Colour gridColour = Colour.Grey.Alpha(0.3f);
+			Colour gridColour = new Colour(0.1f, 0.1f, 0.1f, 1f);
 			int length = 100;
 			//for (int yy = -length; yy <= length; yy++)
 			//for (int yy = 0; yy <= 0; yy++)
@@ -695,6 +695,11 @@ namespace CKGLTest
 
 		public override void OnWindowResized()
 		{
+			//surface.Destroy();
+			//width = Window.Width;
+			//height = Window.Height;
+			//surface = new RenderTarget(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth24);
+
 			Camera.AspectRatio = surface.AspectRatio;
 			//Camera.AspectRatio = Window.AspectRatio;
 		}
