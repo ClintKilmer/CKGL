@@ -49,14 +49,16 @@ namespace CKGL
 			if (buffer.Length < vertexCount)
 				throw new ArgumentOutOfRangeException("vertexCount", "This parameter must be a valid index within the array.");
 
-			int bufferSize = Marshal.SizeOf(typeof(T));
-			if (vertexAttributeLayout.Stride != bufferSize)
-				throw new ArgumentOutOfRangeException("The VertexAttributeLayout.Stride does not match the Marshalled size of a buffer element.");
+			int marshalledSize = Marshal.SizeOf(typeof(T));
 
-			//Output.WriteLine($"vertexAttributeLayout.Stride: {vertexAttributeLayout.Stride} - bufferSize: {bufferSize}");
+			//Output.WriteLine($"vertexAttributeLayout.Stride: {vertexAttributeLayout.Stride} - marshalledSize: {marshalledSize}");
+			//Output.WriteLine($"Marshal.SizeOf(typeof(T)): {marshalledSize}");
+
+			if (vertexAttributeLayout.Stride != marshalledSize)
+				throw new ArgumentOutOfRangeException("The Stride defined in VertexAttributeLayout does not match the Marshalled size of the Vertex.");
 
 			Bind();
-			GL.BufferData(BufferTarget.Array, bufferSize * vertexCount, buffer, bufferUsage);
+			GL.BufferData(BufferTarget.Array, marshalledSize * vertexCount, buffer, bufferUsage);
 		}
 	}
 }

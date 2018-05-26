@@ -5,7 +5,7 @@ namespace CKGL
 {
 	public static class Renderer
 	{
-		[StructLayout(LayoutKind.Sequential, Pack = 1)]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 		public struct Vertex : IVertex
 		{
 			public Vector3 Position;
@@ -23,6 +23,7 @@ namespace CKGL
 
 			public readonly static VertexAttributeLayout AttributeLayout = new VertexAttributeLayout
 			(
+				Marshal.SizeOf(typeof(Vertex)),                         // Dynamic Stride - For larger StructLayout Pack sizes
 				new VertexAttribute(VertexType.Float, 3, false),        // Position
 				new VertexAttribute(VertexType.UnsignedByte, 4, true),  // Colour
 				new VertexAttribute(VertexType.UnsignedShort, 2, true), // UV

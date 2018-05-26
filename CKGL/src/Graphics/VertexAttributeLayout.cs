@@ -59,15 +59,19 @@ namespace CKGL
 		public GLint Stride { get; private set; }
 		public VertexAttribute[] Attributes { get { return (VertexAttribute[])attributes.Clone(); } }
 
-		public VertexAttributeLayout(params VertexAttribute[] attributes)
+		public VertexAttributeLayout(params VertexAttribute[] attributes) : this(0, attributes) { }
+		public VertexAttributeLayout(int stride, params VertexAttribute[] attributes)
 		{
 			if (attributes == null || attributes.Length == 0)
 				throw new ArgumentNullException("attributes", "At least 1 attribute is required");
 
 			this.attributes = (VertexAttribute[])attributes.Clone();
 
-			for (int i = 0; i < attributes.Length; i++)
-				Stride += attributes[i].Size;
+			if (stride > 0)
+				Stride = stride;
+			else
+				for (int i = 0; i < attributes.Length; i++)
+					Stride += attributes[i].Size;
 		}
 
 		public void SetVertexAttributes()
