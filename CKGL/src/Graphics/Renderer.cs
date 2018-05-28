@@ -18,7 +18,7 @@ namespace CKGL
 				Position = position;
 				Colour = colour;
 				UV = uv;
-				Textured = (byte)(textured ? 1 : 0);
+				Textured = (byte)(textured ? 255 : 0);
 			}
 
 			public readonly static VertexAttributeLayout AttributeLayout = new VertexAttributeLayout
@@ -27,7 +27,7 @@ namespace CKGL
 				new VertexAttribute(VertexType.Float, 3, false),        // Position
 				new VertexAttribute(VertexType.UnsignedByte, 4, true),  // Colour
 				new VertexAttribute(VertexType.UnsignedShort, 2, true), // UV
-				new VertexAttribute(VertexType.UnsignedByte, 1, false)  // Textured
+				new VertexAttribute(VertexType.UnsignedByte, 1, true)  // Textured
 			);
 
 			VertexAttributeLayout IVertex.AttributeLayout
