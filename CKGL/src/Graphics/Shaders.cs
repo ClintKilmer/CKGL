@@ -83,21 +83,9 @@ in DATA
 
 void main()
 {
-	// Ternary - Test
-	//colour = i.textured > 0.0 ? texture(Texture, i.uv) * i.colour : i.colour;
-	
-	// off-pattern - potentially slower
-    //if (i.textured > 0.0)
-	//	colour = texture(Texture, i.uv) * i.colour;
-    //else
-    //    colour = i.colour;
-	
-	//colour = mix(i.colour, texture(Texture, i.uv) * i.colour, i.textured); // Still Fast
-	colour = texture(Texture, i.uv) * i.colour * i.textured + i.colour * (1.0 - i.textured); // Fastest
+	colour = mix(i.colour, texture(Texture, i.uv) * i.colour, i.textured);
 }";
 			#endregion
-
-			!!! - HERE
 
 			public Matrix MVP { set { SetUniform("MVP", value); } }
 
@@ -172,10 +160,7 @@ in DATA
 
 void main()
 {
-    if (i.textured > 0.0)
-		colour = texture(Texture, i.uv) * i.colour;
-    else
-        colour = i.colour;
+    colour = mix(i.colour, texture(Texture, i.uv) * i.colour, i.textured);
 	
 	if(FogType == 0) // Fog - Linear Vertex
 		colour.rgb = mix(colour.rgb, FogColour.rgb, i.linearFogAmount);
