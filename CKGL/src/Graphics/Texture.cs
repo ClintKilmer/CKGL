@@ -15,7 +15,7 @@ namespace CKGL
 			public GLuint ID;
 			public TextureTarget Target;
 		}
-		private static Binding[] bindings = new Binding[GL.MaxTextureUnits];
+		private static Binding[] bindings = new Binding[GL.MaxTextureImageUnits];
 
 		public static int Swaps { get; private set; }
 

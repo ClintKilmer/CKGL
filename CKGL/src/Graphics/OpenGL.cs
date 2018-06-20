@@ -18,29 +18,17 @@ namespace OpenGL
 {
 	public static class GL
 	{
-		static int majorVersion = 0x821B;
-		static int minorVersion = 0x821C;
-		static int maxColourAttachments = 0x8CDF;
-		static int maxCubeMapTextureSize = 0x851C;
-		static int maxDrawBuffers = 0x8824;
-		static int maxElementIndices = 0x80E9;
-		static int maxElementVertices = 0x80E8;
-		static int maxRenderbufferSize = 0x84E8;
-		static int maxSamples = 0x8D57;
-		static int maxTextureImageUnits = 0x8872;
-		static int maxTextureSize = 0x0D33;
-
-		public static int MajorVersion { get { return majorVersion; } }
-		public static int MinorVersion { get { return minorVersion; } }
-		public static int MaxColourAttachments { get { return maxColourAttachments; } }
-		public static int MaxCubeMapTextureSize { get { return maxCubeMapTextureSize; } }
-		public static int MaxDrawBuffers { get { return maxDrawBuffers; } }
-		public static int MaxElementIndices { get { return maxElementIndices; } }
-		public static int MaxElementVertices { get { return maxElementVertices; } }
-		public static int MaxRenderbufferSize { get { return maxRenderbufferSize; } }
-		public static int MaxSamples { get { return maxSamples; } }
-		public static int MaxTextureImageUnits { get { return maxTextureImageUnits; } }
-		public static int MaxTextureSize { get { return maxTextureSize; } }
+		public static GLint MajorVersion { get; private set; }
+		public static GLint MinorVersion { get; private set; }
+		public static GLint MaxColourAttachments { get; private set; }
+		public static GLint MaxCubeMapTextureSize { get; private set; }
+		public static GLint MaxDrawBuffers { get; private set; }
+		public static GLint MaxElementIndices { get; private set; }
+		public static GLint MaxElementVertices { get; private set; }
+		public static GLint MaxRenderbufferSize { get; private set; }
+		public static GLint MaxSamples { get; private set; }
+		public static GLint MaxTextureImageUnits { get; private set; }
+		public static GLint MaxTextureSize { get; private set; }
 
 		public static void Init()
 		{
@@ -57,17 +45,17 @@ namespace OpenGL
 				}
 			}
 
-			GetIntegerV((GLuint)majorVersion, out majorVersion);
-			GetIntegerV((GLuint)minorVersion, out minorVersion);
-			GetIntegerV((GLuint)maxColourAttachments, out maxColourAttachments);
-			GetIntegerV((GLuint)maxCubeMapTextureSize, out maxCubeMapTextureSize);
-			GetIntegerV((GLuint)maxDrawBuffers, out maxDrawBuffers);
-			GetIntegerV((GLuint)maxElementIndices, out maxElementIndices);
-			GetIntegerV((GLuint)maxElementVertices, out maxElementVertices);
-			GetIntegerV((GLuint)maxRenderbufferSize, out maxRenderbufferSize);
-			GetIntegerV((GLuint)maxSamples, out maxSamples);
-			GetIntegerV((GLuint)maxTextureImageUnits, out maxTextureImageUnits);
-			GetIntegerV((GLuint)maxTextureSize, out maxTextureSize);
+			MajorVersion = GetIntegerv(Integers.MajorVersion);
+			MinorVersion = GetIntegerv(Integers.MinorVersion);
+			MaxColourAttachments = GetIntegerv(Integers.MaxColourAttachments);
+			MaxCubeMapTextureSize = GetIntegerv(Integers.MaxCubeMapTextureSize);
+			MaxDrawBuffers = GetIntegerv(Integers.MaxDrawBuffers);
+			MaxElementIndices = GetIntegerv(Integers.MaxElementIndices);
+			MaxElementVertices = GetIntegerv(Integers.MaxElementVertices);
+			MaxRenderbufferSize = GetIntegerv(Integers.MaxRenderbufferSize);
+			MaxSamples = GetIntegerv(Integers.MaxSamples);
+			MaxTextureImageUnits = GetIntegerv(Integers.MaxTextureImageUnits);
+			MaxTextureSize = GetIntegerv(Integers.MaxTextureSize);
 
 			// Debug
 			Output.WriteLine($"OpenGL Initialized");
@@ -91,17 +79,17 @@ namespace OpenGL
 #pragma warning disable 0649
 
 		[Conditional("DEBUG")]
-		static void CheckError()
+		private static void CheckError()
 		{
 			var err = glGetError();
 			Debug.Assert(err == ErrorCode.NoError, $"OpenGL Error {(int)err:X}: {err.ToString()}");
 		}
 
 		delegate ErrorCode _glGetError();
-		static _glGetError glGetError;
+		private static _glGetError glGetError;
 
 		delegate void _glEnable(EnableCap mode);
-		static _glEnable glEnable;
+		private static _glEnable glEnable;
 		public static void Enable(EnableCap mode)
 		{
 			glEnable(mode);
@@ -109,7 +97,7 @@ namespace OpenGL
 		}
 
 		delegate void _glDisable(EnableCap mode);
-		static _glDisable glDisable;
+		private static _glDisable glDisable;
 		public static void Disable(EnableCap mode)
 		{
 			glDisable(mode);
@@ -117,7 +105,7 @@ namespace OpenGL
 		}
 
 		delegate void _glClear(BufferBit mask);
-		static _glClear glClear;
+		private static _glClear glClear;
 		public static void Clear(BufferBit mask)
 		{
 			glClear(mask);
@@ -125,7 +113,7 @@ namespace OpenGL
 		}
 
 		delegate void _glClearColor(float red, float green, float blue, float alpha);
-		static _glClearColor glClearColor;
+		private static _glClearColor glClearColor;
 		public static void ClearColour(float red, float green, float blue, float alpha)
 		{
 			glClearColor(red, green, blue, alpha);
@@ -137,7 +125,7 @@ namespace OpenGL
 		}
 
 		delegate void _glClearDepth(double value);
-		static _glClearDepth glClearDepth;
+		private static _glClearDepth glClearDepth;
 		public static void ClearDepth(float value)
 		{
 			glClearDepth(value);
@@ -145,7 +133,7 @@ namespace OpenGL
 		}
 
 		delegate void _glDepthRange(double min, double max);
-		static _glDepthRange glDepthRange;
+		private static _glDepthRange glDepthRange;
 		public static void DepthRange(float min, float max)
 		{
 			glDepthRange(min, max);
@@ -153,7 +141,7 @@ namespace OpenGL
 		}
 
 		delegate void _glDepthMask(bool flag);
-		static _glDepthMask glDepthMask;
+		private static _glDepthMask glDepthMask;
 		public static void DepthMask(bool flag)
 		{
 			glDepthMask(flag);
@@ -161,7 +149,7 @@ namespace OpenGL
 		}
 
 		delegate void _glColorMask(bool red​, bool green​, bool blue​, bool alpha);
-		static _glColorMask glColorMask;
+		private static _glColorMask glColorMask;
 		public static void ColourMask(bool red​, bool green​, bool blue​, bool alpha​)
 		{
 			glColorMask(red​, green​, blue​, alpha​);
@@ -169,7 +157,7 @@ namespace OpenGL
 		}
 
 		delegate void _glColorMaski(GLuint buf, bool red​, bool green​, bool blue​, bool alpha​);
-		static _glColorMaski glColorMaski;
+		private static _glColorMaski glColorMaski;
 		public static void ColourMask(GLuint buf, bool red​, bool green​, bool blue​, bool alpha​)
 		{
 			glColorMaski(buf, red​, green​, blue​, alpha​);
@@ -177,7 +165,7 @@ namespace OpenGL
 		}
 
 		delegate void _glViewport(int x, int y, GLint width, GLint height);
-		static _glViewport glViewport;
+		private static _glViewport glViewport;
 		public static void Viewport(int x, int y, GLint width, GLint height)
 		{
 			glViewport(x, y, width, height);
@@ -185,7 +173,7 @@ namespace OpenGL
 		}
 
 		delegate void _glCullFace(Face face);
-		static _glCullFace glCullFace;
+		private static _glCullFace glCullFace;
 		public static void CullFace(Face face)
 		{
 			glCullFace(face);
@@ -193,7 +181,7 @@ namespace OpenGL
 		}
 
 		delegate void _glFrontFace(FrontFace face);
-		static _glFrontFace glFrontFace;
+		private static _glFrontFace glFrontFace;
 		public static void FrontFace(FrontFace face)
 		{
 			glFrontFace(face);
@@ -201,7 +189,7 @@ namespace OpenGL
 		}
 
 		delegate void _glPolygonMode(Face face, PolygonMode polygonMode);
-		static _glPolygonMode glPolygonMode;
+		private static _glPolygonMode glPolygonMode;
 		public static void PolygonMode(Face face, PolygonMode polygonMode)
 		{
 			glPolygonMode(face, polygonMode);
@@ -209,8 +197,8 @@ namespace OpenGL
 		}
 
 		unsafe delegate IntPtr _glGetString(Strings name);
-		static _glGetString glGetString;
-		static unsafe string GetString(Strings name)
+		private static _glGetString glGetString;
+		unsafe public static string GetString(Strings name)
 		{
 			unsafe
 			{
@@ -220,20 +208,22 @@ namespace OpenGL
 			}
 		}
 
-		unsafe delegate void _glGetIntegerv(GLuint name, int* data);
-		static _glGetIntegerv glGetIntegerv;
-		static unsafe void GetIntegerV(GLuint name, out int val)
+		unsafe delegate void _glGetIntegerv(Integers name, GLint* data);
+		private static _glGetIntegerv glGetIntegerv;
+		private static GLint addrGetIntegerv;
+		unsafe public static GLint GetIntegerv(Integers name)
 		{
-			fixed (int* p = &val)
+			fixed (GLint* p = &addrGetIntegerv)
 			{
 				glGetIntegerv(name, p);
-				val = *p;
+				addrGetIntegerv = *p;
 			}
 			CheckError();
+			return addrGetIntegerv;
 		}
 
 		delegate void _glBlendEquation(BlendEquation eq);
-		static _glBlendEquation glBlendEquation;
+		private static _glBlendEquation glBlendEquation;
 		public static void BlendEquation(BlendEquation eq)
 		{
 			glBlendEquation(eq);
@@ -241,7 +231,7 @@ namespace OpenGL
 		}
 
 		delegate void _glBlendEquationSeparate(BlendEquation modeRGB, BlendEquation modeAlpha);
-		static _glBlendEquationSeparate glBlendEquationSeparate;
+		private static _glBlendEquationSeparate glBlendEquationSeparate;
 		public static void BlendEquationSeparate(BlendEquation modeRGB, BlendEquation modeAlpha)
 		{
 			glBlendEquationSeparate(modeRGB, modeAlpha);
@@ -249,7 +239,7 @@ namespace OpenGL
 		}
 
 		delegate void _glBlendFunc(BlendFactor sfactor, BlendFactor dfactor);
-		static _glBlendFunc glBlendFunc;
+		private static _glBlendFunc glBlendFunc;
 		public static void BlendFunc(BlendFactor sFactor, BlendFactor dFactor)
 		{
 			glBlendFunc(sFactor, dFactor);
@@ -257,7 +247,7 @@ namespace OpenGL
 		}
 
 		delegate void _glBlendFuncSeparate(BlendFactor srcRGB, BlendFactor dstRGB, BlendFactor srcAlpha, BlendFactor dstAlpha);
-		static _glBlendFuncSeparate glBlendFuncSeparate;
+		private static _glBlendFuncSeparate glBlendFuncSeparate;
 		public static void BlendFuncSeparate(BlendFactor srcRGB, BlendFactor dstRGB, BlendFactor srcAlpha, BlendFactor dstAlpha)
 		{
 			glBlendFuncSeparate(srcRGB, dstRGB, srcAlpha, dstAlpha);
@@ -265,7 +255,7 @@ namespace OpenGL
 		}
 
 		unsafe delegate void _glGenTextures(GLint n, uint* textures);
-		static _glGenTextures glGenTextures;
+		private static _glGenTextures glGenTextures;
 		unsafe public static void GenTextures(GLint n, uint[] textures)
 		{
 			fixed (uint* ptr = textures) { glGenTextures(n, ptr); }
@@ -280,7 +270,7 @@ namespace OpenGL
 		}
 
 		unsafe delegate void _glDeleteTextures(GLint n, uint* textures);
-		static _glDeleteTextures glDeleteTextures;
+		private static _glDeleteTextures glDeleteTextures;
 		unsafe public static void DeleteTextures(GLint n, uint[] textures)
 		{
 			fixed (uint* ptr = textures) { glDeleteTextures(n, ptr); }
@@ -292,22 +282,20 @@ namespace OpenGL
 			CheckError();
 		}
 
-		public const int MaxTextureUnits = 32;
-		static GLuint texture0 = 0x84C0;
-
-		delegate void _glActiveTexture(uint unit);
-		static _glActiveTexture glActiveTexture;
-		public static void ActiveTexture(uint unit)
+		delegate void _glActiveTexture(GLuint textureImageUnit);
+		private static _glActiveTexture glActiveTexture;
+		public static void ActiveTexture(GLuint textureImageUnit)
 		{
-			if (unit >= MaxTextureUnits)
-				throw new Exception("Active texture must be 0-" + (MaxTextureUnits - 1));
+			if (textureImageUnit >= MaxTextureImageUnits)
+				throw new Exception("ActiveTexture textureImageUnit must be between 0 and " + (MaxTextureImageUnits - 1));
 
-			glActiveTexture(texture0 + unit);
+			// TextureUnit0 = 0x84C0
+			glActiveTexture(0x84C0 + textureImageUnit);
 			CheckError();
 		}
 
 		delegate void _glBindTexture(TextureTarget target, uint texture);
-		static _glBindTexture glBindTexture;
+		private static _glBindTexture glBindTexture;
 		public static void BindTexture(TextureTarget target, uint texture)
 		{
 			glBindTexture(target, texture);
@@ -315,7 +303,7 @@ namespace OpenGL
 		}
 
 		delegate void _glTexParameteri(TextureTarget target, TextureParam name, int param);
-		static _glTexParameteri glTexParameteri;
+		private static _glTexParameteri glTexParameteri;
 		public static void TexParameterI(TextureTarget target, TextureParam name, int param)
 		{
 			glTexParameteri(target, name, param);
@@ -323,7 +311,7 @@ namespace OpenGL
 		}
 
 		delegate void _glGetTexParameteriv(TextureTarget target, TextureParam name, out int result);
-		static _glGetTexParameteriv glGetTexParameteriv;
+		private static _glGetTexParameteriv glGetTexParameteriv;
 		public static void GetTexParameterI(TextureTarget target, TextureParam name, out int result)
 		{
 			glGetTexParameteriv(target, name, out result);
@@ -331,7 +319,7 @@ namespace OpenGL
 		}
 
 		delegate void _glTexImage2D(TextureTarget target, int level, int internalFormat, GLint width, GLint height, int border, PixelFormat format, PixelType type, IntPtr data);
-		static _glTexImage2D glTexImage2D;
+		private static _glTexImage2D glTexImage2D;
 		public static void TexImage2D(TextureTarget target, int level, TextureFormat internalFormat, GLint width, GLint height, int border, PixelFormat format, PixelType type, IntPtr data)
 		{
 			glTexImage2D(target, level, (int)internalFormat, width, height, border, format, type, data);
@@ -339,7 +327,7 @@ namespace OpenGL
 		}
 
 		delegate void _glGetTexImage(TextureTarget target, int level, PixelFormat format, PixelType type, IntPtr data);
-		static _glGetTexImage glGetTexImage;
+		private static _glGetTexImage glGetTexImage;
 		public static void GetTexImage(TextureTarget target, int level, PixelFormat format, PixelType type, IntPtr data)
 		{
 			glGetTexImage(target, level, format, type, data);
@@ -347,7 +335,7 @@ namespace OpenGL
 		}
 
 		delegate uint _glCreateShader(ShaderType type);
-		static _glCreateShader glCreateShader;
+		private static _glCreateShader glCreateShader;
 		public static uint CreateShader(ShaderType type)
 		{
 			var shader = glCreateShader(type);
@@ -356,7 +344,7 @@ namespace OpenGL
 		}
 
 		delegate void _glDeleteShader(uint shader);
-		static _glDeleteShader glDeleteShader;
+		private static _glDeleteShader glDeleteShader;
 		public static void DeleteShader(uint shader)
 		{
 			glDeleteShader(shader);
@@ -364,7 +352,7 @@ namespace OpenGL
 		}
 
 		delegate void _glAttachShader(uint program, uint shader);
-		static _glAttachShader glAttachShader;
+		private static _glAttachShader glAttachShader;
 		public static void AttachShader(uint program, uint shader)
 		{
 			glAttachShader(program, shader);
@@ -372,7 +360,7 @@ namespace OpenGL
 		}
 
 		delegate void _glDetachShader(uint program, uint shader);
-		static _glDetachShader glDetachShader;
+		private static _glDetachShader glDetachShader;
 		public static void DetachShader(uint program, uint shader)
 		{
 			glDetachShader(program, shader);
@@ -380,7 +368,7 @@ namespace OpenGL
 		}
 
 		delegate void _glShaderSource(uint shader, GLint count, string[] source, int[] length);
-		static _glShaderSource glShaderSource;
+		private static _glShaderSource glShaderSource;
 		public static void ShaderSource(uint shader, string source)
 		{
 			var sourceArr = new string[] { source };
@@ -390,7 +378,7 @@ namespace OpenGL
 		}
 
 		delegate void _glCompileShader(uint shader);
-		static _glCompileShader glCompileShader;
+		private static _glCompileShader glCompileShader;
 		public static void CompileShader(uint shader)
 		{
 			glCompileShader(shader);
@@ -398,7 +386,7 @@ namespace OpenGL
 		}
 
 		delegate void _glGetShaderiv(uint shader, ShaderParam pname, out int result);
-		static _glGetShaderiv glGetShaderiv;
+		private static _glGetShaderiv glGetShaderiv;
 		public static void GetShader(uint shader, ShaderParam pname, out int result)
 		{
 			glGetShaderiv(shader, pname, out result);
@@ -406,7 +394,7 @@ namespace OpenGL
 		}
 
 		delegate void _glGetShaderInfoLog(uint shader, GLint maxLength, out GLint length, byte[] infoLog);
-		static _glGetShaderInfoLog glGetShaderInfoLog;
+		private static _glGetShaderInfoLog glGetShaderInfoLog;
 		public static string GetShaderInfoLog(uint shader)
 		{
 			GetShader(shader, ShaderParam.InfoLogLength, out int len);
@@ -417,7 +405,7 @@ namespace OpenGL
 		}
 
 		delegate uint _glCreateProgram();
-		static _glCreateProgram glCreateProgram;
+		private static _glCreateProgram glCreateProgram;
 		public static uint CreateProgram()
 		{
 			var program = glCreateProgram();
@@ -426,7 +414,7 @@ namespace OpenGL
 		}
 
 		delegate void _glDeleteProgram(uint program);
-		static _glDeleteProgram glDeleteProgram;
+		private static _glDeleteProgram glDeleteProgram;
 		public static void DeleteProgram(uint program)
 		{
 			glDeleteProgram(program);
@@ -434,7 +422,7 @@ namespace OpenGL
 		}
 
 		delegate void _glLinkProgram(uint program);
-		static _glLinkProgram glLinkProgram;
+		private static _glLinkProgram glLinkProgram;
 		public static void LinkProgram(uint program)
 		{
 			glLinkProgram(program);
@@ -442,7 +430,7 @@ namespace OpenGL
 		}
 
 		delegate void _glGetProgramiv(uint program, ProgramParam pname, out int result);
-		static _glGetProgramiv glGetProgramiv;
+		private static _glGetProgramiv glGetProgramiv;
 		public static void GetProgram(uint program, ProgramParam pname, out int result)
 		{
 			glGetProgramiv(program, pname, out result);
@@ -450,7 +438,7 @@ namespace OpenGL
 		}
 
 		delegate void _glGetProgramInfoLog(uint program, GLint maxLength, out GLint length, byte[] infoLog);
-		static _glGetProgramInfoLog glGetProgramInfoLog;
+		private static _glGetProgramInfoLog glGetProgramInfoLog;
 		public static string GetProgramInfoLog(uint program)
 		{
 			GetProgram(program, ProgramParam.InfoLogLength, out int len);
@@ -460,12 +448,12 @@ namespace OpenGL
 			return Encoding.UTF8.GetString(bytes);
 		}
 
-		static byte[] uniformName = new byte[32];
-		static UniformType[] validUniformTypes;
+		private static byte[] uniformName = new byte[32];
+		private static UniformType[] validUniformTypes;
 
 		unsafe delegate void _glGetActiveUniform(uint program, uint index, GLint bufSize, out GLint length, out int size, out UniformType type, byte* name);
-		static _glGetActiveUniform glGetActiveUniform;
-		public static unsafe void GetActiveUniform(uint program, uint index, out int size, out UniformType type, out string name)
+		private static _glGetActiveUniform glGetActiveUniform;
+		unsafe public static void GetActiveUniform(uint program, uint index, out int size, out UniformType type, out string name)
 		{
 			if (validUniformTypes == null)
 				validUniformTypes = (UniformType[])Enum.GetValues(typeof(UniformType));
@@ -480,7 +468,7 @@ namespace OpenGL
 		}
 
 		delegate void _glUseProgram(uint program);
-		static _glUseProgram glUseProgram;
+		private static _glUseProgram glUseProgram;
 		public static void UseProgram(uint program)
 		{
 			glUseProgram(program);
@@ -488,7 +476,7 @@ namespace OpenGL
 		}
 
 		delegate void _glGetAttribLocation(uint program, string name);
-		static _glGetAttribLocation glGetAttribLocation;
+		private static _glGetAttribLocation glGetAttribLocation;
 		public static void GetAttribLocation(uint program, string name)
 		{
 			glGetAttribLocation(program, name);
@@ -496,7 +484,7 @@ namespace OpenGL
 		}
 
 		delegate void _glBindAttribLocation(uint program, uint index, string name);
-		static _glBindAttribLocation glBindAttribLocation;
+		private static _glBindAttribLocation glBindAttribLocation;
 		public static void BindAttribLocation(uint program, uint index, string name)
 		{
 			glBindAttribLocation(program, index, name);
@@ -504,7 +492,7 @@ namespace OpenGL
 		}
 
 		delegate int _glGetUniformLocation(uint program, string name);
-		static _glGetUniformLocation glGetUniformLocation;
+		private static _glGetUniformLocation glGetUniformLocation;
 		public static int GetUniformLocation(uint program, string name)
 		{
 			var loc = glGetUniformLocation(program, name);
@@ -513,7 +501,7 @@ namespace OpenGL
 		}
 
 		delegate void _glVertexAttribPointer(uint index, int size, VertexType type, bool normalized, GLint stride, IntPtr pointer);
-		static _glVertexAttribPointer glVertexAttribPointer;
+		private static _glVertexAttribPointer glVertexAttribPointer;
 		public static void VertexAttribPointer(uint index, int size, VertexType type, bool normalized, GLint stride, IntPtr pointer)
 		{
 			glVertexAttribPointer(index, size, type, normalized, stride, pointer);
@@ -525,7 +513,7 @@ namespace OpenGL
 		}
 
 		delegate void _glEnableVertexAttribArray(uint index);
-		static _glEnableVertexAttribArray glEnableVertexAttribArray;
+		private static _glEnableVertexAttribArray glEnableVertexAttribArray;
 		public static void EnableVertexAttribArray(uint index)
 		{
 			glEnableVertexAttribArray(index);
@@ -533,7 +521,7 @@ namespace OpenGL
 		}
 
 		delegate void _glDisableVertexAttribArray(uint index);
-		static _glDisableVertexAttribArray glDisableVertexAttribArray;
+		private static _glDisableVertexAttribArray glDisableVertexAttribArray;
 		public static void DisableVertexAttribArray(uint index)
 		{
 			glDisableVertexAttribArray(index);
@@ -541,7 +529,7 @@ namespace OpenGL
 		}
 
 		unsafe delegate void _glGenBuffers(GLint n, uint* buffers);
-		static _glGenBuffers glGenBuffers;
+		private static _glGenBuffers glGenBuffers;
 		unsafe public static void GenBuffers(GLint n, uint[] buffers)
 		{
 			fixed (uint* ptr = buffers) { glGenBuffers(n, ptr); }
@@ -560,7 +548,7 @@ namespace OpenGL
 		}
 
 		unsafe delegate void _glDeleteBuffers(GLint n, uint* buffers);
-		static _glDeleteBuffers glDeleteBuffers;
+		private static _glDeleteBuffers glDeleteBuffers;
 		unsafe public static void DeleteBuffers(GLint n, uint[] buffers)
 		{
 			fixed (uint* ptr = buffers) { glDeleteBuffers(n, ptr); }
@@ -577,7 +565,7 @@ namespace OpenGL
 		}
 
 		delegate void _glBindBuffer(BufferTarget target, uint buffer);
-		static _glBindBuffer glBindBuffer;
+		private static _glBindBuffer glBindBuffer;
 		public static void BindBuffer(BufferTarget target, uint buffer)
 		{
 			glBindBuffer(target, buffer);
@@ -585,7 +573,7 @@ namespace OpenGL
 		}
 
 		unsafe delegate void _glGenVertexArrays(GLint n, uint* arrays);
-		static _glGenVertexArrays glGenVertexArrays;
+		private static _glGenVertexArrays glGenVertexArrays;
 		unsafe public static void GenVertexArrays(GLint n, uint[] arrays)
 		{
 			fixed (uint* ptr = arrays) { glGenVertexArrays(n, ptr); }
@@ -600,7 +588,7 @@ namespace OpenGL
 		}
 
 		unsafe delegate void _glDeleteVertexArrays(GLint n, uint* arrays);
-		static _glDeleteVertexArrays glDeleteVertexArrays;
+		private static _glDeleteVertexArrays glDeleteVertexArrays;
 		unsafe public static void DeleteVertexArrays(GLint n, uint[] arrays)
 		{
 			fixed (uint* ptr = arrays) { glDeleteVertexArrays(n, ptr); }
@@ -613,7 +601,7 @@ namespace OpenGL
 		}
 
 		delegate void _glBindVertexArray(uint array);
-		static _glBindVertexArray glBindVertexArray;
+		private static _glBindVertexArray glBindVertexArray;
 		public static void BindVertexArray(uint array)
 		{
 			glBindVertexArray(array);
@@ -621,7 +609,7 @@ namespace OpenGL
 		}
 
 		delegate void _glBufferData(BufferTarget target, IntPtr size, IntPtr data, BufferUsage usage);
-		static _glBufferData glBufferData;
+		private static _glBufferData glBufferData;
 		public static void BufferData(BufferTarget target, int size, IntPtr data, BufferUsage usage)
 		{
 			glBufferData(target, new IntPtr(size), data, usage);
@@ -634,7 +622,7 @@ namespace OpenGL
 		}
 
 		delegate void _glBufferSubData(BufferTarget target, IntPtr offset, IntPtr size, IntPtr data);
-		static _glBufferSubData glBufferSubData;
+		private static _glBufferSubData glBufferSubData;
 		public static void BufferSubData(BufferTarget target, int offset, int size, IntPtr data)
 		{
 			glBufferSubData(target, new IntPtr(offset), new IntPtr(size), data);
@@ -642,7 +630,7 @@ namespace OpenGL
 		}
 
 		unsafe delegate void _glGenFramebuffers(GLint n, uint* framebuffers);
-		static _glGenFramebuffers glGenFramebuffers;
+		private static _glGenFramebuffers glGenFramebuffers;
 		unsafe public static void GenFramebuffers(GLint n, uint[] framebuffers)
 		{
 			fixed (uint* ptr = framebuffers) { glGenFramebuffers(n, ptr); }
@@ -657,7 +645,7 @@ namespace OpenGL
 		}
 
 		unsafe delegate void _glDeleteFramebuffers(GLint n, uint* framebuffers);
-		static _glDeleteFramebuffers glDeleteFramebuffers;
+		private static _glDeleteFramebuffers glDeleteFramebuffers;
 		unsafe public static void DeleteFramebuffers(GLint n, uint[] framebuffers)
 		{
 			fixed (uint* ptr = framebuffers) { glDeleteFramebuffers(n, ptr); }
@@ -670,7 +658,7 @@ namespace OpenGL
 		}
 
 		delegate void _glBindFramebuffer(FramebufferTarget target, uint framebuffer);
-		static _glBindFramebuffer glBindFramebuffer;
+		private static _glBindFramebuffer glBindFramebuffer;
 		public static void BindFramebuffer(FramebufferTarget target, uint framebuffer)
 		{
 			glBindFramebuffer(target, framebuffer);
@@ -678,34 +666,34 @@ namespace OpenGL
 		}
 
 		delegate void _glFramebufferTexture2D(FramebufferTarget target, TextureAttachment attachment, TextureTarget textarget, uint texture, int level);
-		static _glFramebufferTexture2D glFramebufferTexture2D;
+		private static _glFramebufferTexture2D glFramebufferTexture2D;
 		public static void FramebufferTexture2D(FramebufferTarget target, TextureAttachment attachment, TextureTarget textarget, uint texture, int level)
 		{
 			if (attachment != TextureAttachment.Depth)
 			{
 				uint texn = (uint)attachment - (uint)TextureAttachment.Colour0;
-				if (texn >= maxColourAttachments)
-					throw new Exception("Exceeding max colour attachments: " + maxColourAttachments);
+				if (texn >= MaxColourAttachments)
+					throw new Exception("Exceeding max colour attachments: " + MaxColourAttachments);
 			}
 			glFramebufferTexture2D(target, attachment, textarget, texture, level);
 			CheckError();
 		}
 
 		unsafe delegate void _glDrawBuffers(GLint n, DrawBuffer* bufs);
-		static _glDrawBuffers glDrawBuffers;
+		private static _glDrawBuffers glDrawBuffers;
 		unsafe public static void DrawBuffers(GLint n, DrawBuffer[] bufs)
 		{
 			if (n > bufs.Length)
 				throw new Exception("Not enough buffers in array.");
-			if (n > maxDrawBuffers)
-				throw new Exception("Exceeded maximum number of draw buffers: " + maxDrawBuffers);
+			if (n > MaxDrawBuffers)
+				throw new Exception("Exceeded maximum number of draw buffers: " + MaxDrawBuffers);
 
 			fixed (DrawBuffer* ptr = bufs) { glDrawBuffers(n, ptr); }
 			CheckError();
 		}
 
 		delegate void _glReadBuffer(ReadBuffer buffer);
-		static _glReadBuffer glReadBuffer;
+		private static _glReadBuffer glReadBuffer;
 		public static void ReadBuffer(ReadBuffer buffer)
 		{
 			glReadBuffer(buffer);
@@ -713,7 +701,7 @@ namespace OpenGL
 		}
 
 		unsafe delegate void _glReadPixels(int x, int y, GLint w, GLint h, PixelFormat format, PixelType type, byte* data);
-		static _glReadPixels glReadPixels;
+		private static _glReadPixels glReadPixels;
 		unsafe public static void ReadPixels(RectangleI rect, byte[] data)
 		{
 			if (data.Length < rect.Area)
@@ -723,7 +711,7 @@ namespace OpenGL
 		}
 
 		unsafe delegate void _glGenRenderbuffers(GLint n, uint* renderbuffers);
-		static _glGenRenderbuffers glGenRenderbuffers;
+		private static _glGenRenderbuffers glGenRenderbuffers;
 		unsafe public static void GenRenderbuffers(GLint n, uint[] renderbuffers)
 		{
 			fixed (uint* ptr = renderbuffers) { glGenFramebuffers(n, ptr); }
@@ -740,7 +728,7 @@ namespace OpenGL
 		const uint GL_RENDERBUFFER = 0x8D41;
 
 		unsafe delegate void _glBindRenderbuffer(GLuint target, uint buffer);
-		static _glBindRenderbuffer glBindRenderbuffer;
+		private static _glBindRenderbuffer glBindRenderbuffer;
 		unsafe public static void BindRenderbuffer(uint buffer)
 		{
 			glBindRenderbuffer(GL_RENDERBUFFER, buffer);
@@ -748,7 +736,7 @@ namespace OpenGL
 		}
 
 		unsafe delegate void _glRenderbufferStorage(GLuint target, TextureFormat format, int width, int height);
-		static _glRenderbufferStorage glRenderbufferStorage;
+		private static _glRenderbufferStorage glRenderbufferStorage;
 		unsafe public static void RenderbufferStorage(TextureFormat format, int width, int height)
 		{
 			glRenderbufferStorage(GL_RENDERBUFFER, format, width, height);
@@ -756,7 +744,7 @@ namespace OpenGL
 		}
 
 		unsafe delegate void _glFramebufferRenderbuffer(FramebufferTarget target, TextureAttachment attachment, GLuint renderbufferTarget, uint renderbuffer);
-		static _glFramebufferRenderbuffer glFramebufferRenderbuffer;
+		private static _glFramebufferRenderbuffer glFramebufferRenderbuffer;
 		unsafe public static void FramebufferRenderbuffer(FramebufferTarget target, TextureAttachment attachment, uint renderbuffer)
 		{
 			glFramebufferRenderbuffer(target, attachment, GL_RENDERBUFFER, renderbuffer);
@@ -764,7 +752,7 @@ namespace OpenGL
 		}
 
 		delegate void _glDrawArrays(DrawMode mode, GLint start, GLint count);
-		static _glDrawArrays glDrawArrays;
+		private static _glDrawArrays glDrawArrays;
 		public static void DrawArrays(DrawMode mode, GLint start, GLint count)
 		{
 			glDrawArrays(mode, start, count);
@@ -772,7 +760,7 @@ namespace OpenGL
 		}
 
 		delegate void _glDrawElements(DrawMode mode, GLint count, IndexType type, IntPtr offset);
-		static _glDrawElements glDrawElements;
+		private static _glDrawElements glDrawElements;
 		public static void DrawElements(DrawMode mode, GLint count, IndexType type, IntPtr offset)
 		{
 			glDrawElements(mode, count, type, offset);
@@ -784,7 +772,7 @@ namespace OpenGL
 		}
 
 		delegate void _glBlitFramebuffer(int srcX0, int srcY0, int srcX1, int srcY1, int dstX0, int dstY0, int dstX1, int dstY1, BufferBit mask, BlitFilter filter);
-		static _glBlitFramebuffer glBlitFramebuffer;
+		private static _glBlitFramebuffer glBlitFramebuffer;
 		public static void BlitFramebuffer(RectangleI src, RectangleI dst, BufferBit mask, BlitFilter filter)
 		{
 			glBlitFramebuffer(src.X, src.Y, src.MaxX, src.MaxY, dst.X, dst.Y, dst.MaxX, dst.MaxY, mask, filter);
@@ -792,7 +780,7 @@ namespace OpenGL
 		}
 
 		delegate FramebufferStatus _glCheckFramebufferStatus(FramebufferTarget target);
-		static _glCheckFramebufferStatus glCheckFramebufferStatus;
+		private static _glCheckFramebufferStatus glCheckFramebufferStatus;
 		public static FramebufferStatus CheckFramebufferStatus(FramebufferTarget target)
 		{
 			var status = glCheckFramebufferStatus(target);
@@ -808,14 +796,14 @@ namespace OpenGL
 		delegate void _glUniform2fv(int location, GLint count, float[] value);
 		delegate void _glUniform3fv(int location, GLint count, float[] value);
 		delegate void _glUniform4fv(int location, GLint count, float[] value);
-		static _glUniform1f glUniform1f;
-		static _glUniform2f glUniform2f;
-		static _glUniform3f glUniform3f;
-		static _glUniform4f glUniform4f;
-		static _glUniform1fv glUniform1fv;
-		static _glUniform2fv glUniform2fv;
-		static _glUniform3fv glUniform3fv;
-		static _glUniform4fv glUniform4fv;
+		private static _glUniform1f glUniform1f;
+		private static _glUniform2f glUniform2f;
+		private static _glUniform3f glUniform3f;
+		private static _glUniform4f glUniform4f;
+		private static _glUniform1fv glUniform1fv;
+		private static _glUniform2fv glUniform2fv;
+		private static _glUniform3fv glUniform3fv;
+		private static _glUniform4fv glUniform4fv;
 		public static void Uniform1F(int location, float v0)
 		{
 			glUniform1f(location, v0);
@@ -865,14 +853,14 @@ namespace OpenGL
 		delegate void _glUniform2iv(int location, GLint count, int[] value);
 		delegate void _glUniform3iv(int location, GLint count, int[] value);
 		delegate void _glUniform4iv(int location, GLint count, int[] value);
-		static _glUniform1i glUniform1i;
-		static _glUniform2i glUniform2i;
-		static _glUniform3i glUniform3i;
-		static _glUniform4i glUniform4i;
-		static _glUniform1iv glUniform1iv;
-		static _glUniform2iv glUniform2iv;
-		static _glUniform3iv glUniform3iv;
-		static _glUniform4iv glUniform4iv;
+		private static _glUniform1i glUniform1i;
+		private static _glUniform2i glUniform2i;
+		private static _glUniform3i glUniform3i;
+		private static _glUniform4i glUniform4i;
+		private static _glUniform1iv glUniform1iv;
+		private static _glUniform2iv glUniform2iv;
+		private static _glUniform3iv glUniform3iv;
+		private static _glUniform4iv glUniform4iv;
 		public static void Uniform1I(int location, int v0)
 		{
 			glUniform1i(location, v0);
@@ -922,14 +910,14 @@ namespace OpenGL
 		delegate void _glUniform2uiv(int location, GLint count, uint[] value);
 		delegate void _glUniform3uiv(int location, GLint count, uint[] value);
 		delegate void _glUniform4uiv(int location, GLint count, uint[] value);
-		static _glUniform1ui glUniform1ui;
-		static _glUniform2ui glUniform2ui;
-		static _glUniform3ui glUniform3ui;
-		static _glUniform4ui glUniform4ui;
-		static _glUniform1uiv glUniform1uiv;
-		static _glUniform2uiv glUniform2uiv;
-		static _glUniform3uiv glUniform3uiv;
-		static _glUniform4uiv glUniform4uiv;
+		private static _glUniform1ui glUniform1ui;
+		private static _glUniform2ui glUniform2ui;
+		private static _glUniform3ui glUniform3ui;
+		private static _glUniform4ui glUniform4ui;
+		private static _glUniform1uiv glUniform1uiv;
+		private static _glUniform2uiv glUniform2uiv;
+		private static _glUniform3uiv glUniform3uiv;
+		private static _glUniform4uiv glUniform4uiv;
 		public static void Uniform1UI(int location, uint v0)
 		{
 			glUniform1ui(location, v0);
@@ -972,7 +960,7 @@ namespace OpenGL
 		}
 
 		delegate void _glUniformMatrix2fv(int location, GLint count, bool transpose, float[] value);
-		static _glUniformMatrix2fv glUniformMatrix2fv;
+		private static _glUniformMatrix2fv glUniformMatrix2fv;
 		public static void UniformMatrix2FV(int location, GLint count, bool transpose, float[] value)
 		{
 			glUniformMatrix2fv(location, count, transpose, value);
@@ -980,7 +968,7 @@ namespace OpenGL
 		}
 
 		delegate void _glUniformMatrix3fv(int location, GLint count, bool transpose, float[] value);
-		static _glUniformMatrix3fv glUniformMatrix3fv;
+		private static _glUniformMatrix3fv glUniformMatrix3fv;
 		public static void UniformMatrix3FV(int location, GLint count, bool transpose, float[] value)
 		{
 			glUniformMatrix3fv(location, count, transpose, value);
@@ -988,7 +976,7 @@ namespace OpenGL
 		}
 
 		unsafe delegate void _glUniformMatrix4fv(int location, GLint count, bool transpose, float* value);
-		static _glUniformMatrix4fv glUniformMatrix4fv;
+		private static _glUniformMatrix4fv glUniformMatrix4fv;
 		public static unsafe void UniformMatrix4FV(int location, GLint count, bool transpose, float* value)
 		{
 			glUniformMatrix4fv(location, count, transpose, value);
@@ -1001,7 +989,7 @@ namespace OpenGL
 		}
 
 		delegate void _glUniformMatrix2x3fv(int location, GLint count, bool transpose, float[] value);
-		static _glUniformMatrix2x3fv glUniformMatrix2x3fv;
+		private static _glUniformMatrix2x3fv glUniformMatrix2x3fv;
 		public static void UniformMatrix2x3FV(int location, GLint count, bool transpose, float[] value)
 		{
 			glUniformMatrix2x3fv(location, count, transpose, value);
@@ -1009,20 +997,20 @@ namespace OpenGL
 		}
 
 		unsafe delegate void _glUniformMatrix3x2fv(int location, GLint count, bool transpose, float* value);
-		static _glUniformMatrix3x2fv glUniformMatrix3x2fv;
-		public static unsafe void UniformMatrix3x2FV(int location, GLint count, bool transpose, float* value)
+		private static _glUniformMatrix3x2fv glUniformMatrix3x2fv;
+		unsafe public static void UniformMatrix3x2FV(int location, GLint count, bool transpose, float* value)
 		{
 			glUniformMatrix3x2fv(location, count, transpose, value);
 			CheckError();
 		}
-		public static unsafe void UniformMatrix3x2FV(int location, GLint count, bool transpose, float[] value)
+		unsafe public static void UniformMatrix3x2FV(int location, GLint count, bool transpose, float[] value)
 		{
 			fixed (float* ptr = value) { glUniformMatrix3x2fv(location, count, transpose, ptr); }
 			CheckError();
 		}
 
 		delegate void _glUniformMatrix2x4fv(int location, GLint count, bool transpose, float[] value);
-		static _glUniformMatrix2x4fv glUniformMatrix2x4fv;
+		private static _glUniformMatrix2x4fv glUniformMatrix2x4fv;
 		public static void UniformMatrix2x4FV(int location, GLint count, bool transpose, float[] value)
 		{
 			glUniformMatrix2x4fv(location, count, transpose, value);
@@ -1030,7 +1018,7 @@ namespace OpenGL
 		}
 
 		delegate void _glUniformMatrix4x2fv(int location, GLint count, bool transpose, float[] value);
-		static _glUniformMatrix4x2fv glUniformMatrix4x2fv;
+		private static _glUniformMatrix4x2fv glUniformMatrix4x2fv;
 		public static void UniformMatrix4x2FV(int location, GLint count, bool transpose, float[] value)
 		{
 			glUniformMatrix4x2fv(location, count, transpose, value);
@@ -1038,7 +1026,7 @@ namespace OpenGL
 		}
 
 		delegate void _glUniformMatrix3x4fv(int location, GLint count, bool transpose, float[] value);
-		static _glUniformMatrix3x4fv glUniformMatrix3x4fv;
+		private static _glUniformMatrix3x4fv glUniformMatrix3x4fv;
 		public static void UniformMatrix3x4FV(int location, GLint count, bool transpose, float[] value)
 		{
 			glUniformMatrix3x4fv(location, count, transpose, value);
@@ -1046,7 +1034,7 @@ namespace OpenGL
 		}
 
 		delegate void _glUniformMatrix4x3fv(int location, GLint count, bool transpose, float[] value);
-		static _glUniformMatrix4x3fv glUniformMatrix4x3fv;
+		private static _glUniformMatrix4x3fv glUniformMatrix4x3fv;
 		public static void UniformMatrix4x3FV(int location, GLint count, bool transpose, float[] value)
 		{
 			glUniformMatrix4x3fv(location, count, transpose, value);
@@ -1054,7 +1042,7 @@ namespace OpenGL
 		}
 
 		delegate void _glScissor(int x, int y, GLint width, GLint height);
-		static _glScissor glScissor;
+		private static _glScissor glScissor;
 		public static void Scissor(int x, int y, GLint width, GLint height)
 		{
 			glScissor(x, y, width, height);
@@ -1062,7 +1050,7 @@ namespace OpenGL
 		}
 
 		delegate void _glDepthFunc(DepthFunc func);
-		static _glDepthFunc glDepthFunc;
+		private static _glDepthFunc glDepthFunc;
 		public static void DepthFunc(DepthFunc func)
 		{
 			glDepthFunc(func);
@@ -1078,6 +1066,21 @@ namespace OpenGL
 		Renderer = 0x1F01,
 		Version = 0x1F02,
 		Extensions = 0x1F03
+	}
+
+	public enum Integers
+	{
+		MajorVersion = 0x821B,
+		MinorVersion = 0x821C,
+		MaxColourAttachments = 0x8CDF,
+		MaxCubeMapTextureSize = 0x851C,
+		MaxDrawBuffers = 0x8824,
+		MaxElementIndices = 0x80E9,
+		MaxElementVertices = 0x80E8,
+		MaxRenderbufferSize = 0x84E8,
+		MaxSamples = 0x8D57,
+		MaxTextureImageUnits = 0x8872,
+		MaxTextureSize = 0x0D33
 	}
 
 	public enum FramebufferStatus
