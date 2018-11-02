@@ -51,8 +51,8 @@ namespace CKGL
 
 			int marshalledSize = Marshal.SizeOf(typeof(T));
 
-			//Output.WriteLine($"vertexAttributeLayout.Stride: {vertexAttributeLayout.Stride} - marshalledSize: {marshalledSize}");
-			//Output.WriteLine($"Marshal.SizeOf(typeof(T)): {marshalledSize}");
+			//Output.WriteLine($"vertexAttributeLayout.Stride: {vertexAttributeLayout.Stride} - marshalledSize: {marshalledSize}"); // Debug
+			//Output.WriteLine($"Marshal.SizeOf(typeof(T)): {marshalledSize}"); // Debug
 
 			if (vertexAttributeLayout.Stride != marshalledSize)
 				throw new ArgumentOutOfRangeException("The Stride defined in VertexAttributeLayout does not match the Marshalled size of the Vertex.");

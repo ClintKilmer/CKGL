@@ -81,7 +81,7 @@ namespace CKGL
 			{
 				GL.EnableVertexAttribArray(i);
 				GL.VertexAttribPointer(i, attributes[(int)i].Count, attributes[(int)i].VertexType, attributes[(int)i].Normalized, Stride, offset);
-				//Output.WriteLine($"id: {i}, Count: {attributes[(int)i].Count}, Type: {attributes[(int)i].VertexType}, Normalized: {attributes[(int)i].Normalized}, Size/Stride: {attributes[(int)i].Size}/{Stride}, offset: {offset}");
+				//Output.WriteLine($"id: {i}, Count: {attributes[(int)i].Count}, Type: {attributes[(int)i].VertexType}, Normalized: {attributes[(int)i].Normalized}, Size/Stride: {attributes[(int)i].Size}/{Stride}, offset: {offset}"); // Debug
 				offset += attributes[(int)i].Size;
 			}
 		}
