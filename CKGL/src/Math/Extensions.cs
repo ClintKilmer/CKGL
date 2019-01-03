@@ -165,9 +165,9 @@
 			return x >= 0f ? x : -x;
 		}
 
-		public static float Pow(this float x, float pow)
+		public static float Pow(this float x, float power)
 		{
-			return (float)System.Math.Pow(x, pow);
+			return (float)System.Math.Pow(x, power);
 		}
 
 		public static float Sqrt(this float x)
