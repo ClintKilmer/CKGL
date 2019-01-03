@@ -67,6 +67,11 @@ namespace CKGL
 			return new Vector4(X.Lerp(b.X, t), Y.Lerp(b.Y, t), Z.Lerp(b.Z, t), W.Lerp(b.W, t));
 		}
 
+		public Vector4 Eerp(Vector4 b, float t)
+		{
+			return new Vector4(X.Eerp(b.X, t), Y.Eerp(b.Y, t), Z.Eerp(b.Z, t), W.Eerp(b.W, t));
+		}
+
 		public float Magnitude()
 		{
 			return Math.Sqrt(X * X + Y * Y + Z * Z + W * W);
@@ -113,6 +118,11 @@ namespace CKGL
 		public static Vector4 Lerp(Vector4 a, Vector4 b, float t)
 		{
 			return new Vector4(a.X.Lerp(b.X, t), a.Y.Lerp(b.Y, t), a.Z.Lerp(b.Z, t), a.W.Lerp(b.W, t));
+		}
+
+		public static Vector4 Eerp(Vector4 a, Vector4 b, float t)
+		{
+			return new Vector4(a.X.Eerp(b.X, t), a.Y.Eerp(b.Y, t), a.Z.Eerp(b.Z, t), a.W.Eerp(b.W, t));
 		}
 
 		public static float Magnitude(Vector4 v)

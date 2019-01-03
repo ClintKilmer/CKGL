@@ -70,6 +70,11 @@ namespace CKGL
 			return new Vector3(X.Lerp(b.X, t), Y.Lerp(b.Y, t), Z.Lerp(b.Z, t));
 		}
 
+		public Vector3 Eerp(Vector3 b, float t)
+		{
+			return new Vector3(X.Eerp(b.X, t), Y.Eerp(b.Y, t), Z.Eerp(b.Z, t));
+		}
+
 		public float Magnitude()
 		{
 			return Math.Sqrt(X * X + Y * Y + Z * Z);
@@ -125,6 +130,11 @@ namespace CKGL
 		public static Vector3 Lerp(Vector3 a, Vector3 b, float t)
 		{
 			return new Vector3(a.X.Lerp(b.X, t), a.Y.Lerp(b.Y, t), a.Z.Lerp(b.Z, t));
+		}
+
+		public static Vector3 Eerp(Vector3 a, Vector3 b, float t)
+		{
+			return new Vector3(a.X.Eerp(b.X, t), a.Y.Eerp(b.Y, t), a.Z.Eerp(b.Z, t));
 		}
 
 		public static float Magnitude(Vector3 v)

@@ -38,12 +38,22 @@ namespace CKGL
 		{
 			return new UV(U.Lerp(b.U, t), V.Lerp(b.V, t));
 		}
+
+		public UV Eerp(UV b, float t)
+		{
+			return new UV(U.Eerp(b.U, t), V.Eerp(b.V, t));
+		}
 		#endregion
 
 		#region Static Methods
 		public static UV Lerp(UV a, UV b, float t)
 		{
 			return new UV(a.U.Lerp(b.U, t), a.V.Lerp(b.V, t));
+		}
+
+		public static UV Eerp(UV a, UV b, float t)
+		{
+			return new UV(a.U.Eerp(b.U, t), a.V.Eerp(b.V, t));
 		}
 		#endregion
 

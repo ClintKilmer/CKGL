@@ -80,6 +80,11 @@
 			return (1f - t) * a + t * b; // Precise method, which guarantees a = b when t = 1.
 		}
 
+		public static float Eerp(this float a, float b, float t)
+		{
+			return a * Pow(b / a, t);
+		}
+
 		public static float Round(this float x)
 		{
 			return (int)(x + 0.5f);
