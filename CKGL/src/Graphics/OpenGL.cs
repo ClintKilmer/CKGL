@@ -20,6 +20,7 @@ namespace OpenGL
 {
 	public static class Enums
 	{
+		#region Raw Enums
 		public const GLuint GL_BACK = 0x0405;
 		public const GLuint GL_FRONT = 0x0404;
 		public const GLuint GL_FRONT_AND_BACK = 0x0408;
@@ -1105,7 +1106,8 @@ namespace OpenGL
 		public const GLuint GL_TEXTURE_SWIZZLE_RGBA = 0x8E46;
 		public const GLuint GL_TIME_ELAPSED = 0x88BF;
 		public const GLuint GL_TIMESTAMP = 0x8E28;
-		public const GLuint GL_INT_2_10_10_10_REV = 0x8D9F;
+		public const GLuint GL_INT_2_10_10_10_REV = 0x8D9F; 
+		#endregion
 	}
 
 	public static class GL
