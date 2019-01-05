@@ -15,9 +15,9 @@ namespace CKGL
 			public delegate void MouseMoveEvent(int x, int y, int xRelative, int yRelative);
 			public delegate void MouseButtonEvent(int buttonID);
 			public delegate void MouseScrollEvent(int x, int y);
-			public delegate void JoyDeviceEvent(int deviceID);
-			public delegate void JoyButtonEvent(int deviceID, int buttonID);
-			public delegate void JoyAxisEvent(int deviceID, int axisID, float value);
+			public delegate void ControllerDeviceEvent(int deviceID);
+			public delegate void ControllerButtonEvent(int deviceID, int buttonID);
+			public delegate void ControllerAxisEvent(int deviceID, int axisID, float value);
 			public delegate void OtherEvent(int eventID);
 
 			public static Action OnQuit;
@@ -28,11 +28,11 @@ namespace CKGL
 			public static MouseButtonEvent OnMouseButtonDown;
 			public static MouseButtonEvent OnMouseButtonUp;
 			public static MouseScrollEvent OnMouseScroll;
-			public static JoyDeviceEvent OnJoyDeviceAdd;
-			public static JoyDeviceEvent OnJoyDeviceRemove;
-			public static JoyButtonEvent OnJoyButtonDown;
-			public static JoyButtonEvent OnJoyButtonUp;
-			public static JoyAxisEvent OnJoyAxisMove;
+			public static ControllerDeviceEvent OnControllerDeviceAdded;
+			public static ControllerDeviceEvent OnControllerDeviceRemoved;
+			public static ControllerButtonEvent OnControllerButtonDown;
+			public static ControllerButtonEvent OnControllerButtonUp;
+			public static ControllerAxisEvent OnControllerAxisMove;
 			public static Action OnWinClose;
 			public static Action OnWinShown;
 			public static Action OnWinHidden;
@@ -243,27 +243,43 @@ namespace CKGL
 					case SDL_EventType.SDL_MOUSEWHEEL:
 						Events.OnMouseScroll?.Invoke(Event.wheel.x, Event.wheel.y);
 						break;
-					//case SDL_EventType.SDL_JOYDEVICEADDED:
-					//	Events.OnJoyDeviceAdd?.Invoke(Event.JDevice.Which);
-					//	break;
-					//case SDL_EventType.SDL_JOYDEVICEREMOVED:
-					//	Events.OnJoyDeviceRemove?.Invoke(Event.JDevice.Which);
-					//	break;
-					//case SDL_EventType.SDL_JOYBUTTONDOWN:
-					//	Events.OnJoyButtonDown?.Invoke(Event.JButton.Which, Event.JButton.Button);
-					//	break;
-					//case SDL_EventType.SDL_JOYBUTTONUP:
-					//	Events.OnJoyButtonDown?.Invoke(Event.JButton.Which, Event.JButton.Button);
-					//	break;
-					//case SDL_EventType.SDL_JOYAXISMOTION:
-					//	Events.OnJoyAxisMove?.Invoke(Event.JAxis.Which, Event.JAxis.Axis, Event.JAxis.Value / (float)short.MaxValue);
-					//	break;
-					//case SDL_EventType.SDL_JOYHATMOTION:
-					//	Events.OnJoyAxisMove?.Invoke(Event.JAxis.Which, Event.JAxis.Axis, Event.JAxis.Value / (float)short.MaxValue);
-					//	break;
-					//case SDL_EventType.SDL_JOYBALLMOTION:
-					//	Events.OnJoyAxisMove?.Invoke(Event.JAxis.Which, Event.JAxis.Axis, Event.JAxis.Value / (float)short.MaxValue);
-					//	break;
+					case SDL_EventType.SDL_JOYDEVICEADDED:
+						Events.OnControllerDeviceAdded?.Invoke(Event.jdevice.which);
+						Output.WriteLine($"Joystick {Event.cbutton.which} added.");
+						break;
+					case SDL_EventType.SDL_JOYDEVICEREMOVED:
+						Events.OnControllerDeviceRemoved?.Invoke(Event.jdevice.which);
+						Output.WriteLine($"Joystick {Event.cbutton.which} removed.");
+						break;
+					case SDL_EventType.SDL_CONTROLLERDEVICEADDED:
+						Events.OnControllerDeviceAdded?.Invoke(Event.cdevice.which);
+						break;
+					case SDL_EventType.SDL_CONTROLLERDEVICEREMOVED:
+						Events.OnControllerDeviceRemoved?.Invoke(Event.cdevice.which);
+						break;
+					case SDL_EventType.SDL_CONTROLLERDEVICEREMAPPED:
+						Output.WriteLine($"SDL_CONTROLLERDEVICEREMAPPED not implemented. (Controller {Event.cdevice.which})");
+						break;
+					case SDL_EventType.SDL_CONTROLLERBUTTONDOWN:
+						Events.OnControllerButtonDown?.Invoke(Event.cbutton.which, Event.cbutton.button);
+						Output.WriteLine($"Controller {Event.cbutton.which} - Button {Event.cbutton.button}");
+
+
+						SDL_GameControllerRumble(
+							SDL_GameControllerFromInstanceID(Event.cbutton.which),
+							(ushort)(0.3f * 0xFFFF),
+							(ushort)(0.8f * 0xFFFF),
+							1000
+						//SDL2.SDL.SDL_HAPTIC_INFINITY // Oh dear...
+						);
+
+						break;
+					case SDL_EventType.SDL_CONTROLLERBUTTONUP:
+						Events.OnControllerButtonDown?.Invoke(Event.cbutton.which, Event.cbutton.button);
+						break;
+					case SDL_EventType.SDL_CONTROLLERAXISMOTION:
+						Events.OnControllerAxisMove?.Invoke(Event.caxis.which, Event.caxis.axis, Event.caxis.axisValue / (float)short.MaxValue);
+						break;
 					case SDL_EventType.SDL_WINDOWEVENT:
 						if (Event.window.windowID == Window.ID)
 						{

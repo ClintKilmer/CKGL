@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace CKGL
 {
@@ -8,20 +9,24 @@ namespace CKGL
 		{
 			Keyboard.Init();
 			Mouse.Init();
+			Controllers.Init();
 		}
 
 		public static void Clear()
 		{
 			Keyboard.Clear();
 			Mouse.Clear();
+			Controllers.Clear();
 		}
 
 		public static void Update()
 		{
 			//Keyboard.Update();
 			Mouse.Update();
+			//Controllers.Update();
 		}
 
+		#region Keyboard
 		public static class Keyboard
 		{
 			public const int ScanCodeMask = Platform.ScanCodeMask;
@@ -130,6 +135,17 @@ namespace CKGL
 			{
 				return Pressed(key) || Repeated(key);
 			}
+		}
+		#endregion
+
+		#region Mouse
+		public enum MouseButton
+		{
+			Left = 1,
+			Middle = 2,
+			Right = 3,
+			X1 = 4,
+			X2 = 5
 		}
 
 		public static class Mouse
@@ -270,14 +286,94 @@ namespace CKGL
 				get { return Scroll.Y; }
 			}
 		}
-	}
+		#endregion
 
-	public enum MouseButton
-	{
-		Left = 1,
-		Middle = 2,
-		Right = 3,
-		X1 = 4,
-		X2 = 5
+		#region Controller
+		public class Controller
+		{
+			public int ID;
+			public IntPtr IntPtr;
+			public string GUID;
+
+			public IntPtr JoystickIntPtr => SDL2.SDL.SDL_GameControllerGetJoystick(IntPtr);
+			public int JoystickInstanceID => SDL2.SDL.SDL_JoystickInstanceID(JoystickIntPtr);
+			public ushort Vendor => SDL2.SDL.SDL_GameControllerGetVendor(IntPtr);
+			public ushort Product => SDL2.SDL.SDL_GameControllerGetProduct(IntPtr);
+			public ushort ProductVersion => SDL2.SDL.SDL_GameControllerGetProductVersion(IntPtr);
+			public string Name => SDL2.SDL.SDL_GameControllerName(IntPtr);
+			//public string Name => SDL2.SDL.controller(IntPtr);
+			public bool Rumble => SDL2.SDL.SDL_GameControllerRumble(IntPtr, 0, 0, SDL2.SDL.SDL_HAPTIC_INFINITY) == 0;
+
+			public Controller(int id)
+			{
+				ID = id;
+				IntPtr = SDL2.SDL.SDL_GameControllerOpen(ID);
+
+				if (Vendor == 0x00 && Product == 0x00)
+					GUID = "xinput";
+				else
+					GUID = string.Format("{0:x2}{1:x2}{2:x2}{3:x2}", Vendor & 0xFF, Vendor >> 8, Product & 0xFF, Product >> 8);
+
+				// TODO: FNA PS4 Lightbar init goes here
+
+				SDL2.SDL.SDL_GameControllerRumble(
+					IntPtr,
+					(ushort)(0.3f * 0xFFFF),
+					(ushort)(0.8f * 0xFFFF),
+					100
+					//SDL2.SDL.SDL_HAPTIC_INFINITY // Oh dear...
+				);
+			}
+
+			public void Destroy()
+			{
+				SDL2.SDL.SDL_GameControllerClose(IntPtr);
+			}
+
+			public override string ToString()
+			{
+				return $"Name: {Name}, ID: {ID}, IntPtr: {IntPtr}, GUID: {GUID}, Vendor: {Vendor}, Product: {Product}, Rumble: {Rumble}, JoystickInstanceID: {JoystickInstanceID}";
+			}
+		}
+
+		public static class Controllers
+		{
+			public static List<Controller> controllers = new List<Controller>();
+			public static Dictionary<int, Controller> lookup = new Dictionary<int, Controller>();
+
+			public static void Init()
+			{
+				Platform.Events.OnControllerDeviceAdded += (deviceID) =>
+				{
+					Controller controller = new Controller(deviceID);
+					controllers.Add(controller);
+					lookup[deviceID] = controller;
+
+					Output.WriteLine($"Controller Added: {controller}");
+					Output.WriteLine($"Total Controllers: {controllers.Count}");
+				};
+
+				Platform.Events.OnControllerDeviceRemoved += (deviceID) =>
+				{
+					if (lookup.TryGetValue(deviceID, out Controller controller))
+					{
+						Output.WriteLine($"Controller Removed: {controller}");
+
+						controller.Destroy();
+
+						controllers.RemoveAt(controllers.IndexOf(controller));
+						lookup.Remove(deviceID);
+					}
+
+					Output.WriteLine($"Total Controllers: {controllers.Count}");
+				};
+			}
+
+			public static void Clear()
+			{
+				//Output.WriteLine("down:     " + string.Join(", ", downKeyCode));
+			}
+		}
+		#endregion
 	}
 }
