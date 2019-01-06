@@ -157,22 +157,22 @@ namespace CKGL
 			public static Point2 PositionRelative { get; private set; }
 			public static Point2 Scroll { get; private set; }
 
-			private static bool[] down = new bool[16];
-			private static bool[] pressed = new bool[16];
-			private static bool[] released = new bool[16];
+			private static bool[] down = new bool[Enum.GetNames(typeof(MouseButton)).Length];
+			private static bool[] pressed = new bool[Enum.GetNames(typeof(MouseButton)).Length];
+			private static bool[] released = new bool[Enum.GetNames(typeof(MouseButton)).Length];
 
 			public static void Init()
 			{
-				Platform.Events.OnMouseButtonDown += (id) =>
+				Platform.Events.OnMouseButtonDown += (button) =>
 				{
-					down[id] = true;
-					pressed[id] = true;
+					down[(int)button] = true;
+					pressed[(int)button] = true;
 				};
 
-				Platform.Events.OnMouseButtonUp += (id) =>
+				Platform.Events.OnMouseButtonUp += (button) =>
 				{
-					down[id] = false;
-					released[id] = true;
+					down[(int)button] = false;
+					released[(int)button] = true;
 				};
 
 				Platform.Events.OnMouseScroll += (x, y) =>
@@ -185,7 +185,7 @@ namespace CKGL
 			{
 				Scroll = Point2.Zero;
 
-				for (int i = 0; i < 16; i++)
+				for (int i = 0; i < Enum.GetNames(typeof(MouseButton)).Length; i++)
 				{
 					pressed[i] = false;
 					released[i] = false;
