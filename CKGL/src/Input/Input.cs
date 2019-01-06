@@ -289,89 +289,274 @@ namespace CKGL
 		#endregion
 
 		#region Controller
+		public enum ControllerButton : int
+		{
+			A = 0,
+			B = 1,
+			X = 2,
+			Y = 3,
+			Select = 4,
+			Home = 5,
+			Start = 6,
+			L3 = 7,
+			R3 = 8,
+			L1 = 9,
+			R1 = 10,
+			Up = 11,
+			Down = 12,
+			Left = 13,
+			Right = 14,
+			L2 = 15, // If LeftTrigger is pressed passed the XInput threshold
+			R2 = 16 // If RightTrigger is pressed passed the XInput threshold
+		}
+
+		public enum ControllerAxis
+		{
+			LeftX = 0,
+			LeftY = 1,
+			RightX = 2,
+			RightY = 3,
+			LeftTrigger = 4,
+			RightTrigger = 5
+		}
+
 		public class Controller
 		{
 			public int ID;
-			public IntPtr IntPtr;
-			public string GUID;
 
-			public IntPtr JoystickIntPtr => SDL2.SDL.SDL_GameControllerGetJoystick(IntPtr);
-			public int JoystickInstanceID => SDL2.SDL.SDL_JoystickInstanceID(JoystickIntPtr);
-			public ushort Vendor => SDL2.SDL.SDL_GameControllerGetVendor(IntPtr);
-			public ushort Product => SDL2.SDL.SDL_GameControllerGetProduct(IntPtr);
-			public ushort ProductVersion => SDL2.SDL.SDL_GameControllerGetProductVersion(IntPtr);
-			public string Name => SDL2.SDL.SDL_GameControllerName(IntPtr);
-			//public string Name => SDL2.SDL.controller(IntPtr);
-			public bool Rumble => SDL2.SDL.SDL_GameControllerRumble(IntPtr, 0, 0, SDL2.SDL.SDL_HAPTIC_INFINITY) == 0;
+			// TODO - ApplyRadialDeadZone - use this?
+			public float AnalogStickDeadZoneLow { get; set; } = 0.1f;
+			public float AnalogStickDeadZoneHigh { get; set; } = 0.1f;
+
+			private const float LeftDeadZone = 7849f / 32768f; // XInput Constant
+			private const float RightDeadZone = 8689f / 32768f; // XInput Constant
+			private const float TriggerThreshold = 30f / 255f; // XInput Constant
+
+			private bool[] down = new bool[Enum.GetNames(typeof(ControllerButton)).Length];
+			private bool[] pressed = new bool[Enum.GetNames(typeof(ControllerButton)).Length];
+			private bool[] released = new bool[Enum.GetNames(typeof(ControllerButton)).Length];
+
+			private float LeftTrigger;
+			private float RightTrigger;
+			private Vector2 LeftStick;
+			private Vector2 RightStick;
 
 			public Controller(int id)
 			{
 				ID = id;
-				IntPtr = SDL2.SDL.SDL_GameControllerOpen(ID);
-
-				if (Vendor == 0x00 && Product == 0x00)
-					GUID = "xinput";
-				else
-					GUID = string.Format("{0:x2}{1:x2}{2:x2}{3:x2}", Vendor & 0xFF, Vendor >> 8, Product & 0xFF, Product >> 8);
-
-				// TODO: FNA PS4 Lightbar init goes here
-
-				SDL2.SDL.SDL_GameControllerRumble(
-					IntPtr,
-					(ushort)(0.3f * 0xFFFF),
-					(ushort)(0.8f * 0xFFFF),
-					100
-					//SDL2.SDL.SDL_HAPTIC_INFINITY // Oh dear...
-				);
 			}
 
-			public void Destroy()
+			public void OnControllerButtonDown(ControllerButton button)
 			{
-				SDL2.SDL.SDL_GameControllerClose(IntPtr);
+				down[(int)button] = true;
+				pressed[(int)button] = true;
+
+				// debug
+				Output.WriteLine($"Controller {ID} - Button {button} - Down");
+			}
+
+			public void OnControllerButtonUp(ControllerButton button)
+			{
+				down[(int)button] = false;
+				released[(int)button] = true;
+
+				// debug
+				Output.WriteLine($"Controller {ID} - Button {button} - Up");
+			}
+
+			public void OnControllerAxisMove(ControllerAxis axis, float value)
+			{
+				// Triggers
+				if (axis == ControllerAxis.LeftTrigger || axis == ControllerAxis.RightTrigger)
+				{
+					if (axis == ControllerAxis.LeftTrigger)
+					{
+						LeftTrigger = DeadZoneMapper(value, TriggerThreshold);
+
+						if (LeftTrigger > TriggerThreshold)
+						{
+							if (!Down(ControllerButton.L2))
+								OnControllerButtonDown(ControllerButton.L2);
+						}
+						else
+						{
+							if (Down(ControllerButton.L2))
+								OnControllerButtonUp(ControllerButton.L2);
+						}
+					}
+					else if (axis == ControllerAxis.RightTrigger)
+					{
+						RightTrigger = DeadZoneMapper(value, TriggerThreshold);
+
+						if (RightTrigger > TriggerThreshold)
+						{
+							if (!Down(ControllerButton.R2))
+								OnControllerButtonDown(ControllerButton.R2);
+						}
+						else
+						{
+							if (Down(ControllerButton.R2))
+								OnControllerButtonUp(ControllerButton.R2);
+						}
+					}
+
+					// debug
+					//Output.WriteLine($"Controller: {ID} - Axis: {axis} - Value: {value}");
+				}
+				else
+				{
+					if (axis == ControllerAxis.LeftX)
+					{
+						LeftStick.X = DeadZoneMapper(value, LeftDeadZone);
+
+						// debug
+						//Output.WriteLine($"Controller: {ID} - Axis: {axis} - Value: {LeftStick.X}");
+					}
+					else if (axis == ControllerAxis.LeftY)
+					{
+						LeftStick.Y = DeadZoneMapper(value, LeftDeadZone);
+					}
+					else if (axis == ControllerAxis.RightX)
+					{
+						RightStick.X = DeadZoneMapper(value, RightDeadZone);
+
+						// debug
+						//Output.WriteLine($"Controller: {ID} - Axis: {axis} - Value: {RightStick.X}");
+					}
+					else if (axis == ControllerAxis.RightY)
+					{
+						RightStick.Y = DeadZoneMapper(value, RightDeadZone);
+					}
+				}
+
+				// debug
+				//Output.WriteLine($"Controller: {ID} - Axis: {axis} - Value: {value}");
+			}
+
+			public void Clear()
+			{
+				for (int i = 0; i < Enum.GetNames(typeof(ControllerButton)).Length; i++)
+				{
+					pressed[i] = false;
+					released[i] = false;
+				}
+			}
+
+			public bool Down(ControllerButton button)
+			{
+				return down[(int)button];
+			}
+
+			public bool Pressed(ControllerButton button)
+			{
+				return pressed[(int)button];
+			}
+
+			public bool Released(ControllerButton button)
+			{
+				return released[(int)button];
 			}
 
 			public override string ToString()
 			{
-				return $"Name: {Name}, ID: {ID}, IntPtr: {IntPtr}, GUID: {GUID}, Vendor: {Vendor}, Product: {Product}, Rumble: {Rumble}, JoystickInstanceID: {JoystickInstanceID}";
+				return $"ID: {ID}";
+			}
+
+			private float DeadZoneMapper(float value, float deadZone)
+			{
+				if (value < -deadZone)
+				{
+					value += deadZone;
+				}
+				else if (value > deadZone)
+				{
+					value -= deadZone;
+				}
+				else
+				{
+					return 0.0f;
+				}
+				return value / (1.0f - deadZone);
+			}
+
+			// TODO - ApplyRadialDeadZone - use this?
+			private Vector2 ApplyRadialDeadZone(Vector2 position)
+			{
+				float mag = position.Magnitude();
+
+				if (mag > AnalogStickDeadZoneLow)
+				{
+					// scale such that output magnitude is in the range [0.0f, 1.0f]
+					float legalRange = 1.0f - AnalogStickDeadZoneHigh - AnalogStickDeadZoneLow;
+					float normalizedMag = Math.Min(1.0f, (mag - AnalogStickDeadZoneLow) / legalRange);
+					float scale = normalizedMag / mag;
+					return position * scale;
+				}
+				else
+				{
+					// stick is in the inner dead zone
+					return Vector2.Zero;
+				}
 			}
 		}
 
 		public static class Controllers
 		{
-			public static List<Controller> controllers = new List<Controller>();
-			public static Dictionary<int, Controller> lookup = new Dictionary<int, Controller>();
+			private static Dictionary<int, Controller> controllers = new Dictionary<int, Controller>();
 
 			public static void Init()
 			{
-				Platform.Events.OnControllerDeviceAdded += (deviceID) =>
+				Platform.Events.OnControllerDeviceAdded += (id) =>
 				{
-					Controller controller = new Controller(deviceID);
-					controllers.Add(controller);
-					lookup[deviceID] = controller;
-
-					Output.WriteLine($"Controller Added: {controller}");
-					Output.WriteLine($"Total Controllers: {controllers.Count}");
+					if (!controllers.ContainsKey(id))
+					{
+						Controller controller = new Controller(id);
+						controllers.Add(id, controller);
+					}
 				};
 
-				Platform.Events.OnControllerDeviceRemoved += (deviceID) =>
+				Platform.Events.OnControllerDeviceRemoved += (id) =>
 				{
-					if (lookup.TryGetValue(deviceID, out Controller controller))
+					if (controllers.ContainsKey(id))
+						controllers.Remove(id);
+				};
+
+				Platform.Events.OnControllerDeviceRemapped += (id) =>
+				{
+					Output.WriteLine($"OnControllerDeviceRemapped not implemented. (Controller ID {id})");
+				};
+
+				Platform.Events.OnControllerButtonDown += (id, button) =>
+				{
+					if (controllers.ContainsKey(id))
 					{
-						Output.WriteLine($"Controller Removed: {controller}");
-
-						controller.Destroy();
-
-						controllers.RemoveAt(controllers.IndexOf(controller));
-						lookup.Remove(deviceID);
+						controllers[id].OnControllerButtonDown(button);
 					}
+				};
 
-					Output.WriteLine($"Total Controllers: {controllers.Count}");
+				Platform.Events.OnControllerButtonUp += (id, button) =>
+				{
+					if (controllers.ContainsKey(id))
+					{
+						controllers[id].OnControllerButtonUp(button);
+					}
+				};
+
+				Platform.Events.OnControllerAxisMove += (id, axis, value) =>
+				{
+					if (controllers.ContainsKey(id))
+					{
+						controllers[id].OnControllerAxisMove(axis, value);
+					}
 				};
 			}
 
 			public static void Clear()
 			{
-				//Output.WriteLine("down:     " + string.Join(", ", downKeyCode));
+				foreach (Controller controller in controllers.Values)
+				{
+					controller.Clear();
+				}
 			}
 		}
 		#endregion

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 using SDL2;
@@ -13,11 +14,11 @@ namespace CKGL
 		{
 			public delegate void KeyEvent(KeyCode keyCode, ScanCode scanCode, bool repeat);
 			public delegate void MouseMoveEvent(int x, int y, int xRelative, int yRelative);
-			public delegate void MouseButtonEvent(int buttonID);
+			public delegate void MouseButtonEvent(Input.MouseButton button);
 			public delegate void MouseScrollEvent(int x, int y);
-			public delegate void ControllerDeviceEvent(int deviceID);
-			public delegate void ControllerButtonEvent(int deviceID, int buttonID);
-			public delegate void ControllerAxisEvent(int deviceID, int axisID, float value);
+			public delegate void ControllerDeviceEvent(int id);
+			public delegate void ControllerButtonEvent(int id, Input.ControllerButton button);
+			public delegate void ControllerAxisEvent(int id, Input.ControllerAxis axis, float value);
 			public delegate void OtherEvent(int eventID);
 
 			public static Action OnQuit;
@@ -30,6 +31,7 @@ namespace CKGL
 			public static MouseScrollEvent OnMouseScroll;
 			public static ControllerDeviceEvent OnControllerDeviceAdded;
 			public static ControllerDeviceEvent OnControllerDeviceRemoved;
+			public static ControllerDeviceEvent OnControllerDeviceRemapped;
 			public static ControllerButtonEvent OnControllerButtonDown;
 			public static ControllerButtonEvent OnControllerButtonUp;
 			public static ControllerAxisEvent OnControllerAxisMove;
@@ -56,6 +58,146 @@ namespace CKGL
 		private static SDL_Event Event;
 
 		public const int ScanCodeMask = SDLK_SCANCODE_MASK;
+
+		#region Controllers
+		private static Dictionary<int, Controller> Controllers = new Dictionary<int, Controller>();
+
+		public class Controller
+		{
+			public int DeviceIndex;
+			public IntPtr IntPtr;
+
+			public IntPtr JoystickIntPtr => SDL_GameControllerGetJoystick(IntPtr);
+			public int InstanceID => SDL_JoystickInstanceID(JoystickIntPtr);
+			public string GUID => (Vendor == 0x00 && Product == 0x00) ? "xinput" : string.Format("{0:x2}{1:x2}{2:x2}{3:x2}", Vendor & 0xFF, Vendor >> 8, Product & 0xFF, Product >> 8);
+			public ushort Vendor => SDL_GameControllerGetVendor(IntPtr);
+			public ushort Product => SDL_GameControllerGetProduct(IntPtr);
+			public ushort ProductVersion => SDL_GameControllerGetProductVersion(IntPtr);
+			public string Name => SDL_GameControllerName(IntPtr);
+			public bool Rumble => SDL_GameControllerRumble(IntPtr, 0, 0, SDL_HAPTIC_INFINITY) == 0;
+
+			public Controller(int deviceIndex, IntPtr intPtr)
+			{
+				DeviceIndex = deviceIndex;
+				IntPtr = intPtr;
+
+				// TODO: FNA PS4 Lightbar init goes here
+			}
+
+			public void Destroy()
+			{
+				SDL_GameControllerClose(IntPtr);
+			}
+
+			public override string ToString()
+			{
+				return $"Name: {Name}, DeviceIndex: {DeviceIndex}, InstanceID: {InstanceID}, GUID: {GUID}, Vendor: {Vendor}, Product: {Product}, Rumble: {Rumble}";
+			}
+
+			// Static
+
+			public static void Added(int deviceIndex)
+			{
+				IntPtr controllerIntPtr = SDL_GameControllerOpen(deviceIndex);
+				IntPtr joystickIntPtr = SDL_GameControllerGetJoystick(controllerIntPtr);
+				int instanceID = SDL_JoystickInstanceID(joystickIntPtr);
+
+				if (!Controllers.ContainsKey(instanceID))
+				{
+					Controller controller = new Controller(deviceIndex, controllerIntPtr);
+					Controllers[controller.InstanceID] = controller;
+
+					Events.OnControllerDeviceAdded?.Invoke(controller.InstanceID);
+
+					// debug
+					Output.WriteLine($"Controller Added: {controller}");
+					Output.WriteLine($"Total Controllers: {Controllers.Count} | SDL_NumJoysticks: {SDL_NumJoysticks()}");
+				}
+			}
+
+			public static void Removed(int instanceID)
+			{
+				if (Controllers.TryGetValue(instanceID, out Controller controller))
+				{
+					// debug
+					Output.WriteLine($"Controller Removed: {controller}");
+
+					controller.Destroy();
+					Controllers.Remove(instanceID);
+
+					Events.OnControllerDeviceRemoved?.Invoke(instanceID);
+				}
+
+				// debug
+				Output.WriteLine($"Total Controllers: {Controllers.Count} | SDL_NumJoysticks: {SDL_NumJoysticks()}");
+			}
+
+			public static void Remapped(int instanceID)
+			{
+				Output.WriteLine($"SDL_CONTROLLERDEVICEREMAPPED not implemented. (SDL Controller Instance {instanceID})");
+
+				Events.OnControllerDeviceRemapped?.Invoke(instanceID);
+			}
+
+			public static void ButtonDown(int instanceID, int buttonID)
+			{
+				Events.OnControllerButtonDown?.Invoke(instanceID, (Input.ControllerButton)buttonID);
+			}
+
+			public static void ButtonUp(int instanceID, int buttonID)
+			{
+				Events.OnControllerButtonUp?.Invoke(instanceID, (Input.ControllerButton)buttonID);
+			}
+
+			public static void AxisMotion(int instanceID, int axisID, short value)
+			{
+				if (axisID >-1 && axisID < 6)
+				{
+					Input.ControllerAxis axis;
+					switch(axisID)
+					{
+						case 0:
+							axis = Input.ControllerAxis.LeftX;
+							break;
+						case 1:
+							axis = Input.ControllerAxis.LeftY;
+							break;
+						case 2:
+							axis = Input.ControllerAxis.RightX;
+							break;
+						case 3:
+							axis = Input.ControllerAxis.RightY;
+							break;
+						case 4:
+							axis = Input.ControllerAxis.LeftTrigger;
+							break;
+						case 5:
+							axis = Input.ControllerAxis.RightTrigger;
+							break;
+						default:
+							throw new Exception("Invalid Axis");
+					}
+					Events.OnControllerAxisMove?.Invoke(instanceID, axis, value / (float)short.MaxValue);
+				}
+			}
+
+			public static bool SetVibration(int instanceID, float leftMotor, float rightMotor)
+			{
+				IntPtr device = SDL_GameControllerFromInstanceID(instanceID);
+				if (device == IntPtr.Zero)
+				{
+					return false;
+				}
+
+				return SDL_GameControllerRumble(
+					device,
+					(ushort)(Math.Clamp(leftMotor, 0.0f, 1.0f) * 0xFFFF),
+					(ushort)(Math.Clamp(rightMotor, 0.0f, 1.0f) * 0xFFFF),
+					SDL.SDL_HAPTIC_INFINITY // Oh dear...
+				) == 0;
+			}
+		}
+		#endregion
 
 		public static string OS { get { return SDL_GetPlatform(); } }
 		//public static uint TotalMilliseconds { get { return SDL_GetTicks(); } }
@@ -235,50 +377,31 @@ namespace CKGL
 						Events.OnMouseMove?.Invoke(Event.motion.x, Event.motion.y, Event.motion.xrel, Event.motion.yrel);
 						break;
 					case SDL_EventType.SDL_MOUSEBUTTONDOWN:
-						Events.OnMouseButtonDown?.Invoke(Event.button.button);
+						Events.OnMouseButtonDown?.Invoke((Input.MouseButton)Event.button.button);
 						break;
 					case SDL_EventType.SDL_MOUSEBUTTONUP:
-						Events.OnMouseButtonUp?.Invoke(Event.button.button);
+						Events.OnMouseButtonUp?.Invoke((Input.MouseButton)Event.button.button);
 						break;
 					case SDL_EventType.SDL_MOUSEWHEEL:
 						Events.OnMouseScroll?.Invoke(Event.wheel.x, Event.wheel.y);
 						break;
-					case SDL_EventType.SDL_JOYDEVICEADDED:
-						Events.OnControllerDeviceAdded?.Invoke(Event.jdevice.which);
-						Output.WriteLine($"Joystick {Event.cbutton.which} added.");
-						break;
-					case SDL_EventType.SDL_JOYDEVICEREMOVED:
-						Events.OnControllerDeviceRemoved?.Invoke(Event.jdevice.which);
-						Output.WriteLine($"Joystick {Event.cbutton.which} removed.");
-						break;
 					case SDL_EventType.SDL_CONTROLLERDEVICEADDED:
-						Events.OnControllerDeviceAdded?.Invoke(Event.cdevice.which);
+						Controller.Added(Event.cdevice.which);
 						break;
 					case SDL_EventType.SDL_CONTROLLERDEVICEREMOVED:
-						Events.OnControllerDeviceRemoved?.Invoke(Event.cdevice.which);
+						Controller.Removed(Event.cdevice.which);
 						break;
 					case SDL_EventType.SDL_CONTROLLERDEVICEREMAPPED:
-						Output.WriteLine($"SDL_CONTROLLERDEVICEREMAPPED not implemented. (Controller {Event.cdevice.which})");
+						Controller.Remapped(Event.cdevice.which);
 						break;
 					case SDL_EventType.SDL_CONTROLLERBUTTONDOWN:
-						Events.OnControllerButtonDown?.Invoke(Event.cbutton.which, Event.cbutton.button);
-						Output.WriteLine($"Controller {Event.cbutton.which} - Button {Event.cbutton.button}");
-
-
-						SDL_GameControllerRumble(
-							SDL_GameControllerFromInstanceID(Event.cbutton.which),
-							(ushort)(0.3f * 0xFFFF),
-							(ushort)(0.8f * 0xFFFF),
-							1000
-						//SDL2.SDL.SDL_HAPTIC_INFINITY // Oh dear...
-						);
-
+						Controller.ButtonDown(Event.cbutton.which, Event.cbutton.button);
 						break;
 					case SDL_EventType.SDL_CONTROLLERBUTTONUP:
-						Events.OnControllerButtonDown?.Invoke(Event.cbutton.which, Event.cbutton.button);
+						Controller.ButtonUp(Event.cbutton.which, Event.cbutton.button);
 						break;
 					case SDL_EventType.SDL_CONTROLLERAXISMOTION:
-						Events.OnControllerAxisMove?.Invoke(Event.caxis.which, Event.caxis.axis, Event.caxis.axisValue / (float)short.MaxValue);
+						Controller.AxisMotion(Event.caxis.which, Event.caxis.axis, Event.caxis.axisValue);
 						break;
 					case SDL_EventType.SDL_WINDOWEVENT:
 						if (Event.window.windowID == Window.ID)
