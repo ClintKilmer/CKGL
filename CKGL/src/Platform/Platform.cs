@@ -280,16 +280,37 @@ namespace CKGL
 			}
 			#endregion
 
-			// If available, load the SDL_GameControllerDB
-			//string mappingsDB = Path.Combine(
-			//	TitleLocation.Path,
-			//	"gamecontrollerdb.txt"
-			//);
-			//if (File.Exists(mappingsDB))
+			// If available, load the SDL_GameControllerDB/gamecontrollerdb.txt
+			string gamecontrollerdb = "sdl/gamecontrollerdb.txt";
+			if (File.Exists(gamecontrollerdb))
+			{
+				if (SDL_GameControllerAddMappingsFromFile(gamecontrollerdb) > -1)
+					Output.WriteLine($"SDL - {gamecontrollerdb} loaded successfully.");
+				else
+					Output.WriteLine($"SDL - {gamecontrollerdb} was unsuccessful.");
+			}
+			else
+			{
+				Output.WriteLine($"SDL - {gamecontrollerdb} not found.");
+			}
+			// todo - Monogame gamecontrollerdb implementation - may be cleaner
+			//using (var stream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("gamecontrollerdb.txt"))
 			//{
-			//	SDL_GameControllerAddMappingsFromFile(
-			//		mappingsDB
-			//	);
+			//	if (stream != null)
+			//	{
+			//		using (var reader = new BinaryReader(stream))
+			//		{
+			//			try
+			//			{
+			//				//var src = Sdl.RwFromMem(reader.ReadBytes((int)stream.Length), (int)stream.Length);
+			//				//Sdl.GameController.AddMappingFromRw(src, 1);
+			//
+			//				var src = SDL.SDL_RWFromMem(reader.ReadBytes((int)stream.Length), (int)stream.Length);
+			//				SDL.SDL_GameControllerAddMappingsFromFile
+			//			}
+			//			catch { }
+			//		}
+			//	}
 			//}
 
 			// SDL Init
