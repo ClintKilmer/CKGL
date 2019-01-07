@@ -15,7 +15,6 @@ Features:
 - DrawInstanced
 
 Random:
-- Fix dependency lib folder
 - Update Window width/height on resize event, don't poll every time
 - DepthRange - Somewhere else - maybe own state
 - Refactor Shader SetUniforms into inherited classes
