@@ -109,11 +109,11 @@ namespace CKGLTest
 			Shaders.RendererFog = new InternalShaders.RendererFogShader();
 			Shaders.LinearizeDepth = new InternalShaders.LinearizeDepthShader();
 			SpriteSheets.SpriteSheet = new SpriteSheet(128, 1);
-			SpriteFonts.Font = new SpriteFont(SpriteSheets.SpriteSheet, "Sprites/font[5x7].png", 5, 7, '!', '~', 1, 3, 7, true);
-			Sprites.Test1 = SpriteSheets.SpriteSheet.AddSprite(Texture2D.CreateFromFile($"Sprites/Character1.png"));
-			Sprites.Test2 = SpriteSheets.SpriteSheet.AddSprite(Texture2D.CreateFromFile($"Sprites/Character2.png"));
-			Sprites.Test3 = SpriteSheets.SpriteSheet.AddSprite(Texture2D.CreateFromFile($"Sprites/Character3.png"));
-			Textures.Test = Texture2D.CreateFromFile("Sprites/Character1.png");
+			SpriteFonts.Font = new SpriteFont(SpriteSheets.SpriteSheet, "textures/font[5x7].png", 5, 7, '!', '~', 1, 3, 7, true);
+			Sprites.Test1 = SpriteSheets.SpriteSheet.AddSprite(Texture2D.CreateFromFile($"textures/Character1.png"));
+			Sprites.Test2 = SpriteSheets.SpriteSheet.AddSprite(Texture2D.CreateFromFile($"textures/Character2.png"));
+			Sprites.Test3 = SpriteSheets.SpriteSheet.AddSprite(Texture2D.CreateFromFile($"textures/Character3.png"));
+			Textures.Test = Texture2D.CreateFromFile("textures/Character1.png");
 
 			// Debug, test spritesheet
 			//SpriteSheets.SpriteSheet.Texture.SavePNG($@"{System.IO.Directory.GetCurrentDirectory()}/SpriteSheet.png");
