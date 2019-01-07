@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace CKGL
 {
@@ -289,7 +290,7 @@ namespace CKGL
 		#endregion
 
 		#region Controller
-		public enum ControllerButton : int
+		public enum ControllerButton
 		{
 			A = 0,
 			B = 1,
@@ -324,6 +325,11 @@ namespace CKGL
 		{
 			public int ID;
 
+			public float LeftTrigger { get; private set; }
+			public float RightTrigger { get; private set; }
+			public Vector2 LeftStick { get; private set; }
+			public Vector2 RightStick { get; private set; }
+
 			// TODO - ApplyRadialDeadZone - use this?
 			public float AnalogStickDeadZoneLow { get; set; } = 0.1f;
 			public float AnalogStickDeadZoneHigh { get; set; } = 0.1f;
@@ -335,11 +341,6 @@ namespace CKGL
 			private bool[] down = new bool[Enum.GetNames(typeof(ControllerButton)).Length];
 			private bool[] pressed = new bool[Enum.GetNames(typeof(ControllerButton)).Length];
 			private bool[] released = new bool[Enum.GetNames(typeof(ControllerButton)).Length];
-
-			private float LeftTrigger;
-			private float RightTrigger;
-			private Vector2 LeftStick;
-			private Vector2 RightStick;
 
 			public Controller(int id)
 			{
@@ -407,25 +408,33 @@ namespace CKGL
 				{
 					if (axis == ControllerAxis.LeftX)
 					{
-						LeftStick.X = DeadZoneMapper(value, LeftDeadZone);
+						LeftStick = new Vector2(DeadZoneMapper(value, LeftDeadZone), LeftStick.Y);
 
 						// debug
 						//Output.WriteLine($"Controller: {ID} - Axis: {axis} - Value: {LeftStick.X}");
 					}
 					else if (axis == ControllerAxis.LeftY)
 					{
-						LeftStick.Y = DeadZoneMapper(value, LeftDeadZone);
+						// Flip Y axis so forward is positive
+						LeftStick = new Vector2(LeftStick.X, DeadZoneMapper(-value, LeftDeadZone));
+
+						// debug
+						Output.WriteLine($"Controller: {ID} - Axis: {axis} - Value: {LeftStick.Y}");
 					}
 					else if (axis == ControllerAxis.RightX)
 					{
-						RightStick.X = DeadZoneMapper(value, RightDeadZone);
+						RightStick = new Vector2(DeadZoneMapper(value, RightDeadZone), RightStick.Y);
 
 						// debug
 						//Output.WriteLine($"Controller: {ID} - Axis: {axis} - Value: {RightStick.X}");
 					}
 					else if (axis == ControllerAxis.RightY)
 					{
-						RightStick.Y = DeadZoneMapper(value, RightDeadZone);
+						// Flip Y axis so forward is positive
+						RightStick = new Vector2(RightStick.X, DeadZoneMapper(-value, RightDeadZone));
+
+						// debug
+						Output.WriteLine($"Controller: {ID} - Axis: {axis} - Value: {RightStick.Y}");
 					}
 				}
 
@@ -476,7 +485,7 @@ namespace CKGL
 				{
 					return 0.0f;
 				}
-				return value / (1.0f - deadZone);
+				return Math.Clamp(value / (1.0f - deadZone), -1f, 1f);
 			}
 
 			// TODO - ApplyRadialDeadZone - use this?
@@ -557,6 +566,11 @@ namespace CKGL
 				{
 					controller.Clear();
 				}
+			}
+
+			public static Controller First()
+			{
+				return controllers.First().Value;
 			}
 		}
 		#endregion

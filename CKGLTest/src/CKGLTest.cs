@@ -165,13 +165,13 @@ namespace CKGLTest
 			if (Input.Keyboard.Down(KeyCode.Z) && Input.Keyboard.Down(KeyCode.C))
 				Camera2D.Rotation = 0f;
 			Vector3 direction = Vector3.Zero;
-			if (Input.Keyboard.Down(KeyCode.A))
+			if (Input.Keyboard.Down(KeyCode.A) || Input.Controllers.First().LeftStick.X < -0.3f || Input.Controllers.First().Down(Input.ControllerButton.Left))
 				direction += Vector3.Cross(cameraLookatNoVertical, Vector3.Up).Normalized;
-			if (Input.Keyboard.Down(KeyCode.D))
+			if (Input.Keyboard.Down(KeyCode.D) || Input.Controllers.First().LeftStick.X > 0.3f || Input.Controllers.First().Down(Input.ControllerButton.Right))
 				direction += Vector3.Cross(Vector3.Up, cameraLookatNoVertical).Normalized;
-			if (Input.Keyboard.Down(KeyCode.W))
+			if (Input.Keyboard.Down(KeyCode.W) || Input.Controllers.First().LeftStick.Y > 0.3f || Input.Controllers.First().Down(Input.ControllerButton.Up))
 				direction += cameraLookatNoVertical;
-			if (Input.Keyboard.Down(KeyCode.S))
+			if (Input.Keyboard.Down(KeyCode.S) || Input.Controllers.First().LeftStick.Y < -0.3f || Input.Controllers.First().Down(Input.ControllerButton.Down))
 				direction -= cameraLookatNoVertical;
 			if (Input.Keyboard.Down(KeyCode.Q))
 				direction += Vector3.Down;
