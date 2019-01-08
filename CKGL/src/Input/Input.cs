@@ -292,6 +292,7 @@ namespace CKGL
 		#region Controller
 		public enum ControllerButton
 		{
+			// Digital Buttons
 			A = 0,
 			B = 1,
 			X = 2,
@@ -307,8 +308,17 @@ namespace CKGL
 			Down = 12,
 			Left = 13,
 			Right = 14,
+			// Virtual Digital Buttons (Analog to Digital shortcuts)
 			L2 = 15, // If LeftTrigger is pressed passed the XInput threshold
-			R2 = 16 // If RightTrigger is pressed passed the XInput threshold
+			R2 = 16, // If RightTrigger is pressed passed the XInput threshold
+			LeftStickDigitalUp = 17, // If LeftStick.Up is pressed passed the XInput threshold
+			LeftStickDigitalDown = 18, // If LeftStick.Down is pressed passed the XInput threshold
+			LeftStickDigitalLeft = 19, // If LeftStick.Left is pressed passed the XInput threshold
+			LeftStickDigitalRight = 20, // If LeftStick.Right is pressed passed the XInput threshold
+			RightStickDigitalUp = 21, // If RightStick.Up is pressed passed the XInput threshold
+			RightStickDigitalDown = 22, // If RightStick.Down is pressed passed the XInput threshold
+			RightStickDigitalLeft = 23, // If RightStick.Left is pressed passed the XInput threshold
+			RightStickDigitalRight = 24 // If RightStick.Right is pressed passed the XInput threshold
 		}
 
 		public enum ControllerAxis
@@ -409,6 +419,24 @@ namespace CKGL
 					if (axis == ControllerAxis.LeftX)
 					{
 						LeftStick = new Vector2(DeadZoneMapper(value, LeftDeadZone), LeftStick.Y);
+						
+						if (LeftStick.X < -LeftDeadZone)
+						{
+							if (!Down(ControllerButton.LeftStickDigitalLeft))
+								OnControllerButtonDown(ControllerButton.LeftStickDigitalLeft);
+						}
+						else if (LeftStick.X > LeftDeadZone)
+						{
+							if (!Down(ControllerButton.LeftStickDigitalRight))
+								OnControllerButtonDown(ControllerButton.LeftStickDigitalRight);
+						}
+						else
+						{
+							if (Down(ControllerButton.LeftStickDigitalLeft))
+								OnControllerButtonUp(ControllerButton.LeftStickDigitalLeft);
+							if (Down(ControllerButton.LeftStickDigitalRight))
+								OnControllerButtonUp(ControllerButton.LeftStickDigitalRight);
+						}
 
 						// debug
 						//Output.WriteLine($"Controller: {ID} - Axis: {axis} - Value: {LeftStick.X}");
@@ -418,12 +446,48 @@ namespace CKGL
 						// Flip Y axis so forward is positive
 						LeftStick = new Vector2(LeftStick.X, DeadZoneMapper(-value, LeftDeadZone));
 
+						if (LeftStick.Y < -LeftDeadZone)
+						{
+							if (!Down(ControllerButton.LeftStickDigitalDown))
+								OnControllerButtonDown(ControllerButton.LeftStickDigitalDown);
+						}
+						else if (LeftStick.Y > LeftDeadZone)
+						{
+							if (!Down(ControllerButton.LeftStickDigitalUp))
+								OnControllerButtonDown(ControllerButton.LeftStickDigitalUp);
+						}
+						else
+						{
+							if (Down(ControllerButton.LeftStickDigitalDown))
+								OnControllerButtonUp(ControllerButton.LeftStickDigitalDown);
+							if (Down(ControllerButton.LeftStickDigitalUp))
+								OnControllerButtonUp(ControllerButton.LeftStickDigitalUp);
+						}
+
 						// debug
 						Output.WriteLine($"Controller: {ID} - Axis: {axis} - Value: {LeftStick.Y}");
 					}
 					else if (axis == ControllerAxis.RightX)
 					{
 						RightStick = new Vector2(DeadZoneMapper(value, RightDeadZone), RightStick.Y);
+
+						if (RightStick.X < -RightDeadZone)
+						{
+							if (!Down(ControllerButton.RightStickDigitalLeft))
+								OnControllerButtonDown(ControllerButton.RightStickDigitalLeft);
+						}
+						else if (RightStick.X > RightDeadZone)
+						{
+							if (!Down(ControllerButton.RightStickDigitalRight))
+								OnControllerButtonDown(ControllerButton.RightStickDigitalRight);
+						}
+						else
+						{
+							if (Down(ControllerButton.RightStickDigitalLeft))
+								OnControllerButtonUp(ControllerButton.RightStickDigitalLeft);
+							if (Down(ControllerButton.RightStickDigitalRight))
+								OnControllerButtonUp(ControllerButton.RightStickDigitalRight);
+						}
 
 						// debug
 						//Output.WriteLine($"Controller: {ID} - Axis: {axis} - Value: {RightStick.X}");
@@ -432,6 +496,24 @@ namespace CKGL
 					{
 						// Flip Y axis so forward is positive
 						RightStick = new Vector2(RightStick.X, DeadZoneMapper(-value, RightDeadZone));
+
+						if (RightStick.Y < -RightDeadZone)
+						{
+							if (!Down(ControllerButton.RightStickDigitalDown))
+								OnControllerButtonDown(ControllerButton.RightStickDigitalDown);
+						}
+						else if (RightStick.Y > RightDeadZone)
+						{
+							if (!Down(ControllerButton.RightStickDigitalUp))
+								OnControllerButtonDown(ControllerButton.RightStickDigitalUp);
+						}
+						else
+						{
+							if (Down(ControllerButton.RightStickDigitalDown))
+								OnControllerButtonUp(ControllerButton.RightStickDigitalDown);
+							if (Down(ControllerButton.RightStickDigitalUp))
+								OnControllerButtonUp(ControllerButton.RightStickDigitalUp);
+						}
 
 						// debug
 						Output.WriteLine($"Controller: {ID} - Axis: {axis} - Value: {RightStick.Y}");
@@ -465,6 +547,343 @@ namespace CKGL
 			{
 				return released[(int)button];
 			}
+
+			#region Shortcuts
+			public bool ADown
+			{
+				get { return Down(ControllerButton.A); }
+			}
+
+			public bool APressed
+			{
+				get { return Pressed(ControllerButton.A); }
+			}
+
+			public bool AReleased
+			{
+				get { return Released(ControllerButton.A); }
+			}
+
+			public bool BDown
+			{
+				get { return Down(ControllerButton.B); }
+			}
+
+			public bool BPressed
+			{
+				get { return Pressed(ControllerButton.B); }
+			}
+
+			public bool BReleased
+			{
+				get { return Released(ControllerButton.B); }
+			}
+
+			public bool XDown
+			{
+				get { return Down(ControllerButton.X); }
+			}
+
+			public bool XPressed
+			{
+				get { return Pressed(ControllerButton.X); }
+			}
+
+			public bool XReleased
+			{
+				get { return Released(ControllerButton.X); }
+			}
+
+			public bool YDown
+			{
+				get { return Down(ControllerButton.Y); }
+			}
+
+			public bool YPressed
+			{
+				get { return Pressed(ControllerButton.Y); }
+			}
+
+			public bool YReleased
+			{
+				get { return Released(ControllerButton.Y); }
+			}
+
+			public bool SelectDown
+			{
+				get { return Down(ControllerButton.Select); }
+			}
+
+			public bool SelectPressed
+			{
+				get { return Pressed(ControllerButton.Select); }
+			}
+
+			public bool SelectReleased
+			{
+				get { return Released(ControllerButton.Select); }
+			}
+
+			public bool HomeDown
+			{
+				get { return Down(ControllerButton.Home); }
+			}
+
+			public bool HomePressed
+			{
+				get { return Pressed(ControllerButton.Home); }
+			}
+
+			public bool HomeReleased
+			{
+				get { return Released(ControllerButton.Home); }
+			}
+
+			public bool StartDown
+			{
+				get { return Down(ControllerButton.Start); }
+			}
+
+			public bool StartPressed
+			{
+				get { return Pressed(ControllerButton.Start); }
+			}
+
+			public bool StartReleased
+			{
+				get { return Released(ControllerButton.Start); }
+			}
+
+			public bool L1Down
+			{
+				get { return Down(ControllerButton.L1); }
+			}
+
+			public bool L1Pressed
+			{
+				get { return Pressed(ControllerButton.L1); }
+			}
+
+			public bool L1Released
+			{
+				get { return Released(ControllerButton.L1); }
+			}
+
+			public bool R1Down
+			{
+				get { return Down(ControllerButton.R1); }
+			}
+
+			public bool R1Pressed
+			{
+				get { return Pressed(ControllerButton.R1); }
+			}
+
+			public bool R1Released
+			{
+				get { return Released(ControllerButton.R1); }
+			}
+
+			public bool L2Down
+			{
+				get { return Down(ControllerButton.L2); }
+			}
+
+			public bool L2Pressed
+			{
+				get { return Pressed(ControllerButton.L2); }
+			}
+
+			public bool L2Released
+			{
+				get { return Released(ControllerButton.L2); }
+			}
+
+			public bool R2Down
+			{
+				get { return Down(ControllerButton.R2); }
+			}
+
+			public bool R2Pressed
+			{
+				get { return Pressed(ControllerButton.R2); }
+			}
+
+			public bool R2Released
+			{
+				get { return Released(ControllerButton.R2); }
+			}
+
+			public bool L3Down
+			{
+				get { return Down(ControllerButton.L3); }
+			}
+
+			public bool L3Pressed
+			{
+				get { return Pressed(ControllerButton.L3); }
+			}
+
+			public bool L3Released
+			{
+				get { return Released(ControllerButton.L3); }
+			}
+
+			public bool R3Down
+			{
+				get { return Down(ControllerButton.R3); }
+			}
+
+			public bool R3Pressed
+			{
+				get { return Pressed(ControllerButton.R3); }
+			}
+
+			public bool R3Released
+			{
+				get { return Released(ControllerButton.R3); }
+			}
+
+			public bool DownDown
+			{
+				get { return Down(ControllerButton.Down); }
+			}
+
+			public bool DownPressed
+			{
+				get { return Pressed(ControllerButton.Down); }
+			}
+
+			public bool DownReleased
+			{
+				get { return Released(ControllerButton.Down); }
+			}
+
+			public bool UpDown
+			{
+				get { return Down(ControllerButton.Up); }
+			}
+
+			public bool UpPressed
+			{
+				get { return Pressed(ControllerButton.Up); }
+			}
+
+			public bool UpReleased
+			{
+				get { return Released(ControllerButton.Up); }
+			}
+
+			public bool LeftDown
+			{
+				get { return Down(ControllerButton.Left); }
+			}
+
+			public bool LeftPressed
+			{
+				get { return Pressed(ControllerButton.Left); }
+			}
+
+			public bool LeftReleased
+			{
+				get { return Released(ControllerButton.Left); }
+			}
+
+			public bool RightDown
+			{
+				get { return Down(ControllerButton.Right); }
+			}
+
+			public bool RightPressed
+			{
+				get { return Pressed(ControllerButton.Right); }
+			}
+
+			public bool RightReleased
+			{
+				get { return Released(ControllerButton.Right); }
+			}
+
+			public bool LeftStickDigitalDownDown
+			{
+				get { return Down(ControllerButton.LeftStickDigitalDown); }
+			}
+
+			public bool LeftStickDigitalDownPressed
+			{
+				get { return Pressed(ControllerButton.LeftStickDigitalDown); }
+			}
+
+			public bool LeftStickDigitalDownReleased
+			{
+				get { return Released(ControllerButton.LeftStickDigitalDown); }
+			}
+
+			public bool LeftStickDigitalUpDown
+			{
+				get { return Down(ControllerButton.LeftStickDigitalUp); }
+			}
+
+			public bool LeftStickDigitalUpPressed
+			{
+				get { return Pressed(ControllerButton.LeftStickDigitalUp); }
+			}
+
+			public bool LeftStickDigitalUpReleased
+			{
+				get { return Released(ControllerButton.LeftStickDigitalUp); }
+			}
+
+			public bool LeftStickDigitalLeftDown
+			{
+				get { return Down(ControllerButton.LeftStickDigitalLeft); }
+			}
+
+			public bool LeftStickDigitalLeftPressed
+			{
+				get { return Pressed(ControllerButton.LeftStickDigitalLeft); }
+			}
+
+			public bool LeftStickDigitalLeftReleased
+			{
+				get { return Released(ControllerButton.LeftStickDigitalLeft); }
+			}
+
+			public bool LeftStickDigitalRightDown
+			{
+				get { return Down(ControllerButton.LeftStickDigitalRight); }
+			}
+
+			public bool LeftStickDigitalRightPressed
+			{
+				get { return Pressed(ControllerButton.LeftStickDigitalRight); }
+			}
+
+			public bool LeftStickDigitalRightReleased
+			{
+				get { return Released(ControllerButton.LeftStickDigitalRight); }
+			}
+
+			public float LeftStickX
+			{
+				get { return LeftStick.X; }
+			}
+
+			public float LeftStickY
+			{
+				get { return LeftStick.Y; }
+			}
+
+			public float RightStickX
+			{
+				get { return RightStick.X; }
+			}
+
+			public float RightStickY
+			{
+				get { return RightStick.Y; }
+			}
+			#endregion
 
 			public override string ToString()
 			{
