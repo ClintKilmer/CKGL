@@ -126,7 +126,7 @@ namespace CKGLTest
 
 		public override void Update()
 		{
-			if (Input.Keyboard.Down(KeyCode.Backspace))
+			if (Input.Keyboard.Down(KeyCode.Backspace) || Input.Controllers.First().SelectDown)
 				Platform.Quit();
 
 			if (Input.Keyboard.Pressed(KeyCode.F11))
@@ -152,17 +152,17 @@ namespace CKGLTest
 					Window.Position = Input.Mouse.PositionDisplay - windowDraggingPosition;
 			}
 
-			if (Input.Keyboard.Pressed(KeyCode.Space) || Input.Mouse.LeftPressed)
+			if (Input.Keyboard.Pressed(KeyCode.Space) || Input.Mouse.LeftPressed || Input.Controllers.First().APressed)
 				Sounds.sndPop1.Play();
-			if (Input.Keyboard.Released(KeyCode.Space) || Input.Mouse.LeftReleased)
+			if (Input.Keyboard.Released(KeyCode.Space) || Input.Mouse.LeftReleased || Input.Controllers.First().AReleased)
 				Sounds.sndPop2.Play();
 
 			var speed = 10f;
-			if (Input.Keyboard.Down(KeyCode.Z))
+			if (Input.Keyboard.Down(KeyCode.Z) || Input.Controllers.First().L2Down)
 				Camera2D.Rotation += 0.01f;
-			if (Input.Keyboard.Down(KeyCode.C))
+			if (Input.Keyboard.Down(KeyCode.C) || Input.Controllers.First().R2Down)
 				Camera2D.Rotation -= 0.01f;
-			if (Input.Keyboard.Down(KeyCode.Z) && Input.Keyboard.Down(KeyCode.C))
+			if ((Input.Keyboard.Down(KeyCode.Z) && Input.Keyboard.Down(KeyCode.C)) || (Input.Controllers.First().L2Down && Input.Controllers.First().R2Down))
 				Camera2D.Rotation = 0f;
 			Vector3 direction = Vector3.Zero;
 			if (Input.Keyboard.Down(KeyCode.A) || Input.Controllers.First().LeftStickDigitalLeftDown || Input.Controllers.First().LeftDown)
@@ -173,21 +173,27 @@ namespace CKGLTest
 				direction += cameraLookatNoVertical;
 			if (Input.Keyboard.Down(KeyCode.S) || Input.Controllers.First().LeftStickDigitalDownDown || Input.Controllers.First().DownDown)
 				direction -= cameraLookatNoVertical;
-			if (Input.Keyboard.Down(KeyCode.Q))
+			if (Input.Keyboard.Down(KeyCode.Q) || Input.Controllers.First().L1Down)
 				direction += Vector3.Down;
-			if (Input.Keyboard.Down(KeyCode.E))
+			if (Input.Keyboard.Down(KeyCode.E) || Input.Controllers.First().R1Down)
 				direction += Vector3.Up;
 			if (Input.Mouse.ScrollY != 0)
 				Camera.FoV -= Input.Mouse.ScrollY;
 
 			Camera.Position += direction.Normalized * speed * Time.DeltaTime;
 
+			//  Mouse look
 			if (Platform.RelativeMouseMode)
 			{
-				var mouseSpeed = 0.0005f;
+				float mouseSpeed = 0.0005f;
 				cameraYaw = Math.Clamp(cameraYaw + (Input.Mouse.PositionRelative.Y) * mouseSpeed, -0.249f, 0.249f);
 				cameraPitch += (Input.Mouse.PositionRelative.X) * mouseSpeed;
 			}
+
+			// Controller look
+			float controllerSpeed = 0.01f;
+			cameraYaw = Math.Clamp(cameraYaw + (-Input.Controllers.First().RightStickY * controllerSpeed), -0.249f, 0.249f);
+			cameraPitch += Input.Controllers.First().RightStickX * controllerSpeed;
 
 			//Camera.Rotation = Quaternion.CreateLookAt(cameraLookat, Vector3.Up);
 			Camera.Rotation = Quaternion.CreateRotationY(cameraPitch) * Quaternion.CreateRotationX(cameraYaw);

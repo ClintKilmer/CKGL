@@ -177,7 +177,8 @@ namespace CKGL
 						default:
 							throw new Exception("Invalid Axis");
 					}
-					Events.OnControllerAxisMove?.Invoke(instanceID, axis, value / (float)short.MaxValue);
+					// 32766f instead of 32767f or 32768f as it seems the SDL Y axes are skewed by +1
+					Events.OnControllerAxisMove?.Invoke(instanceID, axis, Math.Clamp(value / 32766f, -1f, 1f));
 				}
 			}
 

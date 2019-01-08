@@ -342,13 +342,12 @@ namespace CKGL
 			public Vector2 LeftStick { get; private set; }
 			public Vector2 RightStick { get; private set; }
 
-			// TODO - ApplyRadialDeadZone - use this?
-			public float AnalogStickDeadZoneLow { get; set; } = 0.1f;
-			public float AnalogStickDeadZoneHigh { get; set; } = 0.1f;
-
 			private const float LeftDeadZone = 7849f / 32768f; // XInput Constant
 			private const float RightDeadZone = 8689f / 32768f; // XInput Constant
 			private const float TriggerThreshold = 30f / 255f; // XInput Constant
+			private const float LeftDeadZoneHigh = LeftDeadZone * 0.25f; // CKGL
+			private const float RightDeadZoneHigh = RightDeadZone * 0.25f; // CKGL
+			private const float TriggerThresholdHigh = TriggerThreshold * 0.25f; // CKGL
 
 			private bool[] down = new bool[Enum.GetNames(typeof(ControllerButton)).Length];
 			private bool[] pressed = new bool[Enum.GetNames(typeof(ControllerButton)).Length];
@@ -384,7 +383,7 @@ namespace CKGL
 				{
 					if (axis == ControllerAxis.LeftTrigger)
 					{
-						LeftTrigger = DeadZoneMapper(value, TriggerThreshold);
+						LeftTrigger = DeadZoneMapper(value, TriggerThreshold, TriggerThresholdHigh);
 
 						if (LeftTrigger > TriggerThreshold)
 						{
@@ -399,7 +398,7 @@ namespace CKGL
 					}
 					else if (axis == ControllerAxis.RightTrigger)
 					{
-						RightTrigger = DeadZoneMapper(value, TriggerThreshold);
+						RightTrigger = DeadZoneMapper(value, TriggerThreshold, TriggerThresholdHigh);
 
 						if (RightTrigger > TriggerThreshold)
 						{
@@ -414,13 +413,14 @@ namespace CKGL
 					}
 
 					// debug
-					//Output.WriteLine($"Controller: {ID} - Axis: {axis} - Value: {value}");
+					//Output.WriteLine($"Controller: {ID} - Axis: {axis} - Value: {LeftTrigger}");
+					//Output.WriteLine($"Controller: {ID} - Axis: {axis} - Value: {RightTrigger}");
 				}
 				else
 				{
 					if (axis == ControllerAxis.LeftX)
 					{
-						LeftStick = new Vector2(DeadZoneMapper(value, LeftDeadZone), LeftStick.Y);
+						LeftStick = new Vector2(DeadZoneMapper(value, LeftDeadZone, LeftDeadZoneHigh), LeftStick.Y);
 						
 						if (LeftStick.X < -LeftDeadZone)
 						{
@@ -446,7 +446,7 @@ namespace CKGL
 					else if (axis == ControllerAxis.LeftY)
 					{
 						// Flip Y axis so forward is positive
-						LeftStick = new Vector2(LeftStick.X, DeadZoneMapper(-value, LeftDeadZone));
+						LeftStick = new Vector2(LeftStick.X, DeadZoneMapper(-value, LeftDeadZone, LeftDeadZoneHigh));
 
 						if (LeftStick.Y < -LeftDeadZone)
 						{
@@ -467,11 +467,11 @@ namespace CKGL
 						}
 
 						// debug
-						Output.WriteLine($"Controller: {ID} - Axis: {axis} - Value: {LeftStick.Y}");
+						//Output.WriteLine($"Controller: {ID} - Axis: {axis} - Value: {LeftStick.Y}");
 					}
 					else if (axis == ControllerAxis.RightX)
 					{
-						RightStick = new Vector2(DeadZoneMapper(value, RightDeadZone), RightStick.Y);
+						RightStick = new Vector2(DeadZoneMapper(value, RightDeadZone, RightDeadZoneHigh), RightStick.Y);
 
 						if (RightStick.X < -RightDeadZone)
 						{
@@ -497,7 +497,7 @@ namespace CKGL
 					else if (axis == ControllerAxis.RightY)
 					{
 						// Flip Y axis so forward is positive
-						RightStick = new Vector2(RightStick.X, DeadZoneMapper(-value, RightDeadZone));
+						RightStick = new Vector2(RightStick.X, DeadZoneMapper(-value, RightDeadZone, RightDeadZoneHigh));
 
 						if (RightStick.Y < -RightDeadZone)
 						{
@@ -518,12 +518,24 @@ namespace CKGL
 						}
 
 						// debug
-						Output.WriteLine($"Controller: {ID} - Axis: {axis} - Value: {RightStick.Y}");
+						//Output.WriteLine($"Controller: {ID} - Axis: {axis} - Value: {RightStick.Y}");
 					}
 				}
 
 				// debug
 				//Output.WriteLine($"Controller: {ID} - Axis: {axis} - Value: {value}");
+			}
+
+			private float DeadZoneMapper(float value, float deadZoneLow, float deadZoneHigh)
+			{
+				if (value < -deadZoneLow)
+					value += deadZoneLow;
+				else if (value > deadZoneLow)
+					value -= deadZoneLow;
+				else
+					return 0.0f;
+
+				return Math.Clamp(value / (1.0f - deadZoneLow - deadZoneHigh), -1f, 1f);
 			}
 
 			public void Clear()
@@ -890,43 +902,6 @@ namespace CKGL
 			public override string ToString()
 			{
 				return $"ID: {ID}";
-			}
-
-			private float DeadZoneMapper(float value, float deadZone)
-			{
-				if (value < -deadZone)
-				{
-					value += deadZone;
-				}
-				else if (value > deadZone)
-				{
-					value -= deadZone;
-				}
-				else
-				{
-					return 0.0f;
-				}
-				return Math.Clamp(value / (1.0f - deadZone), -1f, 1f);
-			}
-
-			// TODO - ApplyRadialDeadZone - use this?
-			private Vector2 ApplyRadialDeadZone(Vector2 position)
-			{
-				float mag = position.Magnitude();
-
-				if (mag > AnalogStickDeadZoneLow)
-				{
-					// scale such that output magnitude is in the range [0.0f, 1.0f]
-					float legalRange = 1.0f - AnalogStickDeadZoneHigh - AnalogStickDeadZoneLow;
-					float normalizedMag = Math.Min(1.0f, (mag - AnalogStickDeadZoneLow) / legalRange);
-					float scale = normalizedMag / mag;
-					return position * scale;
-				}
-				else
-				{
-					// stick is in the inner dead zone
-					return Vector2.Zero;
-				}
 			}
 		}
 
