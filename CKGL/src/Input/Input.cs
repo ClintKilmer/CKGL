@@ -222,6 +222,7 @@ namespace CKGL
 				return released[(int)button];
 			}
 
+			#region Shortcuts
 			public static bool LeftDown
 			{
 				get { return Down(MouseButton.Left); }
@@ -285,7 +286,8 @@ namespace CKGL
 			public static int ScrollY
 			{
 				get { return Scroll.Y; }
-			}
+			} 
+			#endregion
 		}
 		#endregion
 
