@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace CKGL
 {
@@ -335,7 +334,9 @@ namespace CKGL
 
 		public class Controller
 		{
-			public int ID;
+			public int Slot { get; private set; } = -1;
+			public int ID { get; private set; } = -1;
+			public bool Connected { get; private set; } = false;
 
 			public float LeftTrigger { get; private set; }
 			public float RightTrigger { get; private set; }
@@ -353,30 +354,36 @@ namespace CKGL
 			private bool[] pressed = new bool[Enum.GetNames(typeof(ControllerButton)).Length];
 			private bool[] released = new bool[Enum.GetNames(typeof(ControllerButton)).Length];
 
-			public Controller(int id)
+			internal Controller(int slot, int id)
 			{
+				Slot = slot;
 				ID = id;
+				Connected = true;
 			}
 
-			public void OnControllerButtonDown(ControllerButton button)
+			// Dummy Controller
+			private Controller() { }
+			internal static Controller Dummy { get; } = new Controller();
+
+			internal void OnControllerButtonDown(ControllerButton button)
 			{
 				down[(int)button] = true;
 				pressed[(int)button] = true;
 
 				// debug
-				Output.WriteLine($"Controller {ID} - Button {button} - Down");
+				Output.WriteLine($"Controller {this} - Button {button} - Down");
 			}
 
-			public void OnControllerButtonUp(ControllerButton button)
+			internal void OnControllerButtonUp(ControllerButton button)
 			{
 				down[(int)button] = false;
 				released[(int)button] = true;
 
 				// debug
-				Output.WriteLine($"Controller {ID} - Button {button} - Up");
+				Output.WriteLine($"Controller {this} - Button {button} - Up");
 			}
 
-			public void OnControllerAxisMove(ControllerAxis axis, float value)
+			internal void OnControllerAxisMove(ControllerAxis axis, float value)
 			{
 				// Triggers
 				if (axis == ControllerAxis.LeftTrigger || axis == ControllerAxis.RightTrigger)
@@ -413,15 +420,15 @@ namespace CKGL
 					}
 
 					// debug
-					//Output.WriteLine($"Controller: {ID} - Axis: {axis} - Value: {LeftTrigger}");
-					//Output.WriteLine($"Controller: {ID} - Axis: {axis} - Value: {RightTrigger}");
+					//Output.WriteLine($"Controller: {this} - Axis: {axis} - Value: {LeftTrigger}");
+					//Output.WriteLine($"Controller: {this} - Axis: {axis} - Value: {RightTrigger}");
 				}
 				else
 				{
 					if (axis == ControllerAxis.LeftX)
 					{
 						LeftStick = new Vector2(DeadZoneMapper(value, LeftDeadZone, LeftDeadZoneHigh), LeftStick.Y);
-						
+
 						if (LeftStick.X < -LeftDeadZone)
 						{
 							if (!Down(ControllerButton.LeftStickDigitalLeft))
@@ -441,7 +448,7 @@ namespace CKGL
 						}
 
 						// debug
-						//Output.WriteLine($"Controller: {ID} - Axis: {axis} - Value: {LeftStick.X}");
+						//Output.WriteLine($"Controller: {this} - Axis: {axis} - Value: {LeftStick.X}");
 					}
 					else if (axis == ControllerAxis.LeftY)
 					{
@@ -467,7 +474,7 @@ namespace CKGL
 						}
 
 						// debug
-						//Output.WriteLine($"Controller: {ID} - Axis: {axis} - Value: {LeftStick.Y}");
+						//Output.WriteLine($"Controller: {this} - Axis: {axis} - Value: {LeftStick.Y}");
 					}
 					else if (axis == ControllerAxis.RightX)
 					{
@@ -492,7 +499,7 @@ namespace CKGL
 						}
 
 						// debug
-						//Output.WriteLine($"Controller: {ID} - Axis: {axis} - Value: {RightStick.X}");
+						//Output.WriteLine($"Controller: {this} - Axis: {axis} - Value: {RightStick.X}");
 					}
 					else if (axis == ControllerAxis.RightY)
 					{
@@ -518,12 +525,12 @@ namespace CKGL
 						}
 
 						// debug
-						//Output.WriteLine($"Controller: {ID} - Axis: {axis} - Value: {RightStick.Y}");
+						//Output.WriteLine($"Controller: {this} - Axis: {axis} - Value: {RightStick.Y}");
 					}
 				}
 
 				// debug
-				//Output.WriteLine($"Controller: {ID} - Axis: {axis} - Value: {value}");
+				//Output.WriteLine($"Controller: {this} - Axis: {axis} - Value: {value}");
 			}
 
 			private float DeadZoneMapper(float value, float deadZoneLow, float deadZoneHigh)
@@ -538,7 +545,7 @@ namespace CKGL
 				return Math.Clamp(value / (1.0f - deadZoneLow - deadZoneHigh), -1f, 1f);
 			}
 
-			public void Clear()
+			internal void Clear()
 			{
 				for (int i = 0; i < Enum.GetNames(typeof(ControllerButton)).Length; i++)
 				{
@@ -901,29 +908,46 @@ namespace CKGL
 
 			public override string ToString()
 			{
-				return $"ID: {ID}";
+				return $"Slot: {Slot}, ID: {ID}";
 			}
 		}
 
 		public static class Controllers
 		{
 			private static Dictionary<int, Controller> controllers = new Dictionary<int, Controller>();
+			private static Dictionary<int, int> controllerIDs = new Dictionary<int, int>();
 
-			public static void Init()
+			internal static void Init()
 			{
 				Platform.Events.OnControllerDeviceAdded += (id) =>
 				{
-					if (!controllers.ContainsKey(id))
+					if (!controllerIDs.ContainsKey(id))
 					{
-						Controller controller = new Controller(id);
-						controllers.Add(id, controller);
+						int slot = 0;
+						while (controllers.ContainsKey(slot))
+							slot++;
+						controllers.Add(slot, new Controller(slot, id));
+						controllerIDs.Add(id, slot);
+
+						// debug
+						Output.WriteLine($"Controller Added: {controllers[slot]}");
+						Output.WriteLine($"Total Controllers: {controllers.Count}");
 					}
 				};
 
 				Platform.Events.OnControllerDeviceRemoved += (id) =>
 				{
-					if (controllers.ContainsKey(id))
-						controllers.Remove(id);
+					if (controllerIDs.ContainsKey(id))
+					{
+						// debug
+						Output.WriteLine($"Controller Removed: {controllers[controllerIDs[id]]}");
+
+						controllers.Remove(controllerIDs[id]);
+						controllerIDs.Remove(id);
+
+						// debug
+						Output.WriteLine($"Total Controllers: {controllers.Count}");
+					}
 				};
 
 				Platform.Events.OnControllerDeviceRemapped += (id) =>
@@ -933,30 +957,30 @@ namespace CKGL
 
 				Platform.Events.OnControllerButtonDown += (id, button) =>
 				{
-					if (controllers.ContainsKey(id))
+					if (controllerIDs.ContainsKey(id))
 					{
-						controllers[id].OnControllerButtonDown(button);
+						controllers[controllerIDs[id]].OnControllerButtonDown(button);
 					}
 				};
 
 				Platform.Events.OnControllerButtonUp += (id, button) =>
 				{
-					if (controllers.ContainsKey(id))
+					if (controllerIDs.ContainsKey(id))
 					{
-						controllers[id].OnControllerButtonUp(button);
+						controllers[controllerIDs[id]].OnControllerButtonUp(button);
 					}
 				};
 
 				Platform.Events.OnControllerAxisMove += (id, axis, value) =>
 				{
-					if (controllers.ContainsKey(id))
+					if (controllerIDs.ContainsKey(id))
 					{
-						controllers[id].OnControllerAxisMove(axis, value);
+						controllers[controllerIDs[id]].OnControllerAxisMove(axis, value);
 					}
 				};
 			}
 
-			public static void Clear()
+			internal static void Clear()
 			{
 				foreach (Controller controller in controllers.Values)
 				{
@@ -966,7 +990,44 @@ namespace CKGL
 
 			public static Controller First()
 			{
-				return controllers.First().Value;
+				if (controllers.Count > 0)
+				{
+					int slot = 0;
+					while (!controllers.ContainsKey(slot))
+						slot++;
+
+					return controllers[slot];
+				}
+
+				return Controller.Dummy;
+			}
+
+			public static Controller Slot(int slot)
+			{
+				if (controllers.ContainsKey(slot))
+					return controllers[slot];
+
+				return Controller.Dummy;
+			}
+
+			public static Controller Slot1()
+			{
+				return Slot(0);
+			}
+
+			public static Controller Slot2()
+			{
+				return Slot(1);
+			}
+
+			public static Controller Slot3()
+			{
+				return Slot(2);
+			}
+
+			public static Controller Slot4()
+			{
+				return Slot(3);
 			}
 		}
 		#endregion

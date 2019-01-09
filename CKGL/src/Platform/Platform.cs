@@ -110,8 +110,8 @@ namespace CKGL
 					Events.OnControllerDeviceAdded?.Invoke(controller.InstanceID);
 
 					// debug
-					Output.WriteLine($"Controller Added: {controller}");
-					Output.WriteLine($"Total Controllers: {Controllers.Count} | SDL_NumJoysticks: {SDL_NumJoysticks()}");
+					//Output.WriteLine($"Controller Added: {controller}");
+					//Output.WriteLine($"Total Controllers: {Controllers.Count} | SDL_NumJoysticks: {SDL_NumJoysticks()}");
 				}
 			}
 
@@ -120,7 +120,7 @@ namespace CKGL
 				if (Controllers.TryGetValue(instanceID, out Controller controller))
 				{
 					// debug
-					Output.WriteLine($"Controller Removed: {controller}");
+					//Output.WriteLine($"Controller Removed: {controller}");
 
 					controller.Destroy();
 					Controllers.Remove(instanceID);
@@ -129,7 +129,7 @@ namespace CKGL
 				}
 
 				// debug
-				Output.WriteLine($"Total Controllers: {Controllers.Count} | SDL_NumJoysticks: {SDL_NumJoysticks()}");
+				//Output.WriteLine($"Total Controllers: {Controllers.Count} | SDL_NumJoysticks: {SDL_NumJoysticks()}");
 			}
 
 			public static void Remapped(int instanceID)
@@ -151,10 +151,10 @@ namespace CKGL
 
 			public static void AxisMotion(int instanceID, int axisID, short value)
 			{
-				if (axisID >-1 && axisID < 6)
+				if (axisID > -1 && axisID < 6)
 				{
 					Input.ControllerAxis axis;
-					switch(axisID)
+					switch (axisID)
 					{
 						case 0:
 							axis = Input.ControllerAxis.LeftX;
