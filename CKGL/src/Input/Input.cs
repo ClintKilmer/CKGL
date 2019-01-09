@@ -285,7 +285,7 @@ namespace CKGL
 			public static int ScrollY
 			{
 				get { return Scroll.Y; }
-			} 
+			}
 			#endregion
 		}
 		#endregion
