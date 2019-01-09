@@ -338,6 +338,14 @@ namespace CKGL
 			public int ID { get; private set; } = -1;
 			public bool Connected { get; private set; } = false;
 
+			//public int DeviceIndex => Platform.GetController(ID).DeviceIndex;
+			public string Name => Platform.GetController(ID).Name;
+			public string GUID => Platform.GetController(ID).GUID;
+			public ushort Vendor => Platform.GetController(ID).Vendor;
+			public ushort Product => Platform.GetController(ID).Product;
+			public ushort ProductVersion => Platform.GetController(ID).ProductVersion;
+			public bool Rumble => Platform.GetController(ID).Rumble;
+
 			public float LeftTrigger { get; private set; }
 			public float RightTrigger { get; private set; }
 			public Vector2 LeftStick { get; private set; }

@@ -62,6 +62,14 @@ namespace CKGL
 		#region Controllers
 		private static Dictionary<int, Controller> Controllers = new Dictionary<int, Controller>();
 
+		internal static Controller GetController(int id)
+		{
+			if (Controllers.ContainsKey(id))
+				return Controllers[id];
+
+			return new Controller(-1, IntPtr.Zero);
+		}
+
 		public class Controller
 		{
 			public int DeviceIndex;
@@ -69,11 +77,11 @@ namespace CKGL
 
 			public IntPtr JoystickIntPtr => SDL_GameControllerGetJoystick(IntPtr);
 			public int InstanceID => SDL_JoystickInstanceID(JoystickIntPtr);
+			public string Name => SDL_GameControllerName(IntPtr);
 			public string GUID => (Vendor == 0x00 && Product == 0x00) ? "xinput" : string.Format("{0:x2}{1:x2}{2:x2}{3:x2}", Vendor & 0xFF, Vendor >> 8, Product & 0xFF, Product >> 8);
 			public ushort Vendor => SDL_GameControllerGetVendor(IntPtr);
 			public ushort Product => SDL_GameControllerGetProduct(IntPtr);
 			public ushort ProductVersion => SDL_GameControllerGetProductVersion(IntPtr);
-			public string Name => SDL_GameControllerName(IntPtr);
 			public bool Rumble => SDL_GameControllerRumble(IntPtr, 0, 0, SDL_HAPTIC_INFINITY) == 0;
 
 			public Controller(int deviceIndex, IntPtr intPtr)
