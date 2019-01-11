@@ -91,6 +91,8 @@ namespace CKGLTest
 
 		public override void Init()
 		{
+			Window.SetIcon("textures/Character1.png");
+
 			Platform.RelativeMouseMode = true;
 			//Platform.ShowCursor = false; // Default true
 			//Platform.ScreensaverAllowed = true; // Default false

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using static SDL2.SDL;
 
 namespace CKGL
@@ -25,6 +26,39 @@ namespace CKGL
 			set
 			{
 				SDL_SetWindowTitle(IntPtr, value);
+			}
+		}
+
+		public static void SetIcon(string file)
+		{
+			if (!File.Exists(file))
+			{
+				Output.WriteLine($"Window.SetIcon() Error - The file \"{file}\" does not exist.");
+				return;
+			}
+
+			if (file.EndsWith(".png", StringComparison.OrdinalIgnoreCase))
+			{
+				try
+				{
+					IntPtr iconIntPtr = SDL2.SDL_image.IMG_Load(file);
+					SDL_SetWindowIcon(IntPtr, iconIntPtr);
+					SDL_FreeSurface(iconIntPtr);
+				}
+				catch (DllNotFoundException)
+				{
+					Output.WriteLine($"Window.SetIcon() Error - To load a .png icon, SDL_image must be supported.");
+				}
+			}
+			else if (file.EndsWith(".bmp", StringComparison.OrdinalIgnoreCase))
+			{
+				IntPtr iconIntPtr = SDL_LoadBMP(file);
+				SDL_SetWindowIcon(IntPtr, iconIntPtr);
+				SDL_FreeSurface(iconIntPtr);
+			}
+			else
+			{
+				Output.WriteLine($"Window.SetIcon() Error - Unsupported file extension. Please use .png or .bmp");
 			}
 		}
 
