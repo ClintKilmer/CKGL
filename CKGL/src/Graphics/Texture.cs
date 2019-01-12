@@ -27,8 +27,8 @@ namespace CKGL
 		private GLuint id;
 
 		public GLuint ID { get => id; }
-		public int Width { get; set; }
-		public int Height { get; set; }
+		public int Width { get; protected set; }
+		public int Height { get; protected set; }
 		public TextureFormat Format { get; private set; }
 		public TextureTarget BindTarget { get; private set; }
 		public TextureTarget DataTarget { get; private set; }
