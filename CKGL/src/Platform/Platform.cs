@@ -473,15 +473,19 @@ namespace CKGL
 									Events.OnWinRestored?.Invoke();
 									break;
 								case SDL_WindowEventID.SDL_WINDOWEVENT_ENTER:
+									ScreensaverAllowed = false;
 									Events.OnWinEnter?.Invoke();
 									break;
 								case SDL_WindowEventID.SDL_WINDOWEVENT_LEAVE:
+									ScreensaverAllowed = true;
 									Events.OnWinLeave?.Invoke();
 									break;
 								case SDL_WindowEventID.SDL_WINDOWEVENT_FOCUS_GAINED:
+									ScreensaverAllowed = false;
 									Events.OnWinFocusGained?.Invoke();
 									break;
 								case SDL_WindowEventID.SDL_WINDOWEVENT_FOCUS_LOST:
+									ScreensaverAllowed = true;
 									Events.OnWinFocusLost?.Invoke();
 									break;
 								default:
