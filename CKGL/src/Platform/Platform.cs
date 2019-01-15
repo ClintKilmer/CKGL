@@ -436,7 +436,7 @@ namespace CKGL
 					case SDL_EventType.SDL_WINDOWEVENT:
 						if (Event.window.windowID == Window.ID)
 						{
-							//Output.WriteLine(Event.window.windowEvent.ToString());
+							//Output.WriteLine(Event.window.windowEvent.ToString()); // Debug
 							switch (Event.window.windowEvent)
 							{
 								case SDL_WindowEventID.SDL_WINDOWEVENT_CLOSE:
