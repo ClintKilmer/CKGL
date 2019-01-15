@@ -16,6 +16,8 @@ namespace CKGL
 			public delegate void MouseMoveEvent(int x, int y, int xRelative, int yRelative);
 			public delegate void MouseButtonEvent(Input.MouseButton button);
 			public delegate void MouseScrollEvent(int x, int y);
+			public delegate void TouchMoveEvent(int x, int y, int xRelative, int yRelative);
+			public delegate void OnTouchEvent(long touchID, long fingerID, float x, float y, float xRelative, float yRelative, float pressure);
 			public delegate void ControllerDeviceEvent(int id);
 			public delegate void ControllerButtonEvent(int id, Input.ControllerButton button);
 			public delegate void ControllerAxisEvent(int id, Input.ControllerAxis axis, float value);
@@ -30,6 +32,9 @@ namespace CKGL
 			public static MouseButtonEvent OnMouseButtonDown;
 			public static MouseButtonEvent OnMouseButtonUp;
 			public static MouseScrollEvent OnMouseScroll;
+			public static OnTouchEvent OnTouchDown;
+			public static OnTouchEvent OnTouchUp;
+			public static OnTouchEvent OnTouchMove;
 			public static ControllerDeviceEvent OnControllerDeviceAdded;
 			public static ControllerDeviceEvent OnControllerDeviceRemoved;
 			public static ControllerDeviceEvent OnControllerDeviceRemapped;
@@ -416,6 +421,18 @@ namespace CKGL
 						break;
 					case SDL_EventType.SDL_MOUSEWHEEL:
 						Events.OnMouseScroll?.Invoke(Event.wheel.x, Event.wheel.y);
+						break;
+					case SDL_EventType.SDL_FINGERDOWN:
+						Events.OnTouchDown?.Invoke(Event.tfinger.touchId, Event.tfinger.fingerId, Event.tfinger.x, Event.tfinger.y, Event.tfinger.dx, Event.tfinger.dy, Event.tfinger.pressure);
+						Output.WriteLine($"Touch Down - TouchID: {Event.tfinger.touchId} - FingerID: {Event.tfinger.fingerId} - Position: ({Event.tfinger.x},{Event.tfinger.y})"); // Debug
+						break;
+					case SDL_EventType.SDL_FINGERUP:
+						Events.OnTouchUp?.Invoke(Event.tfinger.touchId, Event.tfinger.fingerId, Event.tfinger.x, Event.tfinger.y, Event.tfinger.dx, Event.tfinger.dy, Event.tfinger.pressure);
+						Output.WriteLine($"Touch Up - TouchID: {Event.tfinger.touchId} - FingerID: {Event.tfinger.fingerId} - Position: ({Event.tfinger.x},{Event.tfinger.y})"); // Debug
+						break;
+					case SDL_EventType.SDL_FINGERMOTION:
+						Events.OnTouchMove?.Invoke(Event.tfinger.touchId, Event.tfinger.fingerId, Event.tfinger.x, Event.tfinger.y, Event.tfinger.dx, Event.tfinger.dy, Event.tfinger.pressure);
+						Output.WriteLine($"Touch Move - TouchID: {Event.tfinger.touchId} - FingerID: {Event.tfinger.fingerId} - Position: ({Event.tfinger.x},{Event.tfinger.y}) - Relative: ({Event.tfinger.dx},{Event.tfinger.dy})"); // Debug
 						break;
 					case SDL_EventType.SDL_CONTROLLERDEVICEADDED:
 						Controller.Added(Event.cdevice.which);
