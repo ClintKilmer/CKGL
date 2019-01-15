@@ -19,6 +19,7 @@ namespace CKGL
 			public delegate void ControllerDeviceEvent(int id);
 			public delegate void ControllerButtonEvent(int id, Input.ControllerButton button);
 			public delegate void ControllerAxisEvent(int id, Input.ControllerAxis axis, float value);
+			public delegate void OnDisplayOrientationEvent(uint id, int orientation);
 			public delegate void OtherEvent(int eventID);
 
 			public static Action OnQuit;
@@ -35,6 +36,7 @@ namespace CKGL
 			public static ControllerButtonEvent OnControllerButtonDown;
 			public static ControllerButtonEvent OnControllerButtonUp;
 			public static ControllerAxisEvent OnControllerAxisMove;
+			public static OnDisplayOrientationEvent OnDisplayOrientationChanged;
 			public static Action OnWinClose;
 			public static Action OnWinShown;
 			public static Action OnWinHidden;
@@ -432,6 +434,10 @@ namespace CKGL
 						break;
 					case SDL_EventType.SDL_CONTROLLERAXISMOTION:
 						Controller.AxisMotion(Event.caxis.which, Event.caxis.axis, Event.caxis.axisValue);
+						break;
+					case SDL_EventType.SDL_DISPLAYEVENT:
+						if (Event.display.displayEvent == SDL_DisplayEventID.SDL_DISPLAYEVENT_ORIENTATION)
+							Events.OnDisplayOrientationChanged?.Invoke(Event.display.display, Event.display.data1);
 						break;
 					case SDL_EventType.SDL_WINDOWEVENT:
 						if (Event.window.windowID == Window.ID)
