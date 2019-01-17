@@ -55,10 +55,10 @@ namespace CKGL
 
 		public void Destroy()
 		{
-			if (id != default(GLuint))
+			if (id != default)
 			{
 				GL.DeleteTexture(id);
-				id = default(GLuint);
+				id = default;
 			}
 		}
 

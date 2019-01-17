@@ -176,10 +176,10 @@ namespace CKGL
 
 		public void Destroy()
 		{
-			if (id != default(GLuint))
+			if (id != default)
 			{
 				GL.DeleteProgram(id);
-				id = default(GLuint);
+				id = default;
 			}
 		}
 

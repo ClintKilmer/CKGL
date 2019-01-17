@@ -21,10 +21,10 @@ namespace CKGL
 
 		public void Destroy()
 		{
-			if (id != default(GLuint))
+			if (id != default)
 			{
 				GL.DeleteBuffer(id);
-				id = default(GLuint);
+				id = default;
 			}
 		}
 

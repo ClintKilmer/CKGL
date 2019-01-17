@@ -16,10 +16,10 @@ namespace CKGL
 
 		public void Destroy()
 		{
-			if (id != default(GLuint))
+			if (id != default)
 			{
 				GL.DeleteVertexArray(id);
-				id = default(GLuint);
+				id = default;
 			}
 		}
 

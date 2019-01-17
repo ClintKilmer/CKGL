@@ -174,10 +174,10 @@ namespace CKGL
 				depthTexture?.Destroy();
 				depthTexture = null;
 
-				if (id != default(GLuint))
+				if (id != default)
 				{
 					GL.DeleteFramebuffer(id);
-					id = default(GLuint);
+					id = default;
 				}
 			}
 		}
