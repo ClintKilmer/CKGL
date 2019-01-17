@@ -150,7 +150,7 @@ namespace CKGL
 
 		public static class Mouse
 		{
-			public static Point2 LastPosition { get; set; }
+			public static Point2 LastPosition { get; private set; }
 			public static Point2 Position { get; private set; }
 			public static Point2 LastPositionDisplay { get; private set; }
 			public static Point2 PositionDisplay { get; private set; }

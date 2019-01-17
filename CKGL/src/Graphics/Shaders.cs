@@ -3,7 +3,7 @@
 	public static class ShaderIncludes
 	{
 		#region Common
-		private static string Common = @"#version 330 core
+		private const string Common = @"#version 330 core
 
 float fog_linear(const float dist, const float start, const float end)
 {
@@ -12,15 +12,15 @@ float fog_linear(const float dist, const float start, const float end)
 		#endregion
 
 		#region Vertex
-		public static string Vertex = Common + @"";
+		public const string Vertex = Common + @"";
 		#endregion
 
 		#region Geometry
-		public static string Geometry = Common + @"";
+		public const string Geometry = Common + @"";
 		#endregion
 
 		#region Fragment
-		public static string Fragment = Common + @"
+		public const string Fragment = Common + @"
 float fog_exp(const float dist, const float density)
 {
 	return 1.0 - clamp(exp(-density * dist), 0.0, 1.0);
