@@ -223,7 +223,7 @@ in DATA
 void main()
 {
 	colour = mix(i.colour, texture(Texture, i.uv) * i.colour, i.textured);
-}"); 
+}");
 			#endregion
 
 			SpriteSheets.SpriteSheet = new SpriteSheet(128, 1);
@@ -650,7 +650,7 @@ void main()
 			// Test Geometry Shader
 			testGeometry.Bind();
 			testGeometry.SetUniform("MVP", Camera.Matrix);
-			for(int x = 0; x < 20; x++)
+			for (int x = 0; x < 20; x++)
 			{
 				for (int y = 0; y < 20; y++)
 				{

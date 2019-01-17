@@ -9,25 +9,9 @@ namespace CKGL
 		private static IntPtr IntPtr = IntPtr.Zero;
 		private static IntPtr GL_Context;
 
-		public static uint ID
-		{
-			get
-			{
-				return SDL_GetWindowID(IntPtr);
-			}
-		}
+		public static uint ID => SDL_GetWindowID(IntPtr);
 
-		public static string Title
-		{
-			get
-			{
-				return SDL_GetWindowTitle(IntPtr);
-			}
-			set
-			{
-				SDL_SetWindowTitle(IntPtr, value);
-			}
-		}
+		public static string Title { get => SDL_GetWindowTitle(IntPtr); set => SDL_SetWindowTitle(IntPtr, value); }
 
 		public static void SetIcon(string file)
 		{
@@ -62,20 +46,9 @@ namespace CKGL
 			}
 		}
 
-		public static int X
-		{
-			get
-			{
-				return Position.X;
-			}
-		}
-		public static int Y
-		{
-			get
-			{
-				return Position.Y;
-			}
-		}
+		public static int X => Position.X;
+		public static int Y => Position.Y;
+
 		public static Point2 Position
 		{
 			get
@@ -90,20 +63,9 @@ namespace CKGL
 			}
 		}
 
-		public static int Width
-		{
-			get
-			{
-				return Size.X;
-			}
-		}
-		public static int Height
-		{
-			get
-			{
-				return Size.Y;
-			}
-		}
+		public static int Width => Size.X;
+		public static int Height => Size.Y;
+
 		public static Point2 Size
 		{
 			get
@@ -119,10 +81,7 @@ namespace CKGL
 			}
 		}
 
-		public static float AspectRatio
-		{
-			get { return Width / (float)Height; }
-		}
+		public static float AspectRatio => Width / (float)Height;
 
 		#region VSync
 		public class VSyncMode

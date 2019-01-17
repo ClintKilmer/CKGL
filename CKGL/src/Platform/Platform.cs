@@ -242,11 +242,30 @@ namespace CKGL
 		#region Windows - Set Dll Directory - x64 | x86 - https://github.com/FNA-XNA/FNA/wiki/4:-FNA-and-Windows-API#64-bit-support
 		[DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
-		private static extern bool SetDllDirectory(string lpPathName);
+		static extern bool SetDefaultDllDirectories(int directoryFlags);
+		[DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+		static extern void AddDllDirectory(string lpPathName);
+		[DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		static extern bool SetDllDirectory(string lpPathName);
+		const int LOAD_LIBRARY_SEARCH_DEFAULT_DIRS = 0x00001000;
 		private static void SetDllDirectory()
 		{
 			if (Environment.OSVersion.Platform == PlatformID.Win32NT)
-				SetDllDirectory(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Environment.Is64BitProcess ? "x64" : "x86"));
+			{
+				try
+				{
+					SetDefaultDllDirectories(LOAD_LIBRARY_SEARCH_DEFAULT_DIRS);
+					AddDllDirectory(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Environment.Is64BitProcess ? "x64" : "x86"));
+					Output.WriteLine($"{(Environment.Is64BitProcess ? "x64" : "x86")} executable detected, selecting proper DLLs.");
+				}
+				catch
+				{
+					// Pre-Windows 7, KB2533623 
+					SetDllDirectory(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Environment.Is64BitProcess ? "x64" : "x86"));
+					Output.WriteLine($"{(Environment.Is64BitProcess ? "x64" : "x86")} executable detected, selecting proper DLLs. (Pre-Windows 7, KB2533623)");
+				}
+			}
 		}
 		#endregion
 
@@ -262,7 +281,7 @@ namespace CKGL
 			}
 			catch (Exception e)
 			{
-				Output.WriteLine("SDL2 was not found! Do you have fnalibs?");
+				Output.WriteLine("SDL2 libs were not found.");
 				throw e;
 			}
 			#endregion
@@ -281,19 +300,7 @@ namespace CKGL
 			{
 				// Visual Studio is an idiot.
 				if (System.Diagnostics.Debugger.IsAttached)
-				{
-					SDL_SetHint(
-						SDL_HINT_WINDOWS_DISABLE_THREAD_NAMING,
-						"1"
-					);
-				}
-
-				// TODO - Win32 WM_PAINT Interop
-				/* Windows has terrible event pumping and doesn't give us
-				 * WM_PAINT events correctly. So we get to do this!
-				 * -flibit
-				 */
-				//SDL_SetEventFilter(win32OnPaint, IntPtr.Zero);
+					SDL_SetHint(SDL_HINT_WINDOWS_DISABLE_THREAD_NAMING, "1");
 			}
 			#endregion
 
@@ -705,25 +712,6 @@ namespace CKGL
 			}
 			return result;
 		}
-		#endregion
-
-		// TODO - Win32 WM_PAINT Interop
-		#region Private Static Win32 WM_PAINT Interop
-		//private static SDL_EventFilter win32OnPaint = Win32OnPaint;
-		//private static unsafe int Win32OnPaint(IntPtr func, IntPtr evtPtr)
-		//{
-		//	SDL_Event* evt = (SDL_Event*)evtPtr;
-		//	if (evt->type == SDL_EventType.SDL_WINDOWEVENT &&
-		//		evt->window.windowEvent == SDL_WindowEventID.SDL_WINDOWEVENT_EXPOSED)
-		//	{
-		//		if (evt->window.windowID == SDL_GetWindowID(Window.IntPtr))
-		//		{
-		//			game.RedrawWindow();
-		//			return 0;
-		//		}
-		//	}
-		//	return 1;
-		//}
 		#endregion
 	}
 }
