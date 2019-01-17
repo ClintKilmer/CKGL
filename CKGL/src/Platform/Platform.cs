@@ -336,20 +336,6 @@ namespace CKGL
 				throw new Exception($"SDL2-CS was expecting v{SDL2CSVersion}, but found SDL DLL v{SDLVersion}");
 			}
 
-			//// We want to initialize the controllers ASAP!
-			//SDL_Event[] evt = new SDL_Event[1];
-			//SDL_PumpEvents();
-			//while (SDL_PeepEvents(
-			//	evt,
-			//	1,
-			//	SDL_eventaction.SDL_GETEVENT,
-			//	SDL_EventType.SDL_CONTROLLERDEVICEADDED,
-			//	SDL_EventType.SDL_CONTROLLERDEVICEADDED
-			//) == 1)
-			//{
-			//	INTERNAL_AddInstance(evt[0].cdevice.which);
-			//}
-
 			// OpenGL attributes
 			SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 			SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_MINOR_VERSION, 1);
