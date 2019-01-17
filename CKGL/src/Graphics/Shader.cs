@@ -53,21 +53,48 @@ namespace CKGL
 		private void Compile(ref string source)
 		{
 			int vertex = source.IndexOf("#vertex", StringComparison.Ordinal);
+			int geometry = source.IndexOf("#geometry", StringComparison.Ordinal);
 			int fragment = source.IndexOf("#fragment", StringComparison.Ordinal);
 
 			if (vertex == -1)
 				throw new Exception("Shader source must contain a vertex shader definition.");
 
+			bool hasGeometryDefinition = geometry != -1;
 			bool hasFragmentDefinition = fragment != -1;
 
-			string vertSource = hasFragmentDefinition ? source.Substring(vertex, fragment - vertex) : source.Substring(vertex);
-			string fragSource = hasFragmentDefinition ? source.Substring(fragment) : "";
+			string vertSource = hasGeometryDefinition
+								? source.Substring(vertex, geometry - vertex)
+								: hasFragmentDefinition
+									? source.Substring(vertex, fragment - vertex)
+									: source.Substring(vertex);
+			string geomSource = hasGeometryDefinition
+								? hasFragmentDefinition
+									? source.Substring(geometry, fragment - geometry)
+									: source.Substring(geometry)
+								: "";
+			string fragSource = hasFragmentDefinition
+								? source.Substring(fragment)
+								: "";
+
+			// Debug
+			//Output.WriteLine($"\nVertex Shader:\n{vertSource}");
+			//Output.WriteLine($"\nGeometry Shader:\n{geomSource}");
+			//Output.WriteLine($"\nFragment Shader:\n{fragSource}");
 
 			// Create the shaders and compile them
-			GLuint fragID = 0;
 			GLuint vertID = GL.CreateShader(ShaderType.Vertex);
 			//Output.WriteLine(vertSource.Replace("#vertex", ShaderIncludes.Vertex));
 			CompileShader(vertID, vertSource.Replace("#vertex", ShaderIncludes.Vertex));
+
+			GLuint geomID = 0;
+			if (hasGeometryDefinition)
+			{
+				geomID = GL.CreateShader(ShaderType.Geometry);
+				//Output.WriteLine(geomSource.Replace("#geometry", ShaderIncludes.Geometry));
+				CompileShader(geomID, geomSource.Replace("#geometry", ShaderIncludes.Geometry));
+			}
+
+			GLuint fragID = 0;
 			if (hasFragmentDefinition)
 			{
 				fragID = GL.CreateShader(ShaderType.Fragment);
@@ -78,18 +105,31 @@ namespace CKGL
 			// Create the program and attach the shaders to it
 			id = GL.CreateProgram();
 			GL.AttachShader(id, vertID);
+			if (hasGeometryDefinition)
+				GL.AttachShader(id, geomID);
 			if (hasFragmentDefinition)
 				GL.AttachShader(id, fragID);
 
 			// Link the program and check for errors
 			GL.LinkProgram(id);
-			GL.GetProgram(id, ProgramParam.LinkStatus, out GLint status);
-			if (status == 0)
+			GL.GetProgram(id, ProgramParam.LinkStatus, out GLint linkStatus);
+			if (linkStatus == 0)
 				throw new Exception("Program link error: " + GL.GetProgramInfoLog(id));
+
+			// Validate the program and check for errors
+			GL.ValidateProgram(id);
+			GL.GetProgram(id, ProgramParam.ValidateStatus, out GLint validateStatus);
+			if (validateStatus == 0)
+				throw new Exception("Program validate error: " + GL.GetProgramInfoLog(id));
 
 			// Once linked, we can detach and delete the shaders
 			GL.DetachShader(id, vertID);
 			GL.DeleteShader(vertID);
+			if (hasGeometryDefinition)
+			{
+				GL.DetachShader(id, geomID);
+				GL.DeleteShader(geomID);
+			}
 			if (hasFragmentDefinition)
 			{
 				GL.DetachShader(id, fragID);

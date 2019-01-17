@@ -1524,6 +1524,14 @@ namespace OpenGL
 			CheckError();
 		}
 
+		private delegate void _glValidateProgram(uint program);
+		private static _glValidateProgram glValidateProgram;
+		public static void ValidateProgram(uint program)
+		{
+			glValidateProgram(program);
+			CheckError();
+		}
+
 		private delegate void _glGetProgramiv(uint program, ProgramParam pname, out int result);
 		private static _glGetProgramiv glGetProgramiv;
 		public static void GetProgram(uint program, ProgramParam pname, out int result)
@@ -2300,8 +2308,9 @@ namespace OpenGL
 
 	public enum ShaderType : GLuint
 	{
-		Vertex = 0x8B31,
-		Fragment = 0x8B30
+		Vertex = GL_VERTEX_SHADER,
+		Geometry = GL_GEOMETRY_SHADER,
+		Fragment = GL_FRAGMENT_SHADER
 	}
 
 	public enum ShaderParam : GLuint

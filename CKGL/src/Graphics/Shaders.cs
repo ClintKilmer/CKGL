@@ -15,6 +15,10 @@ float fog_linear(const float dist, const float start, const float end)
 		public static string Vertex = Common + @"";
 		#endregion
 
+		#region Geometry
+		public static string Geometry = Common + @"";
+		#endregion
+
 		#region Fragment
 		public static string Fragment = Common + @"
 float fog_exp(const float dist, const float density)
