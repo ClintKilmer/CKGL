@@ -153,6 +153,11 @@ namespace CKGL
 			}
 		}
 
+		public static void FullscreenReset()
+		{
+			Fullscreen = Fullscreen;
+		}
+
 		public static bool Resizable
 		{
 			get
