@@ -22,12 +22,6 @@
 
 		public Game(string windowTitle, int windowWidth, int windowHeight, bool windowVSync, bool windowFullscreen, bool windowResizable, bool windowBorderless, int msaa)
 		{
-			PreInit(windowTitle, windowWidth, windowHeight, windowVSync, windowFullscreen, windowResizable, windowBorderless, msaa);
-			GameLoop();
-		}
-
-		private void PreInit(string windowTitle, int windowWidth, int windowHeight, bool windowVSync, bool windowFullscreen, bool windowResizable, bool windowBorderless, int msaa)
-		{
 			Platform.Init();
 			Window.Create(windowTitle, windowWidth, windowHeight, windowVSync, windowFullscreen, windowResizable, windowBorderless, msaa);
 			Graphics.Init();
@@ -38,6 +32,8 @@
 			Platform.Events.OnWinFocusGained += () => { focused = true; OnFocusGained(); };
 			Platform.Events.OnWinFocusLost += () => { focused = false; OnFocusLost(); };
 			Platform.Events.OnWinResized += () => { OnWindowResized(); };
+
+			GameLoop();
 		}
 
 		public void GameLoop()
