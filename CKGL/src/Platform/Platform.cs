@@ -16,9 +16,12 @@ namespace CKGL
 			public delegate void MouseMoveEvent(int x, int y, int xRelative, int yRelative);
 			public delegate void MouseButtonEvent(Input.MouseButton button);
 			public delegate void MouseScrollEvent(int x, int y);
+			public delegate void TouchMoveEvent(int x, int y, int xRelative, int yRelative);
+			public delegate void OnTouchEvent(long touchID, long fingerID, float x, float y, float xRelative, float yRelative, float pressure);
 			public delegate void ControllerDeviceEvent(int id);
 			public delegate void ControllerButtonEvent(int id, Input.ControllerButton button);
 			public delegate void ControllerAxisEvent(int id, Input.ControllerAxis axis, float value);
+			public delegate void OnDisplayOrientationEvent(uint id, int orientation);
 			public delegate void OtherEvent(int eventID);
 
 			public static Action OnQuit;
@@ -29,12 +32,16 @@ namespace CKGL
 			public static MouseButtonEvent OnMouseButtonDown;
 			public static MouseButtonEvent OnMouseButtonUp;
 			public static MouseScrollEvent OnMouseScroll;
+			public static OnTouchEvent OnTouchDown;
+			public static OnTouchEvent OnTouchUp;
+			public static OnTouchEvent OnTouchMove;
 			public static ControllerDeviceEvent OnControllerDeviceAdded;
 			public static ControllerDeviceEvent OnControllerDeviceRemoved;
 			public static ControllerDeviceEvent OnControllerDeviceRemapped;
 			public static ControllerButtonEvent OnControllerButtonDown;
 			public static ControllerButtonEvent OnControllerButtonUp;
 			public static ControllerAxisEvent OnControllerAxisMove;
+			public static OnDisplayOrientationEvent OnDisplayOrientationChanged;
 			public static Action OnWinClose;
 			public static Action OnWinShown;
 			public static Action OnWinHidden;
@@ -404,6 +411,18 @@ namespace CKGL
 					case SDL_EventType.SDL_MOUSEWHEEL:
 						Events.OnMouseScroll?.Invoke(Event.wheel.x, Event.wheel.y);
 						break;
+					case SDL_EventType.SDL_FINGERDOWN:
+						Events.OnTouchDown?.Invoke(Event.tfinger.touchId, Event.tfinger.fingerId, Event.tfinger.x, Event.tfinger.y, Event.tfinger.dx, Event.tfinger.dy, Event.tfinger.pressure);
+						Output.WriteLine($"Touch Down - TouchID: {Event.tfinger.touchId} - FingerID: {Event.tfinger.fingerId} - Position: ({Event.tfinger.x},{Event.tfinger.y})"); // Debug
+						break;
+					case SDL_EventType.SDL_FINGERUP:
+						Events.OnTouchUp?.Invoke(Event.tfinger.touchId, Event.tfinger.fingerId, Event.tfinger.x, Event.tfinger.y, Event.tfinger.dx, Event.tfinger.dy, Event.tfinger.pressure);
+						Output.WriteLine($"Touch Up - TouchID: {Event.tfinger.touchId} - FingerID: {Event.tfinger.fingerId} - Position: ({Event.tfinger.x},{Event.tfinger.y})"); // Debug
+						break;
+					case SDL_EventType.SDL_FINGERMOTION:
+						Events.OnTouchMove?.Invoke(Event.tfinger.touchId, Event.tfinger.fingerId, Event.tfinger.x, Event.tfinger.y, Event.tfinger.dx, Event.tfinger.dy, Event.tfinger.pressure);
+						Output.WriteLine($"Touch Move - TouchID: {Event.tfinger.touchId} - FingerID: {Event.tfinger.fingerId} - Position: ({Event.tfinger.x},{Event.tfinger.y}) - Relative: ({Event.tfinger.dx},{Event.tfinger.dy})"); // Debug
+						break;
 					case SDL_EventType.SDL_CONTROLLERDEVICEADDED:
 						Controller.Added(Event.cdevice.which);
 						break;
@@ -421,6 +440,10 @@ namespace CKGL
 						break;
 					case SDL_EventType.SDL_CONTROLLERAXISMOTION:
 						Controller.AxisMotion(Event.caxis.which, Event.caxis.axis, Event.caxis.axisValue);
+						break;
+					case SDL_EventType.SDL_DISPLAYEVENT:
+						if (Event.display.displayEvent == SDL_DisplayEventID.SDL_DISPLAYEVENT_ORIENTATION)
+							Events.OnDisplayOrientationChanged?.Invoke(Event.display.display, Event.display.data1);
 						break;
 					case SDL_EventType.SDL_WINDOWEVENT:
 						if (Event.window.windowID == Window.ID)
@@ -456,15 +479,19 @@ namespace CKGL
 									Events.OnWinRestored?.Invoke();
 									break;
 								case SDL_WindowEventID.SDL_WINDOWEVENT_ENTER:
+									ScreensaverAllowed = false;
 									Events.OnWinEnter?.Invoke();
 									break;
 								case SDL_WindowEventID.SDL_WINDOWEVENT_LEAVE:
+									ScreensaverAllowed = true;
 									Events.OnWinLeave?.Invoke();
 									break;
 								case SDL_WindowEventID.SDL_WINDOWEVENT_FOCUS_GAINED:
+									ScreensaverAllowed = false;
 									Events.OnWinFocusGained?.Invoke();
 									break;
 								case SDL_WindowEventID.SDL_WINDOWEVENT_FOCUS_LOST:
+									ScreensaverAllowed = true;
 									Events.OnWinFocusLost?.Invoke();
 									break;
 								default:
