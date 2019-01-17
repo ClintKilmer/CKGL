@@ -48,6 +48,7 @@ namespace CKGL
 			public static Action OnWinExposed;
 			public static Action OnWinMoved;
 			public static Action OnWinResized;
+			public static Action OnWinSizeChanged;
 			public static Action OnWinMinimized;
 			public static Action OnWinMaximized;
 			public static Action OnWinRestored;
@@ -468,6 +469,9 @@ namespace CKGL
 									break;
 								case SDL_WindowEventID.SDL_WINDOWEVENT_RESIZED:
 									Events.OnWinResized?.Invoke();
+									break;
+								case SDL_WindowEventID.SDL_WINDOWEVENT_SIZE_CHANGED:
+									Events.OnWinSizeChanged?.Invoke();
 									break;
 								case SDL_WindowEventID.SDL_WINDOWEVENT_MINIMIZED:
 									Events.OnWinMinimized?.Invoke();
