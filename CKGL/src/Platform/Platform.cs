@@ -366,9 +366,12 @@ namespace CKGL
 			//SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_MULTISAMPLEBUFFERS, 1); // Handled in Window
 			//SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_MULTISAMPLESAMPLES, 4); // Handled in Window
 #if DEBUG
-			SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_FLAGS, (int)SDL_GLcontext.SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG | (int)SDL_GLcontext.SDL_GL_CONTEXT_DEBUG_FLAG);
+			// SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG - breaks laptop shaders
+			//SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_FLAGS, (int)SDL_GLcontext.SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG | (int)SDL_GLcontext.SDL_GL_CONTEXT_DEBUG_FLAG);
+			SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_FLAGS, (int)SDL_GLcontext.SDL_GL_CONTEXT_DEBUG_FLAG);
 #else
-			SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_FLAGS, (int)SDL_GLcontext.SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
+			// SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG - breaks laptop shaders
+			//SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_FLAGS, (int)SDL_GLcontext.SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
 #endif
 
 			Running = true;
