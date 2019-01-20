@@ -391,6 +391,11 @@ namespace CKGL
 			Output.WriteLine($"Platform - Audio Driver: {SDL_GetCurrentAudioDriver()}");
 			Output.WriteLine($"Platform - # of CPUs: {CPUCount}");
 			Output.WriteLine($"Platform - Total RAM: {RAMTotalMB}MB");
+
+			TestIndividualGLVersion(false, 4, 0);
+			TestIndividualGLVersion(false, 3, 3);
+			TestIndividualGLVersion(false, 3, 2);
+			TestIndividualGLVersion(false, 3, 1);
 		}
 
 		public static void Destroy()
@@ -726,5 +731,46 @@ namespace CKGL
 			return result;
 		}
 		#endregion
+
+		private static unsafe bool TestIndividualGLVersion(bool gles, int major, int minor)
+		{
+			SDL_GLprofile profileMask = gles ? SDL_GLprofile.SDL_GL_CONTEXT_PROFILE_ES : SDL_GLprofile.SDL_GL_CONTEXT_PROFILE_CORE;
+
+			SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_PROFILE_MASK, (int)profileMask);
+			SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_MAJOR_VERSION, major);
+			SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_MINOR_VERSION, minor);
+
+			SDL_ClearError();
+
+			IntPtr window = SDL_CreateWindow(
+				string.Empty,
+				0, 0,
+				1, 1,
+				SDL_WindowFlags.SDL_WINDOW_HIDDEN | SDL_WindowFlags.SDL_WINDOW_OPENGL);
+			//string errorString = SDL_GetError();
+			string errorString = "";
+
+			if (window == IntPtr.Zero || !string.IsNullOrEmpty(errorString))
+			{
+				SDL_ClearError();
+				Console.WriteLine($"Unable to create version {major}.{minor} {profileMask} context.");
+				return false;
+			}
+
+			IntPtr context = SDL_GL_CreateContext(window);
+			//errorString = SDL_GetError();
+			errorString = "";
+			if (!string.IsNullOrEmpty(errorString))
+			{
+				SDL_ClearError();
+				Console.WriteLine($"Unable to create version {major}.{minor} {profileMask} context.");
+				SDL_DestroyWindow(window);
+				return false;
+			}
+
+			SDL_GL_DeleteContext(context);
+			SDL_DestroyWindow(window);
+			return true;
+		}
 	}
 }
