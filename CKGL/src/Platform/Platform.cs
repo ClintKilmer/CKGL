@@ -216,7 +216,36 @@ namespace CKGL
 		}
 		#endregion
 
-		public static string OS { get { return SDL_GetPlatform(); } }
+		public static OS OS
+		{
+			get
+			{
+				switch (SDL_GetPlatform())
+				{
+					case "Windows":
+						return OS.Windows;
+					case "WinRT":
+						return OS.WinRT;
+					case "Linux":
+					case "FreeBSD":
+					case "OpenBSD":
+					case "NetBSD":
+						return OS.Linux;
+					case "Mac OS X":
+						return OS.Mac;
+					case "iOS":
+						return OS.iOS;
+					case "tvOS":
+						return OS.tvOS;
+					case "Android":
+						return OS.Android;
+					case "Emscripten":
+					default:
+						throw new PlatformNotSupportedException($"SDL_GetPlatform() Error: Platform \"{SDL_GetPlatform()}\" is unrecognized.");
+				}
+			}
+		}
+
 		//public static uint TotalMilliseconds { get { return SDL_GetTicks(); } }
 		public static ulong PerformanceCounter { get { return SDL_GetPerformanceCounter(); } }
 		public static ulong PerformanceFrequency { get { return SDL_GetPerformanceFrequency(); } }
@@ -277,7 +306,7 @@ namespace CKGL
 			#region Check for SDL2 libs
 			try
 			{
-				string test = OS;
+				OS test = OS;
 			}
 			catch (Exception e)
 			{
@@ -296,7 +325,7 @@ namespace CKGL
 			SDL_SetMainReady();
 
 			// Also, Windows is an idiot. -flibit
-			if (OS.Equals("Windows") || OS.Equals("WinRT"))
+			if (OS == OS.Windows || OS == OS.WinRT)
 			{
 				// Visual Studio is an idiot.
 				if (System.Diagnostics.Debugger.IsAttached)
@@ -503,13 +532,13 @@ namespace CKGL
 									break;
 								case SDL_WindowEventID.SDL_WINDOWEVENT_FOCUS_GAINED:
 									ScreensaverAllowed = false;
-									if (OS.Equals("Windows") || OS.Equals("WinRT"))
+									if (OS == OS.Windows || OS == OS.WinRT)
 										Window.FullscreenReset();
 									Events.OnWinFocusGained?.Invoke();
 									break;
 								case SDL_WindowEventID.SDL_WINDOWEVENT_FOCUS_LOST:
 									ScreensaverAllowed = true;
-									if (OS.Equals("Windows") || OS.Equals("WinRT"))
+									if (OS == OS.Windows || OS == OS.WinRT)
 										Window.FullscreenReset();
 									Events.OnWinFocusLost?.Invoke();
 									break;
