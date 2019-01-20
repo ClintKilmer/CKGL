@@ -380,29 +380,6 @@ namespace CKGL
 				throw new Exception($"SDL2-CS was expecting v{SDL2CSVersion}, but found SDL DLL v{SDLVersion}");
 			}
 
-			// OpenGL attributes
-			SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-			SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_MINOR_VERSION, 1);
-			SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_PROFILE_MASK, (int)SDL_GLprofile.SDL_GL_CONTEXT_PROFILE_CORE);
-			SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_DOUBLEBUFFER, 1);
-			SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_RED_SIZE, 8);
-			SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_GREEN_SIZE, 8);
-			SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_BLUE_SIZE, 8);
-			SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_ALPHA_SIZE, 8);
-			SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_BUFFER_SIZE, 32);
-			//SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_DEPTH_SIZE, 24);
-			//SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_STENCIL_SIZE, 8);
-			//SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_MULTISAMPLEBUFFERS, 1); // Handled in Window
-			//SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_MULTISAMPLESAMPLES, 4); // Handled in Window
-#if DEBUG
-			// SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG - breaks laptop shaders
-			//SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_FLAGS, (int)SDL_GLcontext.SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG | (int)SDL_GLcontext.SDL_GL_CONTEXT_DEBUG_FLAG);
-			SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_FLAGS, (int)SDL_GLcontext.SDL_GL_CONTEXT_DEBUG_FLAG);
-#else
-			// SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG - breaks laptop shaders
-			//SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_FLAGS, (int)SDL_GLcontext.SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
-#endif
-
 			Running = true;
 
 			// Debug
@@ -413,8 +390,6 @@ namespace CKGL
 			Output.WriteLine($"Platform - Audio Driver: {SDL_GetCurrentAudioDriver()}");
 			Output.WriteLine($"Platform - # of CPUs: {CPUCount}");
 			Output.WriteLine($"Platform - Total RAM: {RAMTotalMB}MB");
-
-			Input.Init();
 		}
 
 		public static void Destroy()
