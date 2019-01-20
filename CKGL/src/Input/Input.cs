@@ -5,21 +5,21 @@ namespace CKGL
 {
 	public static class Input
 	{
-		public static void Init()
+		internal static void Init()
 		{
 			Keyboard.Init();
 			Mouse.Init();
 			Controllers.Init();
 		}
 
-		public static void Clear()
+		internal static void Clear()
 		{
 			Keyboard.Clear();
 			Mouse.Clear();
 			Controllers.Clear();
 		}
 
-		public static void Update()
+		internal static void Update()
 		{
 			//Keyboard.Update();
 			Mouse.Update();
@@ -29,7 +29,7 @@ namespace CKGL
 		#region Keyboard
 		public static class Keyboard
 		{
-			public const int ScanCodeMask = Platform.ScanCodeMask;
+			internal const int ScanCodeMask = Platform.ScanCodeMask;
 
 			private static HashSet<KeyCode> downKeyCode = new HashSet<KeyCode>();
 			private static HashSet<KeyCode> pressedKeyCode = new HashSet<KeyCode>();
@@ -41,7 +41,7 @@ namespace CKGL
 			private static HashSet<ScanCode> releasedScanCode = new HashSet<ScanCode>();
 			private static HashSet<ScanCode> repeatedScanCode = new HashSet<ScanCode>();
 
-			public static void Init()
+			internal static void Init()
 			{
 				Platform.Events.OnKeyDown += (keycode, scancode, repeated) =>
 				{
@@ -53,14 +53,14 @@ namespace CKGL
 						repeatedKeyCode.Add(keycode);
 						repeatedScanCode.Add(scancode);
 
-						//Output.WriteLine("repeated: " + keycode);
+						//Output.WriteLine("repeated: " + keycode); // Debug
 					}
 					else
 					{
 						pressedKeyCode.Add(keycode);
 						pressedScanCode.Add(scancode);
 
-						//Output.WriteLine("pressed:  " + keycode);
+						//Output.WriteLine("pressed:  " + keycode); // Debug
 					}
 				};
 
@@ -74,13 +74,13 @@ namespace CKGL
 					releasedScanCode.Add(scancode);
 					repeatedScanCode.Add(scancode);
 
-					//Output.WriteLine("released: " + keycode);
+					//Output.WriteLine("released: " + keycode); // Debug
 				};
 			}
 
-			public static void Clear()
+			internal static void Clear()
 			{
-				//Output.WriteLine("down:     " + string.Join(", ", downKeyCode));
+				//Output.WriteLine("down:     " + string.Join(", ", downKeyCode)); // Debug
 
 				pressedKeyCode.Clear();
 				releasedKeyCode.Clear();
@@ -161,7 +161,7 @@ namespace CKGL
 			private static bool[] pressed = new bool[Enum.GetNames(typeof(MouseButton)).Length];
 			private static bool[] released = new bool[Enum.GetNames(typeof(MouseButton)).Length];
 
-			public static void Init()
+			internal static void Init()
 			{
 				Platform.Events.OnMouseButtonDown += (button) =>
 				{
@@ -181,7 +181,7 @@ namespace CKGL
 				};
 			}
 
-			public static void Clear()
+			internal static void Clear()
 			{
 				Scroll = Point2.Zero;
 
@@ -192,7 +192,7 @@ namespace CKGL
 				}
 			}
 
-			public static void Update()
+			internal static void Update()
 			{
 				LastPositionDisplay = PositionDisplay;
 				Platform.GetGlobalMousePosition(out int mouseDisplayX, out int mouseDisplayY);
@@ -338,7 +338,7 @@ namespace CKGL
 			public int ID { get; private set; } = -1;
 			public bool Connected { get; private set; } = false;
 
-			//public int DeviceIndex => Platform.GetController(ID).DeviceIndex;
+			//public int DeviceIndex => Platform.GetController(ID).DeviceIndex; // SDL device index - apparently this can change, so not using
 			public string Name => Platform.GetController(ID).Name;
 			public string GUID => Platform.GetController(ID).GUID;
 			public ushort Vendor => Platform.GetController(ID).Vendor;
@@ -968,6 +968,7 @@ namespace CKGL
 					if (controllerIDs.ContainsKey(id))
 					{
 						controllers[controllerIDs[id]].OnControllerButtonDown(button);
+						controllers[controllerIDs[id]].OnControllerButtonDown(button);
 					}
 				};
 
@@ -996,47 +997,48 @@ namespace CKGL
 				}
 			}
 
-			public static Controller First()
-			{
-				if (controllers.Count > 0)
-				{
-					int slot = 0;
-					while (!controllers.ContainsKey(slot))
-						slot++;
+			public static Controller Slot(int slot) => controllers.ContainsKey(slot) ? controllers[slot] : Controller.Dummy;
 
-					return controllers[slot];
+			public static Controller Slot1 => Slot(1);
+			public static Controller Slot2 => Slot(2);
+			public static Controller Slot3 => Slot(3);
+			public static Controller Slot4 => Slot(4);
+			public static Controller Slot5 => Slot(5);
+			public static Controller Slot6 => Slot(6);
+			public static Controller Slot7 => Slot(7);
+			public static Controller Slot8 => Slot(8);
+
+			public static Controller GetNextAvailable(int position)
+			{
+				if (controllers.Count >= position)
+				{
+					int found = 0;
+					int slot = 0;
+					while (!controllers.ContainsKey(slot) && found != position)
+					{
+						if (controllers.ContainsKey(slot))
+						{
+							found++;
+
+							if (found == position)
+								return controllers[slot];
+						}
+
+						slot++;
+					}
 				}
 
 				return Controller.Dummy;
 			}
 
-			public static Controller Slot(int slot)
-			{
-				if (controllers.ContainsKey(slot))
-					return controllers[slot];
-
-				return Controller.Dummy;
-			}
-
-			public static Controller Slot1()
-			{
-				return Slot(0);
-			}
-
-			public static Controller Slot2()
-			{
-				return Slot(1);
-			}
-
-			public static Controller Slot3()
-			{
-				return Slot(2);
-			}
-
-			public static Controller Slot4()
-			{
-				return Slot(3);
-			}
+			public static Controller First => GetNextAvailable(1);
+			public static Controller Second => GetNextAvailable(2);
+			public static Controller Third => GetNextAvailable(3);
+			public static Controller FourthA=> GetNextAvailable(4);
+			public static Controller Fifth => GetNextAvailable(5);
+			public static Controller Sixth => GetNextAvailable(6);
+			public static Controller Seventh => GetNextAvailable(7);
+			public static Controller Eighth => GetNextAvailable(8);
 		}
 		#endregion
 	}
