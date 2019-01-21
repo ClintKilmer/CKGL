@@ -9,6 +9,6 @@
 		iOS,
 		tvOS,
 		Android,
-		Emscriptem
+		Emscripten
 	}
 }

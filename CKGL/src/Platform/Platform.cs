@@ -240,7 +240,7 @@ namespace CKGL
 					case "Android":
 						return OS.Android;
 					case "Emscripten":
-						return OS.Emscriptem;
+						return OS.Emscripten;
 					default:
 						throw new PlatformNotSupportedException($"SDL_GetPlatform() Error: Platform \"{SDL_GetPlatform()}\" is unrecognized.");
 				}
