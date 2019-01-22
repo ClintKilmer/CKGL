@@ -381,6 +381,8 @@ namespace CKGL
 				throw new Exception($"SDL2-CS was expecting v{SDL2CSVersion}, but found SDL DLL v{SDLVersion}");
 			}
 
+			Input.Init();
+
 			Running = true;
 
 			// Debug
@@ -404,10 +406,18 @@ namespace CKGL
 		}
 		#endregion
 
-		public static void Update()
+		internal static void Update()
 		{
 			Input.Clear();
 
+			PollEvents();
+
+			Input.Update();
+		}
+
+		#region PollEvents
+		private static void PollEvents()
+		{
 			while (SDL_PollEvent(out Event) != 0)
 			{
 				//Output.WriteLine(Event.type.ToString());
@@ -533,9 +543,8 @@ namespace CKGL
 						break;
 				}
 			}
-
-			Input.Update();
 		}
+		#endregion
 
 		public static void Quit()
 		{
