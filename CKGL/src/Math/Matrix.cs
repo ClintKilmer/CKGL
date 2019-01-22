@@ -1,4 +1,4 @@
-﻿// Right-handed, Row-Major, 4x4 Matrix for 3D Transformations
+// Right-handed, Row-Major, 4x4 Matrix for 3D Transformations
 
 /*
  * Partially Derived from:

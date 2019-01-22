@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Original from:
  * OpenGL.cs in the Rise Library: https://github.com/ChevyRay/Rise
  * Modified for use in CKGL

@@ -1,4 +1,4 @@
-﻿using OpenGL;
+using OpenGL;
 using GLuint = System.UInt32;
 
 namespace CKGL

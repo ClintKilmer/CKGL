@@ -1,4 +1,4 @@
-﻿namespace CKGL
+namespace CKGL
 {
 	public static class Random
 	{

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.InteropServices;
 using OpenGL;
 using GLuint = System.UInt32;

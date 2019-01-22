@@ -1,4 +1,4 @@
-﻿CKGL TODO List:
+CKGL TODO List:
 
 Features:
 - State.Last with method state.Revert()

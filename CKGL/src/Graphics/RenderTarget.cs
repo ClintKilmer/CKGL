@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using OpenGL;
 using GLint = System.Int32;
 using GLuint = System.UInt32;

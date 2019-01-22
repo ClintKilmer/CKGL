@@ -1,4 +1,4 @@
-﻿namespace CKGLTest
+namespace CKGLTest
 {
 	class Program
 	{

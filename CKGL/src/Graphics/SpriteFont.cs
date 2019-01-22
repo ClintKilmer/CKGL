@@ -1,4 +1,4 @@
-﻿namespace CKGL
+namespace CKGL
 {
 	#region Font Alignment enums
 	public enum HAlign

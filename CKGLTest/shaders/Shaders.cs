@@ -1,4 +1,4 @@
-﻿using CKGL;
+using CKGL;
 
 namespace CKGLTest
 {
