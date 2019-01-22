@@ -404,8 +404,10 @@ namespace CKGL
 		}
 		#endregion
 
-		public static void PollEvents()
+		public static void Update()
 		{
+			Input.Clear();
+
 			while (SDL_PollEvent(out Event) != 0)
 			{
 				//Output.WriteLine(Event.type.ToString());
@@ -531,6 +533,8 @@ namespace CKGL
 						break;
 				}
 			}
+
+			Input.Update();
 		}
 
 		public static void Quit()

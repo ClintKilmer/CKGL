@@ -26,7 +26,6 @@
 			Window.Create(windowTitle, windowWidth, windowHeight, windowVSync, windowFullscreen, windowResizable, windowBorderless, msaa);
 			Graphics.Init();
 			Audio.Init();
-			Input.Init();
 			Renderer.Init();
 
 			Platform.Events.OnWinFocusGained += () => { focused = true; OnFocusGained(); };
@@ -68,9 +67,7 @@
 
 		private void PreUpdate()
 		{
-			Input.Clear();
-			Platform.PollEvents();
-			Input.Update();
+			Platform.Update();
 			Audio.Update();
 		}
 
