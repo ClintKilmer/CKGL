@@ -50,8 +50,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\VertexAttributeLayout.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Graphics\VertexBuffer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Input\Input.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)src\Input\KeyCode.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)src\Input\ScanCode.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\Colour.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\Extensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Math\Math.cs" />
