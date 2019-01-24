@@ -1154,6 +1154,9 @@ namespace OpenGL
 			// Debug
 			Output.WriteLine($"OpenGL Initialized");
 			Output.WriteLine($"OpenGL Version: {MajorVersion}.{MinorVersion}");
+			Output.WriteLine($"OpenGL Version: {GetString(Strings.Version)}");
+			Output.WriteLine($"OpenGL Vendor: {GetString(Strings.Vendor)}");
+			Output.WriteLine($"OpenGL Renderer: {GetString(Strings.Renderer)}");
 			Output.WriteLine($"OpenGL MaxColourAttachments: {MaxColourAttachments}");
 			Output.WriteLine($"OpenGL MaxCubeMapTextureSize: {MaxCubeMapTextureSize}");
 			Output.WriteLine($"OpenGL MaxDrawBuffers: {MaxDrawBuffers}");
@@ -1163,10 +1166,6 @@ namespace OpenGL
 			Output.WriteLine($"OpenGL MaxSamples: {MaxSamples}");
 			Output.WriteLine($"OpenGL MaxTextureImageUnits: {MaxTextureImageUnits}");
 			Output.WriteLine($"OpenGL MaxTextureSize: {MaxTextureSize}");
-
-			Output.WriteLine($"OpenGL Version: {GetString(Strings.Version)}");
-			Output.WriteLine($"OpenGL Vendor: {GetString(Strings.Vendor)}");
-			Output.WriteLine($"OpenGL Renderer: {GetString(Strings.Renderer)}");
 			//Output.WriteLine($"OpenGL - Extensions: {GetString(Strings.Extensions)}");
 		}
 
