@@ -61,6 +61,8 @@ namespace CKGL
 		}
 		#endregion
 
+		public static GraphicsBackend GraphicsBackend { get; private set; }
+
 		public static bool Running { get; private set; } = false;
 
 		private static SDL_Event Event;
@@ -247,6 +249,24 @@ namespace CKGL
 			}
 		}
 
+		public static GraphicsBackend GetPlatformDefaultGraphicsBackend()
+		{
+			switch (OS)
+			{
+				case OS.Windows:
+				case OS.WinRT:
+				case OS.Linux:
+				case OS.Mac:
+					return GraphicsBackend.OpenGL;
+				case OS.Android:
+				case OS.iOS:
+				case OS.tvOS:
+					return GraphicsBackend.OpenGLES;
+				default:
+					throw new PlatformNotSupportedException($"OS: {OS} does not have a default GraphicsBackend.");
+			}
+		}
+
 		//public static uint TotalMilliseconds { get { return SDL_GetTicks(); } }
 		public static ulong PerformanceCounter { get { return SDL_GetPerformanceCounter(); } }
 		public static ulong PerformanceFrequency { get { return SDL_GetPerformanceFrequency(); } }
@@ -300,7 +320,8 @@ namespace CKGL
 		#endregion
 
 		#region Init/Exit Methods
-		public static void Init()
+		public static void Init() => Init(null);
+		public static void Init(GraphicsBackend? overrideGraphicsBackend)
 		{
 			SetDllDirectory();
 
@@ -386,18 +407,61 @@ namespace CKGL
 			Running = true;
 
 			// Debug
-			Output.WriteLine($"Platform SDL2 Initialized");
-			Output.WriteLine($"SDL DLL Version: v{SDLVersion} | SDL2-CS Version: v{SDL2CSVersion}");
+			Output.WriteLine($"Platform - SDL Initialized");
+			Output.WriteLine($"Platform - SDL DLL Version: v{SDLVersion} | SDL2-CS Version: v{SDL2CSVersion}");
 			Output.WriteLine($"Platform - OS: {OS}");
 			Output.WriteLine($"Platform - Video Driver: {SDL_GetCurrentVideoDriver()}");
 			Output.WriteLine($"Platform - Audio Driver: {SDL_GetCurrentAudioDriver()}");
 			Output.WriteLine($"Platform - # of CPUs: {CPUCount}");
 			Output.WriteLine($"Platform - Total RAM: {RAMTotalMB}MB");
+			Output.WriteLine($"Platform - Max OpenGL Version: {MaxOpenGLVersion.Major}.{MaxOpenGLVersion.Minor}");
+			Output.WriteLine($"Platform - Max OpenGL ES Version: {MaxOpenGLESVersion.Major}.{MaxOpenGLESVersion.Minor}");
 
-			TestIndividualGLVersion(false, 4, 0);
-			TestIndividualGLVersion(false, 3, 3);
-			TestIndividualGLVersion(false, 3, 2);
-			TestIndividualGLVersion(false, 3, 1);
+			// Setup Window based on GraphicsBackend
+			GraphicsBackend = overrideGraphicsBackend ?? GetPlatformDefaultGraphicsBackend();
+
+			if (GraphicsBackend == GraphicsBackend.Vulkan)
+			{
+				throw new NotImplementedException("Vulkan Graphics Backend not implemented.");
+			}
+			else if (GraphicsBackend == GraphicsBackend.OpenGL || GraphicsBackend == GraphicsBackend.OpenGLES)
+			{
+				if (GraphicsBackend == GraphicsBackend.OpenGL)
+				{
+					SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_MAJOR_VERSION, MaxOpenGLVersion.Major);
+					SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_MINOR_VERSION, MaxOpenGLVersion.Minor);
+					SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_PROFILE_MASK, (int)SDL_GLprofile.SDL_GL_CONTEXT_PROFILE_CORE);
+				}
+				else if (GraphicsBackend == GraphicsBackend.OpenGLES)
+				{
+					SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_MAJOR_VERSION, MaxOpenGLESVersion.Major);
+					SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_MINOR_VERSION, MaxOpenGLESVersion.Minor);
+					SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_PROFILE_MASK, (int)SDL_GLprofile.SDL_GL_CONTEXT_PROFILE_ES);
+				}
+
+				SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_DOUBLEBUFFER, 1);
+				SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_RED_SIZE, 8);
+				SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_GREEN_SIZE, 8);
+				SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_BLUE_SIZE, 8);
+				SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_ALPHA_SIZE, 8);
+				SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_BUFFER_SIZE, 32);
+				//SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_DEPTH_SIZE, 24);
+				//SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_STENCIL_SIZE, 8);
+				//SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_MULTISAMPLEBUFFERS, 1); // Handled in Window
+				//SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_MULTISAMPLESAMPLES, 4); // Handled in Window
+#if DEBUG
+				// SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG - breaks laptop shaders
+				//SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_FLAGS, (int)SDL_GLcontext.SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG | (int)SDL_GLcontext.SDL_GL_CONTEXT_DEBUG_FLAG);
+				SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_FLAGS, (int)SDL_GLcontext.SDL_GL_CONTEXT_DEBUG_FLAG);
+#else
+				// SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG - breaks laptop shaders
+				//SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_FLAGS, (int)SDL_GLcontext.SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
+#endif
+			}
+			else
+			{
+				throw new NotImplementedException("Unknown Graphics Backend not supported.");
+			}
 		}
 
 		public static void Destroy()
@@ -745,45 +809,76 @@ namespace CKGL
 		}
 		#endregion
 
-		private static unsafe bool TestIndividualGLVersion(bool gles, int major, int minor)
+		#region GL/GLES Maximum Version
+		private static (int, int) _maxOpenGLVersion = (0, 0);
+		public static (int Major, int Minor) MaxOpenGLVersion
 		{
-			SDL_GLprofile profileMask = gles ? SDL_GLprofile.SDL_GL_CONTEXT_PROFILE_ES : SDL_GLprofile.SDL_GL_CONTEXT_PROFILE_CORE;
+			get
+			{
+				if (_maxOpenGLVersion == (0, 0))
+					_maxOpenGLVersion = GetMaxOpenGLVersion(false);
+
+				return _maxOpenGLVersion;
+			}
+		}
+
+		private static (int, int) _maxOpenGLESVersion = (0, 0);
+		public static (int Major, int Minor) MaxOpenGLESVersion
+		{
+			get
+			{
+				if (_maxOpenGLESVersion == (0, 0))
+					_maxOpenGLESVersion = GetMaxOpenGLVersion(true);
+
+				return _maxOpenGLESVersion;
+			}
+		}
+
+		private static (int, int) GetMaxOpenGLVersion(bool es)
+		{
+			(int, int)[] testVersions = es
+				? new[] { (3, 2), (3, 0), (2, 0) }
+				: new[] { (4, 6), (4, 3), (4, 0), (3, 3), (3, 1), (3, 0) };
+
+			foreach ((int major, int minor) in testVersions)
+			{
+				if (TestIndividualOpenGLVersion(es, major, minor))
+					return (major, minor);
+			}
+
+			return (0, 0);
+		}
+
+		private static unsafe bool TestIndividualOpenGLVersion(bool es, int major, int minor)
+		{
+			SDL_GLprofile profileMask = es ? SDL_GLprofile.SDL_GL_CONTEXT_PROFILE_ES : SDL_GLprofile.SDL_GL_CONTEXT_PROFILE_CORE;
 
 			SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_PROFILE_MASK, (int)profileMask);
 			SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_MAJOR_VERSION, major);
 			SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_MINOR_VERSION, minor);
 
-			SDL_ClearError();
-
-			IntPtr window = SDL_CreateWindow(
-				string.Empty,
-				0, 0,
-				1, 1,
-				SDL_WindowFlags.SDL_WINDOW_HIDDEN | SDL_WindowFlags.SDL_WINDOW_OPENGL);
-			//string errorString = SDL_GetError();
-			string errorString = "";
-
-			if (window == IntPtr.Zero || !string.IsNullOrEmpty(errorString))
+			IntPtr window = SDL_CreateWindow("", 0, 0, 1, 1, SDL_WindowFlags.SDL_WINDOW_HIDDEN | SDL_WindowFlags.SDL_WINDOW_OPENGL);
+			if (window == IntPtr.Zero)
 			{
-				SDL_ClearError();
-				Console.WriteLine($"Unable to create version {major}.{minor} {profileMask} context.");
+				//Console.WriteLine($"Unable to create OpenGL{(gles ? " ES" : "")} version {major}.{minor} {profileMask} context."); // Debug
 				return false;
 			}
 
 			IntPtr context = SDL_GL_CreateContext(window);
-			//errorString = SDL_GetError();
-			errorString = "";
-			if (!string.IsNullOrEmpty(errorString))
+			if (context == IntPtr.Zero)
 			{
-				SDL_ClearError();
-				Console.WriteLine($"Unable to create version {major}.{minor} {profileMask} context.");
+				//Console.WriteLine($"Unable to create OpenGL{(gles ? " ES" : "")} version {major}.{minor} {profileMask} context."); // Debug
 				SDL_DestroyWindow(window);
 				return false;
 			}
 
 			SDL_GL_DeleteContext(context);
 			SDL_DestroyWindow(window);
+
+			SDL_ClearError();
+
 			return true;
 		}
+		#endregion
 	}
 }

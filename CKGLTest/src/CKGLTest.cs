@@ -124,7 +124,10 @@ namespace CKGLTest
 			//SpriteSheets.SpriteSheet.Texture.SavePNG($@"{System.IO.Directory.GetCurrentDirectory()}/SpriteSheet.png");
 			//SpriteSheets.SpriteSheet.Texture.SavePNG("SpriteSheet.png");
 
-			surface = new RenderTarget(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth24);
+			if (Platform.GraphicsBackend == GraphicsBackend.OpenGLES)
+				surface = new RenderTarget(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth16);
+			else
+				surface = new RenderTarget(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth24);
 
 			BlendState.AlphaBlend.SetDefault();
 		}
@@ -321,7 +324,8 @@ namespace CKGLTest
 			Renderer.Draw3D.ResetTransform();
 
 			CullState.Off.Set();
-			PolygonModeState.FrontFillBackLine.Set();
+			if(Platform.GraphicsBackend != GraphicsBackend.OpenGLES)
+				PolygonModeState.FrontFillBackLine.Set();
 
 			Transform2D t2D = new Transform2D();
 			//t2D.Rotation = Math.Sin(Time.TotalSeconds) * 0.03f;
