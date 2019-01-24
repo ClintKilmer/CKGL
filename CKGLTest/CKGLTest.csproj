@@ -73,7 +73,6 @@
     <Content Include="textures\font[5x7].png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="app.config" />
     <None Include="build\CopyLibs.targets" />
   </ItemGroup>
   <Import Project="..\CKGL\CKGL.projitems" Label="Shared" />

@@ -73,8 +73,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)src\Platform\Window.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)CKGLTest.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <None Include="$(MSBuildThisFileDirectory)app.config">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
