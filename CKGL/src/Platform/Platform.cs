@@ -306,13 +306,13 @@ namespace CKGL
 				try
 				{
 					SetDefaultDllDirectories(LOAD_LIBRARY_SEARCH_DEFAULT_DIRS);
-					AddDllDirectory(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Environment.Is64BitProcess ? "x64" : "x86"));
+					AddDllDirectory(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Environment.Is64BitProcess ? "libs/x64" : "libs/x86"));
 					Output.WriteLine($"{(Environment.Is64BitProcess ? "x64" : "x86")} executable detected, selecting proper DLLs.");
 				}
 				catch
 				{
 					// Pre-Windows 7, KB2533623 
-					SetDllDirectory(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Environment.Is64BitProcess ? "x64" : "x86"));
+					SetDllDirectory(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Environment.Is64BitProcess ? "libs/x64" : "libs/x86"));
 					Output.WriteLine($"{(Environment.Is64BitProcess ? "x64" : "x86")} executable detected, selecting proper DLLs. (Pre-Windows 7, KB2533623)");
 				}
 			}
