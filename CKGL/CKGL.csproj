@@ -114,7 +114,7 @@
     <Compile Include="src\Platform\Time.cs" />
     <Compile Include="src\Platform\Window.cs" />
     <None Include="ToDo.txt" />
-    <None Include="App.config">
+    <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
     <None Include="libs\lib64\libopenal.so.1">
