@@ -16,7 +16,11 @@ namespace CKGL
 		{
 			Width = width;
 			Height = height;
-			SetData(null as byte[], textureFormat.PixelFormat());
+			// OpenGL ES compatibility - Handle DepthTexture SetData - see below: SetDataDepthTexture()
+			if (textureFormat.PixelFormat() == PixelFormat.Depth || textureFormat.PixelFormat() == PixelFormat.DepthStencil)
+				SetDataDepthTexture(textureFormat.PixelFormat());
+			else
+				SetData(null as byte[], textureFormat.PixelFormat());
 		}
 
 		public Texture2D(byte[] data, int width, int height, TextureFormat textureFormat) : this(data, width, height, textureFormat, TextureFilter.Nearest, TextureWrap.Clamp) { }
@@ -88,6 +92,13 @@ namespace CKGL
 			Bind();
 			fixed (byte* ptr = data)
 				GL.TexImage2D(DataTarget, 0, Format, Width, Height, 0, pixelFormat, PixelType.UnsignedByte, new IntPtr(ptr));
+		}
+
+		// OpenGL ES compatibility - Won't accept PixelType.UnsignedByte, had to use PixelType.UnsignedShort
+		public unsafe void SetDataDepthTexture(PixelFormat pixelFormat)
+		{
+			Bind();
+				GL.TexImage2D(DataTarget, 0, Format, Width, Height, 0, pixelFormat, PixelType.UnsignedShort, IntPtr.Zero);
 		}
 		#endregion
 

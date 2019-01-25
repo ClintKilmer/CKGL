@@ -3,7 +3,13 @@ namespace CKGL
 	public static class ShaderIncludes
 	{
 		#region Common
-		private static readonly string Common = @"#version 330 core
+		private static readonly string Common = @"
+#version 330 core
+//#version 300 es
+//precision mediump float;
+
+//#extension GL_EXT_geometry_shader: require
+//#extension GL_OES_geometry_shader: require
 
 float fog_linear(const float dist, const float start, const float end)
 {
@@ -119,8 +125,8 @@ layout(location = 3) in float textured;
 
 uniform mat4 MVP;
 uniform mat4 MV;
-uniform float FogStart = 20.0;
-uniform float FogEnd = 50.0;
+uniform float FogStart;// = 20.0;
+uniform float FogEnd;// = 50.0;
 
 out DATA
 {
@@ -147,11 +153,11 @@ void main()
 layout(location = 0) out vec4 colour;
 
 uniform sampler2D Texture;
-uniform int FogType = 0;
-uniform vec4 FogColour = vec4(0.0, 0.3, 0.5, 1.0);
-uniform float FogDensity = 0.03;
-uniform float FogStart = 20.0;
-uniform float FogEnd = 50.0;
+uniform int FogType;// = 0;
+uniform vec4 FogColour;// = vec4(0.0, 0.3, 0.5, 1.0);
+uniform float FogDensity;// = 0.03;
+uniform float FogStart;// = 20.0;
+uniform float FogEnd;// = 50.0;
 
 in DATA
 {
@@ -221,8 +227,8 @@ void main()
 layout(location = 0) out vec4 colour;
 
 uniform sampler2D Texture;
-uniform float zNear = 0.5;
-uniform float zFar = 1000;
+uniform float zNear;// = 0.5;
+uniform float zFar;// = 1000.0;
 
 in DATA
 {

@@ -324,8 +324,7 @@ namespace CKGLTest
 			Renderer.Draw3D.ResetTransform();
 
 			CullState.Off.Set();
-			if(Platform.GraphicsBackend != GraphicsBackend.OpenGLES)
-				PolygonModeState.FrontFillBackLine.Set();
+			//PolygonModeState.FrontFillBackLine.Set(); // OpenGL 3.2 deprecated separate front/back states
 
 			Transform2D t2D = new Transform2D();
 			//t2D.Rotation = Math.Sin(Time.TotalSeconds) * 0.03f;

@@ -1,6 +1,7 @@
 CKGL TODO List:
 
 Features:
+- Remove PolygonMode front/back states - OpengGL 3.2+ and ES compatibility
 - State.Last with method state.Revert()
 	- Will make RenderTarget.Blit easier (and a few others)
 	- Graphics.Revert? How?
