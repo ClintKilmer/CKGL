@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27428.2005
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CKGLTest", "CKGLTest.csproj", "{CEC96C5C-D0CF-48FE-824F-821DF573B850}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CKGLTest", "CKGLTest\CKGLTest.csproj", "{CEC96C5C-D0CF-48FE-824F-821DF573B850}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CKGL", "..\CKGL\CKGL.csproj", "{185D708A-8291-480D-A4CD-C327B175C074}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CKGL", "CKGL\CKGL.csproj", "{185D708A-8291-480D-A4CD-C327B175C074}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
