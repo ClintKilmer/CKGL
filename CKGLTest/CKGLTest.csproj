@@ -75,7 +75,12 @@
     </Content>
     <None Include="build\CopyLibs.targets" />
   </ItemGroup>
-  <Import Project="..\CKGL\CKGL.projitems" Label="Shared" />
+  <ItemGroup>
+    <ProjectReference Include="..\CKGL\CKGL.csproj">
+      <Project>{185d708a-8291-480d-a4cd-c327b175c074}</Project>
+      <Name>CKGL</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="build\CopyLibs.targets" />
 </Project>
