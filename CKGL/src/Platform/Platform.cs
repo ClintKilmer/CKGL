@@ -414,8 +414,8 @@ namespace CKGL
 			Output.WriteLine($"Platform - Audio Driver: {SDL_GetCurrentAudioDriver()}");
 			Output.WriteLine($"Platform - # of CPUs: {CPUCount}");
 			Output.WriteLine($"Platform - Total RAM: {RAMTotalMB}MB");
-			Output.WriteLine($"Platform - Max OpenGL Version: {MaxOpenGLVersion.Major}.{MaxOpenGLVersion.Minor}");
-			Output.WriteLine($"Platform - Max OpenGL ES Version: {MaxOpenGLESVersion.Major}.{MaxOpenGLESVersion.Minor}");
+			//Output.WriteLine($"Platform - Max OpenGL Version: {MaxOpenGLVersion.Major}.{MaxOpenGLVersion.Minor}");
+			//Output.WriteLine($"Platform - Max OpenGL ES Version: {MaxOpenGLESVersion.Major}.{MaxOpenGLESVersion.Minor}");
 
 			// Setup Window based on GraphicsBackend
 			GraphicsBackend = overrideGraphicsBackend ?? GetPlatformDefaultGraphicsBackend();
