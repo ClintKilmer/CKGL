@@ -647,9 +647,9 @@ namespace CKGL
 			public static Point2 PositionRelative { get; private set; }
 			public static Point2 Scroll { get; private set; }
 
-			private static bool[] down = new bool[Enum.GetNames(typeof(MouseButton)).Length];
-			private static bool[] pressed = new bool[Enum.GetNames(typeof(MouseButton)).Length];
-			private static bool[] released = new bool[Enum.GetNames(typeof(MouseButton)).Length];
+			private static readonly bool[] down = new bool[Enum.GetNames(typeof(MouseButton)).Length];
+			private static readonly bool[] pressed = new bool[Enum.GetNames(typeof(MouseButton)).Length];
+			private static readonly bool[] released = new bool[Enum.GetNames(typeof(MouseButton)).Length];
 
 			internal static void Init()
 			{
@@ -848,9 +848,9 @@ namespace CKGL
 			private const float RightDeadZoneHigh = RightDeadZone * 0.25f; // CKGL
 			private const float TriggerThresholdHigh = TriggerThreshold * 0.25f; // CKGL
 
-			private bool[] down = new bool[Enum.GetNames(typeof(ControllerButton)).Length];
-			private bool[] pressed = new bool[Enum.GetNames(typeof(ControllerButton)).Length];
-			private bool[] released = new bool[Enum.GetNames(typeof(ControllerButton)).Length];
+			private readonly bool[] down = new bool[Enum.GetNames(typeof(ControllerButton)).Length];
+			private readonly bool[] pressed = new bool[Enum.GetNames(typeof(ControllerButton)).Length];
+			private readonly bool[] released = new bool[Enum.GetNames(typeof(ControllerButton)).Length];
 
 			internal Controller(int slot, int id)
 			{
