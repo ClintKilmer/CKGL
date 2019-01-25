@@ -73,7 +73,6 @@
     <Content Include="textures\font[5x7].png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="build\CopyLibs.targets" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CKGL\CKGL.csproj">
