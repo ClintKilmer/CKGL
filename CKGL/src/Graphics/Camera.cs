@@ -6,7 +6,7 @@ namespace CKGL
 		Perspective
 	}
 
-	class Camera
+	public class Camera
 	{
 		private Vector3 position = Vector3.Zero;
 		private Quaternion rotation = Quaternion.Identity;
