@@ -859,8 +859,9 @@ namespace CKGL
 				Connected = true;
 			}
 
-			// Dummy Controller
+			// Any/Dummy Controllers
 			private Controller() { }
+			internal static Controller Any { get; } = new Controller();
 			internal static Controller Dummy { get; } = new Controller();
 
 			internal void OnControllerButtonDown(ControllerButton button)
@@ -1412,8 +1413,9 @@ namespace CKGL
 
 		public static class Controllers
 		{
-			private static Dictionary<int, Controller> controllers = new Dictionary<int, Controller>();
-			private static Dictionary<int, int> controllerIDs = new Dictionary<int, int>();
+			private static Dictionary<int, Controller> controllers = new Dictionary<int, Controller>(); // Slot-based, starts at 1
+			private static Dictionary<int, int> controllerIDs = new Dictionary<int, int>(); // Unique device ID's provided by SDL, dependant on order added
+			private static Controller[] controllerPositions = new Controller[0]; // Position-based, recreated whenever a device is added or removed
 
 			internal static void Init()
 			{
@@ -1421,7 +1423,7 @@ namespace CKGL
 				{
 					if (!controllerIDs.ContainsKey(id))
 					{
-						int slot = 0;
+						int slot = 1;
 						while (controllers.ContainsKey(slot))
 							slot++;
 						controllers.Add(slot, new Controller(slot, id));
@@ -1430,6 +1432,8 @@ namespace CKGL
 						// debug
 						Output.WriteLine($"Controller Added: {controllers[slot]}");
 						Output.WriteLine($"Total Controllers: {controllers.Count}");
+
+						UpdateControllerPositions();
 					}
 				};
 
@@ -1445,11 +1449,15 @@ namespace CKGL
 
 						// debug
 						Output.WriteLine($"Total Controllers: {controllers.Count}");
+
+						UpdateControllerPositions();
 					}
 				};
 
 				Platform.Events.OnControllerDeviceRemapped += (id) =>
 				{
+					UpdateControllerPositions();
+
 					Output.WriteLine($"OnControllerDeviceRemapped not implemented. (Controller ID {id})");
 				};
 
@@ -1487,8 +1495,36 @@ namespace CKGL
 				}
 			}
 
-			public static Controller Slot(int slot) => controllers.ContainsKey(slot) ? controllers[slot] : Controller.Dummy;
+			private static void UpdateControllerPositions()
+			{
+				int maxSlot = 0;
+				foreach (int slot in controllers.Keys)
+				{
+					if (controllers.ContainsKey(slot))
+						maxSlot = Math.Max(maxSlot, slot);
+				}
 
+				controllerPositions = new Controller[controllers.Count];
+
+				int position = 0;
+				for (int slot = 1; slot <= maxSlot; slot++)
+				{
+					if (controllers.ContainsKey(slot))
+					{
+						controllerPositions[position] = controllers[slot];
+						position++;
+					}
+				}
+
+				// debug
+				//Output.WriteLine($"controllerPositions.Length: {controllerPositions.Length}");
+				//foreach (Controller controller in controllerPositions)
+				//{
+				//	Output.WriteLine($"    - {controller}");
+				//}
+			}
+
+			public static Controller Slot(int slot) => controllers.ContainsKey(slot) ? controllers[slot] : Controller.Dummy;
 			public static Controller Slot1 => Slot(1);
 			public static Controller Slot2 => Slot(2);
 			public static Controller Slot3 => Slot(3);
@@ -1498,37 +1534,15 @@ namespace CKGL
 			public static Controller Slot7 => Slot(7);
 			public static Controller Slot8 => Slot(8);
 
-			public static Controller GetNextAvailable(int position)
-			{
-				if (controllers.Count >= position)
-				{
-					int found = 0;
-					int slot = 0;
-					while (!controllers.ContainsKey(slot) && found != position)
-					{
-						if (controllers.ContainsKey(slot))
-						{
-							found++;
-
-							if (found == position)
-								return controllers[slot];
-						}
-
-						slot++;
-					}
-				}
-
-				return Controller.Dummy;
-			}
-
-			public static Controller First => GetNextAvailable(1);
-			public static Controller Second => GetNextAvailable(2);
-			public static Controller Third => GetNextAvailable(3);
-			public static Controller Fourth => GetNextAvailable(4);
-			public static Controller Fifth => GetNextAvailable(5);
-			public static Controller Sixth => GetNextAvailable(6);
-			public static Controller Seventh => GetNextAvailable(7);
-			public static Controller Eighth => GetNextAvailable(8);
+			public static Controller Position(int position) => controllerPositions.Length >= position /* index + 1 hack */ ? controllerPositions[position - 1] : Controller.Dummy;
+			public static Controller First => Position(1);
+			public static Controller Second => Position(2);
+			public static Controller Third => Position(3);
+			public static Controller Fourth => Position(4);
+			public static Controller Fifth => Position(5);
+			public static Controller Sixth => Position(6);
+			public static Controller Seventh => Position(7);
+			public static Controller Eighth => Position(8);
 		}
 		#endregion
 	}
