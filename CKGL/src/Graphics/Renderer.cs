@@ -6,7 +6,7 @@ namespace CKGL
 	{
 		private static IRenderer renderer;
 
-		public static void Init()
+		internal static void Init()
 		{
 			switch (Platform.GraphicsBackend)
 			{
@@ -23,7 +23,7 @@ namespace CKGL
 			renderer.Init();
 		}
 
-		public static void Destroy()
+		internal static void Destroy()
 		{
 			renderer.Destroy();
 		}

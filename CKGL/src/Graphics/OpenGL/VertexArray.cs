@@ -3,18 +3,18 @@ using GLuint = System.UInt32;
 
 namespace CKGL.OpenGL
 {
-	public class VertexArray
+	internal class VertexArray
 	{
 		private static GLuint currentlyBoundVertexArray;
 
 		private GLuint id;
 
-		public VertexArray()
+		internal VertexArray()
 		{
 			id = GL.GenVertexArray();
 		}
 
-		public void Destroy()
+		internal void Destroy()
 		{
 			if (id != default)
 			{
@@ -23,7 +23,7 @@ namespace CKGL.OpenGL
 			}
 		}
 
-		public void Bind()
+		internal void Bind()
 		{
 			if (id != currentlyBoundVertexArray)
 			{
@@ -32,7 +32,7 @@ namespace CKGL.OpenGL
 			}
 		}
 
-		public void AddBuffer(VertexBuffer vertexBuffer, VertexAttributeLayout vertexDeclaration)
+		internal void AddBuffer(VertexBuffer vertexBuffer, VertexAttributeLayout vertexDeclaration)
 		{
 			Bind();
 			vertexBuffer.Bind();

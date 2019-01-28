@@ -3,17 +3,17 @@ using System.Runtime.InteropServices;
 
 namespace CKGL.OpenGL
 {
-	public class OpenGLRenderer : IRenderer
+	internal class OpenGLRenderer : IRenderer
 	{
 		[StructLayout(LayoutKind.Sequential, Pack = 4)]
-		public struct Vertex : IVertex
+		internal struct Vertex : IVertex
 		{
-			public Vector3 Position;
-			public Colour Colour;
-			public UV UV;
-			public byte Textured;
+			internal Vector3 Position;
+			internal Colour Colour;
+			internal UV UV;
+			internal byte Textured;
 
-			public Vertex(Vector3 position, Colour colour, UV uv, bool textured)
+			internal Vertex(Vector3 position, Colour colour, UV uv, bool textured)
 			{
 				Position = position;
 				Colour = colour;
@@ -21,7 +21,7 @@ namespace CKGL.OpenGL
 				Textured = (byte)(textured ? 255 : 0);
 			}
 
-			public readonly static VertexAttributeLayout AttributeLayout = new VertexAttributeLayout
+			internal readonly static VertexAttributeLayout AttributeLayout = new VertexAttributeLayout
 			(
 				Marshal.SizeOf(typeof(Vertex)),                         // Dynamic Stride - For larger StructLayout Pack sizes
 				new VertexAttribute(VertexType.Float, 3, false),        // Position

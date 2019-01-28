@@ -17,7 +17,7 @@ using GLuint64 = System.UInt64;
 
 namespace CKGL.OpenGLBindings
 {
-	public static class Enums
+	internal static class Enums
 	{
 		#region Raw Enums
 		public const GLuint GL_BACK = 0x0405;
@@ -1109,7 +1109,7 @@ namespace CKGL.OpenGLBindings
 		#endregion
 	}
 
-	public static class GL
+	internal static class GL
 	{
 		public static GLint MajorVersion { get; private set; }
 		public static GLint MinorVersion { get; private set; }

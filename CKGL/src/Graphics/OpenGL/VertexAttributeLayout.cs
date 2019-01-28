@@ -5,14 +5,14 @@ using GLuint = System.UInt32;
 
 namespace CKGL.OpenGL
 {
-	public struct VertexAttribute
+	internal struct VertexAttribute
 	{
-		public readonly VertexType VertexType;
-		public readonly GLint Count;
-		public readonly GLint Size;
-		public readonly bool Normalized;
+		internal readonly VertexType VertexType;
+		internal readonly GLint Count;
+		internal readonly GLint Size;
+		internal readonly bool Normalized;
 
-		public VertexAttribute(VertexType vertexType, GLint count, bool normalized)
+		internal VertexAttribute(VertexType vertexType, GLint count, bool normalized)
 		{
 			VertexType = vertexType;
 			Count = count;
@@ -47,20 +47,20 @@ namespace CKGL.OpenGL
 		}
 	};
 
-	public interface IVertex
+	internal interface IVertex
 	{
 		VertexAttributeLayout AttributeLayout { get; }
 	}
 
-	public class VertexAttributeLayout
+	internal class VertexAttributeLayout
 	{
 		private VertexAttribute[] attributes;
 
-		public GLint Stride { get; private set; }
-		public VertexAttribute[] Attributes { get { return (VertexAttribute[])attributes.Clone(); } }
+		internal GLint Stride { get; private set; }
+		internal VertexAttribute[] Attributes { get { return (VertexAttribute[])attributes.Clone(); } }
 
-		public VertexAttributeLayout(params VertexAttribute[] attributes) : this(0, attributes) { }
-		public VertexAttributeLayout(int stride, params VertexAttribute[] attributes)
+		internal VertexAttributeLayout(params VertexAttribute[] attributes) : this(0, attributes) { }
+		internal VertexAttributeLayout(int stride, params VertexAttribute[] attributes)
 		{
 			if (attributes == null || attributes.Length == 0)
 				throw new ArgumentNullException("attributes", "At least 1 attribute is required");
@@ -74,7 +74,7 @@ namespace CKGL.OpenGL
 					Stride += attributes[i].Size;
 		}
 
-		public void SetVertexAttributes()
+		internal void SetVertexAttributes()
 		{
 			GLint offset = 0;
 			for (GLuint i = 0; i < attributes.Length; i++)

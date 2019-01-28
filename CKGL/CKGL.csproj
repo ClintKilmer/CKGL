@@ -69,9 +69,8 @@
     <Compile Include="src\Graphics\Camera2D.cs" />
     <Compile Include="src\Graphics\Graphics.cs" />
     <Compile Include="src\Graphics\GraphicsBackend.cs" />
-    <Compile Include="src\Graphics\IndexBuffer.cs" />
-    <Compile Include="src\Graphics\MeshBase.cs" />
-    <Compile Include="src\Graphics\OpenGL.cs" />
+    <Compile Include="src\Graphics\OpenGL\IndexBuffer.cs" />
+    <Compile Include="src\Graphics\OpenGL\OpenGL.cs" />
     <Compile Include="src\Graphics\OpenGL\OpenGLRenderer.cs" />
     <Compile Include="src\Graphics\OS.cs" />
     <Compile Include="src\Graphics\IRenderer.cs" />
@@ -90,9 +89,9 @@
     <Compile Include="src\Graphics\State\PolygonModeState.cs" />
     <Compile Include="src\Graphics\Texture.cs" />
     <Compile Include="src\Graphics\Texture2D.cs" />
-    <Compile Include="src\Graphics\VertexArray.cs" />
-    <Compile Include="src\Graphics\VertexAttributeLayout.cs" />
-    <Compile Include="src\Graphics\VertexBuffer.cs" />
+    <Compile Include="src\Graphics\OpenGL\VertexArray.cs" />
+    <Compile Include="src\Graphics\OpenGL\VertexAttributeLayout.cs" />
+    <Compile Include="src\Graphics\OpenGL\VertexBuffer.cs" />
     <Compile Include="src\Input\Input.cs" />
     <Compile Include="src\Math\Colour.cs" />
     <Compile Include="src\Math\Extensions.cs" />

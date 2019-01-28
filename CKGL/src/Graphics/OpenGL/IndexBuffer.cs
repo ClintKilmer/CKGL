@@ -5,21 +5,21 @@ using GLuint = System.UInt32;
 
 namespace CKGL.OpenGL
 {
-	public class IndexBuffer
+	internal class IndexBuffer
 	{
 		private static GLuint currentlyBoundIndexBuffer;
 
 		private GLuint id;
 
-		public int Count { get; private set; }
-		public IndexType IndexType { get; } = IndexType.UnsignedInt;
+		internal int Count { get; private set; }
+		internal IndexType IndexType { get; } = IndexType.UnsignedInt;
 
-		public IndexBuffer()
+		internal IndexBuffer()
 		{
 			id = GL.GenBuffer();
 		}
 
-		public void Destroy()
+		internal void Destroy()
 		{
 			if (id != default)
 			{
@@ -28,7 +28,7 @@ namespace CKGL.OpenGL
 			}
 		}
 
-		public void Bind()
+		internal void Bind()
 		{
 			if (id != currentlyBoundIndexBuffer)
 			{
@@ -37,7 +37,7 @@ namespace CKGL.OpenGL
 			}
 		}
 
-		public void LoadData(GLuint[] indices, BufferUsage bufferUsage)
+		internal void LoadData(GLuint[] indices, BufferUsage bufferUsage)
 		{
 			Bind();
 			GL.BufferData(BufferTarget.ElementArray, sizeof(GLuint) * indices.Length, indices, bufferUsage);
