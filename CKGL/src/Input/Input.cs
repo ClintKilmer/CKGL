@@ -1501,7 +1501,7 @@ namespace CKGL
 				foreach (int slot in controllers.Keys)
 				{
 					if (controllers.ContainsKey(slot))
-						maxSlot = Math.Max(maxSlot, slot);
+						maxSlot = maxSlot.Max(slot);
 				}
 
 				controllerPositions = new Controller[controllers.Count];
