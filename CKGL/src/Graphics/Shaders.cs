@@ -41,7 +41,7 @@ float fog_exp2(const float dist, const float density)
 
 float LinearizeDepth(const float depth, const float zNear, const float zFar)
 {
-    return (2.0 * zNear) / (zFar + zNear - depth * (zFar - zNear));
+    return 1.0 - (2.0 * zNear) / (zFar + zNear - depth * (zFar - zNear));
 }";
 		#endregion
 	}
