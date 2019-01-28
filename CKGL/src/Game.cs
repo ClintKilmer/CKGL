@@ -31,7 +31,10 @@ namespace CKGL
 			Platform.Events.OnWinFocusGained += () => { focused = true; OnFocusGained(); };
 			Platform.Events.OnWinFocusLost += () => { focused = false; OnFocusLost(); };
 			Platform.Events.OnWinResized += () => { OnWindowResized(); };
+		}
 
+		public void Run()
+		{
 			GameLoop();
 		}
 

@@ -5,10 +5,10 @@ namespace CKGLTest
 	#region Shaders
 	public static class Shaders
 	{
-		public static InternalShaders.RendererShader Renderer;
-		public static InternalShaders.RendererFogShader RendererFog;
-		public static InternalShaders.LinearizeDepthShader LinearizeDepth;
-		public static GeometryTestShader GeometryTest;
+		public static InternalShaders.RendererShader Renderer = new InternalShaders.RendererShader();
+		public static InternalShaders.RendererFogShader RendererFog = new InternalShaders.RendererFogShader();
+		public static InternalShaders.LinearizeDepthShader LinearizeDepth = new InternalShaders.LinearizeDepthShader();
+		public static GeometryTestShader GeometryTest = new GeometryTestShader();
 	}
 	#endregion
 
@@ -23,30 +23,24 @@ namespace CKGLTest
 	#region Sprites
 	public static class SpriteSheets
 	{
-		public static SpriteSheet SpriteSheet;
-		//public static SpriteSheet SpriteSheet = new SpriteSheet(128);
+		public static SpriteSheet SpriteSheet = new SpriteSheet(128, 1);
 	}
 
 	public static class SpriteFonts
 	{
-		public static SpriteFont Font;
-		//public static SpriteFont Font = new SpriteFont(SpriteSheets.SpriteSheet, "Sprites/font[5x7].png", 5, 7, '!', '~', 1, 3, 7, true);
+		public static SpriteFont Font = new SpriteFont(SpriteSheets.SpriteSheet, "textures/font[5x7].png", 5, 7, '!', '~', 1, 3, 7, true);
 	}
 
 	public static class Sprites
 	{
-		public static Sprite Test1;
-		public static Sprite Test2;
-		public static Sprite Test3;
-		//public static Sprite Test1 = SpriteSheets.SpriteSheet.AddSprite(Texture2D.CreateFromFile($"Sprites/Character1.png"));
-		//public static Sprite Test2 = SpriteSheets.SpriteSheet.AddSprite(Texture2D.CreateFromFile($"Sprites/Character2.png"));
-		//public static Sprite Test3 = SpriteSheets.SpriteSheet.AddSprite(Texture2D.CreateFromFile($"Sprites/Character3.png"));
+		public static Sprite Test1 = SpriteSheets.SpriteSheet.AddSprite(Texture2D.CreateFromFile($"textures/Character1.png"));
+		public static Sprite Test2 = SpriteSheets.SpriteSheet.AddSprite(Texture2D.CreateFromFile($"textures/Character2.png"));
+		public static Sprite Test3 = SpriteSheets.SpriteSheet.AddSprite(Texture2D.CreateFromFile($"textures/Character3.png"));
 	}
 
 	public static class Textures
 	{
-		public static Texture2D Test;
-		//public static Texture2D Test = Texture2D.CreateFromFile("Sprites/Character1.png");
+		public static Texture2D Test = Texture2D.CreateFromFile("textures/Character1.png");
 	}
 	#endregion
 
@@ -106,19 +100,6 @@ namespace CKGLTest
 			//Camera.Height = Window.Height / 10;
 			Camera.zNear = 0.1f;
 			Camera.zFar = 150f;
-
-			// LoadContent()
-			Shaders.Renderer = new InternalShaders.RendererShader();
-			Shaders.RendererFog = new InternalShaders.RendererFogShader();
-			Shaders.LinearizeDepth = new InternalShaders.LinearizeDepthShader();
-			Shaders.GeometryTest = new GeometryTestShader();
-
-			SpriteSheets.SpriteSheet = new SpriteSheet(128, 1);
-			SpriteFonts.Font = new SpriteFont(SpriteSheets.SpriteSheet, "textures/font[5x7].png", 5, 7, '!', '~', 1, 3, 7, true);
-			Sprites.Test1 = SpriteSheets.SpriteSheet.AddSprite(Texture2D.CreateFromFile($"textures/Character1.png"));
-			Sprites.Test2 = SpriteSheets.SpriteSheet.AddSprite(Texture2D.CreateFromFile($"textures/Character2.png"));
-			Sprites.Test3 = SpriteSheets.SpriteSheet.AddSprite(Texture2D.CreateFromFile($"textures/Character3.png"));
-			Textures.Test = Texture2D.CreateFromFile("textures/Character1.png");
 
 			// Debug, test spritesheet
 			//SpriteSheets.SpriteSheet.Texture.SavePNG($@"{System.IO.Directory.GetCurrentDirectory()}/SpriteSheet.png");

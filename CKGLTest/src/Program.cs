@@ -5,6 +5,7 @@ namespace CKGLTest
 		static void Main(string[] args)
 		{
 			CKGLTest game = new CKGLTest();
+			game.Run();
 		}
 	}
 }
