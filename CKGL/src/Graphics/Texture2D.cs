@@ -1,6 +1,6 @@
 using System;
 
-using OpenGL;
+using CKGL.OpenGLBindings;
 
 using GLint = System.Int32;
 using GLuint = System.UInt32;

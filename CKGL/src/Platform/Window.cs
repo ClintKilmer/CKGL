@@ -175,17 +175,23 @@ namespace CKGL
 			set => SDL_SetWindowOpacity(IntPtr, value);
 		}
 
-		public static void Create(string title, int width, int height, bool vsync, bool fullscreen, bool resizable, bool borderless, int msaa)
+		public static void Init(string title, int width, int height, bool vsync, bool fullscreen, bool resizable, bool borderless)
 		{
-			if (msaa < 0 || msaa > OpenGL.GL.MaxSamples)
-				throw new ArgumentOutOfRangeException($"msaa out of range: (0 - {OpenGL.GL.MaxSamples})");
-
-			SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_MULTISAMPLEBUFFERS, msaa > 0 ? 1 : 0);
-			SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_MULTISAMPLESAMPLES, msaa);
-
 			SDL_WindowFlags flags = SDL_WindowFlags.SDL_WINDOW_SHOWN |
-									SDL_WindowFlags.SDL_WINDOW_OPENGL |
 									SDL_WindowFlags.SDL_WINDOW_ALLOW_HIGHDPI;
+
+			switch (Platform.GraphicsBackend)
+			{
+				case GraphicsBackend.Vulkan:
+					flags |= SDL_WindowFlags.SDL_WINDOW_VULKAN;
+					break;
+				case GraphicsBackend.OpenGL:
+				case GraphicsBackend.OpenGLES:
+					flags |= SDL_WindowFlags.SDL_WINDOW_OPENGL;
+					break;
+				default:
+					throw new NotSupportedException($"GraphicsBackend {Platform.GraphicsBackend} not supported.");
+			}
 
 			if (fullscreen)
 				flags |= SDL_WindowFlags.SDL_WINDOW_FULLSCREEN_DESKTOP;
@@ -204,21 +210,27 @@ namespace CKGL
 			Output.WriteLine($"Window Initialized");
 
 			// Create OpenGL Context
-			if ((GL_Context = SDL_GL_CreateContext(IntPtr)) == IntPtr.Zero)
+			if (Platform.GraphicsBackend == GraphicsBackend.OpenGL || Platform.GraphicsBackend == GraphicsBackend.OpenGLES)
 			{
-				Destroy();
-				throw new Exception(SDL_GetError());
+				if ((GL_Context = SDL_GL_CreateContext(IntPtr)) == IntPtr.Zero)
+				{
+					Destroy();
+					throw new Exception(SDL_GetError());
+				}
+				SDL_GL_MakeCurrent(IntPtr, GL_Context);
+				Output.WriteLine($"OpenGL Context Initialized");
 			}
-			SDL_GL_MakeCurrent(IntPtr, GL_Context);
-			Output.WriteLine($"OpenGL Context Initialized");
 
 			VSync = vsync;
 		}
 
 		public static void Destroy()
 		{
-			if (GL_Context != IntPtr.Zero)
+			if (GL_Context != default)
+			{
 				SDL_GL_DeleteContext(GL_Context);
+				GL_Context = default;
+			}
 		}
 	}
 }

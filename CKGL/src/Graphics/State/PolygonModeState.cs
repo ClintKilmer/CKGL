@@ -1,5 +1,5 @@
 using System;
-using OpenGL;
+using CKGL.OpenGLBindings;
 
 namespace CKGL
 {

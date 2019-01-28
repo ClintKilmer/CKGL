@@ -22,8 +22,7 @@ namespace CKGL
 
 		public Game(string windowTitle, int windowWidth, int windowHeight, bool windowVSync, bool windowFullscreen, bool windowResizable, bool windowBorderless, int msaa)
 		{
-			Platform.Init();
-			Window.Create(windowTitle, windowWidth, windowHeight, windowVSync, windowFullscreen, windowResizable, windowBorderless, msaa);
+			Platform.Init(windowTitle, windowWidth, windowHeight, windowVSync, windowFullscreen, windowResizable, windowBorderless, msaa);
 			Graphics.Init();
 			Audio.Init();
 			Renderer.Init();
@@ -100,7 +99,6 @@ namespace CKGL
 
 			Renderer.Destroy();
 			Audio.Destroy();
-			Window.Destroy();
 			Platform.Destroy();
 		}
 	}

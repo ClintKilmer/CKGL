@@ -10,13 +10,12 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
-using CKGL;
-using static OpenGL.Enums;
+using static CKGL.OpenGLBindings.Enums;
 using GLint = System.Int32;
 using GLuint = System.UInt32;
 using GLuint64 = System.UInt64;
 
-namespace OpenGL
+namespace CKGL.OpenGLBindings
 {
 	public static class Enums
 	{

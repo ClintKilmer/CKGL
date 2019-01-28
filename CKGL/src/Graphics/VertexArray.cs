@@ -1,7 +1,7 @@
-using OpenGL;
+using CKGL.OpenGLBindings;
 using GLuint = System.UInt32;
 
-namespace CKGL
+namespace CKGL.OpenGL
 {
 	public class VertexArray
 	{

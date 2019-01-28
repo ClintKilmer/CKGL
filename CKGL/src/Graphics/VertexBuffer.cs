@@ -1,9 +1,9 @@
 using System;
 using System.Runtime.InteropServices;
-using OpenGL;
+using CKGL.OpenGLBindings;
 using GLuint = System.UInt32;
 
-namespace CKGL
+namespace CKGL.OpenGL
 {
 	public class VertexBuffer
 	{

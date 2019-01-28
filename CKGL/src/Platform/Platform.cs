@@ -321,8 +321,7 @@ namespace CKGL
 		#endregion
 
 		#region Init/Exit Methods
-		public static void Init() => Init(null);
-		public static void Init(GraphicsBackend? overrideGraphicsBackend)
+		public static void Init(string windowTitle, int windowWidth, int windowHeight, bool windowVSync, bool windowFullscreen, bool windowResizable, bool windowBorderless, int msaa)
 		{
 			SetDllDirectory();
 
@@ -419,54 +418,63 @@ namespace CKGL
 			//Output.WriteLine($"Platform - Max OpenGL ES Version: {MaxOpenGLESVersion.Major}.{MaxOpenGLESVersion.Minor}");
 
 			// Setup Window based on GraphicsBackend
-			GraphicsBackend = overrideGraphicsBackend ?? GetPlatformDefaultGraphicsBackend();
+			GraphicsBackend = GetPlatformDefaultGraphicsBackend();
 
-			if (GraphicsBackend == GraphicsBackend.Vulkan)
+			switch (Platform.GraphicsBackend)
 			{
-				throw new NotImplementedException("Vulkan Graphics Backend not implemented.");
-			}
-			else if (GraphicsBackend == GraphicsBackend.OpenGL || GraphicsBackend == GraphicsBackend.OpenGLES)
-			{
-				if (GraphicsBackend == GraphicsBackend.OpenGL)
-				{
-					SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_MAJOR_VERSION, MaxOpenGLVersion.Major);
-					SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_MINOR_VERSION, MaxOpenGLVersion.Minor);
-					SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_PROFILE_MASK, (int)SDL_GLprofile.SDL_GL_CONTEXT_PROFILE_CORE);
-				}
-				else if (GraphicsBackend == GraphicsBackend.OpenGLES)
-				{
-					SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_MAJOR_VERSION, MaxOpenGLESVersion.Major);
-					SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_MINOR_VERSION, MaxOpenGLESVersion.Minor);
-					SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_PROFILE_MASK, (int)SDL_GLprofile.SDL_GL_CONTEXT_PROFILE_ES);
-				}
+				case GraphicsBackend.Vulkan:
+					throw new NotImplementedException("Vulkan GraphicsBackend not implemented.");
+				case GraphicsBackend.OpenGL:
+				case GraphicsBackend.OpenGLES:
+					if (GraphicsBackend == GraphicsBackend.OpenGL)
+					{
+						SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_MAJOR_VERSION, MaxOpenGLVersion.Major);
+						SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_MINOR_VERSION, MaxOpenGLVersion.Minor);
+						SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_PROFILE_MASK, (int)SDL_GLprofile.SDL_GL_CONTEXT_PROFILE_CORE);
+					}
+					else if (GraphicsBackend == GraphicsBackend.OpenGLES)
+					{
+						SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_MAJOR_VERSION, MaxOpenGLESVersion.Major);
+						SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_MINOR_VERSION, MaxOpenGLESVersion.Minor);
+						SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_PROFILE_MASK, (int)SDL_GLprofile.SDL_GL_CONTEXT_PROFILE_ES);
+					}
 
-				SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_DOUBLEBUFFER, 1);
-				SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_RED_SIZE, 8);
-				SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_GREEN_SIZE, 8);
-				SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_BLUE_SIZE, 8);
-				SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_ALPHA_SIZE, 8);
-				SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_BUFFER_SIZE, 32);
-				//SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_DEPTH_SIZE, 24);
-				//SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_STENCIL_SIZE, 8);
-				//SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_MULTISAMPLEBUFFERS, 1); // Handled in Window
-				//SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_MULTISAMPLESAMPLES, 4); // Handled in Window
+					SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_DOUBLEBUFFER, 1);
+					SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_RED_SIZE, 8);
+					SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_GREEN_SIZE, 8);
+					SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_BLUE_SIZE, 8);
+					SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_ALPHA_SIZE, 8);
+					SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_BUFFER_SIZE, 32);
+					//SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_DEPTH_SIZE, 24);
+					//SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_STENCIL_SIZE, 8);
+					//SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_MULTISAMPLEBUFFERS, 1); // Handled in Window
+					//SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_MULTISAMPLESAMPLES, 4); // Handled in Window
 #if DEBUG
-				// SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG - breaks laptop shaders
-				//SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_FLAGS, (int)SDL_GLcontext.SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG | (int)SDL_GLcontext.SDL_GL_CONTEXT_DEBUG_FLAG);
-				SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_FLAGS, (int)SDL_GLcontext.SDL_GL_CONTEXT_DEBUG_FLAG);
+					// SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG - breaks laptop shaders
+					//SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_FLAGS, (int)SDL_GLcontext.SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG | (int)SDL_GLcontext.SDL_GL_CONTEXT_DEBUG_FLAG);
+					SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_FLAGS, (int)SDL_GLcontext.SDL_GL_CONTEXT_DEBUG_FLAG);
 #else
-				// SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG - breaks laptop shaders
-				//SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_FLAGS, (int)SDL_GLcontext.SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
+					// SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG - breaks laptop shaders
+					//SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_FLAGS, (int)SDL_GLcontext.SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
 #endif
+
+					// MSAA
+					if (msaa < 0)// || msaa > OpenGLBindings.GL.MaxSamples) // TODO - Circular Dependency
+						throw new ArgumentOutOfRangeException($"msaa out of range, must be >= 0.");//: (0 - {OpenGLBindings.GL.MaxSamples})");
+					SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_MULTISAMPLEBUFFERS, msaa > 0 ? 1 : 0);
+					SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_MULTISAMPLESAMPLES, msaa);
+					break;
+				default:
+					throw new NotSupportedException($"GraphicsBackend {GraphicsBackend} not supported.");
 			}
-			else
-			{
-				throw new NotImplementedException("Unknown Graphics Backend not supported.");
-			}
+
+			// Window
+			Window.Init(windowTitle, windowWidth, windowHeight, windowVSync, windowFullscreen, windowResizable, windowBorderless);
 		}
 
 		public static void Destroy()
 		{
+			Window.Destroy();
 			SDL_Quit();
 		}
 		#endregion

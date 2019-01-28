@@ -1,13 +1,11 @@
 using System;
-using OpenGL;
+using CKGL.OpenGLBindings;
 using GLint = System.Int32;
 
 namespace CKGL
 {
 	public static class Graphics
 	{
-		public static GraphicsBackend GraphicsBackend { get; private set; } = GraphicsBackend.Vulkan;
-
 		public static int DrawCalls { get; private set; }
 
 		public static void Init()

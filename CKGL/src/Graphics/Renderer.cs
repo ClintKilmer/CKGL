@@ -1,140 +1,41 @@
 using System;
-using System.Runtime.InteropServices;
 
 namespace CKGL
 {
 	public static class Renderer
 	{
-		[StructLayout(LayoutKind.Sequential, Pack = 4)]
-		public struct Vertex : IVertex
-		{
-			public Vector3 Position;
-			public Colour Colour;
-			public UV UV;
-			public byte Textured;
-
-			public Vertex(Vector3 position, Colour colour, UV uv, bool textured)
-			{
-				Position = position;
-				Colour = colour;
-				UV = uv;
-				Textured = (byte)(textured ? 255 : 0);
-			}
-
-			public readonly static VertexAttributeLayout AttributeLayout = new VertexAttributeLayout
-			(
-				Marshal.SizeOf(typeof(Vertex)),                         // Dynamic Stride - For larger StructLayout Pack sizes
-				new VertexAttribute(VertexType.Float, 3, false),        // Position
-				new VertexAttribute(VertexType.UnsignedByte, 4, true),  // Colour
-				new VertexAttribute(VertexType.UnsignedShort, 2, true), // UV
-				new VertexAttribute(VertexType.UnsignedByte, 1, true)   // Textured
-			);
-
-			VertexAttributeLayout IVertex.AttributeLayout
-			{
-				get { return AttributeLayout; }
-			}
-		}
-
-		private static VertexArray vao;
-		private static VertexBuffer vbo;
-		private static DrawMode currentDrawMode = DrawMode.TriangleList;
-		// Adaptive vertex buffer size
-		//private static int bufferSize = 16384; // Performant on Laptop
-		private static int bufferSize = 1024;
-		private const int maxBufferSize = 128000;
-		//private const int bufferSize = 1998; // Divisible by 3 and 2 for no vertex wrapping per batch
-		private static Vertex[] vertices = new Vertex[bufferSize];
-		private static int vertexCount = 0;
+		private static IRenderer renderer;
 
 		public static void Init()
 		{
-			vao = new VertexArray();
-			vbo = new VertexBuffer();
-			vao.AddBuffer(vbo, Vertex.AttributeLayout);
+			switch (Platform.GraphicsBackend)
+			{
+				case GraphicsBackend.Vulkan:
+					throw new NotImplementedException("Vulkan Backend not implemented yet.");
+				case GraphicsBackend.OpenGL:
+				case GraphicsBackend.OpenGLES:
+					renderer = new OpenGL.OpenGLRenderer();
+					break;
+				default:
+					throw new NotSupportedException($"GraphicsBackend {Platform.GraphicsBackend} not supported.");
+			}
 
-			Graphics.State.OnStateChanging += () => { Flush(); };
-
-			// Debug
-			Output.WriteLine($"Renderer Initialized");
+			renderer.Init();
 		}
 
 		public static void Destroy()
 		{
-			vao.Destroy();
-			vbo.Destroy();
-
-			vao = null;
-			vbo = null;
+			renderer.Destroy();
 		}
 
 		public static void Flush()
 		{
-			if (
-				(currentDrawMode == DrawMode.TriangleList && vertexCount >= 3) ||
-				(currentDrawMode == DrawMode.TriangleStrip && vertexCount >= 3) ||
-				(currentDrawMode == DrawMode.TriangleFan && vertexCount >= 3) ||
-				(currentDrawMode == DrawMode.LineList && vertexCount >= 2) ||
-				(currentDrawMode == DrawMode.LineStrip && vertexCount >= 2) ||
-				(currentDrawMode == DrawMode.LineLoop && vertexCount >= 2) ||
-				(currentDrawMode == DrawMode.PointList && vertexCount >= 1)
-			)
-			{
-				vao.Bind();
-				vbo.LoadData(Vertex.AttributeLayout, ref vertices, vertexCount, BufferUsage.DynamicDraw);
-				Graphics.DrawVertexArrays(currentDrawMode, 0, vertexCount);
-			}
-
-			// Reset vertexCount so we don't lose any vertex data
-			int remainder = 0;
-			switch (currentDrawMode)
-			{
-				case (DrawMode.TriangleList):
-					remainder = vertexCount % 3;
-					break;
-				case (DrawMode.LineList):
-					remainder = vertexCount % 2;
-					break;
-				default:
-					remainder = 0;
-					break;
-			}
-			for (int i = 0; i < remainder; i++)
-			{
-				vertices[i] = vertices[vertexCount - remainder + i];
-			}
-			vertexCount = remainder;
+			renderer.Flush();
 		}
 
 		private static void AddVertex(DrawMode type, Vector3 position, Colour? colour, UV? uv)
 		{
-			if (currentDrawMode != type)
-			{
-				Flush();
-				currentDrawMode = type;
-				// We can lose vertices here, but it's ok as we're switching primitive types anyways
-				vertexCount = 0;
-			}
-
-			if (vertexCount >= bufferSize)
-			{
-				Flush();
-
-				// Adaptive vertex buffer size
-				if (bufferSize < maxBufferSize)
-				{
-					bufferSize *= 2;
-					if (bufferSize > maxBufferSize)
-						bufferSize = maxBufferSize;
-
-					Array.Resize(ref vertices, bufferSize);
-
-					Output.WriteLine($"Renderer - VertexBuffer size: {bufferSize:n0}");
-				}
-			}
-
-			vertices[vertexCount] = new Vertex(position, colour ?? Colour.White, uv ?? UV.Zero, uv != null);
-			vertexCount++;
+			renderer.AddVertex(type, position, colour, uv);
 		}
 
 		#region Draw
