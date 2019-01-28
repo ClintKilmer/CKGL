@@ -90,7 +90,6 @@ namespace CKGLTest
 
 			Platform.RelativeMouseMode = true;
 			//Platform.ShowCursor = false; // Default true
-			//Platform.ScreensaverAllowed = true; // Default false
 
 			Camera.FoV = 75f;
 			Camera.AspectRatio = width / (float)height;

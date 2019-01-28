@@ -283,7 +283,8 @@ namespace CKGL
 			set { SDL_SetClipboardText(value); }
 		}
 
-		public static bool ScreensaverAllowed // Default false
+		// Handled by platform events
+		private static bool ScreensaverAllowed // Default false
 		{
 			get { return SDL_IsScreenSaverEnabled() == SDL_bool.SDL_TRUE; }
 			set { if (value) SDL_EnableScreenSaver(); else SDL_DisableScreenSaver(); }
