@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace CKGL.OpenGL
 {
-	internal class OpenGLRenderer : IRenderer
+	internal class OpenGLRenderer : RendererBase
 	{
 		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 		internal struct Vertex : IVertex
@@ -47,7 +47,7 @@ namespace CKGL.OpenGL
 		private Vertex[] vertices;
 		private int vertexCount = 0;
 
-		public void Init()
+		internal override void Init()
 		{
 			vao = new VertexArray();
 			vbo = new VertexBuffer();
@@ -61,7 +61,7 @@ namespace CKGL.OpenGL
 			Output.WriteLine($"Renderer Initialized");
 		}
 
-		public void Destroy()
+		internal override void Destroy()
 		{
 			vao.Destroy();
 			vbo.Destroy();
@@ -70,7 +70,7 @@ namespace CKGL.OpenGL
 			vbo = null;
 		}
 
-		public void Flush()
+		public override void Flush()
 		{
 			if (
 				(currentDrawMode == DrawMode.TriangleList && vertexCount >= 3) ||
@@ -108,7 +108,7 @@ namespace CKGL.OpenGL
 			vertexCount = remainder;
 		}
 
-		public void AddVertex(DrawMode type, Vector3 position, Colour? colour, UV? uv)
+		internal override void AddVertex(DrawMode type, Vector3 position, Colour? colour, UV? uv)
 		{
 			if (currentDrawMode != type)
 			{

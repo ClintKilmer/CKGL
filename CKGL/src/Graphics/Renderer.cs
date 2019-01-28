@@ -4,7 +4,7 @@ namespace CKGL
 {
 	public static class Renderer
 	{
-		private static IRenderer renderer;
+		private static RendererBase renderer;
 
 		internal static void Init()
 		{
