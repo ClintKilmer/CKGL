@@ -1,16 +1,28 @@
 using System;
 using CKGL.OpenGLBindings;
-using GLint = System.Int32;
 
 namespace CKGL
 {
 	public static class Graphics
 	{
-		public static int DrawCalls { get; private set; }
+		private static GraphicsBase graphics;
 
-		public static void Init()
+		internal static void Init()
 		{
-			GL.Init();
+			switch (Platform.GraphicsBackend)
+			{
+				case GraphicsBackend.Vulkan:
+					throw new NotImplementedException("Vulkan Backend not implemented yet.");
+				case GraphicsBackend.OpenGL:
+				case GraphicsBackend.OpenGLES:
+					graphics = new OpenGL.OpenGLGraphics();
+					break;
+				default:
+					throw new NotSupportedException($"GraphicsBackend {Platform.GraphicsBackend} not supported.");
+			}
+
+			graphics.Init();
+
 			State.Init();
 
 			Platform.Events.OnWinResized += () =>
@@ -23,45 +35,27 @@ namespace CKGL
 			Output.WriteLine($"Graphics Initialized");
 		}
 
+		public static int DrawCalls { get; private set; }
+
 		public static void PreDraw()
 		{
 			DrawCalls = 0;
 			State.PreDraw();
 		}
 
+		// TODO - Move SetViewport() to own state
 		#region Viewport
-		public static void SetViewport() => SetViewport(RenderTarget.Current);
-		public static void SetViewport(RenderTarget renderTarget)
-		{
-			SetViewport(0, 0, (renderTarget ?? RenderTarget.Default).Width, (renderTarget ?? RenderTarget.Default).Height);
-		}
-
-		public static void SetViewport(GLint x, GLint y, GLint width, GLint height)
-		{
-			GL.Viewport(x, y, width, height);
-		}
+		public static void SetViewport() => graphics.SetViewport();
+		public static void SetViewport(RenderTarget renderTarget) => graphics.SetViewport(renderTarget);
+		public static void SetViewport(int x, int y, int width, int height) => graphics.SetViewport(x, y, width, height);
 		#endregion
 
+		// TODO - Move SetScissorTest() to own state
 		#region ScissorTest
-		public static void SetScissorTest() => SetScissorTest(RenderTarget.Current);
-		public static void SetScissorTest(RenderTarget renderTarget)
-		{
-			SetScissorTest(0, 0, (renderTarget ?? RenderTarget.Default).Width, (renderTarget ?? RenderTarget.Default).Height);
-		}
-
-		public static void SetScissorTest(GLint x, GLint y, GLint width, GLint height)
-		{
-			GL.Enable(EnableCap.ScissorTest);
-			GL.Scissor(x, y, width, height);
-		}
-
-		public static void SetScissorTest(bool enabled)
-		{
-			if (enabled)
-				GL.Enable(EnableCap.ScissorTest);
-			else
-				GL.Disable(EnableCap.ScissorTest);
-		}
+		public static void SetScissorTest() => graphics.SetScissorTest();
+		public static void SetScissorTest(RenderTarget renderTarget) => graphics.SetScissorTest(renderTarget);
+		public static void SetScissorTest(int x, int y, int width, int height) => graphics.SetScissorTest(x, y, width, height);
+		public static void SetScissorTest(bool enabled) => graphics.SetScissorTest(enabled);
 		#endregion
 
 		#region Clear
@@ -119,9 +113,13 @@ namespace CKGL
 
 		// TODO - Move SetDepthRange() to own state
 		#region DepthRange
-		public static void SetDepthRange(float near, float far)
+		public static void SetDepthRange(float near, float far) => graphics.SetDepthRange(near, far);
+		#endregion
+
+		#region State
+		internal static void SetFrontFace(FrontFace frontFace)
 		{
-			GL.DepthRange(near.Clamp(0f, 1f), far.Clamp(0f, 1f));
+			GL.FrontFace(frontFace.ToOpenGL());
 		}
 		#endregion
 
@@ -180,13 +178,13 @@ namespace CKGL
 		#endregion
 
 		#region Draw
-		public static void DrawVertexArrays(DrawMode drawMode, GLint offset, GLint count)
+		public static void DrawVertexArrays(DrawMode drawMode, int offset, int count)
 		{
 			GL.DrawArrays(drawMode, offset, count);
 			DrawCalls++;
 		}
 
-		public static void DrawIndexedVertexArrays(DrawMode drawMode, GLint offset, GLint count)
+		public static void DrawIndexedVertexArrays(DrawMode drawMode, int offset, int count)
 		{
 			GL.DrawElements(drawMode, count, IndexType.UnsignedInt, offset);
 			DrawCalls++;

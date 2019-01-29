@@ -71,8 +71,10 @@
     <Compile Include="src\Graphics\GraphicsBackend.cs" />
     <Compile Include="src\Graphics\OpenGL\IndexBuffer.cs" />
     <Compile Include="src\Graphics\OpenGL\OpenGL.cs" />
+    <Compile Include="src\Graphics\OpenGL\OpenGLGraphics.cs" />
     <Compile Include="src\Graphics\OpenGL\OpenGLRenderer.cs" />
     <Compile Include="src\Graphics\OS.cs" />
+    <Compile Include="src\Graphics\GraphicsBase.cs" />
     <Compile Include="src\Graphics\RendererBase.cs" />
     <Compile Include="src\Graphics\Renderer.cs" />
     <Compile Include="src\Graphics\RenderTarget.cs" />

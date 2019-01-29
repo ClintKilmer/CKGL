@@ -1,8 +1,31 @@
 using System;
-using CKGL.OpenGLBindings;
 
 namespace CKGL
 {
+	#region Enums
+	public enum FrontFace : byte
+	{
+		Clockwise,
+		CounterClockwise
+	}
+
+	internal static class FrontFaceExt
+	{
+		internal static OpenGLBindings.FrontFace ToOpenGL(this FrontFace frontFace)
+		{
+			switch (frontFace)
+			{
+				case FrontFace.Clockwise:
+					return OpenGLBindings.FrontFace.Clockwise;
+				case FrontFace.CounterClockwise:
+					return OpenGLBindings.FrontFace.CounterClockwise;
+				default:
+					throw new NotImplementedException();
+			}
+		}
+	}
+	#endregion
+
 	public struct FrontFaceState
 	{
 		public readonly FrontFace FrontFace;
@@ -46,7 +69,7 @@ namespace CKGL
 			if (Current != frontFaceState)
 			{
 				OnStateChanging?.Invoke();
-				GL.FrontFace(frontFaceState.FrontFace);
+				Graphics.SetFrontFace(frontFaceState.FrontFace);
 				Current = frontFaceState;
 				OnStateChanged?.Invoke();
 			}
