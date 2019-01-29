@@ -73,7 +73,7 @@
     <Compile Include="src\Graphics\OpenGL\OpenGL.cs" />
     <Compile Include="src\Graphics\OpenGL\OpenGLRenderer.cs" />
     <Compile Include="src\Graphics\OS.cs" />
-    <Compile Include="src\Graphics\IRenderer.cs" />
+    <Compile Include="src\Graphics\RendererBase.cs" />
     <Compile Include="src\Graphics\Renderer.cs" />
     <Compile Include="src\Graphics\RenderTarget.cs" />
     <Compile Include="src\Graphics\Shader.cs" />

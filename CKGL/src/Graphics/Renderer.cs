@@ -23,20 +23,12 @@ namespace CKGL
 			renderer.Init();
 		}
 
-		internal static void Destroy()
-		{
-			renderer.Destroy();
-		}
+		internal static void Destroy() => renderer.Destroy();
 
-		public static void Flush()
-		{
-			renderer.Flush();
-		}
+		public static void Flush() => renderer.Flush();
 
 		private static void AddVertex(DrawMode type, Vector3 position, Colour? colour, UV? uv)
-		{
-			renderer.AddVertex(type, position, colour, uv);
-		}
+			=> renderer.AddVertex(type, position, colour, uv);
 
 		#region Draw
 		public static class Draw
