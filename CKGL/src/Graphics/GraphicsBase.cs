@@ -20,5 +20,10 @@ namespace CKGL
 		#region DepthRange
 		public abstract void SetDepthRange(float near, float far);
 		#endregion
+
+		#region State Setters
+		internal abstract void SetFrontFace(FrontFace frontFace);
+		internal abstract void SetPolygonMode(PolygonMode polygonMode);
+		#endregion
 	}
 }

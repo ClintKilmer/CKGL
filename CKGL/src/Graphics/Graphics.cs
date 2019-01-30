@@ -58,6 +58,11 @@ namespace CKGL
 		public static void SetScissorTest(bool enabled) => graphics.SetScissorTest(enabled);
 		#endregion
 
+		// TODO - Move SetDepthRange() to own state
+		#region DepthRange
+		public static void SetDepthRange(float near, float far) => graphics.SetDepthRange(near, far);
+		#endregion
+
 		#region Clear
 		public static void SetClearColour(Colour colour)
 		{
@@ -111,27 +116,20 @@ namespace CKGL
 		}
 		#endregion
 
-		// TODO - Move SetDepthRange() to own state
-		#region DepthRange
-		public static void SetDepthRange(float near, float far) => graphics.SetDepthRange(near, far);
-		#endregion
-
-		#region State
-		internal static void SetFrontFace(FrontFace frontFace)
-		{
-			GL.FrontFace(frontFace.ToOpenGL());
-		}
+		#region State Setters
+		internal static void SetFrontFace(FrontFace frontFace) => graphics.SetFrontFace(frontFace);
+		internal static void SetPolygonMode(PolygonMode polygonMode) => graphics.SetPolygonMode(polygonMode);
 		#endregion
 
 		#region State
 		public static class State
 		{
-			public static Action OnStateChanging;
-			public static Action OnStateChanged;
+			internal static Action OnStateChanging;
+			internal static Action OnStateChanged;
 
 			public static int Changes { get; private set; }
 
-			public static void Init()
+			internal static void Init()
 			{
 				Reset();
 
@@ -170,7 +168,7 @@ namespace CKGL
 				MaskState.Reset();
 			}
 
-			public static void PreDraw()
+			internal static void PreDraw()
 			{
 				Changes = 0;
 			}

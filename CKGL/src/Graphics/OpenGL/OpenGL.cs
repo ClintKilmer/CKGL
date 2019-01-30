@@ -1283,9 +1283,10 @@ namespace CKGL.OpenGLBindings
 
 		private delegate void _glPolygonMode(Face face, PolygonMode polygonMode);
 		private static _glPolygonMode glPolygonMode;
-		public static void PolygonMode(Face face, PolygonMode polygonMode)
+		public static void PolygonMode(PolygonMode polygonMode)
 		{
-			glPolygonMode(face, polygonMode);
+			// OpenGL 3.2 deprecated separate front/back states, so hardcode the only Face enum allowed
+			glPolygonMode(Face.FrontAndBack, polygonMode);
 			CheckError();
 		}
 

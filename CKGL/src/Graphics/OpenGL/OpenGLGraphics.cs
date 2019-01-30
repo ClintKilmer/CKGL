@@ -1,4 +1,3 @@
-using System;
 using CKGL.OpenGLBindings;
 
 namespace CKGL.OpenGL
@@ -41,6 +40,18 @@ namespace CKGL.OpenGL
 		public override void SetDepthRange(float near, float far)
 		{
 			GL.DepthRange(near.Clamp(0f, 1f), far.Clamp(0f, 1f));
+		}
+		#endregion
+
+		#region State Setters
+		internal override void SetFrontFace(FrontFace frontFace)
+		{
+			GL.FrontFace(frontFace.ToOpenGL());
+		}
+
+		internal override void SetPolygonMode(PolygonMode polygonMode)
+		{
+			GL.PolygonMode(polygonMode.ToOpenGL());
 		}
 		#endregion
 	}

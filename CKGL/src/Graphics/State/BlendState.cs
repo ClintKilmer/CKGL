@@ -21,7 +21,7 @@ namespace CKGL
 		#region Static Constructors
 		static BlendState()
 		{
-			Default = Off;
+			Default = AlphaBlend;
 		}
 		public static readonly BlendState Off = new BlendState(false);
 		public static readonly BlendState Opaque = new BlendState(true, BlendFactor.One, BlendFactor.Zero);

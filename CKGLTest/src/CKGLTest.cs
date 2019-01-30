@@ -84,6 +84,9 @@ namespace CKGLTest
 
 		RenderTarget surface;
 
+		CullState cullState = CullState.Off;
+		PolygonModeState polygonModeState = PolygonModeState.Fill;
+
 		public override void Init()
 		{
 			Window.SetIcon("textures/Character1.png");
@@ -108,8 +111,6 @@ namespace CKGLTest
 				surface = new RenderTarget(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth16);
 			else
 				surface = new RenderTarget(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth24);
-
-			BlendState.AlphaBlend.SetDefault();
 		}
 
 		public override void Update()
@@ -131,6 +132,28 @@ namespace CKGLTest
 
 			if (Input.Keyboard.Pressed(KeyCode.Escape))
 				Platform.RelativeMouseMode = !Platform.RelativeMouseMode;
+
+			if (Input.Keyboard.Pressed(KeyCode.F2))
+			{
+				if (polygonModeState == PolygonModeState.Fill)
+					polygonModeState = PolygonModeState.Line;
+				else if (polygonModeState == PolygonModeState.Line)
+					polygonModeState = PolygonModeState.Point;
+				else if (polygonModeState == PolygonModeState.Point)
+					polygonModeState = PolygonModeState.Fill;
+			}
+
+			if (Input.Keyboard.Pressed(KeyCode.F3))
+			{
+				if (cullState == CullState.Off)
+					cullState = CullState.Back;
+				else if (cullState == CullState.Back)
+					cullState = CullState.Front;
+				else if (cullState == CullState.Front)
+					cullState = CullState.FrontAndBack;
+				else if (cullState == CullState.FrontAndBack)
+					cullState = CullState.Off;
+			}
 
 			if (!Platform.RelativeMouseMode)
 			{
@@ -221,8 +244,9 @@ namespace CKGLTest
 				Graphics.Clear(Colour.Black);
 
 			Graphics.State.Reset();
-			CullState.Back.Set();
+			CullState.Set(cullState);
 			DepthState.LessEqual.Set();
+			PolygonModeState.Set(polygonModeState);
 
 			if (Input.Mouse.RightDown)
 			{
@@ -302,9 +326,6 @@ namespace CKGLTest
 				}
 			}
 			Renderer.Draw3D.ResetTransform();
-
-			CullState.Off.Set();
-			//PolygonModeState.FrontFillBackLine.Set(); // OpenGL 3.2 deprecated separate front/back states
 
 			Transform2D t2D = new Transform2D();
 			//t2D.Rotation = Math.Sin(Time.TotalSeconds) * 0.03f;
