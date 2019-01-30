@@ -120,6 +120,7 @@ namespace CKGL
 		internal static void SetFrontFace(FrontFace frontFace) => graphics.SetFrontFace(frontFace);
 		internal static void SetCullMode(bool enabled, Face face) => graphics.SetCullMode(enabled, face);
 		internal static void SetPolygonMode(PolygonMode polygonMode) => graphics.SetPolygonMode(polygonMode);
+		internal static void SetMask(bool r, bool g, bool b, bool a, bool depth) => graphics.SetMask(r, g, b, a, depth);
 		#endregion
 
 		#region State

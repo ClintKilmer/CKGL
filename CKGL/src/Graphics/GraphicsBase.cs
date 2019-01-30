@@ -25,6 +25,7 @@ namespace CKGL
 		internal abstract void SetFrontFace(FrontFace frontFace);
 		internal abstract void SetCullMode(bool enabled, Face face);
 		internal abstract void SetPolygonMode(PolygonMode polygonMode);
+		internal abstract void SetMask(bool r, bool g, bool b, bool a, bool depth);
 		#endregion
 	}
 }

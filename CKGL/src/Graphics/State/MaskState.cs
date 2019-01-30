@@ -1,5 +1,4 @@
 using System;
-using CKGL.OpenGLBindings;
 
 namespace CKGL
 {
@@ -60,10 +59,7 @@ namespace CKGL
 			if (Current != maskState)
 			{
 				OnStateChanging?.Invoke();
-				if (Current.Depth != maskState.Depth)
-					GL.DepthMask(maskState.Depth);
-				if (Current.R != maskState.R || Current.G != maskState.G || Current.B != maskState.B || Current.A != maskState.A)
-					GL.ColourMask(maskState.R, maskState.G, maskState.B, maskState.A);
+				Graphics.SetMask(maskState.R, maskState.G, maskState.B, maskState.A, maskState.Depth);
 				Current = maskState;
 				OnStateChanged?.Invoke();
 			}

@@ -62,6 +62,12 @@ namespace CKGL.OpenGL
 		{
 			GL.PolygonMode(polygonMode.ToOpenGL());
 		}
+
+		internal override void SetMask(bool r, bool g, bool b, bool a, bool depth)
+		{
+			GL.DepthMask(depth);
+			GL.ColourMask(r, g, b, a);
+		}
 		#endregion
 	}
 }
