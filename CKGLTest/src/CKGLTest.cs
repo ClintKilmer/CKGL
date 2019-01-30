@@ -84,7 +84,7 @@ namespace CKGLTest
 
 		RenderTarget surface;
 
-		CullState cullState = CullState.Off;
+		CullModeState cullModeState = CullModeState.Off;
 		PolygonModeState polygonModeState = PolygonModeState.Fill;
 
 		public override void Init()
@@ -145,14 +145,14 @@ namespace CKGLTest
 
 			if (Input.Keyboard.Pressed(KeyCode.F3))
 			{
-				if (cullState == CullState.Off)
-					cullState = CullState.Back;
-				else if (cullState == CullState.Back)
-					cullState = CullState.Front;
-				else if (cullState == CullState.Front)
-					cullState = CullState.FrontAndBack;
-				else if (cullState == CullState.FrontAndBack)
-					cullState = CullState.Off;
+				if (cullModeState == CullModeState.Off)
+					cullModeState = CullModeState.Back;
+				else if (cullModeState == CullModeState.Back)
+					cullModeState = CullModeState.Front;
+				else if (cullModeState == CullModeState.Front)
+					cullModeState = CullModeState.FrontAndBack;
+				else if (cullModeState == CullModeState.FrontAndBack)
+					cullModeState = CullModeState.Off;
 			}
 
 			if (!Platform.RelativeMouseMode)
@@ -168,7 +168,7 @@ namespace CKGLTest
 			if (Input.Keyboard.Released(KeyCode.Space) || Input.Mouse.LeftReleased || Input.Controllers.First.AReleased)
 				Sounds.sndPop2.Play();
 
-			var speed = 10f;
+			float speed = 10f;
 			if (Input.Keyboard.Down(KeyCode.Z) || Input.Controllers.First.L2Down)
 				Camera2D.Rotation += 0.01f;
 			if (Input.Keyboard.Down(KeyCode.C) || Input.Controllers.First.R2Down)
@@ -244,7 +244,7 @@ namespace CKGLTest
 				Graphics.Clear(Colour.Black);
 
 			Graphics.State.Reset();
-			CullState.Set(cullState);
+			CullModeState.Set(cullModeState);
 			DepthState.LessEqual.Set();
 			PolygonModeState.Set(polygonModeState);
 

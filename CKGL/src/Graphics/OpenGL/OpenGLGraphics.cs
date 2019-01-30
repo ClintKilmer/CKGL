@@ -49,6 +49,15 @@ namespace CKGL.OpenGL
 			GL.FrontFace(frontFace.ToOpenGL());
 		}
 
+		internal override void SetCullMode(bool enabled, Face face)
+		{
+			if (enabled)
+				GL.Enable(EnableCap.CullFace);
+			else
+				GL.Disable(EnableCap.CullFace);
+			GL.CullFace(face.ToOpenGL());
+		}
+
 		internal override void SetPolygonMode(PolygonMode polygonMode)
 		{
 			GL.PolygonMode(polygonMode.ToOpenGL());

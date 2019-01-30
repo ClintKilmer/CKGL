@@ -1,5 +1,5 @@
-using System;
 using CKGL.OpenGLBindings;
+using System;
 
 namespace CKGL
 {
@@ -118,6 +118,7 @@ namespace CKGL
 
 		#region State Setters
 		internal static void SetFrontFace(FrontFace frontFace) => graphics.SetFrontFace(frontFace);
+		internal static void SetCullMode(bool enabled, Face face) => graphics.SetCullMode(enabled, face);
 		internal static void SetPolygonMode(PolygonMode polygonMode) => graphics.SetPolygonMode(polygonMode);
 		#endregion
 
@@ -135,8 +136,8 @@ namespace CKGL
 
 				FrontFaceState.OnStateChanging += () => { OnStateChanging?.Invoke(); };
 				FrontFaceState.OnStateChanged += () => { OnStateChanged?.Invoke(); };
-				CullState.OnStateChanging += () => { OnStateChanging?.Invoke(); };
-				CullState.OnStateChanged += () => { OnStateChanged?.Invoke(); };
+				CullModeState.OnStateChanging += () => { OnStateChanging?.Invoke(); };
+				CullModeState.OnStateChanged += () => { OnStateChanged?.Invoke(); };
 				PolygonModeState.OnStateChanging += () => { OnStateChanging?.Invoke(); };
 				PolygonModeState.OnStateChanged += () => { OnStateChanged?.Invoke(); };
 				BlendState.OnStateChanging += () => { OnStateChanging?.Invoke(); };
@@ -161,7 +162,7 @@ namespace CKGL
 			public static void Reset()
 			{
 				FrontFaceState.Reset();
-				CullState.Reset();
+				CullModeState.Reset();
 				PolygonModeState.Reset();
 				BlendState.Reset();
 				DepthState.Reset();
