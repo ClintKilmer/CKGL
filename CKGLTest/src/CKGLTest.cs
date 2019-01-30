@@ -291,14 +291,14 @@ namespace CKGLTest
 			//Renderer.Draw3D.SetTransform(test2);
 			//Colour c2 = new Colour(Math.CosNormalized(Time.TotalSeconds * 1.5f), Math.CosNormalized(Time.TotalSeconds * 1.4f), Math.CosNormalized(Time.TotalSeconds * 1.3f), 1f);
 			//Renderer.Draw3D.CubeWireframe(c2);
+			Transform cubeGridTransformParent = new Transform();
+			cubeGridTransformParent.Position = new Vector3(80, 0, 80);
 			for (int x = 0; x < 5; x++)
 			{
 				for (int y = 0; y < 5; y++)
 				{
 					for (int z = 0; z < 5; z++)
 					{
-						Transform cubeGridTransformParent = new Transform();
-						cubeGridTransformParent.Position = new Vector3(80, 0, 80);
 						Transform cubeGridTransform = new Transform();
 						cubeGridTransform.Parent = cubeGridTransformParent;
 						cubeGridTransform.Position = new Vector3(x * 6, y * 6, z * 6);
