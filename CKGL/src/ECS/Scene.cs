@@ -4,23 +4,23 @@ namespace CKGL
 	{
 		public EntityList Entities;
 
-		public Colour clearColour = Colour.Grey;
+		public Colour ClearColour = Colour.Grey;
 
 		public Scene(Colour? clearColour = null)
 		{
 			Entities = new EntityList(this);
-			this.clearColour = clearColour ?? Colour.Grey;
+			ClearColour = clearColour ?? Colour.Grey;
 		}
 
 		public virtual void Begin()
 		{
-			foreach (var entity in Entities)
+			foreach (Entity entity in Entities)
 				entity.SceneBegin();
 		}
 
 		public virtual void End()
 		{
-			foreach (var entity in Entities)
+			foreach (Entity entity in Entities)
 				entity.SceneEnd();
 		}
 
