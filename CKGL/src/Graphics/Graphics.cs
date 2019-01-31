@@ -123,6 +123,7 @@ namespace CKGL
 		internal static void SetColourMask(bool r, bool g, bool b, bool a) => graphics.SetColourMask(r, g, b, a);
 		internal static void SetDepthMask(bool depth) => graphics.SetDepthMask(depth);
 		internal static void SetDepth(bool enabled, DepthFunction depthFunction) => graphics.SetDepth(enabled, depthFunction);
+		internal static void SetBlend(bool enabled, BlendFactor colourSource, BlendFactor alphaSource, BlendFactor colourDestination, BlendFactor alphaDestination, BlendEquation colourEquation, BlendEquation alphaEquation) => graphics.SetBlend(enabled, colourSource, alphaSource, colourDestination, alphaDestination, colourEquation, alphaEquation);
 		#endregion
 
 		#region State

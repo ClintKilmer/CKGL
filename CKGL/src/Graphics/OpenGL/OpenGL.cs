@@ -2219,6 +2219,34 @@ namespace CKGL.OpenGLBindings
 		Fill = GL_FILL
 	}
 
+	public enum BlendEquation : GLuint
+	{
+		Add = 32774,
+		Subtract = 32778,
+		ReverseSubtract = 32779,
+		Max = 32776,
+		Min = 32775
+	}
+
+	public enum BlendFactor : GLuint
+	{
+		Zero = 0,
+		One = 1,
+		SrcColour = 0x0300,
+		OneMinusSrcColour,
+		SrcAlpha,
+		OneMinusSrcAlpha,
+		DstAlpha,
+		OneMinusDstAlpha,
+		DstColour,
+		OneMinusDstcolour,
+		SrcAlphaSaturate,
+		ConstantColour = 0x8001,
+		OneMinusConstantColour,
+		ConstantAlpha,
+		OneMinusConstantAlpha
+	}
+
 	public enum DepthFunc : GLuint
 	{
 		Never = GL_NEVER,
@@ -2481,34 +2509,6 @@ namespace CKGL
 	{
 		Nearest = 0x2600,
 		Linear = 0x2601
-	}
-
-	public enum BlendEquation : GLuint
-	{
-		Add = 32774,
-		Subtract = 32778,
-		ReverseSubtract = 32779,
-		Max = 32776,
-		Min = 32775
-	}
-
-	public enum BlendFactor : GLuint
-	{
-		Zero = 0,
-		One = 1,
-		SrcColour = 0x0300,
-		OneMinusSrcColour,
-		SrcAlpha,
-		OneMinusSrcAlpha,
-		DstAlpha,
-		OneMinusDstAlpha,
-		DstColour,
-		OneMinusDstcolour,
-		SrcAlphaSaturate,
-		ConstantColour = 0x8001,
-		OneMinusConstantColour,
-		ConstantAlpha,
-		OneMinusConstantAlpha
 	}
 
 	public enum TextureAttachment : GLuint

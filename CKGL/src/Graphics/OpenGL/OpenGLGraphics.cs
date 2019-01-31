@@ -81,6 +81,24 @@ namespace CKGL.OpenGL
 				GL.Disable(EnableCap.DepthTest);
 			GL.DepthFunc(depthFunction.ToOpenGL());
 		}
+
+		internal override void SetBlend(bool enabled, BlendFactor colourSource, BlendFactor alphaSource, BlendFactor colourDestination, BlendFactor alphaDestination, BlendEquation colourEquation, BlendEquation alphaEquation)
+		{
+			if (enabled)
+				GL.Enable(EnableCap.Blend);
+			else
+				GL.Disable(EnableCap.Blend);
+
+			if (colourSource == alphaSource && colourDestination == alphaDestination)
+				GL.BlendFunc(colourSource.ToOpenGL(), colourDestination.ToOpenGL());
+			else
+				GL.BlendFuncSeparate(colourSource.ToOpenGL(), colourDestination.ToOpenGL(), alphaSource.ToOpenGL(), alphaDestination.ToOpenGL());
+
+			if (colourEquation == alphaEquation)
+				GL.BlendEquation(colourEquation.ToOpenGL());
+			else
+				GL.BlendEquationSeparate(colourEquation.ToOpenGL(), alphaEquation.ToOpenGL());
+		}
 		#endregion
 	}
 }
