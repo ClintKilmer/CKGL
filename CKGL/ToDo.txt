@@ -21,14 +21,12 @@ Features:
 Random:
 - Update Window width/height on resize event, don't poll every time
 - DepthRange - Somewhere else - maybe own state
-- Refactor Shader SetUniforms into inherited classes
-- Viewport static class?
-- ScissorTest static class?
+- Refactor Shader SetUniforms into inherited classes - This might be done already
+- Viewport static class? State?
+- ScissorTest static class? State?
 - Move Swaps++ to Metrics
-- Move rest of the OpenGL attributes into Window?
 - Rendertarget blit fails if backbuffer is multisampled
-- Clean up InternalShaders
-- Rotation struct everywhere
+- Rotation struct everywhere - seems like only needed in renderer - but double-check
 - Quaternion Euler yRot not converting properly
 - Test Quaternion.CreateLookAt
 - RAM function seems to force GC
@@ -37,8 +35,6 @@ Random:
 - Platform.SaveJPG is broken
 - Add Texture2dSampler, and CubeMap to Shader Uniform Set - Have generic Set Texture Uniform
 - ResourceHandle? GLResource?
-
-- Speed up SpriteSheet Packing
 
 - CPU Bounding Box Culling
 
