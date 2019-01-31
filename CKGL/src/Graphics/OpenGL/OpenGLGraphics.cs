@@ -72,6 +72,15 @@ namespace CKGL.OpenGL
 		{
 			GL.DepthMask(depth);
 		}
+
+		internal override void SetDepth(bool enabled, DepthFunction depthFunction)
+		{
+			if (enabled)
+				GL.Enable(EnableCap.DepthTest);
+			else
+				GL.Disable(EnableCap.DepthTest);
+			GL.DepthFunc(depthFunction.ToOpenGL());
+		}
 		#endregion
 	}
 }

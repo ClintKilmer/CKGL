@@ -27,6 +27,7 @@ namespace CKGL
 		internal abstract void SetPolygonMode(PolygonMode polygonMode);
 		internal abstract void SetColourMask(bool r, bool g, bool b, bool a);
 		internal abstract void SetDepthMask(bool depth);
+		internal abstract void SetDepth(bool enabled, DepthFunction depthFunction);
 		#endregion
 	}
 }

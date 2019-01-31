@@ -122,6 +122,7 @@ namespace CKGL
 		internal static void SetPolygonMode(PolygonMode polygonMode) => graphics.SetPolygonMode(polygonMode);
 		internal static void SetColourMask(bool r, bool g, bool b, bool a) => graphics.SetColourMask(r, g, b, a);
 		internal static void SetDepthMask(bool depth) => graphics.SetDepthMask(depth);
+		internal static void SetDepth(bool enabled, DepthFunction depthFunction) => graphics.SetDepth(enabled, depthFunction);
 		#endregion
 
 		#region State

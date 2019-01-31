@@ -1,12 +1,53 @@
 using System;
-using CKGL.OpenGLBindings;
 
 namespace CKGL
 {
+	#region Enums
+	public enum DepthFunction : byte
+	{
+		Never,
+		Less,
+		Equal,
+		LessEqual,
+		Greater,
+		NotEqual,
+		GreaterEqual,
+		Always
+	}
+
+	internal static class DepthFunctionExt
+	{
+		internal static OpenGLBindings.DepthFunc ToOpenGL(this DepthFunction depthFunction)
+		{
+			switch (depthFunction)
+			{
+				case DepthFunction.Never:
+					return OpenGLBindings.DepthFunc.Never;
+				case DepthFunction.Less:
+					return OpenGLBindings.DepthFunc.Less;
+				case DepthFunction.Equal:
+					return OpenGLBindings.DepthFunc.Equal;
+				case DepthFunction.LessEqual:
+					return OpenGLBindings.DepthFunc.LessEqual;
+				case DepthFunction.Greater:
+					return OpenGLBindings.DepthFunc.Greater;
+				case DepthFunction.NotEqual:
+					return OpenGLBindings.DepthFunc.NotEqual;
+				case DepthFunction.GreaterEqual:
+					return OpenGLBindings.DepthFunc.GreaterEqual;
+				case DepthFunction.Always:
+					return OpenGLBindings.DepthFunc.Always;
+				default:
+					throw new NotImplementedException();
+			}
+		}
+	}
+	#endregion
+
 	public struct DepthState
 	{
 		public readonly bool Enabled;
-		public readonly DepthFunc DepthFunc;
+		public readonly DepthFunction DepthFunction;
 
 		public static Action OnStateChanging;
 		public static Action OnStateChanged;
@@ -19,22 +60,22 @@ namespace CKGL
 			Default = Off;
 		}
 		public static readonly DepthState Off = new DepthState(false);
-		public static readonly DepthState Never = new DepthState(true, DepthFunc.Never);
-		public static readonly DepthState Less = new DepthState(true, DepthFunc.Less);
-		public static readonly DepthState Equal = new DepthState(true, DepthFunc.Equal);
-		public static readonly DepthState LessEqual = new DepthState(true, DepthFunc.LessEqual);
-		public static readonly DepthState Greater = new DepthState(true, DepthFunc.Greater);
-		public static readonly DepthState NotEqual = new DepthState(true, DepthFunc.NotEqual);
-		public static readonly DepthState GreaterEqual = new DepthState(true, DepthFunc.GreaterEqual);
-		public static readonly DepthState Always = new DepthState(true, DepthFunc.Always);
+		public static readonly DepthState Never = new DepthState(true, DepthFunction.Never);
+		public static readonly DepthState Less = new DepthState(true, DepthFunction.Less);
+		public static readonly DepthState Equal = new DepthState(true, DepthFunction.Equal);
+		public static readonly DepthState LessEqual = new DepthState(true, DepthFunction.LessEqual);
+		public static readonly DepthState Greater = new DepthState(true, DepthFunction.Greater);
+		public static readonly DepthState NotEqual = new DepthState(true, DepthFunction.NotEqual);
+		public static readonly DepthState GreaterEqual = new DepthState(true, DepthFunction.GreaterEqual);
+		public static readonly DepthState Always = new DepthState(true, DepthFunction.Always);
 		#endregion
 
 		#region Constructors
-		private DepthState(bool enabled) : this(enabled, DepthFunc.Less) { }
-		private DepthState(bool enabled, DepthFunc depthFunc)
+		private DepthState(bool enabled) : this(enabled, DepthFunction.Less) { }
+		private DepthState(bool enabled, DepthFunction depthFunc)
 		{
 			Enabled = enabled;
-			DepthFunc = depthFunc;
+			DepthFunction = depthFunc;
 		}
 		#endregion
 
@@ -56,44 +97,30 @@ namespace CKGL
 			if (Current != depthState)
 			{
 				OnStateChanging?.Invoke();
-				if (depthState.Enabled)
-					GL.Enable(EnableCap.DepthTest);
-				else
-					GL.Disable(EnableCap.DepthTest);
-				GL.DepthFunc(depthState.DepthFunc);
+				Graphics.SetDepth(depthState.Enabled, depthState.DepthFunction);
 				Current = depthState;
 				OnStateChanged?.Invoke();
 			}
 		}
 		public static void Reset() => Set(Default);
 		public static void SetDefault(DepthState depthState) => Default = depthState;
-
-		public static void SetEnabled(bool enabled)
-		{
-			Set(new DepthState(enabled, Current.DepthFunc));
-		}
-
-		public static void SetDepthFunc(DepthFunc depthFunc)
-		{
-			Set(new DepthState(Current.Enabled, depthFunc));
-		}
 		#endregion
 
 		#region Overrides
 		public override string ToString()
 		{
-			return $"DepthState: [Enabled: {Enabled}, Func: {DepthFunc}]";
+			return $"DepthState: [Enabled: {Enabled}, Func: {DepthFunction}]";
 		}
 		#endregion
 
 		#region Operators
 		public static bool operator ==(DepthState a, DepthState b)
 		{
-			return a.Enabled == b.Enabled && a.DepthFunc == b.DepthFunc;
+			return a.Enabled == b.Enabled && a.DepthFunction == b.DepthFunction;
 		}
 		public static bool operator !=(DepthState a, DepthState b)
 		{
-			return a.Enabled != b.Enabled || a.DepthFunc != b.DepthFunc;
+			return a.Enabled != b.Enabled || a.DepthFunction != b.DepthFunction;
 		}
 		#endregion
 	}
