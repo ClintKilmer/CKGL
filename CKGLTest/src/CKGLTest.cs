@@ -495,7 +495,7 @@ namespace CKGLTest
 									 Colour.Green,
 									 Colour.Blue);
 
-			MaskState.SetDepth(false);
+			DepthMaskState.Disabled.Set();
 			Textures.Test.Bind();
 			Renderer.Draw.Rectangle(2f,
 									-0.5f,
@@ -534,7 +534,7 @@ namespace CKGLTest
 							   Colour.White,
 							   HAlign.Center,
 							   VAlign.Middle);
-			MaskState.Reset();
+			DepthMaskState.Reset();
 
 			Renderer.Draw.ResetTransform();
 

@@ -87,7 +87,8 @@
     <Compile Include="src\Graphics\State\CullModeState.cs" />
     <Compile Include="src\Graphics\State\DepthState.cs" />
     <Compile Include="src\Graphics\State\FrontFaceState.cs" />
-    <Compile Include="src\Graphics\State\MaskState.cs" />
+    <Compile Include="src\Graphics\State\DepthMaskState.cs" />
+    <Compile Include="src\Graphics\State\ColourMaskState.cs" />
     <Compile Include="src\Graphics\State\PolygonModeState.cs" />
     <Compile Include="src\Graphics\Texture.cs" />
     <Compile Include="src\Graphics\Texture2D.cs" />

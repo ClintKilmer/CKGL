@@ -1,5 +1,5 @@
-using CKGL.OpenGLBindings;
 using System;
+using CKGL.OpenGLBindings;
 
 namespace CKGL
 {
@@ -120,7 +120,8 @@ namespace CKGL
 		internal static void SetFrontFace(FrontFace frontFace) => graphics.SetFrontFace(frontFace);
 		internal static void SetCullMode(bool enabled, Face face) => graphics.SetCullMode(enabled, face);
 		internal static void SetPolygonMode(PolygonMode polygonMode) => graphics.SetPolygonMode(polygonMode);
-		internal static void SetMask(bool r, bool g, bool b, bool a, bool depth) => graphics.SetMask(r, g, b, a, depth);
+		internal static void SetColourMask(bool r, bool g, bool b, bool a) => graphics.SetColourMask(r, g, b, a);
+		internal static void SetDepthMask(bool depth) => graphics.SetDepthMask(depth);
 		#endregion
 
 		#region State
@@ -145,8 +146,10 @@ namespace CKGL
 				BlendState.OnStateChanged += () => { OnStateChanged?.Invoke(); };
 				DepthState.OnStateChanging += () => { OnStateChanging?.Invoke(); };
 				DepthState.OnStateChanged += () => { OnStateChanged?.Invoke(); };
-				MaskState.OnStateChanging += () => { OnStateChanging?.Invoke(); };
-				MaskState.OnStateChanged += () => { OnStateChanged?.Invoke(); };
+				ColourMaskState.OnStateChanging += () => { OnStateChanging?.Invoke(); };
+				ColourMaskState.OnStateChanged += () => { OnStateChanged?.Invoke(); };
+				DepthMaskState.OnStateChanging += () => { OnStateChanging?.Invoke(); };
+				DepthMaskState.OnStateChanged += () => { OnStateChanged?.Invoke(); };
 
 				Shader.OnBinding += () => { OnStateChanging?.Invoke(); };
 				Shader.OnBound += () => { OnStateChanged?.Invoke(); };
@@ -167,7 +170,8 @@ namespace CKGL
 				PolygonModeState.Reset();
 				BlendState.Reset();
 				DepthState.Reset();
-				MaskState.Reset();
+				ColourMaskState.Reset();
+				DepthMaskState.Reset();
 			}
 
 			internal static void PreDraw()
