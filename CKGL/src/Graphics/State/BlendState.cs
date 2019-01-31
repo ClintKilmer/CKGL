@@ -205,36 +205,6 @@ namespace CKGL
 		}
 		public static void Reset() => Set(Default);
 		public static void SetDefault(BlendState blendState) => Default = blendState;
-
-		public static void SetEnabled(bool enabled)
-		{
-			Set(new BlendState(enabled, Current.ColourSource, Current.AlphaSource, Current.ColourDestination, Current.AlphaDestination, Current.ColourEquation, Current.AlphaEquation));
-		}
-
-		public static void SetBlendFactor(BlendFactor source, BlendFactor destination)
-		{
-			Set(new BlendState(Current.Enabled, source, source, destination, destination, Current.ColourEquation, Current.AlphaEquation));
-		}
-
-		public static void SetBlendFactor(
-			BlendFactor colourSource,
-			BlendFactor colourDestination,
-			BlendFactor alphaSource,
-			BlendFactor alphaDestination)
-		{
-			Set(new BlendState(Current.Enabled, colourSource, alphaSource, colourDestination, alphaDestination, Current.ColourEquation, Current.AlphaEquation));
-		}
-
-		public static void SetBlend(
-			BlendFactor colourSource,
-			BlendFactor colourDestination,
-			BlendFactor alphaSource,
-			BlendFactor alphaDestination,
-			BlendEquation colourEquation,
-			BlendEquation alphaEquation)
-		{
-			Set(new BlendState(Current.Enabled, colourSource, alphaSource, colourDestination, alphaDestination, colourEquation, alphaEquation));
-		}
 		#endregion
 
 		#region Overrides
