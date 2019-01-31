@@ -44,62 +44,62 @@ namespace CKGL.OpenGL
 		#endregion
 
 		#region State Setters
-		internal override void SetFrontFace(FrontFace frontFace)
+		internal override void SetFrontFace(FrontFaceState frontFaceState)
 		{
-			GL.FrontFace(frontFace.ToOpenGL());
+			GL.FrontFace(frontFaceState.FrontFace.ToOpenGL());
 		}
 
-		internal override void SetCullMode(bool enabled, Face face)
+		internal override void SetCullMode(CullModeState cullModeState)
 		{
-			if (enabled)
+			if (cullModeState.Enabled)
 				GL.Enable(EnableCap.CullFace);
 			else
 				GL.Disable(EnableCap.CullFace);
 
-			GL.CullFace(face.ToOpenGL());
+			GL.CullFace(cullModeState.Face.ToOpenGL());
 		}
 
-		internal override void SetPolygonMode(PolygonMode polygonMode)
+		internal override void SetPolygonMode(PolygonModeState polygonModeState)
 		{
-			GL.PolygonMode(polygonMode.ToOpenGL());
+			GL.PolygonMode(polygonModeState.PolygonMode.ToOpenGL());
 		}
 
-		internal override void SetColourMask(bool r, bool g, bool b, bool a)
+		internal override void SetColourMask(ColourMaskState colourMaskState)
 		{
-			GL.ColourMask(r, g, b, a);
+			GL.ColourMask(colourMaskState.R, colourMaskState.G, colourMaskState.B, colourMaskState.A);
 		}
 
-		internal override void SetDepthMask(bool depth)
+		internal override void SetDepthMask(DepthMaskState depthMaskState)
 		{
-			GL.DepthMask(depth);
+			GL.DepthMask(depthMaskState.Depth);
 		}
 
-		internal override void SetDepth(bool enabled, DepthFunction depthFunction)
+		internal override void SetDepth(DepthState depthState)
 		{
-			if (enabled)
+			if (depthState.Enabled)
 				GL.Enable(EnableCap.DepthTest);
 			else
 				GL.Disable(EnableCap.DepthTest);
 
-			GL.DepthFunc(depthFunction.ToOpenGL());
+			GL.DepthFunc(depthState.DepthFunction.ToOpenGL());
 		}
 
-		internal override void SetBlend(bool enabled, BlendFactor colourSource, BlendFactor alphaSource, BlendFactor colourDestination, BlendFactor alphaDestination, BlendEquation colourEquation, BlendEquation alphaEquation)
+		internal override void SetBlend(BlendState blendState)
 		{
-			if (enabled)
+			if (blendState.Enabled)
 				GL.Enable(EnableCap.Blend);
 			else
 				GL.Disable(EnableCap.Blend);
 
-			if (colourSource == alphaSource && colourDestination == alphaDestination)
-				GL.BlendFunc(colourSource.ToOpenGL(), colourDestination.ToOpenGL());
+			if (blendState.ColourSource == blendState.AlphaSource && blendState.ColourDestination == blendState.AlphaDestination)
+				GL.BlendFunc(blendState.ColourSource.ToOpenGL(), blendState.ColourDestination.ToOpenGL());
 			else
-				GL.BlendFuncSeparate(colourSource.ToOpenGL(), colourDestination.ToOpenGL(), alphaSource.ToOpenGL(), alphaDestination.ToOpenGL());
+				GL.BlendFuncSeparate(blendState.ColourSource.ToOpenGL(), blendState.ColourDestination.ToOpenGL(), blendState.AlphaSource.ToOpenGL(), blendState.AlphaDestination.ToOpenGL());
 
-			if (colourEquation == alphaEquation)
-				GL.BlendEquation(colourEquation.ToOpenGL());
+			if (blendState.ColourEquation == blendState.AlphaEquation)
+				GL.BlendEquation(blendState.ColourEquation.ToOpenGL());
 			else
-				GL.BlendEquationSeparate(colourEquation.ToOpenGL(), alphaEquation.ToOpenGL());
+				GL.BlendEquationSeparate(blendState.ColourEquation.ToOpenGL(), blendState.AlphaEquation.ToOpenGL());
 		}
 		#endregion
 	}

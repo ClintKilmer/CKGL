@@ -74,7 +74,7 @@ namespace CKGL
 			if (Current != cullModeState)
 			{
 				Graphics.State.OnStateChanging?.Invoke();
-				Graphics.SetCullMode(cullModeState.Enabled, cullModeState.Face);
+				Graphics.SetCullMode(cullModeState);
 				Current = cullModeState;
 				Graphics.State.OnStateChanged?.Invoke();
 			}

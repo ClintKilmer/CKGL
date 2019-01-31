@@ -95,7 +95,7 @@ namespace CKGL
 			if (Current != depthState)
 			{
 				Graphics.State.OnStateChanging?.Invoke();
-				Graphics.SetDepth(depthState.Enabled, depthState.DepthFunction);
+				Graphics.SetDepth(depthState);
 				Current = depthState;
 				Graphics.State.OnStateChanged?.Invoke();
 			}

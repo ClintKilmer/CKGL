@@ -41,13 +41,13 @@ namespace CKGL
 			if (Current != DepthMaskState)
 			{
 				Graphics.State.OnStateChanging?.Invoke();
-				Graphics.SetDepthMask(DepthMaskState.Depth);
+				Graphics.SetDepthMask(DepthMaskState);
 				Current = DepthMaskState;
 				Graphics.State.OnStateChanged?.Invoke();
 			}
 		}
 		public static void Reset() => Set(Default);
-		public static void SetDefault(DepthMaskState DepthMaskState) => Default = DepthMaskState;
+		public static void SetDefault(DepthMaskState depthMaskState) => Default = depthMaskState;
 		#endregion
 
 		#region Overrides

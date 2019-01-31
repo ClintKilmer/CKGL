@@ -66,8 +66,8 @@ namespace CKGL
 		{
 			if (Current != frontFaceState)
 			{
-				Graphics.SetFrontFace(frontFaceState.FrontFace);
 				Graphics.State.OnStateChanging?.Invoke();
+				Graphics.SetFrontFace(frontFaceState);
 				Current = frontFaceState;
 				Graphics.State.OnStateChanged?.Invoke();
 			}

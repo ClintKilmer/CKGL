@@ -22,13 +22,13 @@ namespace CKGL
 		#endregion
 
 		#region State Setters
-		internal abstract void SetFrontFace(FrontFace frontFace);
-		internal abstract void SetCullMode(bool enabled, Face face);
-		internal abstract void SetPolygonMode(PolygonMode polygonMode);
-		internal abstract void SetColourMask(bool r, bool g, bool b, bool a);
-		internal abstract void SetDepthMask(bool depth);
-		internal abstract void SetDepth(bool enabled, DepthFunction depthFunction);
-		internal abstract void SetBlend(bool enabled, BlendFactor colourSource, BlendFactor alphaSource, BlendFactor colourDestination, BlendFactor alphaDestination, BlendEquation colourEquation, BlendEquation alphaEquation);
+		internal abstract void SetFrontFace(FrontFaceState frontFaceState);
+		internal abstract void SetCullMode(CullModeState cullModeState);
+		internal abstract void SetPolygonMode(PolygonModeState polygonModeState);
+		internal abstract void SetColourMask(ColourMaskState colourMaskState);
+		internal abstract void SetDepthMask(DepthMaskState depthMaskState);
+		internal abstract void SetDepth(DepthState depthState);
+		internal abstract void SetBlend(BlendState blendState);
 		#endregion
 	}
 }

@@ -117,13 +117,13 @@ namespace CKGL
 		#endregion
 
 		#region State Setters
-		internal static void SetFrontFace(FrontFace frontFace) => graphics.SetFrontFace(frontFace);
-		internal static void SetCullMode(bool enabled, Face face) => graphics.SetCullMode(enabled, face);
-		internal static void SetPolygonMode(PolygonMode polygonMode) => graphics.SetPolygonMode(polygonMode);
-		internal static void SetColourMask(bool r, bool g, bool b, bool a) => graphics.SetColourMask(r, g, b, a);
-		internal static void SetDepthMask(bool depth) => graphics.SetDepthMask(depth);
-		internal static void SetDepth(bool enabled, DepthFunction depthFunction) => graphics.SetDepth(enabled, depthFunction);
-		internal static void SetBlend(bool enabled, BlendFactor colourSource, BlendFactor alphaSource, BlendFactor colourDestination, BlendFactor alphaDestination, BlendEquation colourEquation, BlendEquation alphaEquation) => graphics.SetBlend(enabled, colourSource, alphaSource, colourDestination, alphaDestination, colourEquation, alphaEquation);
+		internal static void SetFrontFace(FrontFaceState frontFaceState) => graphics.SetFrontFace(frontFaceState);
+		internal static void SetCullMode(CullModeState cullModeState) => graphics.SetCullMode(cullModeState);
+		internal static void SetPolygonMode(PolygonModeState polygonModeState) => graphics.SetPolygonMode(polygonModeState);
+		internal static void SetColourMask(ColourMaskState colourMaskState) => graphics.SetColourMask(colourMaskState);
+		internal static void SetDepthMask(DepthMaskState depthMaskState) => graphics.SetDepthMask(depthMaskState);
+		internal static void SetDepth(DepthState depthState) => graphics.SetDepth(depthState);
+		internal static void SetBlend(BlendState blendState) => graphics.SetBlend(blendState);
 		#endregion
 
 		#region State

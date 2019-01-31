@@ -56,18 +56,18 @@ namespace CKGL
 		#endregion
 
 		#region Static Methods
-		public static void Set(ColourMaskState ColourMaskState)
+		public static void Set(ColourMaskState colourMaskState)
 		{
-			if (Current != ColourMaskState)
+			if (Current != colourMaskState)
 			{
 				Graphics.State.OnStateChanging?.Invoke();
-				Graphics.SetColourMask(ColourMaskState.R, ColourMaskState.G, ColourMaskState.B, ColourMaskState.A);
-				Current = ColourMaskState;
+				Graphics.SetColourMask(colourMaskState);
+				Current = colourMaskState;
 				Graphics.State.OnStateChanged?.Invoke();
 			}
 		}
 		public static void Reset() => Set(Default);
-		public static void SetDefault(ColourMaskState ColourMaskState) => Default = ColourMaskState;
+		public static void SetDefault(ColourMaskState colourMaskState) => Default = colourMaskState;
 		#endregion
 
 		#region Overrides

@@ -71,7 +71,7 @@ namespace CKGL
 			if (Current != polygonModeState)
 			{
 				Graphics.State.OnStateChanging?.Invoke();
-				Graphics.SetPolygonMode(polygonModeState.PolygonMode);
+				Graphics.SetPolygonMode(polygonModeState);
 				Current = polygonModeState;
 				Graphics.State.OnStateChanged?.Invoke();
 			}

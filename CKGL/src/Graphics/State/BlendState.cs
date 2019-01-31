@@ -198,7 +198,7 @@ namespace CKGL
 			if (Current != blendState)
 			{
 				Graphics.State.OnStateChanging?.Invoke();
-				Graphics.SetBlend(blendState.Enabled, blendState.ColourSource, blendState.AlphaSource, blendState.ColourDestination, blendState.AlphaDestination, blendState.ColourEquation, blendState.AlphaEquation);
+				Graphics.SetBlend(blendState);
 				Current = blendState;
 				Graphics.State.OnStateChanged?.Invoke();
 			}
