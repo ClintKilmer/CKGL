@@ -1,6 +1,7 @@
 CKGL TODO List:
 
 Features:
+- Move GL-specific debug/Metrics info to GL backend/Metrics - Make Debug/Metrics output GraphicsBackend agnostic
 - CKGL Exception - Illegal<Value> from Veldrid - States/GraphicsBackends
 - Graphics.PreDraw(); / State.PreDraw(); - Convert to Events
 - Controllers.Any
@@ -42,7 +43,7 @@ Random:
 - CPU Bounding Box Culling
 
 - Audio Buffer in Sound class
-- Hide audio stuff in namespace, only expose end-user functions
+- Hide audio stuff in namespace, only expose end-user functions - internal
 
 - Input shortcuts using Action (old engine)
 
