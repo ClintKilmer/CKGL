@@ -34,8 +34,6 @@ namespace CKGL
 		public readonly bool Enabled;
 		public readonly Face Face;
 
-		public static Action OnStateChanging;
-		public static Action OnStateChanged;
 		public static CullModeState Default { get; private set; }
 		public static CullModeState Current { get; private set; }
 
@@ -75,10 +73,10 @@ namespace CKGL
 		{
 			if (Current != cullModeState)
 			{
-				OnStateChanging?.Invoke();
+				Graphics.State.OnStateChanging?.Invoke();
 				Graphics.SetCullMode(cullModeState.Enabled, cullModeState.Face);
 				Current = cullModeState;
-				OnStateChanged?.Invoke();
+				Graphics.State.OnStateChanged?.Invoke();
 			}
 		}
 		public static void Reset() => Set(Default);

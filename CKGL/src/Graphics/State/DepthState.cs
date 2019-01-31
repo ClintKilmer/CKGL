@@ -49,8 +49,6 @@ namespace CKGL
 		public readonly bool Enabled;
 		public readonly DepthFunction DepthFunction;
 
-		public static Action OnStateChanging;
-		public static Action OnStateChanged;
 		public static DepthState Default { get; private set; }
 		public static DepthState Current { get; private set; }
 
@@ -96,10 +94,10 @@ namespace CKGL
 		{
 			if (Current != depthState)
 			{
-				OnStateChanging?.Invoke();
+				Graphics.State.OnStateChanging?.Invoke();
 				Graphics.SetDepth(depthState.Enabled, depthState.DepthFunction);
 				Current = depthState;
-				OnStateChanged?.Invoke();
+				Graphics.State.OnStateChanged?.Invoke();
 			}
 		}
 		public static void Reset() => Set(Default);

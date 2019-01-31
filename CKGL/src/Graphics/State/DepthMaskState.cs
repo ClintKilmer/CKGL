@@ -1,13 +1,9 @@
-using System;
-
 namespace CKGL
 {
 	public struct DepthMaskState
 	{
 		public readonly bool Depth;
 
-		public static Action OnStateChanging;
-		public static Action OnStateChanged;
 		public static DepthMaskState Default { get; private set; }
 		public static DepthMaskState Current { get; private set; }
 
@@ -44,10 +40,10 @@ namespace CKGL
 		{
 			if (Current != DepthMaskState)
 			{
-				OnStateChanging?.Invoke();
+				Graphics.State.OnStateChanging?.Invoke();
 				Graphics.SetDepthMask(DepthMaskState.Depth);
 				Current = DepthMaskState;
-				OnStateChanged?.Invoke();
+				Graphics.State.OnStateChanged?.Invoke();
 			}
 		}
 		public static void Reset() => Set(Default);

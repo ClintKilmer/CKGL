@@ -1,4 +1,3 @@
-using System;
 using CKGL.OpenGLBindings;
 using GLint = System.Int32;
 using GLuint = System.UInt32;
@@ -7,15 +6,12 @@ namespace CKGL
 {
 	public abstract class Texture
 	{
-		public static Action OnBinding;
-		public static Action OnBound;
-
 		private struct Binding
 		{
 			public GLuint ID;
 			public TextureTarget Target;
 		}
-		private static Binding[] bindings = new Binding[GL.MaxTextureImageUnits];
+		private static readonly Binding[] bindings = new Binding[GL.MaxTextureImageUnits];
 
 		public static int Swaps { get; private set; }
 
@@ -134,14 +130,14 @@ namespace CKGL
 		{
 			if (id != bindings[textureSlot].ID || BindTarget != bindings[textureSlot].Target)
 			{
-				OnBinding?.Invoke();
+				Graphics.State.OnStateChanging?.Invoke();
 				GL.ActiveTexture(textureSlot);
 				GL.BindTexture(BindTarget, id);
 				Swaps++;
 
 				bindings[textureSlot].ID = id;
 				bindings[textureSlot].Target = BindTarget;
-				OnBound?.Invoke();
+				Graphics.State.OnStateChanged?.Invoke();
 			}
 		}
 		#endregion

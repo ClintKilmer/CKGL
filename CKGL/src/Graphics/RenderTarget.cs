@@ -1,5 +1,5 @@
-using System;
 using CKGL.OpenGLBindings;
+using System;
 using GLint = System.Int32;
 using GLuint = System.UInt32;
 
@@ -7,9 +7,6 @@ namespace CKGL
 {
 	public class RenderTarget
 	{
-		public static Action OnBinding;
-		public static Action OnBound;
-
 		public static readonly RenderTarget Default = new RenderTarget();
 		public static RenderTarget Current { get; private set; } = Default;
 
@@ -54,8 +51,8 @@ namespace CKGL
 			}
 		}
 
-		private int width = 0;
-		private int height = 0;
+		private readonly int width = 0;
+		private readonly int height = 0;
 		public int Width
 		{
 			get
@@ -187,13 +184,13 @@ namespace CKGL
 		{
 			if (id != Current.id)
 			{
-				OnBinding?.Invoke();
+				Graphics.State.OnStateChanging?.Invoke();
 				GL.BindFramebuffer(FramebufferTarget.Framebuffer, id);
 				Swaps++;
 				Current = this;
 				Graphics.SetViewport();
 				Graphics.SetScissorTest();
-				OnBound?.Invoke();
+				Graphics.State.OnStateChanged?.Invoke();
 			}
 		}
 		#endregion
@@ -220,12 +217,14 @@ namespace CKGL
 			if (textureSlot < 0)
 				throw new ArgumentOutOfRangeException($"Can't blit a depth texture.");
 
-			OnBinding.Invoke();
+			Graphics.State.OnStateChanging.Invoke();
 
 			RenderTarget originalRenderTarget = Current;
 
 			GL.BindFramebuffer(FramebufferTarget.Read, id);
+			Swaps++;
 			GL.BindFramebuffer(FramebufferTarget.Draw, (target ?? Default).id);
+			Swaps++;
 
 			Graphics.SetViewport(target);
 			Graphics.SetScissorTest(target);
@@ -238,7 +237,7 @@ namespace CKGL
 
 			Blits++;
 
-			OnBound.Invoke();
+			Graphics.State.OnStateChanged.Invoke();
 		}
 
 		private void CheckStatus()

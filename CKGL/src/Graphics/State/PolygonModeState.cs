@@ -33,8 +33,6 @@ namespace CKGL
 	{
 		public readonly PolygonMode PolygonMode;
 
-		public static Action OnStateChanging;
-		public static Action OnStateChanged;
 		public static PolygonModeState Default { get; private set; }
 		public static PolygonModeState Current { get; private set; }
 
@@ -72,10 +70,10 @@ namespace CKGL
 		{
 			if (Current != polygonModeState)
 			{
-				OnStateChanging?.Invoke();
+				Graphics.State.OnStateChanging?.Invoke();
 				Graphics.SetPolygonMode(polygonModeState.PolygonMode);
 				Current = polygonModeState;
-				OnStateChanged?.Invoke();
+				Graphics.State.OnStateChanged?.Invoke();
 			}
 		}
 		public static void Reset() => Set(Default);

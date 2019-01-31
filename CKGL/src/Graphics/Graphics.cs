@@ -138,30 +138,6 @@ namespace CKGL
 			{
 				Reset();
 
-				FrontFaceState.OnStateChanging += () => { OnStateChanging?.Invoke(); };
-				FrontFaceState.OnStateChanged += () => { OnStateChanged?.Invoke(); };
-				CullModeState.OnStateChanging += () => { OnStateChanging?.Invoke(); };
-				CullModeState.OnStateChanged += () => { OnStateChanged?.Invoke(); };
-				PolygonModeState.OnStateChanging += () => { OnStateChanging?.Invoke(); };
-				PolygonModeState.OnStateChanged += () => { OnStateChanged?.Invoke(); };
-				BlendState.OnStateChanging += () => { OnStateChanging?.Invoke(); };
-				BlendState.OnStateChanged += () => { OnStateChanged?.Invoke(); };
-				DepthState.OnStateChanging += () => { OnStateChanging?.Invoke(); };
-				DepthState.OnStateChanged += () => { OnStateChanged?.Invoke(); };
-				ColourMaskState.OnStateChanging += () => { OnStateChanging?.Invoke(); };
-				ColourMaskState.OnStateChanged += () => { OnStateChanged?.Invoke(); };
-				DepthMaskState.OnStateChanging += () => { OnStateChanging?.Invoke(); };
-				DepthMaskState.OnStateChanged += () => { OnStateChanged?.Invoke(); };
-
-				Shader.OnBinding += () => { OnStateChanging?.Invoke(); };
-				Shader.OnBound += () => { OnStateChanged?.Invoke(); };
-				Shader.OnUniformChanging += () => { OnStateChanging?.Invoke(); };
-				Shader.OnUniformChanged += () => { OnStateChanged?.Invoke(); };
-				RenderTarget.OnBinding += () => { OnStateChanging?.Invoke(); };
-				RenderTarget.OnBound += () => { OnStateChanged?.Invoke(); };
-				Texture.OnBinding += () => { OnStateChanging?.Invoke(); };
-				Texture.OnBound += () => { OnStateChanged?.Invoke(); };
-
 				OnStateChanged += () => { Changes++; };
 			}
 

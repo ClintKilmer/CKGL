@@ -1,5 +1,3 @@
-using System;
-
 namespace CKGL
 {
 	public struct ColourMaskState
@@ -9,8 +7,6 @@ namespace CKGL
 		public readonly bool B;
 		public readonly bool A;
 
-		public static Action OnStateChanging;
-		public static Action OnStateChanged;
 		public static ColourMaskState Default { get; private set; }
 		public static ColourMaskState Current { get; private set; }
 
@@ -64,10 +60,10 @@ namespace CKGL
 		{
 			if (Current != ColourMaskState)
 			{
-				OnStateChanging?.Invoke();
+				Graphics.State.OnStateChanging?.Invoke();
 				Graphics.SetColourMask(ColourMaskState.R, ColourMaskState.G, ColourMaskState.B, ColourMaskState.A);
 				Current = ColourMaskState;
-				OnStateChanged?.Invoke();
+				Graphics.State.OnStateChanged?.Invoke();
 			}
 		}
 		public static void Reset() => Set(Default);

@@ -106,8 +106,6 @@ namespace CKGL
 		public readonly BlendEquation ColourEquation;
 		public readonly BlendEquation AlphaEquation;
 
-		public static Action OnStateChanging;
-		public static Action OnStateChanged;
 		public static BlendState Default { get; private set; }
 		public static BlendState Current { get; private set; }
 
@@ -199,10 +197,10 @@ namespace CKGL
 		{
 			if (Current != blendState)
 			{
-				OnStateChanging?.Invoke();
+				Graphics.State.OnStateChanging?.Invoke();
 				Graphics.SetBlend(blendState.Enabled, blendState.ColourSource, blendState.AlphaSource, blendState.ColourDestination, blendState.AlphaDestination, blendState.ColourEquation, blendState.AlphaEquation);
 				Current = blendState;
-				OnStateChanged?.Invoke();
+				Graphics.State.OnStateChanged?.Invoke();
 			}
 		}
 		public static void Reset() => Set(Default);

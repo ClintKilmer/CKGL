@@ -30,8 +30,6 @@ namespace CKGL
 	{
 		public readonly FrontFace FrontFace;
 
-		public static Action OnStateChanging;
-		public static Action OnStateChanged;
 		public static FrontFaceState Default { get; private set; }
 		public static FrontFaceState Current { get; private set; }
 
@@ -68,10 +66,10 @@ namespace CKGL
 		{
 			if (Current != frontFaceState)
 			{
-				OnStateChanging?.Invoke();
 				Graphics.SetFrontFace(frontFaceState.FrontFace);
+				Graphics.State.OnStateChanging?.Invoke();
 				Current = frontFaceState;
-				OnStateChanged?.Invoke();
+				Graphics.State.OnStateChanged?.Invoke();
 			}
 		}
 		public static void Reset() => Set(Default);
