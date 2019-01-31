@@ -55,6 +55,7 @@ namespace CKGL.OpenGL
 				GL.Enable(EnableCap.CullFace);
 			else
 				GL.Disable(EnableCap.CullFace);
+
 			GL.CullFace(face.ToOpenGL());
 		}
 
@@ -79,6 +80,7 @@ namespace CKGL.OpenGL
 				GL.Enable(EnableCap.DepthTest);
 			else
 				GL.Disable(EnableCap.DepthTest);
+
 			GL.DepthFunc(depthFunction.ToOpenGL());
 		}
 

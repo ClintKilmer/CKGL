@@ -1,8 +1,8 @@
+using SDL2;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
-using SDL2;
 using static SDL2.SDL;
 
 namespace CKGL
