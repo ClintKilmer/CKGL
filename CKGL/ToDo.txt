@@ -1,8 +1,9 @@
 CKGL TODO List:
 
 Features:
+- CKGL Exception - Illegal<Value> from Veldrid - States/GraphicsBackends
+- Graphics.PreDraw(); / State.PreDraw(); - Convert to Events
 - Controllers.Any
-- Remove PolygonMode front/back states - OpengGL 3.2+ and ES compatibility
 - State.Last with method state.Revert()
 	- Will make RenderTarget.Blit easier (and a few others)
 	- Graphics.Revert? How?
