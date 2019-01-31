@@ -12,8 +12,8 @@ namespace CKGL
 		public int Width { get { return Texture.Width; } }
 		public int Height { get { return Texture.Height; } }
 
-		private int padding;
-		private Colour[,] data;
+		private readonly int padding;
+		private readonly Colour[,] data;
 
 		public SpriteSheet(int size, int padding) : this(size, size, padding) { }
 		public SpriteSheet(int width, int height, int padding)
@@ -110,7 +110,7 @@ namespace CKGL
 			return sprite;
 		}
 
-		//Slow, pixel-sweep version
+		// Slow, pixel-sweep version
 		private Point2 GetValidPlacement(int width, int height)
 		{
 			width += padding;
