@@ -55,7 +55,7 @@ namespace CKGL
 		public static Texture2D CreateFromFile(string file) => CreateFromFile(file, TextureFilter.Nearest, TextureWrap.Clamp);
 		public static Texture2D CreateFromFile(string file, TextureFilter textureFilter, TextureWrap textureWrap)
 		{
-			Platform.GetImageData(file, out int width, out int height, out byte[] data);
+			Platform.LoadImage(file, out int width, out int height, out byte[] data);
 			Texture2D result = new Texture2D(data, width, height, TextureFormat.RGBA8, textureFilter, textureWrap);
 			return result;
 		}

@@ -32,7 +32,6 @@ Random:
 - RAM function seems to force GC
 - Vector 2/3 rotate around
 - Renderer - add lineloop and any figure out all DrawModes
-- Platform.SaveJPG is broken
 - Add Texture2dSampler, and CubeMap to Shader Uniform Set - Have generic Set Texture Uniform
 - ResourceHandle? GLResource?
 

@@ -1,8 +1,8 @@
-using SDL2;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
+using SDL2;
 using static SDL2.SDL;
 
 namespace CKGL
@@ -677,27 +677,12 @@ namespace CKGL
 		}
 
 		#region Texture<->Image Load/Save Methods | Derived From FNA - SDL2_FNAPlatform.cs - https://github.com/FNA-XNA/FNA
-		private static byte[] FlipImageData(int width, int height, PixelFormat pixelFormat, byte[] data)
-		{
-			byte[] result = new byte[data.Length];
-
-			int stride = width * pixelFormat.Components();
-			for (int y = 0; y < height; y++)
-			{
-				for (int x = 0; x < stride; x++)
-				{
-					result[x + y * stride] = data[x + (height - y - 1) * stride];
-				}
-			}
-
-			return result;
-		}
-
-		public static void GetImageData(string file, out int width, out int height, out byte[] data)
+		public static void LoadImage(string file, out int width, out int height, out byte[] data)
 		{
 			IntPtr surfaceID = SDL_image.IMG_Load(file);
 			if (surfaceID == IntPtr.Zero)
 				throw new FileNotFoundException($"TextureDataFromStream: {SDL_GetError()}", file);
+			surfaceID = ConvertSurfaceFormat(surfaceID);
 
 			unsafe
 			{
@@ -723,82 +708,7 @@ namespace CKGL
 			data = FlipImageData(width, height, PixelFormat.RGBA, data);
 		}
 
-		public static void SavePNG(string file, int destinationWidth, int destinationHeight, int sourceWidth, int sourceHeight, byte[] data)
-		{
-			IntPtr surface = INTERNAL_getScaledSurface(
-				FlipImageData(sourceWidth, sourceHeight, PixelFormat.RGBA, data),
-				sourceWidth,
-				sourceHeight,
-				destinationWidth,
-				destinationHeight
-			);
-			SDL_image.IMG_SavePNG(surface, file);
-			SDL_FreeSurface(surface);
-		}
-
-		public static void SaveJPG(string file, int destinationWidth, int destinationHeight, int sourceWidth, int sourceHeight, byte[] data)
-		{
-			IntPtr surface = INTERNAL_getScaledSurface(
-				FlipImageData(sourceWidth, sourceHeight, PixelFormat.RGBA, data),
-				sourceWidth,
-				sourceHeight,
-				destinationWidth,
-				destinationHeight
-			);
-
-			//FIXME: Hack for Bugzilla #3972
-			IntPtr temp = SDL_ConvertSurfaceFormat(surface, SDL_PIXELFORMAT_RGB24, 0);
-			SDL_FreeSurface(surface);
-			surface = temp;
-
-			SDL_image.IMG_SaveJPG(surface, file, 100);
-			SDL_FreeSurface(surface);
-		}
-
-		private static IntPtr INTERNAL_getScaledSurface(byte[] data, int srcW, int srcH, int dstW, int dstH)
-		{
-			// Create an SDL_Surface*, write the pixel data
-			IntPtr surface = SDL_CreateRGBSurface(
-				0,
-				srcW,
-				srcH,
-				32,
-				0x000000FF,
-				0x0000FF00,
-				0x00FF0000,
-				0xFF000000
-			);
-			SDL_LockSurface(surface);
-			unsafe
-			{
-				SDL_Surface* surPtr = (SDL_Surface*)surface;
-				Marshal.Copy(data, 0, surPtr->pixels, data.Length);
-			}
-			SDL_UnlockSurface(surface);
-
-			// Blit to a scaled surface of the size we want, if needed.
-			if (srcW != dstW || srcH != dstH)
-			{
-				IntPtr scaledSurface = SDL_CreateRGBSurface(
-					0,
-					dstW,
-					dstH,
-					32,
-					0x000000FF,
-					0x0000FF00,
-					0x00FF0000,
-					0xFF000000
-				);
-				SDL_SetSurfaceBlendMode(surface, SDL_BlendMode.SDL_BLENDMODE_NONE);
-				SDL_BlitScaled(surface, IntPtr.Zero, scaledSurface, IntPtr.Zero);
-				SDL_FreeSurface(surface);
-				surface = scaledSurface;
-			}
-
-			return surface;
-		}
-
-		private static unsafe IntPtr INTERNAL_convertSurfaceFormat(IntPtr surface)
+		private static unsafe IntPtr ConvertSurfaceFormat(IntPtr surface)
 		{
 			IntPtr result = surface;
 			unsafe
@@ -815,6 +725,67 @@ namespace CKGL
 				}
 			}
 			return result;
+		}
+
+		public static void SavePNG(string file, int destinationWidth, int destinationHeight, int sourceWidth, int sourceHeight, byte[] data)
+		{
+			IntPtr surface = GetScaledSurface(FlipImageData(sourceWidth, sourceHeight, PixelFormat.RGBA, data), sourceWidth, sourceHeight, destinationWidth, destinationHeight);
+			SDL_image.IMG_SavePNG(surface, file);
+			SDL_FreeSurface(surface);
+		}
+
+		public static void SaveJPG(string file, int destinationWidth, int destinationHeight, int sourceWidth, int sourceHeight, byte[] data)
+		{
+			IntPtr surface = GetScaledSurface(FlipImageData(sourceWidth, sourceHeight, PixelFormat.RGBA, data), sourceWidth, sourceHeight, destinationWidth, destinationHeight);
+
+			//FIXME: Hack for Bugzilla #3972
+			IntPtr temp = SDL_ConvertSurfaceFormat(surface, SDL_PIXELFORMAT_RGB24, 0);
+			SDL_FreeSurface(surface);
+			surface = temp;
+
+			SDL_image.IMG_SaveJPG(surface, file, 100);
+			SDL_FreeSurface(surface);
+		}
+
+		private static byte[] FlipImageData(int width, int height, PixelFormat pixelFormat, byte[] data)
+		{
+			byte[] result = new byte[data.Length];
+
+			int stride = width * pixelFormat.Components();
+			for (int y = 0; y < height; y++)
+			{
+				for (int x = 0; x < stride; x++)
+				{
+					result[x + y * stride] = data[x + (height - y - 1) * stride];
+				}
+			}
+
+			return result;
+		}
+
+		private static IntPtr GetScaledSurface(byte[] data, int srcW, int srcH, int dstW, int dstH)
+		{
+			// Create an SDL_Surface*, write the pixel data
+			IntPtr surface = SDL_CreateRGBSurface(0, srcW, srcH, 32, 0x000000FF, 0x0000FF00, 0x00FF0000, 0xFF000000);
+			SDL_LockSurface(surface);
+			unsafe
+			{
+				SDL_Surface* surPtr = (SDL_Surface*)surface;
+				Marshal.Copy(data, 0, surPtr->pixels, data.Length);
+			}
+			SDL_UnlockSurface(surface);
+
+			// Blit to a scaled surface of the size we want, if needed.
+			if (srcW != dstW || srcH != dstH)
+			{
+				IntPtr scaledSurface = SDL_CreateRGBSurface(0, dstW, dstH, 32, 0x000000FF, 0x0000FF00, 0x00FF0000, 0xFF000000);
+				SDL_SetSurfaceBlendMode(surface, SDL_BlendMode.SDL_BLENDMODE_NONE);
+				SDL_BlitScaled(surface, IntPtr.Zero, scaledSurface, IntPtr.Zero);
+				SDL_FreeSurface(surface);
+				surface = scaledSurface;
+			}
+
+			return surface;
 		}
 		#endregion
 
