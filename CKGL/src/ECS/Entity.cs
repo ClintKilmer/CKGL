@@ -1,34 +1,68 @@
 namespace CKGL
 {
-	public abstract class Entity
+	public abstract class Entity : Transform2D
 	{
-		public float X
-		{
-			get { return Position.X; }
-			set { Position.X = value; }
-		}
+		//Transform2D Transform2D = new Transform2D();
 
-		public float Y
-		{
-			get { return Position.Y; }
-			set { Position.Y = value; }
-		}
+		//public Vector2 Position
+		//{
+		//	get { return Transform2D.Position; }
+		//	set { Transform2D.Position = value; }
+		//}
 
-		public Vector2 Position = Vector2.Zero;
-		private float _rotation = 0f;
-		public float Rotation
-		{
-			get { return _rotation; }
-			set
-			{
-				_rotation = value;
-				if (_rotation > 1f)
-					_rotation = _rotation % 1f;
-				else if (_rotation < 0f)
-					_rotation = _rotation % -1f + 1f;
-			}
-		}
-		public Vector2 Scale { get; set; } = Vector2.One;
+		//public float X
+		//{
+		//	get { return Transform2D.X; }
+		//	set { Transform2D.X = value; }
+		//}
+
+		//public float Y
+		//{
+		//	get { return Transform2D.Y; }
+		//	set { Transform2D.Y = value; }
+		//}
+
+		//public Rotation Rotation
+		//{
+		//	get { return Transform2D.Rotation; }
+		//	set { Transform2D.Rotation = value; }
+		//}
+
+		//public Vector2 Scale
+		//{
+		//	get { return Transform2D.Scale; }
+		//	set { Transform2D.Scale = value; }
+		//}
+
+		//public float ScaleX
+		//{
+		//	get { return Transform2D.ScaleX; }
+		//	set { Transform2D.ScaleX = value; }
+		//}
+
+		//public float ScaleY
+		//{
+		//	get { return Transform2D.ScaleY; }
+		//	set { Transform2D.ScaleY = value; }
+		//}
+
+		//public Vector2 Shear
+		//{
+		//	get { return Transform2D.Shear; }
+		//	set { Transform2D.Shear = value; }
+		//}
+
+		//public float ShearX
+		//{
+		//	get { return Transform2D.ShearX; }
+		//	set { Transform2D.ShearX = value; }
+		//}
+
+		//public float ShearY
+		//{
+		//	get { return Transform2D.ShearY; }
+		//	set { Transform2D.ShearY = value; }
+		//}
 
 		private float depth;
 		public float Depth
