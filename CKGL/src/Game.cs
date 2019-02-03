@@ -20,6 +20,8 @@ namespace CKGL
 		public uint UnfocusedFrameLimiterSleep = 33;
 		private bool focused = true;
 
+		public static Scene Scene = new Scene();
+
 		public Game(string windowTitle, int windowWidth, int windowHeight, bool windowVSync, bool windowFullscreen, bool windowResizable, bool windowBorderless, int msaa)
 		{
 			Platform.Init(windowTitle, windowWidth, windowHeight, windowVSync, windowFullscreen, windowResizable, windowBorderless, msaa);

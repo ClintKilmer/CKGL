@@ -2,6 +2,7 @@ namespace CKGL
 {
 	public abstract class Entity : Transform2D
 	{
+		#region Transform2D - Commented out
 		//Transform2D Transform2D = new Transform2D();
 
 		//public Vector2 Position
@@ -62,7 +63,8 @@ namespace CKGL
 		//{
 		//	get { return Transform2D.ShearY; }
 		//	set { Transform2D.ShearY = value; }
-		//}
+		//} 
+		#endregion
 
 		private float depth;
 		public float Depth
@@ -79,19 +81,17 @@ namespace CKGL
 			}
 		}
 
-		public Vector2 Origin { get; set; } = Vector2.Zero;
-
 		public bool Active { get; set; } = true;
 		public bool Visible { get; set; } = true;
 
 		public Scene Scene { get; private set; }
 
-		public Entity(Vector2? position = null, Vector2? origin = null, Vector2? scale = null, float rotation = 0f, float depth = 0f)
+		public Entity(Vector2? position = null, Vector2? origin = null, Vector2? scale = null, Rotation? rotation = null, float depth = 0f)
 		{
 			Position = position ?? Vector2.Zero;
 			Origin = origin ?? Vector2.Zero;
 			Scale = scale ?? Vector2.One;
-			Rotation = rotation;
+			Rotation = rotation ?? Rotation.Zero;
 			Depth = depth;
 
 			Game.Scene.Entities.Add(this);

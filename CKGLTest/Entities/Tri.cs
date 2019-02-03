@@ -15,28 +15,28 @@ namespace CKGLTest
 		{
 			Rotation += 0.25f * Time.DeltaTime;
 
-			Height = (Math.Sin(Time.TotalSeconds * 2f) * 0.5f + 0.5f) * 10f;
+			Height = (Math.Sin(Time.TotalSeconds * 2f) * 0.5f + 0.5f);
 		}
 
 		public override void Draw()
 		{
-			Renderer.Draw.Triangle(new Vector2((X - 10f), (Y - 10f)),
-								   new Vector2((X + 40f), (Y + 5f)),
-								   new Vector2((X + 10f), (Y + 30f)),
+			Renderer.Draw.Triangle(new Vector2((X - 1f), (Y - 1f)),
+								   new Vector2((X + 4f), (Y + 0.5f)),
+								   new Vector2((X + 1f), (Y + 3f)),
 								   Colour.Black.Alpha(0.5f),
 								   Colour.Black.Alpha(0.5f),
 								   Colour.Black.Alpha(0.5f),
-								   false, Vector2.Zero, Vector2.Zero, Vector2.Zero,
-								   Rotation, Position + new Vector2(10f, 10f));
+								   null, null, null,
+								   Rotation, Position + new Vector2(1f, 1f));
 
-			Renderer.Draw.Triangle(new Vector2((X - 10f), (Y - 10f - Height)),
-								   new Vector2((X + 40f), (Y + 5f - Height)),
-								   new Vector2((X + 10f), (Y + 30f - Height)),
+			Renderer.Draw.Triangle(new Vector2((X - 1f), (Y - 1f - Height)),
+								   new Vector2((X + 4f), (Y + 0.5f - Height)),
+								   new Vector2((X + 1f), (Y + 3f - Height)),
 								   Colour.Red.Alpha(0.5f),
 								   Colour.Green,
 								   Colour.Blue,
-								   false, Vector2.Zero, Vector2.Zero, Vector2.Zero,
-								   Rotation, Position + new Vector2(10f, 10f - Height));
+								   null, null, null,
+								   Rotation, Position + new Vector2(1f, 1f - Height));
 		}
 	}
 }

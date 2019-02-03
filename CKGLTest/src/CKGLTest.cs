@@ -2,6 +2,18 @@ using CKGL;
 
 namespace CKGLTest
 {
+	#region Layer
+	public static class Layer
+	{
+		//public static float Debug { get; } = -1;
+		//public static float Shadow { get; } = 0;
+		//public static float Box { get; } = 1;
+		//public static float Global { get; } = 2;
+		//public static float Player { get; } = 3;
+		public static float Tri { get; } = 4;
+	}
+	#endregion
+
 	#region Shaders
 	public static class Shaders
 	{
@@ -102,6 +114,11 @@ namespace CKGLTest
 			//Camera.Height = Window.Height / 10;
 			Camera.zNear = 0.1f;
 			Camera.zFar = 150f;
+
+			for (int i = 0; i < 20; i++)
+			{
+				new Tri { X = i * 2, Y = i * 2/*, Depth = -i * 20*/ };
+			}
 
 			// Debug, test spritesheet
 			//SpriteSheets.SpriteSheet.Texture.SavePNG($@"{System.IO.Directory.GetCurrentDirectory()}/SpriteSheet.png");
@@ -229,6 +246,10 @@ namespace CKGLTest
 			test2.Scale = Vector3.One + Vector3.One * Math.SinNormalized(-Time.TotalSeconds) * 1f;
 
 			debugString = $"|:outline=1,0.01,0,0,0,1:|Cam Pos: {Camera.Position.X:n1}, {Camera.Position.Y:n1}, {Camera.Position.Z:n1}\nCam Rot: {Camera.Rotation.Euler.X:n2}, {Camera.Rotation.Euler.Y:n2}, {Camera.Rotation.Euler.Z:n2}\nMem: {RAM:n1}MB\nVSync: {Window.GetVSyncMode()}\n{Time.UPS:n0}ups | {Time.FPSSmoothed:n0}fps\nDraw Calls: {Graphics.DrawCalls}\nState Changes: {Graphics.State.Changes}\nRenderTarget Swaps/Blits: {RenderTarget.Swaps}/{RenderTarget.Blits}\nTexture Swaps: {Texture.Swaps}\nShader/Uniform Swaps: {Shader.Swaps}/{Shader.UniformSwaps}\nWinPos: [{Window.X}, {Window.Y}]\nSize: [{Window.Size}]\nMouse Global: [{Input.Mouse.PositionDisplay}]\nMouse: [{Input.Mouse.Position}]\nMouse Relative: [{Input.Mouse.PositionRelative}]";
+
+			Scene?.BeforeUpdate();
+			Scene?.Update();
+			Scene?.AfterUpdate();
 		}
 
 		Transform test = new Transform();
@@ -552,6 +573,7 @@ namespace CKGLTest
 			// GUI Layer
 
 			DepthState.Off.Set();
+			Scene?.Draw();
 
 			Camera2D.Width = RenderTarget.Current.Width;
 			Camera2D.Height = RenderTarget.Current.Height;

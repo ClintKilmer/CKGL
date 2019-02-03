@@ -29,7 +29,7 @@ namespace CKGL
 			Entities.UpdateLists();
 		}
 
-		public virtual void Update()
+		public void Update()
 		{
 			Entities.Update();
 		}
@@ -38,7 +38,7 @@ namespace CKGL
 		{
 		}
 
-		public virtual void Draw()
+		public void Draw()
 		{
 			Entities.Draw();
 		}

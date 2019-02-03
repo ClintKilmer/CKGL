@@ -26,12 +26,12 @@ namespace CKGL
 
 		public Vector2 Origin
 		{
-			get { return position; }
+			get { return origin; }
 			set
 			{
-				if (position != value)
+				if (origin != value)
 				{
-					position = value;
+					origin = value;
 					dirty = true;
 				}
 			}
