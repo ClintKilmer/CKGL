@@ -21,15 +21,12 @@
 		<Compile Remove="lib\OpenAL-CS\**" />
 		<Compile Remove="lib\SDL2-CS\**" />
 		<Compile Remove="lib\SDL_GameControllerDB\**" />
-		<Compile Remove="src\ECS\**" />
 		<EmbeddedResource Remove="lib\OpenAL-CS\**" />
 		<EmbeddedResource Remove="lib\SDL2-CS\**" />
 		<EmbeddedResource Remove="lib\SDL_GameControllerDB\**" />
-		<EmbeddedResource Remove="src\ECS\**" />
 		<None Remove="lib\OpenAL-CS\**" />
 		<None Remove="lib\SDL2-CS\**" />
 		<None Remove="lib\SDL_GameControllerDB\**" />
-		<None Remove="src\ECS\**" />
 	</ItemGroup>
 
 	<ItemGroup>
