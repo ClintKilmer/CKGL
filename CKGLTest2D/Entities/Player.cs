@@ -42,7 +42,7 @@ namespace CKGLTest2D
 			//	Position = Position + direction * 64f * DeltaTime;
 			//}
 
-			CKGLTest2D.Camera.Position = Position;
+			CKGLTest2D.Camera.Position = Position - new Vector2(160, 90);
 
 			//Engine.GameWindow.Position = (Position * Resolution.Scale).ToPoint();
 

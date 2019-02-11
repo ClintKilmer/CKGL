@@ -43,7 +43,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entities\Box.cs" />
     <Compile Include="Entities\Player.cs" />
+    <Compile Include="Entities\Shadow.cs" />
     <Compile Include="Entities\Tri.cs" />
     <Compile Include="src\CKGLTest2D.cs" />
     <Compile Include="src\Program.cs" />

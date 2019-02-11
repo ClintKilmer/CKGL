@@ -94,6 +94,8 @@ in DATA
 void main()
 {
 	colour = mix(i.colour, texture(Texture, i.uv) * i.colour, i.textured);
+	if(colour.a == 0.0)
+		discard;
 }";
 			#endregion
 

@@ -12,8 +12,8 @@ namespace CKGLTest2D
 		{
 			get
 			{
-				if (_surface == null || _surface.Width != Resolution.Width || _surface.Height != Resolution.Height)
-					_surface = new RenderTarget(Resolution.Width, Resolution.Height, 1, TextureFormat.RGBA8);
+				if (_surface == null || _surface.Width != CKGLTest2D.Camera.Width || _surface.Height != CKGLTest2D.Camera.Height)
+					_surface = new RenderTarget(CKGLTest2D.Camera.Width, CKGLTest2D.Camera.Height, 1, TextureFormat.RGBA8);
 
 				return _surface;
 			}
@@ -31,19 +31,19 @@ namespace CKGLTest2D
 		public override void Draw()
 		{
 			RenderTarget originalRenderTarget = RenderTarget.Current;
-			RenderTarget.Bind(Surface);
+			Surface.Bind();
 			Graphics.Clear(Colour.Black);
 
 			// Shadow Casters
-			Vector2 caster = occlusion.player.Position;
+			Vector2 caster = CKGLTest2D.Player.Position.Floor();
 			//Vector2 caster = Input.Mouse.Position.World.round();
 			//Vector2 caster = Vector2.Zero;
 
 			// Falloff Shadow
-			BlendState originalBlendState = Graphics.State.BlendState;
-			Graphics.State.SetBlendState(BlendState.Subtractive);
-			Renderer.Draw.Circle(caster, Resolution.Height * 2f, Colour.White, Colour.White.Alpha(0), 32);
-			Graphics.State.SetBlendState(originalBlendState);
+			BlendState originalBlendState = BlendState.Current;
+			BlendState.Subtractive.Set();
+			Renderer.Draw.Circle(caster, CKGLTest2D.Camera.Height * 2f, Colour.White, Colour.White.Alpha(0), 32);
+			originalBlendState.Set();
 
 			//Renderer.SetBlendState(nsBlendState.Subtractive);
 			foreach (Box box in Scene.Entities.FindAll<Box>())
@@ -62,9 +62,9 @@ namespace CKGLTest2D
 				if (caster.X < block_r)
 					DrawShadow(new Vector2(block_r, block_t), new Vector2(block_r, block_b), caster, 700);
 			}
-			RenderTarget.Bind(originalRenderTarget);
+			originalRenderTarget.Bind();
 			//Graphics.State.SetBlendState(BlendState.Additive);
-			Renderer.Draw.RenderTarget(Surface, Camera.Position.X - Resolution.Half.Width / Camera.Zoom, Camera.Position.Y - Resolution.Half.Height / Camera.Zoom, 1f / Camera.Zoom, Camera.Rotation, Camera.Position, Colour.White);
+			Renderer.Draw.RenderTarget(Surface, RenderTarget.TextureSlot.Colour0, CKGLTest2D.Camera.Position.X, CKGLTest2D.Camera.Position.Y, Colour.White);
 			//Renderer.ResetBlendState();
 		}
 

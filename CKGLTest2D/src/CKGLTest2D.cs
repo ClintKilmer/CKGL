@@ -85,7 +85,7 @@ namespace CKGLTest2D
 
 		RenderTarget surface;
 
-		public static Player player;
+		public static Player Player;
 
 		public override void Init()
 		{
@@ -94,11 +94,18 @@ namespace CKGLTest2D
 			//Platform.RelativeMouseMode = true;
 			//Platform.ShowCursor = false; // Default true
 
-			player = new Player { Position = new Vector2(2f, 2f) };
+			Shadow shadow = new Shadow();
+
+			Player = new Player { Position = new Vector2(2f, 2f) };
 
 			for (int i = 0; i < 20; i++)
 			{
 				new Tri { X = i * 20, Y = -i * 20/*, Depth = -i * 20*/ };
+			}
+
+			for (int i = 0; i < 20; i++)
+			{
+				new Box { X = Random.Range(-width, width) / 8 * 8, Y = Random.Range(-height, height) / 8 * 8 };
 			}
 
 			if (Platform.GraphicsBackend == GraphicsBackend.OpenGLES)
@@ -142,7 +149,7 @@ namespace CKGLTest2D
 			if (Input.Keyboard.Down(KeyCode.Space))
 				Graphics.ClearDepth();
 			else
-				Graphics.Clear(Colour.Black);
+				Graphics.Clear(new Colour(0.2f, 0.2f, 0.2f, 1f));
 
 			// Reset
 			Graphics.State.Reset();
