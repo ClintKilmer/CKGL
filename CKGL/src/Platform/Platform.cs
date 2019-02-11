@@ -420,7 +420,7 @@ namespace CKGL
 			// Setup Window based on GraphicsBackend
 			GraphicsBackend = GetPlatformDefaultGraphicsBackend();
 
-			switch (Platform.GraphicsBackend)
+			switch (GraphicsBackend)
 			{
 				case GraphicsBackend.Vulkan:
 					throw new NotImplementedException("Vulkan GraphicsBackend not implemented.");
