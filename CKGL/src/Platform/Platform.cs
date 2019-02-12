@@ -434,6 +434,9 @@ namespace CKGL
 					}
 					else if (GraphicsBackend == GraphicsBackend.OpenGLES)
 					{
+						SDL_SetHint("SDL_HINT_OPENGL_ES_DRIVER", "1");
+						//SDL_SetHint("SDL_HINT_VIDEO_WIN_D3DCOMPILER", "1"); // Might be needed
+						//SDL_SetHint("SDL_HINT_VIDEO_WIN_D3DCOMPILER", "none"); // Might be needed
 						SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_MAJOR_VERSION, MaxOpenGLESVersion.Major);
 						SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_MINOR_VERSION, MaxOpenGLESVersion.Minor);
 						SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_PROFILE_MASK, (int)SDL_GLprofile.SDL_GL_CONTEXT_PROFILE_ES);
@@ -817,7 +820,7 @@ namespace CKGL
 		private static (int, int) GetMaxOpenGLVersion(bool es)
 		{
 			(int, int)[] testVersions = es
-				? new[] { (3, 2), (3, 0), (2, 0) }
+				? new[] { (3, 2), (3, 1), (3, 0), (2, 0) }
 				: new[] { (4, 6), (4, 3), (4, 0), (3, 3), (3, 1), (3, 0) };
 
 			foreach ((int major, int minor) in testVersions)
@@ -831,6 +834,9 @@ namespace CKGL
 
 		private static unsafe bool TestIndividualOpenGLVersion(bool es, int major, int minor)
 		{
+			if(es)
+				SDL_SetHint("SDL_HINT_OPENGL_ES_DRIVER", "1");
+
 			SDL_GLprofile profileMask = es ? SDL_GLprofile.SDL_GL_CONTEXT_PROFILE_ES : SDL_GLprofile.SDL_GL_CONTEXT_PROFILE_CORE;
 
 			SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_PROFILE_MASK, (int)profileMask);
@@ -840,14 +846,14 @@ namespace CKGL
 			IntPtr window = SDL_CreateWindow("", 0, 0, 1, 1, SDL_WindowFlags.SDL_WINDOW_HIDDEN | SDL_WindowFlags.SDL_WINDOW_OPENGL);
 			if (window == IntPtr.Zero)
 			{
-				//Console.WriteLine($"Unable to create OpenGL{(gles ? " ES" : "")} version {major}.{minor} {profileMask} context."); // Debug
+				//Console.WriteLine($"Unable to create OpenGL{(es ? " ES" : "")} version {major}.{minor} {profileMask} context."); // Debug
 				return false;
 			}
 
 			IntPtr context = SDL_GL_CreateContext(window);
 			if (context == IntPtr.Zero)
 			{
-				//Console.WriteLine($"Unable to create OpenGL{(gles ? " ES" : "")} version {major}.{minor} {profileMask} context."); // Debug
+				//Console.WriteLine($"Unable to create OpenGL{(es ? " ES" : "")} version {major}.{minor} {profileMask} context."); // Debug
 				SDL_DestroyWindow(window);
 				return false;
 			}

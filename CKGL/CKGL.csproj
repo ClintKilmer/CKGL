@@ -85,6 +85,12 @@
 		<None Update="libs\osx\libSDL2_image-2.0.0.dylib">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
+		<None Update="libs\x64\libEGL.dll">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="libs\x64\libGLESv2.dll">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
 		<None Update="libs\x64\SDL2.dll">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
@@ -93,6 +99,12 @@
 		</None>
 		<None Update="libs\x64\soft_oal.dll">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="libs\x86\libEGL.dll">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="libs\x86\libGLESv2.dll">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
 		<None Update="libs\x86\SDL2.dll">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
