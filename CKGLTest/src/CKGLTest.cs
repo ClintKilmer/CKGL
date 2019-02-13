@@ -20,7 +20,7 @@ namespace CKGLTest
 		public static InternalShaders.RendererShader Renderer = new InternalShaders.RendererShader();
 		public static InternalShaders.RendererFogShader RendererFog = new InternalShaders.RendererFogShader();
 		public static InternalShaders.LinearizeDepthShader LinearizeDepth = new InternalShaders.LinearizeDepthShader();
-		public static GeometryTestShader GeometryTest = new GeometryTestShader();
+		//public static GeometryTestShader GeometryTest = new GeometryTestShader();
 	}
 	#endregion
 
@@ -560,15 +560,15 @@ namespace CKGLTest
 			Renderer.Draw.ResetTransform();
 
 			// Test Geometry Shader
-			Shaders.GeometryTest.Bind();
-			Shaders.GeometryTest.MVP = Camera.Matrix;
-			for (int x = 0; x < 20; x++)
-			{
-				for (int y = 0; y < 20; y++)
-				{
-					Renderer.Draw3D.Point(x * 1.1f, y * 1.1f, 0f, Colour.Red);
-				}
-			}
+			//Shaders.GeometryTest.Bind();
+			//Shaders.GeometryTest.MVP = Camera.Matrix;
+			//for (int x = 0; x < 20; x++)
+			//{
+			//	for (int y = 0; y < 20; y++)
+			//	{
+			//		Renderer.Draw3D.Point(x * 1.1f, y * 1.1f, 0f, Colour.Red);
+			//	}
+			//}
 
 			// GUI Layer
 
