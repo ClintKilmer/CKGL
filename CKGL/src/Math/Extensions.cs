@@ -74,6 +74,17 @@ namespace CKGL
 			//return f;
 		}
 
+		public static double Clamp(this double d, double min, double max)
+		{
+			return (d > max ? max : (d < min ? min : d));
+
+			//if (d > max)
+			//	return max;
+			//if (d < min)
+			//	return min;
+			//return d;
+		}
+
 		public static float Lerp(this float a, float b, float t)
 		{
 			//return a + t * (b - a);// Imprecise method, which does not guarantee a = b when t = 1.

@@ -37,9 +37,50 @@ namespace CKGL.OpenGL
 		#endregion
 
 		#region DepthRange
-		public override void SetDepthRange(float near, float far)
+		public override void SetDepthRange(double near, double far)
 		{
-			GL.DepthRange(near.Clamp(0f, 1f), far.Clamp(0f, 1f));
+			GL.DepthRange(near.Clamp(0d, 1d), far.Clamp(0d, 1d));
+		}
+		#endregion
+
+		#region Clear
+		internal override void Clear(Colour colour)
+		{
+			SetClearColour(colour);
+			GL.Clear(BufferBit.Colour | BufferBit.Depth);
+		}
+
+		internal override void Clear(double depth)
+		{
+			SetClearDepth(depth);
+			GL.Clear(BufferBit.Depth);
+		}
+
+		internal override void Clear(Colour colour, double depth)
+		{
+			SetClearColour(colour);
+			SetClearDepth(depth);
+			GL.Clear(BufferBit.Colour | BufferBit.Depth);
+		}
+
+		private Colour clearColour = new Colour(0, 0, 0, 0);
+		private void SetClearColour(Colour colour)
+		{
+			if (clearColour != colour)
+			{
+				GL.ClearColour(colour);
+				clearColour = colour;
+			}
+		}
+
+		private double clearDepth = 1d;
+		private void SetClearDepth(double depth)
+		{
+			if (clearDepth != depth)
+			{
+				GL.ClearDepth(depth);
+				clearDepth = depth;
+			}
 		}
 		#endregion
 
@@ -61,7 +102,7 @@ namespace CKGL.OpenGL
 
 		internal override void SetPolygonMode(PolygonModeState polygonModeState)
 		{
-			GL.PolygonMode(polygonModeState.PolygonMode.ToOpenGL());
+			//GL.PolygonMode(polygonModeState.PolygonMode.ToOpenGL());
 		}
 
 		internal override void SetColourMask(ColourMaskState colourMaskState)

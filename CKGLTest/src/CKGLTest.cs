@@ -260,7 +260,7 @@ namespace CKGLTest
 
 			// Clear the screen
 			if (Input.Keyboard.Down(KeyCode.Space))
-				Graphics.ClearDepth();
+				Graphics.Clear(1d);
 			else
 				Graphics.Clear(Colour.Black);
 

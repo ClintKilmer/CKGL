@@ -60,60 +60,13 @@ namespace CKGL
 
 		// TODO - Move SetDepthRange() to own state
 		#region DepthRange
-		public static void SetDepthRange(float near, float far) => graphics.SetDepthRange(near, far);
+		public static void SetDepthRange(double near, double far) => graphics.SetDepthRange(near, far);
 		#endregion
 
 		#region Clear
-		public static void SetClearColour(Colour colour)
-		{
-			GL.ClearColour(colour);
-		}
-		public static void SetClearDepth(float depth)
-		{
-			GL.ClearDepth(depth);
-		}
-
-		public static void ClearColour()
-		{
-			GL.Clear(BufferBit.Colour);
-		}
-		public static void ClearColour(Colour colour)
-		{
-			GL.ClearColour(colour);
-			GL.Clear(BufferBit.Colour);
-		}
-
-		public static void ClearDepth()
-		{
-			GL.Clear(BufferBit.Depth);
-		}
-		public static void ClearDepth(float depth)
-		{
-			GL.ClearDepth(depth);
-			GL.Clear(BufferBit.Depth);
-		}
-
-		public static void Clear()
-		{
-			GL.Clear(BufferBit.Colour | BufferBit.Depth);
-		}
-
-		public static void Clear(Colour colour)
-		{
-			GL.ClearColour(colour);
-			GL.Clear(BufferBit.Colour | BufferBit.Depth);
-		}
-		public static void Clear(float depth)
-		{
-			GL.ClearDepth(depth);
-			GL.Clear(BufferBit.Colour | BufferBit.Depth);
-		}
-		public static void Clear(Colour colour, float depth)
-		{
-			GL.ClearColour(colour);
-			GL.ClearDepth(depth);
-			GL.Clear(BufferBit.Colour | BufferBit.Depth);
-		}
+		public static void Clear(Colour colour) => graphics.Clear(colour);
+		public static void Clear(double depth) => graphics.Clear(depth);
+		public static void Clear(Colour colour, double depth) => graphics.Clear(colour, depth);
 		#endregion
 
 		#region State Setters
