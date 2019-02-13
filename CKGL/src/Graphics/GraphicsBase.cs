@@ -18,7 +18,13 @@ namespace CKGL
 		#endregion
 
 		#region DepthRange
-		public abstract void SetDepthRange(float near, float far);
+		public abstract void SetDepthRange(double near, double far);
+		#endregion
+
+		#region Clear
+		internal abstract void Clear(Colour colour);
+		internal abstract void Clear(double depth);
+		internal abstract void Clear(Colour colour, double depth);
 		#endregion
 
 		#region State Setters

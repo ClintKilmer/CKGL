@@ -147,7 +147,7 @@ namespace CKGLTest2D
 
 			// Clear the screen
 			if (Input.Keyboard.Down(KeyCode.Space))
-				Graphics.ClearDepth();
+				Graphics.Clear(1d);
 			else
 				Graphics.Clear(new Colour(0.2f, 0.2f, 0.2f, 1f));
 
