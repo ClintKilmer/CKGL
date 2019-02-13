@@ -1,7 +1,11 @@
 /*
- * Original from:
- * OpenGL.cs in the Rise Library: https://github.com/ChevyRay/Rise
- * Modified for use in CKGL
+ * OpenGL and OpenGL ES Bindings
+ * Requires minimum OpenGL 2.1 or OpenGL ES 3.0
+ * Loads a common function set from OpenGL 2.1 and OpenGL ES 3.0, with additional OpenGL 3.2+ functions
+ * 
+ * Partially derived from:
+ * OpenGL.cs from Rise: https://github.com/ChevyRay/Rise
+ * OpenGLDevice_GL.cs from FNA: https://github.com/FNA-XNA/FNA
  */
 
 using System;
@@ -10,6 +14,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
+using static CKGL.OpenGLBindings.Enums;
 using GLint = System.Int32;
 using GLuint = System.UInt32;
 
@@ -151,6 +156,7 @@ namespace CKGL.OpenGLBindings
 				}
 				glDepthRange = (min, max) => glDepthRangef((float)min, (float)max);
 			}
+
 			addr = Platform.GetProcAddress("glClearDepth");
 			if (addr != IntPtr.Zero)
 			{
@@ -170,12 +176,29 @@ namespace CKGL.OpenGLBindings
 			}
 			#endregion
 
+			// For testing purposes only - remove when conversion complete
+			foreach (var field in typeof(GL).GetFields(BindingFlags.NonPublic | BindingFlags.Static))
+			{
+				if (field.Name.StartsWith("gl", StringComparison.Ordinal))
+				{
+					addr = Platform.GetProcAddress(field.Name);
+					if (addr == IntPtr.Zero)
+						throw new Exception("OpenGL function not available: " + field.Name);
+
+					var del = Marshal.GetDelegateForFunctionPointer(addr, field.FieldType);
+					field.SetValue(null, del);
+				}
+			}
+
 			// Strings
 			Version = GetString(Strings.Version);
 			GLSLVersion = GetString(Strings.GLSLVersion);
 			Vendor = GetString(Strings.Vendor);
 			Renderer = GetString(Strings.Renderer);
-			Extensions = GetString(Strings.Extensions);
+			if (es)
+				Extensions = GetString(Strings.Extensions); // Requires OpenGL 3.2 glGetStringi
+			else
+				Extensions = "Unsupported in OpenGL, only supported on OpenGL ES";
 
 			// Integers
 			MajorVersion = GetIntegerv(Integers.MajorVersion);
@@ -191,22 +214,22 @@ namespace CKGL.OpenGLBindings
 			MaxTextureSize = GetIntegerv(Integers.MaxTextureSize);
 
 			// Debug
-			Output.WriteLine($"OpenGL Initialized");
-			Output.WriteLine($"OpenGL Version: {MajorVersion}.{MinorVersion}");
-			Output.WriteLine($"OpenGL Version: {Version}");
-			Output.WriteLine($"OpenGL GLSL Version: {GLSLVersion}");
-			Output.WriteLine($"OpenGL Vendor: {Vendor}");
-			Output.WriteLine($"OpenGL Renderer: {Renderer}");
-			Output.WriteLine($"OpenGL MaxColourAttachments: {MaxColourAttachments}");
-			Output.WriteLine($"OpenGL MaxCubeMapTextureSize: {MaxCubeMapTextureSize}");
-			Output.WriteLine($"OpenGL MaxDrawBuffers: {MaxDrawBuffers}");
-			Output.WriteLine($"OpenGL MaxElementIndices: {MaxElementIndices}");
-			Output.WriteLine($"OpenGL MaxElementVertices: {MaxElementVertices}");
-			Output.WriteLine($"OpenGL MaxRenderbufferSize: {MaxRenderbufferSize}");
-			Output.WriteLine($"OpenGL MaxSamples: {MaxSamples}");
-			Output.WriteLine($"OpenGL MaxTextureImageUnits: {MaxTextureImageUnits}");
-			Output.WriteLine($"OpenGL MaxTextureSize: {MaxTextureSize}");
-			//Output.WriteLine($"OpenGL - Extensions: {GetString(Strings.Extensions)}");
+			Output.WriteLine($"OpenGL{(es ? " ES" : "")} Initialized");
+			Output.WriteLine($"OpenGL{(es ? " ES" : "")} Version: {MajorVersion}.{MinorVersion}");
+			Output.WriteLine($"OpenGL{(es ? " ES" : "")} Version: {Version}");
+			Output.WriteLine($"OpenGL{(es ? " ES" : "")} GLSL Version: {GLSLVersion}");
+			Output.WriteLine($"OpenGL{(es ? " ES" : "")} Vendor: {Vendor}");
+			Output.WriteLine($"OpenGL{(es ? " ES" : "")} Renderer: {Renderer}");
+			Output.WriteLine($"OpenGL{(es ? " ES" : "")} MaxColourAttachments: {MaxColourAttachments}");
+			Output.WriteLine($"OpenGL{(es ? " ES" : "")} MaxCubeMapTextureSize: {MaxCubeMapTextureSize}");
+			Output.WriteLine($"OpenGL{(es ? " ES" : "")} MaxDrawBuffers: {MaxDrawBuffers}");
+			Output.WriteLine($"OpenGL{(es ? " ES" : "")} MaxElementIndices: {MaxElementIndices}");
+			Output.WriteLine($"OpenGL{(es ? " ES" : "")} MaxElementVertices: {MaxElementVertices}");
+			Output.WriteLine($"OpenGL{(es ? " ES" : "")} MaxRenderbufferSize: {MaxRenderbufferSize}");
+			Output.WriteLine($"OpenGL{(es ? " ES" : "")} MaxSamples: {MaxSamples}");
+			Output.WriteLine($"OpenGL{(es ? " ES" : "")} MaxTextureImageUnits: {MaxTextureImageUnits}");
+			Output.WriteLine($"OpenGL{(es ? " ES" : "")} MaxTextureSize: {MaxTextureSize}");
+			//Output.WriteLine($"OpenGL{(es ? " ES" : "")} - Extensions: {GetString(Strings.Extensions)}");
 		}
 
 #pragma warning disable CS0649
@@ -220,7 +243,9 @@ namespace CKGL.OpenGLBindings
 		private static void CheckError()
 		{
 			var err = glGetError();
-			Debug.Assert(err == ErrorCode.NoError, $"OpenGL Error {(int)err:X}: {err.ToString()}");
+			//Debug.Assert(err == ErrorCode.NoError, $"OpenGL Error {(int)err:X}: {err.ToString()}");
+			if (err != ErrorCode.NoError)
+				throw new Exception($"OpenGL Error {(int)err:X}: {err.ToString()}");
 		}
 
 		[Shared]
@@ -484,6 +509,10 @@ namespace CKGL.OpenGLBindings
 				glPolygonMode(Face.FrontAndBack, mode);
 				CheckError();
 			}
+			else
+			{
+				throw new NotSupportedException("glPolygonMode is not available in OpenGL ES.");
+			}
 		}
 		#endregion
 
@@ -522,15 +551,189 @@ namespace CKGL.OpenGLBindings
 		#endregion
 
 		#region Texture Functions
+		[Shared]
+		private static _glGenTextures glGenTextures;
+		private unsafe delegate void _glGenTextures(GLint n, GLuint* textures);
+		public unsafe static void GenTextures(int n, uint[] textures)
+		{
+			fixed (uint* ptr = textures) { glGenTextures(n, ptr); }
+			CheckError();
+		}
+		public unsafe static uint GenTexture()
+		{
+			uint texture = 0;
+			glGenTextures(1, &texture);
+			CheckError();
+			return texture;
+		}
+
+		[Shared]
+		private static _glDeleteTextures glDeleteTextures;
+		private unsafe delegate void _glDeleteTextures(GLint n, GLuint* textures);
+		public unsafe static void DeleteTextures(int n, uint[] textures)
+		{
+			fixed (uint* ptr = textures) { glDeleteTextures(n, ptr); }
+			CheckError();
+		}
+		public unsafe static void DeleteTexture(uint texture)
+		{
+			glDeleteTextures(1, &texture);
+			CheckError();
+		}
+
+		[Shared]
+		private static _glActiveTexture glActiveTexture;
+		private delegate void _glActiveTexture(GLuint textureImageUnit);
+		public static void ActiveTexture(uint textureImageUnit)
+		{
+			if (textureImageUnit >= MaxTextureImageUnits)
+				throw new Exception("ActiveTexture textureImageUnit must be between 0 and " + (MaxTextureImageUnits - 1));
+
+			glActiveTexture(GL_TEXTURE0 + textureImageUnit);
+			CheckError();
+		}
+
+		[Shared]
+		private static _glBindTexture glBindTexture;
+		private delegate void _glBindTexture(TextureTarget target, GLuint texture);
+		public static void BindTexture(TextureTarget target, uint texture)
+		{
+			glBindTexture(target, texture);
+			CheckError();
+		}
+
+		[Shared]
+		private static _glTexImage2D glTexImage2D;
+		private delegate void _glTexImage2D(TexImageTarget target, GLint level, GLint internalFormat, GLint width, GLint height, GLint border, PixelFormat format, DataType type, IntPtr data);
+		public static void TexImage2D(TexImageTarget target, int level, TextureFormat internalFormat, int width, int height, int border, PixelFormat format, DataType type, IntPtr data)
+		{
+			glTexImage2D(target, level, (int)internalFormat, width, height, border, format, type, data);
+			CheckError();
+		}
+
+		[Shared]
+		private static _glTexParameteri glTexParameteri;
+		private delegate void _glTexParameteri(TextureTarget target, TextureParam pname, GLint param);
+		public static void TexParameterI(TextureTarget target, TextureParam pname, int param)
+		{
+			glTexParameteri(target, pname, param);
+			CheckError();
+		}
+
+		[Shared]
+		private static _glGetTexParameteriv glGetTexParameteriv;
+		private delegate void _glGetTexParameteriv(TextureTarget target, TextureParam pname, out GLint result);
+		public static void GetTexParameterI(TextureTarget target, TextureParam pname, out int result)
+		{
+			glGetTexParameteriv(target, pname, out result);
+			CheckError();
+		}
+
+		[OpenGL]
+		[DesktopES]
+		private static _glGetTexImage glGetTexImage;
+		private delegate void _glGetTexImage(TexImageTarget target, GLint level, PixelFormat format, DataType type, IntPtr data);
+		public static void GetTexImage(TexImageTarget target, int level, PixelFormat format, DataType type, IntPtr data)
+		{
+			if (glGetTexImage != null)
+			{
+				glGetTexImage(target, level, format, type, data);
+				CheckError();
+			}
+			else
+			{
+				throw new NotSupportedException("glGetTexImage is not available in OpenGL ES.");
+			}
+		}
 		#endregion
 
 		#region Buffer Functions
-		//[OpenGL]
-		//[DesktopES]
-		//glGetBufferSubData
-		//if (glGetBufferSubData != null)
-		//{
-		//}
+		[Shared]
+		private static _glGenBuffers glGenBuffers;
+		private unsafe delegate void _glGenBuffers(GLint n, GLuint* buffers);
+		public unsafe static void GenBuffers(int n, uint[] buffers)
+		{
+			fixed (uint* ptr = buffers) { glGenBuffers(n, ptr); }
+			CheckError();
+		}
+		public static void GenBuffers(uint[] buffers)
+		{
+			GenBuffers(buffers.Length, buffers);
+		}
+		public unsafe static uint GenBuffer()
+		{
+			uint buffer = 0;
+			glGenBuffers(1, &buffer);
+			CheckError();
+			return buffer;
+		}
+
+		[Shared]
+		private static _glDeleteBuffers glDeleteBuffers;
+		private unsafe delegate void _glDeleteBuffers(GLint n, GLuint* buffers);
+		public unsafe static void DeleteBuffers(int n, uint[] buffers)
+		{
+			fixed (uint* ptr = buffers) { glDeleteBuffers(n, ptr); }
+			CheckError();
+		}
+		public static void DeleteBuffers(uint[] buffers)
+		{
+			DeleteBuffers(buffers.Length, buffers);
+		}
+		public unsafe static void DeleteBuffer(uint buffer)
+		{
+			glDeleteBuffers(1, &buffer);
+			CheckError();
+		}
+
+		[Shared]
+		private static _glBindBuffer glBindBuffer;
+		private delegate void _glBindBuffer(BufferTarget target, GLuint buffer);
+		public static void BindBuffer(BufferTarget target, uint buffer)
+		{
+			glBindBuffer(target, buffer);
+			CheckError();
+		}
+
+		[Shared]
+		private static _glBufferData glBufferData;
+		private delegate void _glBufferData(BufferTarget target, IntPtr size, IntPtr data, BufferUsage usage);
+		public static void BufferData(BufferTarget target, int size, IntPtr data, BufferUsage usage)
+		{
+			glBufferData(target, new IntPtr(size), data, usage);
+			CheckError();
+		}
+		public static void BufferData<T>(BufferTarget target, int size, T[] data, BufferUsage usage) where T : struct
+		{
+			var dataPtr = Marshal.UnsafeAddrOfPinnedArrayElement(data, 0);
+			BufferData(target, size, dataPtr, usage);
+		}
+
+		[Shared]
+		private static _glBufferSubData glBufferSubData;
+		private delegate void _glBufferSubData(BufferTarget target, IntPtr offset, IntPtr size, IntPtr data);
+		public static void BufferSubData(BufferTarget target, int offset, int size, IntPtr data)
+		{
+			glBufferSubData(target, new IntPtr(offset), new IntPtr(size), data);
+			CheckError();
+		}
+
+		[OpenGL]
+		[DesktopES]
+		private static _glGetBufferSubData glGetBufferSubData;
+		private delegate void _glGetBufferSubData(BufferTarget target, IntPtr offset, IntPtr size, IntPtr data);
+		public static void GetBufferSubData(BufferTarget target, int offset, int size, IntPtr data)
+		{
+			if (glGetBufferSubData != null)
+			{
+				glGetBufferSubData(target, new IntPtr(offset), new IntPtr(size), data);
+				CheckError();
+			}
+			else
+			{
+				throw new NotSupportedException("glGetBufferSubData is not available in OpenGL ES.");
+			}
+		}
 		#endregion
 
 		#region Framebuffer Functions
@@ -552,91 +755,6 @@ namespace CKGL.OpenGLBindings
 		#endregion
 
 		//////////////////////////////////////////////////////////
-
-		private unsafe delegate void _glGenTextures(GLint n, uint* textures);
-		private static _glGenTextures glGenTextures;
-		public unsafe static void GenTextures(GLint n, uint[] textures)
-		{
-			fixed (uint* ptr = textures) { glGenTextures(n, ptr); }
-			CheckError();
-		}
-		public unsafe static uint GenTexture()
-		{
-			uint texture = 0;
-			glGenTextures(1, &texture);
-			CheckError();
-			return texture;
-		}
-
-		private unsafe delegate void _glDeleteTextures(GLint n, uint* textures);
-		private static _glDeleteTextures glDeleteTextures;
-		public unsafe static void DeleteTextures(GLint n, uint[] textures)
-		{
-			fixed (uint* ptr = textures) { glDeleteTextures(n, ptr); }
-			CheckError();
-		}
-		public unsafe static void DeleteTexture(uint texture)
-		{
-			glDeleteTextures(1, &texture);
-			CheckError();
-		}
-
-		private delegate void _glActiveTexture(GLuint textureImageUnit);
-		private static _glActiveTexture glActiveTexture;
-		public static void ActiveTexture(GLuint textureImageUnit)
-		{
-			if (textureImageUnit >= MaxTextureImageUnits)
-				throw new Exception("ActiveTexture textureImageUnit must be between 0 and " + (MaxTextureImageUnits - 1));
-
-			// TextureUnit0 = 0x84C0
-			glActiveTexture(0x84C0 + textureImageUnit);
-			CheckError();
-		}
-
-		private delegate void _glBindTexture(TextureTarget target, uint texture);
-		private static _glBindTexture glBindTexture;
-		public static void BindTexture(TextureTarget target, uint texture)
-		{
-			glBindTexture(target, texture);
-			CheckError();
-		}
-
-		private delegate void _glTexParameteri(TextureTarget target, TextureParam name, int param);
-		private static _glTexParameteri glTexParameteri;
-		public static void TexParameterI(TextureTarget target, TextureParam name, int param)
-		{
-			glTexParameteri(target, name, param);
-			CheckError();
-		}
-
-		private delegate void _glGetTexParameteriv(TextureTarget target, TextureParam name, out int result);
-		private static _glGetTexParameteriv glGetTexParameteriv;
-		public static void GetTexParameterI(TextureTarget target, TextureParam name, out int result)
-		{
-			glGetTexParameteriv(target, name, out result);
-			CheckError();
-		}
-
-		private delegate void _glTexImage2D(TextureTarget target, int level, int internalFormat, GLint width, GLint height, int border, PixelFormat format, PixelType type, IntPtr data);
-		private static _glTexImage2D glTexImage2D;
-		public static void TexImage2D(TextureTarget target, int level, TextureFormat internalFormat, GLint width, GLint height, int border, PixelFormat format, PixelType type, IntPtr data)
-		{
-			glTexImage2D(target, level, (int)internalFormat, width, height, border, format, type, data);
-			CheckError();
-		}
-
-		[OpenGL]
-		[DesktopES]
-		private static _glGetTexImage glGetTexImage;
-		private delegate void _glGetTexImage(TextureTarget target, int level, PixelFormat format, PixelType type, IntPtr data);
-		public static void GetTexImage(TextureTarget target, int level, PixelFormat format, PixelType type, IntPtr data)
-		{
-			if (glGetTexImage != null)
-			{
-				glGetTexImage(target, level, format, type, data);
-				CheckError();
-			}
-		}
 
 		private delegate uint _glCreateShader(ShaderType type);
 		private static _glCreateShader glCreateShader;
@@ -812,14 +930,14 @@ namespace CKGL.OpenGLBindings
 			return loc;
 		}
 
-		private delegate void _glVertexAttribPointer(uint index, int size, VertexType type, bool normalized, GLint stride, IntPtr pointer);
+		private delegate void _glVertexAttribPointer(uint index, int size, DataType type, bool normalized, GLint stride, IntPtr pointer);
 		private static _glVertexAttribPointer glVertexAttribPointer;
-		public static void VertexAttribPointer(uint index, int size, VertexType type, bool normalized, GLint stride, IntPtr pointer)
+		public static void VertexAttribPointer(uint index, int size, DataType type, bool normalized, GLint stride, IntPtr pointer)
 		{
 			glVertexAttribPointer(index, size, type, normalized, stride, pointer);
 			CheckError();
 		}
-		public static void VertexAttribPointer(uint index, int size, VertexType type, bool normalized, GLint stride, int pointer)
+		public static void VertexAttribPointer(uint index, int size, DataType type, bool normalized, GLint stride, int pointer)
 		{
 			VertexAttribPointer(index, size, type, normalized, stride, new System.IntPtr(pointer));
 		}
@@ -840,49 +958,7 @@ namespace CKGL.OpenGLBindings
 			CheckError();
 		}
 
-		private unsafe delegate void _glGenBuffers(GLint n, uint* buffers);
-		private static _glGenBuffers glGenBuffers;
-		public unsafe static void GenBuffers(GLint n, uint[] buffers)
-		{
-			fixed (uint* ptr = buffers) { glGenBuffers(n, ptr); }
-			CheckError();
-		}
-		public static void GenBuffers(uint[] buffers)
-		{
-			GenBuffers(buffers.Length, buffers);
-		}
-		public unsafe static uint GenBuffer()
-		{
-			uint buffer = 0;
-			glGenBuffers(1, &buffer);
-			CheckError();
-			return buffer;
-		}
 
-		private unsafe delegate void _glDeleteBuffers(GLint n, uint* buffers);
-		private static _glDeleteBuffers glDeleteBuffers;
-		public unsafe static void DeleteBuffers(GLint n, uint[] buffers)
-		{
-			fixed (uint* ptr = buffers) { glDeleteBuffers(n, ptr); }
-			CheckError();
-		}
-		public static void DeleteBuffers(uint[] buffers)
-		{
-			DeleteBuffers(buffers.Length, buffers);
-		}
-		public unsafe static void DeleteBuffer(uint buffer)
-		{
-			glDeleteBuffers(1, &buffer);
-			CheckError();
-		}
-
-		private delegate void _glBindBuffer(BufferTarget target, uint buffer);
-		private static _glBindBuffer glBindBuffer;
-		public static void BindBuffer(BufferTarget target, uint buffer)
-		{
-			glBindBuffer(target, buffer);
-			CheckError();
-		}
 
 		private unsafe delegate void _glGenVertexArrays(GLint n, uint* arrays);
 		private static _glGenVertexArrays glGenVertexArrays;
@@ -920,26 +996,7 @@ namespace CKGL.OpenGLBindings
 			CheckError();
 		}
 
-		private delegate void _glBufferData(BufferTarget target, IntPtr size, IntPtr data, BufferUsage usage);
-		private static _glBufferData glBufferData;
-		public static void BufferData(BufferTarget target, int size, IntPtr data, BufferUsage usage)
-		{
-			glBufferData(target, new IntPtr(size), data, usage);
-			CheckError();
-		}
-		public static void BufferData<T>(BufferTarget target, int size, T[] data, BufferUsage usage) where T : struct
-		{
-			var dataPtr = Marshal.UnsafeAddrOfPinnedArrayElement(data, 0);
-			BufferData(target, size, dataPtr, usage);
-		}
 
-		private delegate void _glBufferSubData(BufferTarget target, IntPtr offset, IntPtr size, IntPtr data);
-		private static _glBufferSubData glBufferSubData;
-		public static void BufferSubData(BufferTarget target, int offset, int size, IntPtr data)
-		{
-			glBufferSubData(target, new IntPtr(offset), new IntPtr(size), data);
-			CheckError();
-		}
 
 		private unsafe delegate void _glGenFramebuffers(GLint n, uint* framebuffers);
 		private static _glGenFramebuffers glGenFramebuffers;
@@ -977,9 +1034,9 @@ namespace CKGL.OpenGLBindings
 			CheckError();
 		}
 
-		private delegate void _glFramebufferTexture2D(FramebufferTarget target, TextureAttachment attachment, TextureTarget textarget, uint texture, int level);
+		private delegate void _glFramebufferTexture2D(FramebufferTarget target, TextureAttachment attachment, TexImageTarget textarget, uint texture, int level);
 		private static _glFramebufferTexture2D glFramebufferTexture2D;
-		public static void FramebufferTexture2D(FramebufferTarget target, TextureAttachment attachment, TextureTarget textarget, uint texture, int level)
+		public static void FramebufferTexture2D(FramebufferTarget target, TextureAttachment attachment, TexImageTarget textarget, uint texture, int level)
 		{
 			if (attachment != TextureAttachment.Depth)
 			{
@@ -1012,13 +1069,13 @@ namespace CKGL.OpenGLBindings
 			CheckError();
 		}
 
-		private unsafe delegate void _glReadPixels(int x, int y, GLint w, GLint h, PixelFormat format, PixelType type, byte* data);
+		private unsafe delegate void _glReadPixels(int x, int y, GLint w, GLint h, PixelFormat format, DataType type, byte* data);
 		private static _glReadPixels glReadPixels;
 		public unsafe static void ReadPixels(RectangleI rect, byte[] data)
 		{
 			if (data.Length < rect.Area)
 				throw new Exception("Data array is not large enough.");
-			fixed (byte* ptr = data) { glReadPixels(rect.X, rect.Y, rect.W, rect.H, PixelFormat.RGBA, PixelType.UnsignedByte, ptr); }
+			fixed (byte* ptr = data) { glReadPixels(rect.X, rect.Y, rect.W, rect.H, PixelFormat.RGBA, DataType.UnsignedByte, ptr); }
 			CheckError();
 		}
 

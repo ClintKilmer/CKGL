@@ -1,5 +1,5 @@
-using CKGL.OpenGLBindings;
 using System;
+using CKGL.OpenGLBindings;
 using GLint = System.Int32;
 using GLuint = System.UInt32;
 
@@ -82,27 +82,6 @@ namespace CKGL
 
 		private GLuint id;
 
-		public enum TextureSlot : int
-		{
-			Depth = -1,
-			Colour0 = 0,
-			Colour1,
-			Colour2,
-			Colour3,
-			Colour4,
-			Colour5,
-			Colour6,
-			Colour7,
-			Colour8,
-			Colour9,
-			Colour10,
-			Colour11,
-			Colour12,
-			Colour13,
-			Colour14,
-			Colour15
-		}
-
 		// Default Framebuffer
 		private RenderTarget()
 		{
@@ -117,7 +96,7 @@ namespace CKGL
 			Bind();
 
 			depthTexture = new Texture2D(Width, Height, textureDepthFormat);
-			GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, textureDepthFormat.TextureAttachment(), depthTexture.BindTarget, depthTexture.ID, 0);
+			GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, textureDepthFormat.ToOpenGL().TextureAttachment(), depthTexture.DataTarget.ToOpenGL(), depthTexture.ID, 0);
 			CheckStatus();
 		}
 		public RenderTarget(int width, int height, GLint colourTextures, TextureFormat textureColourFormat)
@@ -145,7 +124,7 @@ namespace CKGL
 			{
 				textures[i] = new Texture2D(Width, Height, textureColourFormat);
 				drawBuffers[i] = (DrawBuffer)((GLuint)DrawBuffer.Colour0 + i);
-				GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, (TextureAttachment)((uint)TextureAttachment.Colour0 + i), textures[i].DataTarget, textures[i].ID, 0);
+				GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, ((TextureAttachment)((uint)TextureAttachment.Colour0 + i)).ToOpenGL(), textures[i].DataTarget.ToOpenGL(), textures[i].ID, 0);
 				CheckStatus();
 			}
 			GL.DrawBuffers(colourTextures, drawBuffers);

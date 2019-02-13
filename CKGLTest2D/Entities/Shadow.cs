@@ -64,7 +64,7 @@ namespace CKGLTest2D
 			}
 			originalRenderTarget.Bind();
 			//Graphics.State.SetBlendState(BlendState.Additive);
-			Renderer.Draw.RenderTarget(Surface, RenderTarget.TextureSlot.Colour0, CKGLTest2D.Camera.Position.X, CKGLTest2D.Camera.Position.Y, Colour.White);
+			Renderer.Draw.RenderTarget(Surface, TextureSlot.Colour0, CKGLTest2D.Camera.Position.X, CKGLTest2D.Camera.Position.Y, Colour.White);
 			//Renderer.ResetBlendState();
 		}
 

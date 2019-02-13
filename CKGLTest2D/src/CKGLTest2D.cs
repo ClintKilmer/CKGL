@@ -231,11 +231,11 @@ namespace CKGLTest2D
 			// Render RenderTarget
 			Shaders.Renderer.Bind();
 			Shaders.Renderer.MVP = RenderTarget.Default.Matrix;
-			Renderer.Draw.RenderTarget(surface, RenderTarget.TextureSlot.Colour0, (Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, scale, Colour.White);
-			//Renderer.Draw.RenderTarget(surface, RenderTarget.TextureSlot.Colour0, (Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, scale, Math.Sin(Time.TotalSeconds) * 0.03f, new Vector2(Window.Width / 2f, Window.Height / 2f), Colour.White);
+			Renderer.Draw.RenderTarget(surface, TextureSlot.Colour0, (Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, scale, Colour.White);
+			//Renderer.Draw.RenderTarget(surface, TextureSlot.Colour0, (Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, scale, Math.Sin(Time.TotalSeconds) * 0.03f, new Vector2(Window.Width / 2f, Window.Height / 2f), Colour.White);
 
 			// Blit RenderTarget
-			//surface.BlitTextureTo(RenderTarget.Default, RenderTarget.TextureSlot.Colour0, BlitFilter.Nearest, new RectangleI((Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, width * scale, height * scale));
+			//surface.BlitTextureTo(RenderTarget.Default, TextureSlot.Colour0, BlitFilter.Nearest, new RectangleI((Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, width * scale, height * scale));
 
 			Renderer.Draw.Text(SpriteFonts.Font,
 							   debugString,

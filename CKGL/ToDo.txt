@@ -1,6 +1,7 @@
 CKGL TODO List:
 
 Features:
+- Texture.GetParam can't convert from OpenGLBindings to CKGL enums...
 - Move GL-specific debug/Metrics info to GL backend/Metrics - Make Debug/Metrics output GraphicsBackend agnostic
 - CKGL Exception - Illegal<Value> from Veldrid - States/GraphicsBackends
 - Graphics.PreDraw(); / State.PreDraw(); - Convert to Events

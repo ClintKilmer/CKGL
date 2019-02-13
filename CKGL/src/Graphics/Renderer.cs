@@ -442,39 +442,39 @@ namespace CKGL
 
 			// TODO - Fix RenderTarget method cascading
 			#region RenderTarget
-			private static void RenderTargetBindTexture(RenderTarget renderTarget, RenderTarget.TextureSlot textureSlot)
+			private static void RenderTargetBindTexture(RenderTarget renderTarget, TextureSlot textureSlot)
 			{
 				if (renderTarget == null)
 					throw new Exception("Can't bind default framebuffer textures, use a RenderTarget instead.");
 
 				renderTarget.GetTexture(textureSlot).Bind();
 			}
-			public static void RenderTarget(RenderTarget renderTarget, RenderTarget.TextureSlot textureSlot, float x, float y, Colour colour)
+			public static void RenderTarget(RenderTarget renderTarget, TextureSlot textureSlot, float x, float y, Colour colour)
 			{
 				RenderTargetBindTexture(renderTarget, textureSlot);
 				Rectangle(x, y, (renderTarget ?? CKGL.RenderTarget.Default).Width, (renderTarget ?? CKGL.RenderTarget.Default).Height, colour, colour, colour, colour, UV.BottomLeft, UV.BottomRight, UV.TopLeft, UV.TopRight);
 			}
-			public static void RenderTarget(RenderTarget renderTarget, RenderTarget.TextureSlot textureSlot, float x, float y, float rotation, Vector2 origin, Colour colour)
+			public static void RenderTarget(RenderTarget renderTarget, TextureSlot textureSlot, float x, float y, float rotation, Vector2 origin, Colour colour)
 			{
 				RenderTargetBindTexture(renderTarget, textureSlot);
 				Rectangle(x, y, (renderTarget ?? CKGL.RenderTarget.Default).Width, (renderTarget ?? CKGL.RenderTarget.Default).Height, colour, colour, colour, colour, UV.BottomLeft, UV.BottomRight, UV.TopLeft, UV.TopRight, rotation, origin);
 			}
-			public static void RenderTarget(RenderTarget renderTarget, RenderTarget.TextureSlot textureSlot, float x, float y, float scale, Colour colour)
+			public static void RenderTarget(RenderTarget renderTarget, TextureSlot textureSlot, float x, float y, float scale, Colour colour)
 			{
 				RenderTargetBindTexture(renderTarget, textureSlot);
 				Rectangle(x, y, (renderTarget ?? CKGL.RenderTarget.Default).Width * scale, (renderTarget ?? CKGL.RenderTarget.Default).Height * scale, colour, colour, colour, colour, UV.BottomLeft, UV.BottomRight, UV.TopLeft, UV.TopRight);
 			}
-			public static void RenderTarget(RenderTarget renderTarget, RenderTarget.TextureSlot textureSlot, float x, float y, float scale, float rotation, Vector2 origin, Colour colour)
+			public static void RenderTarget(RenderTarget renderTarget, TextureSlot textureSlot, float x, float y, float scale, float rotation, Vector2 origin, Colour colour)
 			{
 				RenderTargetBindTexture(renderTarget, textureSlot);
 				Rectangle(x, y, (renderTarget ?? CKGL.RenderTarget.Default).Width * scale, (renderTarget ?? CKGL.RenderTarget.Default).Height * scale, colour, colour, colour, colour, UV.BottomLeft, UV.BottomRight, UV.TopLeft, UV.TopRight, rotation, origin);
 			}
-			public static void RenderTarget(RenderTarget renderTarget, RenderTarget.TextureSlot textureSlot, float x, float y, float width, float height, Colour colour)
+			public static void RenderTarget(RenderTarget renderTarget, TextureSlot textureSlot, float x, float y, float width, float height, Colour colour)
 			{
 				RenderTargetBindTexture(renderTarget, textureSlot);
 				Rectangle(x, y, width, height, colour, colour, colour, colour, UV.BottomLeft, UV.BottomRight, UV.TopLeft, UV.TopRight);
 			}
-			public static void RenderTarget(RenderTarget renderTarget, RenderTarget.TextureSlot textureSlot, Vector2 v1, Vector2 v2, Colour colour)
+			public static void RenderTarget(RenderTarget renderTarget, TextureSlot textureSlot, Vector2 v1, Vector2 v2, Colour colour)
 			{
 				RenderTargetBindTexture(renderTarget, textureSlot);
 				Rectangle(new Vector2(v1.X, v1.Y), new Vector2(v2.X, v2.Y), colour, colour, colour, colour, UV.BottomLeft, UV.BottomRight, UV.TopLeft, UV.TopRight);

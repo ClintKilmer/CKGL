@@ -1,3 +1,4 @@
+using System;
 using CKGL.OpenGLBindings;
 using GLint = System.Int32;
 using GLuint = System.UInt32;
@@ -22,15 +23,15 @@ namespace CKGL
 
 		private GLuint id;
 
-		public GLuint ID { get => id; }
+		public GLuint ID => id;
 		public int Width { get; protected set; }
 		public int Height { get; protected set; }
 		public TextureFormat Format { get; private set; }
 		public TextureTarget BindTarget { get; private set; }
-		public TextureTarget DataTarget { get; private set; }
+		public TexImageTarget DataTarget { get; private set; }
 
 		protected Texture(TextureFormat format,
-						  TextureTarget bindTarget, TextureTarget dataTarget,
+						  TextureTarget bindTarget, TexImageTarget dataTarget,
 						  TextureFilter minFilter, TextureFilter magFilter,
 						  TextureWrap wrapX, TextureWrap wrapY)
 		{
@@ -62,13 +63,13 @@ namespace CKGL
 		public TextureWrap WrapX
 		{
 			get { return (TextureWrap)GetParam(TextureParam.WrapS); }
-			set { SetParam(TextureParam.WrapS, (GLint)value); }
+			set { SetParam(TextureParam.WrapS, (GLint)value.ToOpenGL()); }
 		}
 
 		public TextureWrap WrapY
 		{
 			get { return (TextureWrap)GetParam(TextureParam.WrapT); }
-			set { SetParam(TextureParam.WrapT, (GLint)value); }
+			set { SetParam(TextureParam.WrapT, (GLint)value.ToOpenGL()); }
 		}
 
 		public void SetWrap(TextureWrap wrap)
@@ -80,7 +81,7 @@ namespace CKGL
 		public TextureFilter MinFilter
 		{
 			get { return (TextureFilter)GetParam(TextureParam.MinFilter); }
-			set { SetParam(TextureParam.MinFilter, (GLint)value); }
+			set { SetParam(TextureParam.MinFilter, (GLint)value.ToOpenGL()); }
 		}
 
 		public TextureFilter MagFilter
@@ -93,12 +94,12 @@ namespace CKGL
 					case TextureFilter.Linear:
 					case TextureFilter.LinearMipmapLinear:
 					case TextureFilter.LinearMipmapNearest:
-						SetParam(TextureParam.MagFilter, (GLint)TextureFilter.Linear);
+						SetParam(TextureParam.MagFilter, (GLint)TextureFilter.Linear.ToOpenGL());
 						break;
 					case TextureFilter.Nearest:
 					case TextureFilter.NearestMipmapLinear:
 					case TextureFilter.NearestMipmapNearest:
-						SetParam(TextureParam.MagFilter, (GLint)TextureFilter.Nearest);
+						SetParam(TextureParam.MagFilter, (GLint)TextureFilter.Nearest.ToOpenGL());
 						break;
 				}
 			}
@@ -110,17 +111,17 @@ namespace CKGL
 			MagFilter = filter;
 		}
 
-		private int GetParam(TextureParam p)
+		private int GetParam(TextureParam param)
 		{
 			Bind();
-			GL.GetTexParameterI(BindTarget, p, out GLint val);
+			GL.GetTexParameterI(BindTarget.ToOpenGL(), param.ToOpenGL(), out GLint val);
 			return val;
 		}
 
-		private void SetParam(TextureParam p, GLint val)
+		private void SetParam(TextureParam param, GLint val)
 		{
 			Bind();
-			GL.TexParameterI(BindTarget, p, val);
+			GL.TexParameterI(BindTarget.ToOpenGL(), param.ToOpenGL(), val);
 		}
 		#endregion
 
@@ -132,7 +133,7 @@ namespace CKGL
 			{
 				Graphics.State.OnStateChanging?.Invoke();
 				GL.ActiveTexture(textureSlot);
-				GL.BindTexture(BindTarget, id);
+				GL.BindTexture(BindTarget.ToOpenGL(), id);
 				Swaps++;
 
 				bindings[textureSlot].ID = id;

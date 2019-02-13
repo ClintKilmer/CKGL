@@ -2,9 +2,6 @@ using System;
 
 using CKGL.OpenGLBindings;
 
-using GLint = System.Int32;
-using GLuint = System.UInt32;
-
 namespace CKGL
 {
 	public class Texture2D : Texture
@@ -12,7 +9,7 @@ namespace CKGL
 		#region Constructors
 		public Texture2D(int width, int height, TextureFormat textureFormat) : this(width, height, textureFormat, TextureFilter.Nearest, TextureWrap.Clamp) { }
 		public Texture2D(int width, int height, TextureFormat textureFormat, TextureFilter filter, TextureWrap wrap)
-			: base(textureFormat, TextureTarget.Texture2D, TextureTarget.Texture2D, filter, filter, wrap, wrap)
+			: base(textureFormat, TextureTarget.Texture2D, TexImageTarget.Texture2D, filter, filter, wrap, wrap)
 		{
 			Width = width;
 			Height = height;
@@ -25,7 +22,7 @@ namespace CKGL
 
 		public Texture2D(byte[] data, int width, int height, TextureFormat textureFormat) : this(data, width, height, textureFormat, TextureFilter.Nearest, TextureWrap.Clamp) { }
 		public Texture2D(byte[] data, int width, int height, TextureFormat textureFormat, TextureFilter filter, TextureWrap wrap)
-			: base(textureFormat, TextureTarget.Texture2D, TextureTarget.Texture2D, filter, filter, wrap, wrap)
+			: base(textureFormat, TextureTarget.Texture2D, TexImageTarget.Texture2D, filter, filter, wrap, wrap)
 		{
 			Width = width;
 			Height = height;
@@ -34,7 +31,7 @@ namespace CKGL
 
 		public Texture2D(Colour[] data, int width, int height, TextureFormat textureFormat) : this(data, width, height, textureFormat, TextureFilter.Nearest, TextureWrap.Clamp) { }
 		public Texture2D(Colour[] data, int width, int height, TextureFormat textureFormat, TextureFilter filter, TextureWrap wrap)
-			: base(textureFormat, TextureTarget.Texture2D, TextureTarget.Texture2D, filter, filter, wrap, wrap)
+			: base(textureFormat, TextureTarget.Texture2D, TexImageTarget.Texture2D, filter, filter, wrap, wrap)
 		{
 			Width = width;
 			Height = height;
@@ -43,7 +40,7 @@ namespace CKGL
 
 		public Texture2D(Colour[,] data, int width, int height, TextureFormat textureFormat) : this(data, width, height, textureFormat, TextureFilter.Nearest, TextureWrap.Clamp) { }
 		public Texture2D(Colour[,] data, int width, int height, TextureFormat textureFormat, TextureFilter filter, TextureWrap wrap)
-			: base(textureFormat, TextureTarget.Texture2D, TextureTarget.Texture2D, filter, filter, wrap, wrap)
+			: base(textureFormat, TextureTarget.Texture2D, TexImageTarget.Texture2D, filter, filter, wrap, wrap)
 		{
 			Width = width;
 			Height = height;
@@ -82,7 +79,7 @@ namespace CKGL
 				throw new Exception("Data array is not large enough.");
 			Bind();
 			fixed (Colour* ptr = data)
-				GL.TexImage2D(DataTarget, 0, Format, Width, Height, 0, PixelFormat.RGBA, PixelType.UnsignedByte, new IntPtr(ptr));
+				GL.TexImage2D(DataTarget.ToOpenGL(), 0, Format.ToOpenGL(), Width, Height, 0, PixelFormat.RGBA.ToOpenGL(), DataType.UnsignedByte.ToOpenGL(), new IntPtr(ptr));
 		}
 
 		public unsafe void SetData(byte[] data, PixelFormat pixelFormat)
@@ -91,14 +88,14 @@ namespace CKGL
 				throw new Exception("Data array is not large enough.");
 			Bind();
 			fixed (byte* ptr = data)
-				GL.TexImage2D(DataTarget, 0, Format, Width, Height, 0, pixelFormat, PixelType.UnsignedByte, new IntPtr(ptr));
+				GL.TexImage2D(DataTarget.ToOpenGL(), 0, Format.ToOpenGL(), Width, Height, 0, pixelFormat.ToOpenGL(), DataType.UnsignedByte.ToOpenGL(), new IntPtr(ptr));
 		}
 
 		// OpenGL ES compatibility - Won't accept PixelType.UnsignedByte, had to use PixelType.UnsignedShort
 		public unsafe void SetDataDepthTexture(PixelFormat pixelFormat)
 		{
 			Bind();
-				GL.TexImage2D(DataTarget, 0, Format, Width, Height, 0, pixelFormat, PixelType.UnsignedShort, IntPtr.Zero);
+			GL.TexImage2D(DataTarget.ToOpenGL(), 0, Format.ToOpenGL(), Width, Height, 0, pixelFormat.ToOpenGL(), DataType.UnsignedShort.ToOpenGL(), IntPtr.Zero);
 		}
 		#endregion
 
@@ -123,7 +120,7 @@ namespace CKGL
 			Colour[] data = new Colour[Width * Height];
 			Bind();
 			fixed (Colour* ptr = data)
-				GL.GetTexImage(TextureTarget.Texture2D, 0, PixelFormat.RGBA, PixelType.UnsignedByte, new IntPtr(ptr));
+				GL.GetTexImage(TexImageTarget.Texture2D.ToOpenGL(), 0, PixelFormat.RGBA.ToOpenGL(), DataType.UnsignedByte.ToOpenGL(), new IntPtr(ptr));
 			return data;
 		}
 
@@ -132,7 +129,7 @@ namespace CKGL
 			byte[] data = new byte[Width * Height * pixelFormat.Components()];
 			Bind();
 			fixed (byte* ptr = data)
-				GL.GetTexImage(DataTarget, 0, pixelFormat, PixelType.UnsignedByte, new IntPtr(ptr));
+				GL.GetTexImage(DataTarget.ToOpenGL(), 0, pixelFormat.ToOpenGL(), DataType.UnsignedByte.ToOpenGL(), new IntPtr(ptr));
 			return data;
 		}
 		#endregion

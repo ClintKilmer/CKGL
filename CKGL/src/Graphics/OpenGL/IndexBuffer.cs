@@ -40,7 +40,7 @@ namespace CKGL.OpenGL
 		internal void LoadData(GLuint[] indices, BufferUsage bufferUsage)
 		{
 			Bind();
-			GL.BufferData(BufferTarget.ElementArray, sizeof(GLuint) * indices.Length, indices, bufferUsage);
+			GL.BufferData(BufferTarget.ElementArray, sizeof(GLuint) * indices.Length, indices, bufferUsage.ToOpenGL());
 			Count = indices.Length;
 		}
 	}

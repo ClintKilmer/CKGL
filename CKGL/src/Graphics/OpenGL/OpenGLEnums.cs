@@ -523,6 +523,7 @@ namespace CKGL.OpenGLBindings
 		public const GLuint GL_R3_G3_B2 = 0x2A10;
 		public const GLuint GL_RGB4 = 0x804F;
 		public const GLuint GL_RGB5 = 0x8050;
+		public const GLuint GL_RGB565 = 0x8D62; // Added
 		public const GLuint GL_RGB8 = 0x8051;
 		public const GLuint GL_RGB10 = 0x8052;
 		public const GLuint GL_RGB12 = 0x8053;
@@ -1240,6 +1241,343 @@ namespace CKGL.OpenGLBindings
 		Stencil = GL_STENCIL_BUFFER_BIT
 	}
 
+	public enum TextureTarget : GLuint
+	{
+		//Texture1D = GL_TEXTURE_1D, // Not available in ES
+		Texture2D = GL_TEXTURE_2D,
+		Texture2DMultisample = GL_TEXTURE_2D_MULTISAMPLE,
+		Texture3D = GL_TEXTURE_3D,
+		//Texture1DArray = GL_TEXTURE_1D_ARRAY, // Not available in ES
+		Texture2DArray = GL_TEXTURE_2D_ARRAY,
+		TextureCubeMap = GL_TEXTURE_CUBE_MAP
+	}
+
+	public enum TexImageTarget : GLuint
+	{
+		Texture2D = GL_TEXTURE_2D,
+		TextureCubeMapPosX = GL_TEXTURE_CUBE_MAP_POSITIVE_X,
+		TextureCubeMapNegX = GL_TEXTURE_CUBE_MAP_NEGATIVE_X,
+		TextureCubeMapPosY = GL_TEXTURE_CUBE_MAP_POSITIVE_Y,
+		TextureCubeMapNegY = GL_TEXTURE_CUBE_MAP_NEGATIVE_Y,
+		TextureCubeMapPosZ = GL_TEXTURE_CUBE_MAP_POSITIVE_Z,
+		TextureCubeMapNegZ = GL_TEXTURE_CUBE_MAP_NEGATIVE_Z
+	}
+
+	public enum TextureFormat : GLuint
+	{
+		// Depth textures
+		Depth = GL_DEPTH_COMPONENT,
+		Depth16 = GL_DEPTH_COMPONENT16,
+		Depth24 = GL_DEPTH_COMPONENT24,
+		Depth32 = GL_DEPTH_COMPONENT32,
+		Depth32F = GL_DEPTH_COMPONENT32F,
+
+		// Depth/Stencil textures
+		DepthStencil = GL_DEPTH_STENCIL,
+		Depth24Stencil8 = GL_DEPTH24_STENCIL8,
+
+		// Red textures
+		R = GL_RED,
+		R8 = GL_R8,
+		R8SNorm = GL_R8_SNORM,
+		R16F = GL_R16F,
+		R32F = GL_R32F,
+		R8I = GL_R8I,
+		R8UI = GL_R8UI,
+		R16I = GL_R16I,
+		R16UI = GL_R16UI,
+		R32I = GL_R32I,
+		R32UI = GL_R32UI,
+
+		// RG textures
+		RG = GL_RG,
+		RG8 = GL_RG8,
+		RG8SNorm = GL_RG8_SNORM,
+		RG16F = GL_RG16F,
+		RG32F = GL_RG32F,
+		RG8I = GL_RG8I,
+		RG8UI = GL_RG8UI,
+		RG16I = GL_RG16I,
+		RG16UI = GL_RG16UI,
+		RG32I = GL_RG32I,
+		RG32UI = GL_RG32UI,
+
+		// RGB textures
+		RGB = GL_RGB,
+		RGB8 = GL_RGB8,
+		RGB8SNorm = GL_RGB8_SNORM,
+		RGB16F = GL_RGB16F,
+		RGB32F = GL_RGB32F,
+		RGB8I = GL_RGB8I,
+		RGB8UI = GL_RGB8UI,
+		RGB16I = GL_RGB16I,
+		RGB16UI = GL_RGB16UI,
+		RGB32I = GL_RGB32I,
+		RGB32UI = GL_RGB32UI,
+		R3G3B2 = GL_R3_G3_B2,
+		R5G6B5 = GL_RGB565,
+		R11G11B10F = GL_R11F_G11F_B10F,
+
+		// RGBA textures
+		RGBA = GL_RGBA,
+		RGBA8 = GL_RGBA8,
+		RGBA8SNorm = GL_RGBA8_SNORM,
+		RGBA16F = GL_RGBA16F,
+		RGBA32F = GL_RGBA32F,
+		RGBA8I = GL_RGBA8I,
+		RGBA8UI = GL_RGBA8UI,
+		RGBA16I = GL_RGBA16I,
+		RGBA16UI = GL_RGBA16UI,
+		RGBA32I = GL_RGBA32I,
+		RGBA32UI = GL_RGBA32UI,
+		RGBA2 = GL_RGBA2,
+		RGBA4 = GL_RGBA4,
+		RGB5A1 = GL_RGB5_A1,
+		RGB10A2 = GL_RGB10_A2,
+		RGB10A2UI = GL_RGB10_A2UI
+	}
+	#region TextureFormat Extensions
+	public static class TextureFormatExt
+	{
+		public static int Size(this TextureFormat textureFormat)
+		{
+			switch (textureFormat)
+			{
+				case TextureFormat.RGBA8:
+					return 8;
+				default:
+					throw new NotImplementedException("Unexpected value from TextureFormat");
+			}
+		}
+
+		public static PixelFormat PixelFormat(this TextureFormat textureFormat)
+		{
+			switch (textureFormat)
+			{
+				case TextureFormat.Depth:
+				case TextureFormat.Depth16:
+				case TextureFormat.Depth24:
+				case TextureFormat.Depth32:
+				case TextureFormat.Depth32F:
+					return OpenGLBindings.PixelFormat.Depth;
+				case TextureFormat.DepthStencil:
+				case TextureFormat.Depth24Stencil8:
+					return OpenGLBindings.PixelFormat.DepthStencil;
+				case TextureFormat.R:
+				case TextureFormat.R8:
+				case TextureFormat.R8SNorm:
+				case TextureFormat.R8I:
+				case TextureFormat.R8UI:
+				case TextureFormat.R16I:
+				case TextureFormat.R16UI:
+				case TextureFormat.R16F:
+				case TextureFormat.R32I:
+				case TextureFormat.R32UI:
+				case TextureFormat.R32F:
+					return OpenGLBindings.PixelFormat.R;
+				case TextureFormat.RG:
+				case TextureFormat.RG8:
+				case TextureFormat.RG8SNorm:
+				case TextureFormat.RG8I:
+				case TextureFormat.RG8UI:
+				case TextureFormat.RG16I:
+				case TextureFormat.RG16UI:
+				case TextureFormat.RG16F:
+				case TextureFormat.RG32I:
+				case TextureFormat.RG32UI:
+				case TextureFormat.RG32F:
+					return OpenGLBindings.PixelFormat.RG;
+				case TextureFormat.RGB:
+				case TextureFormat.RGB8:
+				case TextureFormat.RGB8SNorm:
+				case TextureFormat.RGB8I:
+				case TextureFormat.RGB8UI:
+				case TextureFormat.RGB16I:
+				case TextureFormat.RGB16UI:
+				case TextureFormat.RGB16F:
+				case TextureFormat.RGB32I:
+				case TextureFormat.RGB32UI:
+				case TextureFormat.RGB32F:
+				case TextureFormat.R3G3B2:
+				case TextureFormat.R5G6B5:
+				case TextureFormat.R11G11B10F:
+					return OpenGLBindings.PixelFormat.RGB;
+				case TextureFormat.RGBA:
+				case TextureFormat.RGBA8:
+				case TextureFormat.RGBA8SNorm:
+				case TextureFormat.RGBA16F:
+				case TextureFormat.RGBA32F:
+				case TextureFormat.RGBA8I:
+				case TextureFormat.RGBA8UI:
+				case TextureFormat.RGBA16I:
+				case TextureFormat.RGBA16UI:
+				case TextureFormat.RGBA32I:
+				case TextureFormat.RGBA32UI:
+				case TextureFormat.RGBA2:
+				case TextureFormat.RGBA4:
+				case TextureFormat.RGB5A1:
+				case TextureFormat.RGB10A2:
+				case TextureFormat.RGB10A2UI:
+					return OpenGLBindings.PixelFormat.RGBA;
+				default:
+					throw new Exception("Unexpected pixel format.");
+			}
+		}
+
+		public static TextureAttachment TextureAttachment(this TextureFormat textureFormat)
+		{
+			switch (textureFormat)
+			{
+				case TextureFormat.Depth:
+				case TextureFormat.Depth16:
+				case TextureFormat.Depth24:
+				case TextureFormat.Depth32:
+				case TextureFormat.Depth32F:
+					return OpenGLBindings.TextureAttachment.Depth;
+				case TextureFormat.DepthStencil:
+				case TextureFormat.Depth24Stencil8:
+					return OpenGLBindings.TextureAttachment.DepthStencil;
+				default:
+					throw new Exception("Unexpected texture attachment format.");
+			}
+		}
+	}
+	#endregion
+
+	public enum PixelFormat : GLuint
+	{
+		Depth = GL_DEPTH_COMPONENT,
+		DepthStencil = GL_DEPTH_STENCIL,
+		R = GL_RED,
+		RG = GL_RG,
+		RGB = GL_RGB,
+		RGBA = GL_RGBA
+	}
+	#region PixelFormat Extensions
+	public static class PixelFormatExt
+	{
+		public static GLint Components(this PixelFormat pixelFormat)
+		{
+			switch (pixelFormat)
+			{
+				case PixelFormat.Depth:
+					return 1;
+				case PixelFormat.DepthStencil:
+					return 2;
+				case PixelFormat.R:
+					return 1;
+				case PixelFormat.RG:
+					return 2;
+				case PixelFormat.RGB:
+					return 3;
+				case PixelFormat.RGBA:
+					return 4;
+				default:
+					throw new NotImplementedException();
+			}
+		}
+	}
+	#endregion
+
+	public enum DataType : GLuint
+	{
+		Byte = GL_BYTE,
+		UnsignedByte = GL_UNSIGNED_BYTE,
+		Short = GL_SHORT,
+		UnsignedShort = GL_UNSIGNED_SHORT,
+		Int = GL_INT,
+		UnsignedInt = GL_UNSIGNED_INT,
+		Float = GL_FLOAT,
+		Double = GL_DOUBLE,
+		HalfFloat = GL_HALF_FLOAT,
+		UnsignedInt_2_10_10_10_Rev = GL_UNSIGNED_INT_2_10_10_10_REV,
+		Int_2_10_10_10_Rev = GL_INT_2_10_10_10_REV
+	}
+
+	public enum TextureParam : GLuint
+	{
+		BaseLevel = GL_TEXTURE_BASE_LEVEL,
+		CompareFunc = GL_TEXTURE_COMPARE_FUNC,
+		CompareMode = GL_TEXTURE_COMPARE_MODE,
+		MinFilter = GL_TEXTURE_MIN_FILTER,
+		MagFilter = GL_TEXTURE_MAG_FILTER,
+		MinLOD = GL_TEXTURE_MIN_LOD,
+		MaxLOD = GL_TEXTURE_MAX_LOD,
+		MaxLevel = GL_TEXTURE_MAX_LEVEL,
+		SwizzleR = GL_TEXTURE_SWIZZLE_R,
+		SwizzleG = GL_TEXTURE_SWIZZLE_G,
+		SwizzleB = GL_TEXTURE_SWIZZLE_B,
+		SwizzleA = GL_TEXTURE_SWIZZLE_A,
+		WrapS = GL_TEXTURE_WRAP_S,
+		WrapT = GL_TEXTURE_WRAP_T,
+		WrapR = GL_TEXTURE_WRAP_R
+		//DepthTextureMode = 0x884B // Unavailable in OpenGL 3.x, Available in ES 3.0
+	}
+
+	public enum TextureFilter : GLuint
+	{
+		Nearest = GL_NEAREST, // Both GL_TEXTURE_MIN_FILTER and GL_TEXTURE_MAX_FILTER
+		Linear = GL_LINEAR, // Both GL_TEXTURE_MIN_FILTER and GL_TEXTURE_MAX_FILTER
+		NearestMipmapNearest = GL_NEAREST_MIPMAP_NEAREST, // GL_TEXTURE_MIN_FILTER only
+		LinearMipmapNearest = GL_LINEAR_MIPMAP_NEAREST, // GL_TEXTURE_MIN_FILTER only
+		NearestMipmapLinear = GL_NEAREST_MIPMAP_LINEAR, // GL_TEXTURE_MIN_FILTER only
+		LinearMipmapLinear = GL_LINEAR_MIPMAP_LINEAR // GL_TEXTURE_MIN_FILTER only
+	}
+
+	public enum TextureWrap : GLuint
+	{
+		Clamp = GL_CLAMP_TO_EDGE,
+		Repeat = GL_REPEAT,
+		MirroredRepeat = GL_MIRRORED_REPEAT
+	}
+
+	public enum TextureAttachment : GLuint
+	{
+		Depth = GL_DEPTH_ATTACHMENT,
+		DepthStencil = GL_DEPTH_STENCIL_ATTACHMENT,
+		Colour0 = GL_COLOR_ATTACHMENT0,
+		Colour1 = GL_COLOR_ATTACHMENT1,
+		Colour2 = GL_COLOR_ATTACHMENT2,
+		Colour3 = GL_COLOR_ATTACHMENT3,
+		Colour4 = GL_COLOR_ATTACHMENT4,
+		Colour5 = GL_COLOR_ATTACHMENT5,
+		Colour6 = GL_COLOR_ATTACHMENT6,
+		Colour7 = GL_COLOR_ATTACHMENT7,
+		Colour8 = GL_COLOR_ATTACHMENT8,
+		Colour9 = GL_COLOR_ATTACHMENT9,
+		Colour10 = GL_COLOR_ATTACHMENT10,
+		Colour11 = GL_COLOR_ATTACHMENT11,
+		Colour12 = GL_COLOR_ATTACHMENT12,
+		Colour13 = GL_COLOR_ATTACHMENT13,
+		Colour14 = GL_COLOR_ATTACHMENT14,
+		Colour15 = GL_COLOR_ATTACHMENT15
+	}
+
+	public enum BufferTarget : GLuint
+	{
+		Array = GL_ARRAY_BUFFER,
+		ElementArray = GL_ELEMENT_ARRAY_BUFFER,
+		CopyRead = GL_COPY_READ_BUFFER,
+		CopyWrite = GL_COPY_WRITE_BUFFER,
+		PixelPack = GL_PIXEL_PACK_BUFFER,
+		PixelUnpack = GL_PIXEL_UNPACK_BUFFER,
+		TransformFeedback = GL_TRANSFORM_FEEDBACK_BUFFER,
+		Uniform = GL_UNIFORM_BUFFER
+	}
+
+	public enum BufferUsage : GLuint
+	{
+		StreamDraw = GL_STREAM_DRAW,
+		StreamRead = GL_STREAM_READ,
+		StreamCopy = GL_STREAM_COPY,
+		StaticDraw = GL_STATIC_DRAW,
+		StaticRead = GL_STATIC_READ,
+		StaticCopy = GL_STATIC_COPY,
+		DynamicDraw = GL_DYNAMIC_DRAW,
+		DynamicRead = GL_DYNAMIC_READ,
+		DynamicCopy = GL_DYNAMIC_COPY
+	}
+
 	//////////////////////////////////////////////////////////
 
 	public enum FramebufferStatus : GLuint
@@ -1255,46 +1593,13 @@ namespace CKGL.OpenGLBindings
 		IncompleteLayerTargets = 0x8DA8
 	}
 
-	public enum TextureTarget : GLuint
-	{
-		Texture2D = 0x0DE1,
-		Texture3D = 0x806F,
-		Texture2DArray = 0x8C1A,
-		TextureCubeMap = 0x8513,
-		TextureCubeMapPosX = 0x8515,
-		TextureCubeMapNegX = 0x8516,
-		TextureCubeMapPosY = 0x8517,
-		TextureCubeMapNegY = 0x8518,
-		TextureCubeMapPosZ = 0x8519,
-		TextureCubeMapNegZ = 0x851A
-	}
-
-	public enum TextureParam : GLuint
-	{
-		BaseLevel = 0x813C,
-		CompareFunc = 0x884D,
-		CompareMode = 0x884C,
-		MinFilter = 0x2801,
-		MagFilter = 0x2800,
-		MinLOD = 0x813A,
-		MaxLOD = 0x813B,
-		MaxLevel = 0x813D,
-		SwizzleR = 0x8E42,
-		SwizzleG = 0x8E43,
-		SwizzleB = 0x8E44,
-		SwizzleA = 0x8E45,
-		WrapS = 0x2802,
-		WrapT = 0x2803,
-		WrapR = 0x8072,
-		DepthTextureMode = 0x884B
-	}
-
-	public enum DepthTextureMode : GLuint
-	{
-		Intensity = 0x8049,
-		Alpha = 0x1906,
-		Luminance = 0x1909
-	}
+	// Unused
+	//public enum DepthTextureMode : GLuint
+	//{
+	//	Intensity = 0x8049,
+	//	Alpha = 0x1906,
+	//	Luminance = 0x1909
+	//}
 
 	public enum ShaderType : GLuint
 	{
@@ -1332,18 +1637,6 @@ namespace CKGL.OpenGLBindings
 		UnsignedInt = 0x1405
 	}
 
-	public enum BufferTarget : GLuint
-	{
-		Array = 0x8892,
-		ElementArray = 0x8893,
-		CopyRead = 0x8F36,
-		CopyWrite = 0x8F37,
-		PixelPack = 0x88EB,
-		PixelUnpack = 0x88EC,
-		TransformFeedback = 0x8C8E,
-		Uniform = 0x8A11
-	}
-
 	public enum FramebufferTarget : GLuint
 	{
 		Framebuffer = 0x8D40,
@@ -1369,61 +1662,48 @@ namespace CKGL.OpenGLBindings
 	{
 		None = 0,
 		Back = 0x0405,
-		Colour0 = 0x8CE0,
-		Colour1,
-		Colour2,
-		Colour3,
-		Colour4,
-		Colour5,
-		Colour6,
-		Colour7,
-		Colour8,
-		Colour9,
-		Colour10,
-		Colour11,
-		Colour12,
-		Colour13,
-		Colour14,
-		Colour15
+		Colour0 = GL_COLOR_ATTACHMENT0,
+		Colour1 = GL_COLOR_ATTACHMENT1,
+		Colour2 = GL_COLOR_ATTACHMENT2,
+		Colour3 = GL_COLOR_ATTACHMENT3,
+		Colour4 = GL_COLOR_ATTACHMENT4,
+		Colour5 = GL_COLOR_ATTACHMENT5,
+		Colour6 = GL_COLOR_ATTACHMENT6,
+		Colour7 = GL_COLOR_ATTACHMENT7,
+		Colour8 = GL_COLOR_ATTACHMENT8,
+		Colour9 = GL_COLOR_ATTACHMENT9,
+		Colour10 = GL_COLOR_ATTACHMENT10,
+		Colour11 = GL_COLOR_ATTACHMENT11,
+		Colour12 = GL_COLOR_ATTACHMENT12,
+		Colour13 = GL_COLOR_ATTACHMENT13,
+		Colour14 = GL_COLOR_ATTACHMENT14,
+		Colour15 = GL_COLOR_ATTACHMENT15
 	}
 
 	public enum ReadBuffer : GLuint
 	{
-		Depth = 0x8D00,
-		Colour0 = 0x8CE0,
-		Colour1,
-		Colour2,
-		Colour3,
-		Colour4,
-		Colour5,
-		Colour6,
-		Colour7,
-		Colour8,
-		Colour9,
-		Colour10,
-		Colour11,
-		Colour12,
-		Colour13,
-		Colour14,
-		Colour15
+		Depth = GL_DEPTH_ATTACHMENT,
+		Colour0 = GL_COLOR_ATTACHMENT0,
+		Colour1 = GL_COLOR_ATTACHMENT1,
+		Colour2 = GL_COLOR_ATTACHMENT2,
+		Colour3 = GL_COLOR_ATTACHMENT3,
+		Colour4 = GL_COLOR_ATTACHMENT4,
+		Colour5 = GL_COLOR_ATTACHMENT5,
+		Colour6 = GL_COLOR_ATTACHMENT6,
+		Colour7 = GL_COLOR_ATTACHMENT7,
+		Colour8 = GL_COLOR_ATTACHMENT8,
+		Colour9 = GL_COLOR_ATTACHMENT9,
+		Colour10 = GL_COLOR_ATTACHMENT10,
+		Colour11 = GL_COLOR_ATTACHMENT11,
+		Colour12 = GL_COLOR_ATTACHMENT12,
+		Colour13 = GL_COLOR_ATTACHMENT13,
+		Colour14 = GL_COLOR_ATTACHMENT14,
+		Colour15 = GL_COLOR_ATTACHMENT15
 	}
 }
 
 namespace CKGL
 {
-	public enum BufferUsage : GLuint
-	{
-		StreamDraw = 0x88E0,
-		StreamRead = 0x88E1,
-		StreamCopy = 0x88E2,
-		StaticDraw = 0x88E4,
-		StaticRead = 0x88E5,
-		StaticCopy = 0x88E6,
-		DynamicDraw = 0x88E8,
-		DynamicRead = 0x88E9,
-		DynamicCopy = 0x88EA
-	}
-
 	public enum DrawMode : GLuint
 	{
 		PointList = 0x0000,
@@ -1435,309 +1715,9 @@ namespace CKGL
 		TriangleFan = 0x0006
 	}
 
-	public enum TextureFilter : GLuint
-	{
-		Nearest = 0x2600,
-		Linear = 0x2601,
-		NearestMipmapNearest = 0x2700,
-		LinearMipmapNearest = 0x2701,
-		NearestMipmapLinear = 0x2702,
-		LinearMipmapLinear = 0x2703
-	}
-
-	public enum TextureWrap : GLuint
-	{
-		Clamp = 0x812F,
-		Repeat = 0x2901,
-		MirroredRepeat = 0x8370
-	}
-
 	public enum BlitFilter : GLuint
 	{
-		Nearest = 0x2600,
-		Linear = 0x2601
-	}
-
-	public enum MinFilter : GLuint
-	{
-		Nearest = 0x2600,
-		Linear = 0x2601,
-		NearestMipmapNearest = 0x2700,
-		LinearMipmapNearest = 0x2701,
-		NearestMipmapLinear = 0x2702,
-		LinearMipmapLinear = 0x2703
-	}
-
-	public enum MagFilter : GLuint
-	{
-		Nearest = 0x2600,
-		Linear = 0x2601
-	}
-
-	public enum TextureAttachment : GLuint
-	{
-		Depth = 0x8D00,
-		DepthStencil = 0x821A,
-		Colour0 = 0x8CE0,
-		Colour1,
-		Colour2,
-		Colour3,
-		Colour4,
-		Colour5,
-		Colour6,
-		Colour7,
-		Colour8,
-		Colour9,
-		Colour10,
-		Colour11,
-		Colour12,
-		Colour13,
-		Colour14,
-		Colour15
-	}
-
-	public enum TextureFormat : GLuint
-	{
-		//Depth textures
-		Depth = 0x1902,
-		Depth16 = 0x81A5,
-		Depth24 = 0x81A6,
-		Depth32 = 0x81A7,
-		Depth32F = 0x81A8,
-
-		DepthStencil = 0x84F9,
-		Depth24Stencil8 = 0x88F0,
-
-		//Red textures
-		R = 0x1903,
-		R8 = 0x8229,
-		R8SNorm = 0x8F94,
-		R16F = 0x822D,
-		R32F = 0x822E,
-		R8I = 0x8231,
-		R8UI = 0x8232,
-		R16I = 0x8233,
-		R16UI = 0x8234,
-		R32I = 0x8235,
-		R32UI = 0x8236,
-
-		//RG textures
-		RG = 0x8227,
-		RG8 = 0x822B,
-		RG8SNorm = 0x8F95,
-		RG16F = 0x822F,
-		RG32F = 0x8230,
-		RG8I = 0x8237,
-		RG8UI = 0x8238,
-		RG16I = 0x8239,
-		RG16UI = 0x823A,
-		RG32I = 0x823B,
-		RG32UI = 0x823C,
-
-		//RGB textures
-		RGB = 0x1907,
-		RGB8 = 0x8051,
-		RGB8SNorm = 0x8F96,
-		RGB16F = 0x881B,
-		RGB32F = 0x8815,
-		RGB8I = 0x8D8F,
-		RGB8UI = 0x8D7D,
-		RGB16I = 0x8D89,
-		RGB16UI = 0x8D77,
-		RGB32I = 0x8D83,
-		RGB32UI = 0x8D71,
-		R3G3B2 = 0x2A10,
-		R5G6B5 = 0x8D62,
-		R11G11B10F = 0x8C3A,
-
-		//RGBA textures
-		RGBA = 0x1908,
-		RGBA8 = 0x8058,
-		RGBA8SNorm = 0x8F97,
-		RGBA16F = 0x881A,
-		RGBA32F = 0x8814,
-		RGBA8I = 0x8D8E,
-		RGBA8UI = 0x8D7C,
-		RGBA16I = 0x8D88,
-		RGBA16UI = 0x8D76,
-		RGBA32I = 0x8D82,
-		RGBA32UI = 0x8D70,
-		RGBA2 = 0x8055,
-		RGBA4 = 0x8056,
-		RGB5A1 = 0x8057,
-		RGB10A2 = 0x8059,
-		RGB10A2UI = 0x906F
-	}
-	#region TextureFormat Extensions
-	public static class TextureFormatExt
-	{
-		public static int Size(this TextureFormat textureFormat)
-		{
-			switch (textureFormat)
-			{
-				case TextureFormat.RGBA8:
-					return 8;
-				default:
-					throw new NotImplementedException("Unexpected value from TextureFormat");
-			}
-		}
-
-		public static PixelFormat PixelFormat(this TextureFormat textureFormat)
-		{
-			switch (textureFormat)
-			{
-				case TextureFormat.Depth:
-				case TextureFormat.Depth16:
-				case TextureFormat.Depth24:
-				case TextureFormat.Depth32:
-				case TextureFormat.Depth32F:
-					return CKGL.PixelFormat.Depth;
-				case TextureFormat.DepthStencil:
-				case TextureFormat.Depth24Stencil8:
-					return CKGL.PixelFormat.DepthStencil;
-				case TextureFormat.R:
-				case TextureFormat.R8:
-				case TextureFormat.R8SNorm:
-				case TextureFormat.R8I:
-				case TextureFormat.R8UI:
-				case TextureFormat.R16I:
-				case TextureFormat.R16UI:
-				case TextureFormat.R16F:
-				case TextureFormat.R32I:
-				case TextureFormat.R32UI:
-				case TextureFormat.R32F:
-					return CKGL.PixelFormat.R;
-				case TextureFormat.RG:
-				case TextureFormat.RG8:
-				case TextureFormat.RG8SNorm:
-				case TextureFormat.RG8I:
-				case TextureFormat.RG8UI:
-				case TextureFormat.RG16I:
-				case TextureFormat.RG16UI:
-				case TextureFormat.RG16F:
-				case TextureFormat.RG32I:
-				case TextureFormat.RG32UI:
-				case TextureFormat.RG32F:
-					return CKGL.PixelFormat.RG;
-				case TextureFormat.RGB:
-				case TextureFormat.RGB8:
-				case TextureFormat.RGB8SNorm:
-				case TextureFormat.RGB8I:
-				case TextureFormat.RGB8UI:
-				case TextureFormat.RGB16I:
-				case TextureFormat.RGB16UI:
-				case TextureFormat.RGB16F:
-				case TextureFormat.RGB32I:
-				case TextureFormat.RGB32UI:
-				case TextureFormat.RGB32F:
-				case TextureFormat.R3G3B2:
-				case TextureFormat.R5G6B5:
-				case TextureFormat.R11G11B10F:
-					return CKGL.PixelFormat.RGB;
-				case TextureFormat.RGBA:
-				case TextureFormat.RGBA8:
-				case TextureFormat.RGBA8SNorm:
-				case TextureFormat.RGBA16F:
-				case TextureFormat.RGBA32F:
-				case TextureFormat.RGBA8I:
-				case TextureFormat.RGBA8UI:
-				case TextureFormat.RGBA16I:
-				case TextureFormat.RGBA16UI:
-				case TextureFormat.RGBA32I:
-				case TextureFormat.RGBA32UI:
-				case TextureFormat.RGBA2:
-				case TextureFormat.RGBA4:
-				case TextureFormat.RGB5A1:
-				case TextureFormat.RGB10A2:
-				case TextureFormat.RGB10A2UI:
-					return CKGL.PixelFormat.RGBA;
-				default:
-					throw new Exception("Unexpected pixel format.");
-			}
-		}
-
-		public static TextureAttachment TextureAttachment(this TextureFormat textureFormat)
-		{
-			switch (textureFormat)
-			{
-				case TextureFormat.Depth:
-				case TextureFormat.Depth16:
-				case TextureFormat.Depth24:
-				case TextureFormat.Depth32:
-				case TextureFormat.Depth32F:
-					return CKGL.TextureAttachment.Depth;
-				case TextureFormat.DepthStencil:
-				case TextureFormat.Depth24Stencil8:
-					return CKGL.TextureAttachment.DepthStencil;
-				default:
-					throw new Exception("Unexpected texture attachment format.");
-			}
-		}
-	}
-	#endregion
-
-	public enum PixelFormat : GLuint
-	{
-		Depth = 0x1902,
-		DepthStencil = 0x84F9,
-		R = 0x1903,
-		RG = 0x8227,
-		RGB = 0x1907,
-		RGBA = 0x1908
-	}
-	#region PixelFormat Extensions
-	public static class PixelFormatExt
-	{
-		public static GLint Components(this PixelFormat pixelFormat)
-		{
-			switch (pixelFormat)
-			{
-				case PixelFormat.Depth:
-					return 1;
-				case PixelFormat.DepthStencil:
-					return 2;
-				case PixelFormat.R:
-					return 1;
-				case PixelFormat.RG:
-					return 2;
-				case PixelFormat.RGB:
-					return 3;
-				case PixelFormat.RGBA:
-					return 4;
-				default:
-					throw new NotImplementedException();
-			}
-		}
-	}
-	#endregion
-
-	public enum PixelType : GLuint
-	{
-		Byte = 0x1400,
-		UnsignedByte = 0x1401,
-		Short = 0x1402,
-		UnsignedShort = 0x1403,
-		Int = 0x1404,
-		UnsignedInt = 0x1405,
-		Float = 0x1406,
-		Double = 0x140A,
-		HalfFloat = 0x140B,
-		UnsignedInt_2_10_10_10_Rev = 0x8368,
-		Int_2_10_10_10_Rev = 0x8D9F
-	}
-
-	public enum VertexType : GLuint
-	{
-		Byte = 0x1400,
-		UnsignedByte = 0x1401,
-		Short = 0x1402,
-		UnsignedShort = 0x1403,
-		Int = 0x1404,
-		UnsignedInt = 0x1405,
-		Float = 0x1406,
-		Double = 0x140A,
-		HalfFloat = 0x140B,
-		UnsignedInt_2_10_10_10_Rev = 0x8368,
-		Int_2_10_10_10_Rev = 0x8D9F
+		Nearest = GL_NEAREST,
+		Linear = GL_LINEAR
 	}
 }

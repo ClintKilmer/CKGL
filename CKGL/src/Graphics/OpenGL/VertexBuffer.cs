@@ -38,7 +38,7 @@ namespace CKGL.OpenGL
 		internal void LoadData(byte[] buffer, BufferUsage bufferUsage)
 		{
 			Bind();
-			GL.BufferData(BufferTarget.Array, sizeof(byte) * buffer.Length, buffer, bufferUsage);
+			GL.BufferData(BufferTarget.Array, sizeof(byte) * buffer.Length, buffer, bufferUsage.ToOpenGL());
 		}
 
 		internal void LoadData<T>(VertexAttributeLayout vertexAttributeLayout, ref T[] buffer, int vertexCount, BufferUsage bufferUsage) where T : struct
@@ -58,7 +58,7 @@ namespace CKGL.OpenGL
 				throw new ArgumentOutOfRangeException("The Stride defined in VertexAttributeLayout does not match the Marshalled size of the Vertex.");
 
 			Bind();
-			GL.BufferData(BufferTarget.Array, marshalledSize * vertexCount, buffer, bufferUsage);
+			GL.BufferData(BufferTarget.Array, marshalledSize * vertexCount, buffer, bufferUsage.ToOpenGL());
 		}
 	}
 }

@@ -7,12 +7,12 @@ namespace CKGL.OpenGL
 {
 	internal struct VertexAttribute
 	{
-		internal readonly VertexType VertexType;
+		internal readonly DataType VertexType;
 		internal readonly GLint Count;
 		internal readonly GLint Size;
 		internal readonly bool Normalized;
 
-		internal VertexAttribute(VertexType vertexType, GLint count, bool normalized)
+		internal VertexAttribute(DataType vertexType, GLint count, bool normalized)
 		{
 			VertexType = vertexType;
 			Count = count;
@@ -20,25 +20,25 @@ namespace CKGL.OpenGL
 
 			switch (VertexType)
 			{
-				case VertexType.UnsignedByte:
+				case DataType.UnsignedByte:
 					Size = count * sizeof(byte);
 					break;
-				case VertexType.Byte:
+				case DataType.Byte:
 					Size = count * sizeof(sbyte);
 					break;
-				case VertexType.UnsignedShort:
+				case DataType.UnsignedShort:
 					Size = count * sizeof(ushort);
 					break;
-				case VertexType.Short:
+				case DataType.Short:
 					Size = count * sizeof(short);
 					break;
-				case VertexType.UnsignedInt:
+				case DataType.UnsignedInt:
 					Size = count * sizeof(uint);
 					break;
-				case VertexType.Int:
+				case DataType.Int:
 					Size = count * sizeof(int);
 					break;
-				case VertexType.Float:
+				case DataType.Float:
 					Size = count * sizeof(float);
 					break;
 				default:
@@ -80,7 +80,7 @@ namespace CKGL.OpenGL
 			for (GLuint i = 0; i < attributes.Length; i++)
 			{
 				GL.EnableVertexAttribArray(i);
-				GL.VertexAttribPointer(i, attributes[(int)i].Count, attributes[(int)i].VertexType, attributes[(int)i].Normalized, Stride, offset);
+				GL.VertexAttribPointer(i, attributes[(int)i].Count, attributes[(int)i].VertexType.ToOpenGL(), attributes[(int)i].Normalized, Stride, offset);
 				//Output.WriteLine($"id: {i}, Count: {attributes[(int)i].Count}, Type: {attributes[(int)i].VertexType}, Normalized: {attributes[(int)i].Normalized}, Size/Stride: {attributes[(int)i].Size}/{Stride}, offset: {offset}"); // Debug
 				offset += attributes[(int)i].Size;
 			}
