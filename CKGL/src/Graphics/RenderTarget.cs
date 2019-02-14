@@ -231,8 +231,8 @@ namespace CKGL
 			Graphics.SetViewport(target);
 			Graphics.SetScissorTest(target);
 			GL.ReadBuffer((ReadBuffer)((uint)ReadBuffer.Colour0 + (uint)textureSlot));
-			GL.BlitFramebuffer(new RectangleI(Width, Height), rect, BufferBit.Colour, filter);
-			//GL.BlitFramebuffer(new RectangleI(Width, Height), rect, textureSlot >= 0 ? BufferBit.Colour : BufferBit.Depth, filter);
+			GL.BlitFramebuffer(new RectangleI(Width, Height), rect, BufferBit.Colour, filter.ToOpenGL());
+			//GL.BlitFramebuffer(new RectangleI(Width, Height), rect, textureSlot >= 0 ? BufferBit.Colour : BufferBit.Depth, filter.ToOpenGL());
 
 			// Reset Framebuffer
 			GL.BindFramebuffer(FramebufferTarget.Framebuffer, (originalRenderTarget ?? Default).id);
