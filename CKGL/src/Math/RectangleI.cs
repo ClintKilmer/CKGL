@@ -159,10 +159,7 @@ namespace CKGL
 			W = w;
 			H = h;
 		}
-		public RectangleI(int w, int h) : this(0, 0, w, h)
-		{
-
-		}
+		public RectangleI(int w, int h) : this(0, 0, w, h) { }
 		#endregion
 
 		#region Static Constructors
