@@ -1,4 +1,3 @@
-using CKGL.OpenGLBindings;
 using System;
 
 namespace CKGL
@@ -12,7 +11,7 @@ namespace CKGL
 			switch (Platform.GraphicsBackend)
 			{
 				case GraphicsBackend.Vulkan:
-					throw new NotImplementedException("Vulkan Backend not implemented yet.");
+					throw new NotImplementedException("Vulkan Graphics Backend not implemented yet.");
 				case GraphicsBackend.OpenGL:
 				case GraphicsBackend.OpenGLES:
 					graphics = new OpenGL.OpenGLGraphics();
@@ -113,15 +112,15 @@ namespace CKGL
 		#endregion
 
 		#region Draw
-		public static void DrawVertexArrays(DrawMode drawMode, int offset, int count)
+		public static void DrawVertexArrays(PrimitiveTopology primitiveTopology, int offset, int count)
 		{
-			GL.DrawArrays(drawMode, offset, count);
+			graphics.DrawVertexArrays(primitiveTopology, offset, count);
 			DrawCalls++;
 		}
 
-		public static void DrawIndexedVertexArrays(DrawMode drawMode, int offset, int count)
+		public static void DrawIndexedVertexArrays(PrimitiveTopology primitiveTopology, int offset, int count, IndexType indexType)
 		{
-			GL.DrawElements(drawMode, count, IndexType.UnsignedInt, offset);
+			graphics.DrawIndexedVertexArrays(primitiveTopology, offset, count, indexType);
 			DrawCalls++;
 		}
 		#endregion

@@ -1578,6 +1578,24 @@ namespace CKGL.OpenGLBindings
 		DynamicCopy = GL_DYNAMIC_COPY
 	}
 
+	public enum PrimitiveMode : GLuint
+	{
+		Points = GL_POINTS,
+		Lines = GL_LINES,
+		LineLoop = GL_LINE_LOOP,
+		LineStrip = GL_LINE_STRIP,
+		Triangles = GL_TRIANGLES,
+		TriangleStrip = GL_TRIANGLE_STRIP,
+		TriangleFan = GL_TRIANGLE_FAN
+	}
+
+	public enum IndexType : GLuint
+	{
+		UnsignedByte = GL_UNSIGNED_BYTE,
+		UnsignedShort = GL_UNSIGNED_SHORT,
+		UnsignedInt = GL_UNSIGNED_INT
+	}
+
 	//////////////////////////////////////////////////////////
 
 	public enum FramebufferStatus : GLuint
@@ -1591,6 +1609,19 @@ namespace CKGL.OpenGLBindings
 		Unsupported = 0x8CDD,
 		IncompleteMultisample = 0x8D56,
 		IncompleteLayerTargets = 0x8DA8
+	}
+
+	public enum FramebufferTarget : GLuint
+	{
+		Framebuffer = 0x8D40,
+		Draw = 0x8CA9,
+		Read = 0x8CA8
+	}
+
+	public enum BlitFilter : GLuint
+	{
+		Nearest = GL_NEAREST,
+		Linear = GL_LINEAR
 	}
 
 	// Unused
@@ -1628,20 +1659,6 @@ namespace CKGL.OpenGLBindings
 		ActiveAttributeMaxLength = 0x8B8A,
 		ActiveUniforms = 0x8B86,
 		ActiveUniformMaxLength = 0x8B87
-	}
-
-	public enum IndexType : GLuint
-	{
-		UnsignedByte = 0x1401,
-		UnsignedShort = 0x1403,
-		UnsignedInt = 0x1405
-	}
-
-	public enum FramebufferTarget : GLuint
-	{
-		Framebuffer = 0x8D40,
-		Draw = 0x8CA9,
-		Read = 0x8CA8
 	}
 
 	public enum UniformType : GLuint
@@ -1699,25 +1716,5 @@ namespace CKGL.OpenGLBindings
 		Colour13 = GL_COLOR_ATTACHMENT13,
 		Colour14 = GL_COLOR_ATTACHMENT14,
 		Colour15 = GL_COLOR_ATTACHMENT15
-	}
-}
-
-namespace CKGL
-{
-	public enum DrawMode : GLuint
-	{
-		PointList = 0x0000,
-		LineList = 0x0001,
-		LineLoop = 0x0002,
-		LineStrip = 0x0003,
-		TriangleList = 0x0004,
-		TriangleStrip = 0x0005,
-		TriangleFan = 0x0006
-	}
-
-	public enum BlitFilter : GLuint
-	{
-		Nearest = GL_NEAREST,
-		Linear = GL_LINEAR
 	}
 }

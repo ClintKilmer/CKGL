@@ -5,20 +5,20 @@ namespace CKGL
 		internal abstract void Init();
 
 		#region Viewport
-		public abstract void SetViewport();
-		public abstract void SetViewport(RenderTarget renderTarget);
-		public abstract void SetViewport(int x, int y, int width, int height);
+		internal abstract void SetViewport();
+		internal abstract void SetViewport(RenderTarget renderTarget);
+		internal abstract void SetViewport(int x, int y, int width, int height);
 		#endregion
 
 		#region ScissorTest
-		public abstract void SetScissorTest();
-		public abstract void SetScissorTest(RenderTarget renderTarget);
-		public abstract void SetScissorTest(int x, int y, int width, int height);
-		public abstract void SetScissorTest(bool enabled);
+		internal abstract void SetScissorTest();
+		internal abstract void SetScissorTest(RenderTarget renderTarget);
+		internal abstract void SetScissorTest(int x, int y, int width, int height);
+		internal abstract void SetScissorTest(bool enabled);
 		#endregion
 
 		#region DepthRange
-		public abstract void SetDepthRange(double near, double far);
+		internal abstract void SetDepthRange(double near, double far);
 		#endregion
 
 		#region Clear
@@ -35,6 +35,11 @@ namespace CKGL
 		internal abstract void SetDepthMask(DepthMaskState depthMaskState);
 		internal abstract void SetDepth(DepthState depthState);
 		internal abstract void SetBlend(BlendState blendState);
+		#endregion
+
+		#region Draw
+		internal abstract void DrawVertexArrays(PrimitiveTopology primitiveTopology, int offset, int count);
+		internal abstract void DrawIndexedVertexArrays(PrimitiveTopology primitiveTopology, int offset, int count, IndexType indexType);
 		#endregion
 	}
 }

@@ -10,24 +10,24 @@ namespace CKGL.OpenGL
 		}
 
 		#region Viewport
-		public override void SetViewport() => SetViewport(RenderTarget.Current);
-		public override void SetViewport(RenderTarget renderTarget)
+		internal override void SetViewport() => SetViewport(RenderTarget.Current);
+		internal override void SetViewport(RenderTarget renderTarget)
 			=> SetViewport(0, 0, (renderTarget ?? RenderTarget.Default).Width, (renderTarget ?? RenderTarget.Default).Height);
-		public override void SetViewport(int x, int y, int width, int height)
+		internal override void SetViewport(int x, int y, int width, int height)
 			=> GL.Viewport(x, y, width, height);
 		#endregion
 
 		#region ScissorTest
-		public override void SetScissorTest() => SetScissorTest(RenderTarget.Current);
-		public override void SetScissorTest(RenderTarget renderTarget)
+		internal override void SetScissorTest() => SetScissorTest(RenderTarget.Current);
+		internal override void SetScissorTest(RenderTarget renderTarget)
 			=> SetScissorTest(0, 0, (renderTarget ?? RenderTarget.Default).Width, (renderTarget ?? RenderTarget.Default).Height);
-		public override void SetScissorTest(int x, int y, int width, int height)
+		internal override void SetScissorTest(int x, int y, int width, int height)
 		{
 			GL.Enable(EnableCap.ScissorTest);
 			GL.Scissor(x, y, width, height);
 		}
 
-		public override void SetScissorTest(bool enabled)
+		internal override void SetScissorTest(bool enabled)
 		{
 			if (enabled)
 				GL.Enable(EnableCap.ScissorTest);
@@ -37,7 +37,7 @@ namespace CKGL.OpenGL
 		#endregion
 
 		#region DepthRange
-		public override void SetDepthRange(double near, double far)
+		internal override void SetDepthRange(double near, double far)
 		{
 			GL.DepthRange(near.Clamp(0d, 1d), far.Clamp(0d, 1d));
 		}
@@ -102,7 +102,7 @@ namespace CKGL.OpenGL
 
 		internal override void SetPolygonMode(PolygonModeState polygonModeState)
 		{
-			//GL.PolygonMode(polygonModeState.PolygonMode.ToOpenGL());
+			GL.PolygonMode(polygonModeState.PolygonMode.ToOpenGL());
 		}
 
 		internal override void SetColourMask(ColourMaskState colourMaskState)
@@ -141,6 +141,18 @@ namespace CKGL.OpenGL
 				GL.BlendEquation(blendState.ColourEquation.ToOpenGL());
 			else
 				GL.BlendEquationSeparate(blendState.ColourEquation.ToOpenGL(), blendState.AlphaEquation.ToOpenGL());
+		}
+		#endregion
+
+		#region Draw
+		internal override void DrawVertexArrays(PrimitiveTopology primitiveTopology, int offset, int count)
+		{
+			GL.DrawArrays(primitiveTopology.ToOpenGL(), offset, count);
+		}
+
+		internal override void DrawIndexedVertexArrays(PrimitiveTopology primitiveTopology, int offset, int count, IndexType indexType)
+		{
+			GL.DrawElements(primitiveTopology.ToOpenGL(), count, indexType.ToOpenGL(), offset);
 		}
 		#endregion
 	}

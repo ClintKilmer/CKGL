@@ -38,12 +38,12 @@ namespace CKGL.OpenGL
 
 		private VertexArray vao;
 		private VertexBuffer vbo;
-		private DrawMode currentDrawMode = DrawMode.TriangleList;
+		private PrimitiveTopology currentPrimitiveTopology = PrimitiveTopology.TriangleList;
 		// Adaptive vertex buffer size
 		//private int bufferSize = 16384; // Performant on Laptop
 		private int bufferSize = 1024;
 		private readonly int maxBufferSize = OpenGLBindings.GL.MaxElementVertices; // TODO - Move into Graphics.Init
-		//private const int bufferSize = 1998; // Divisible by 3 and 2 for no vertex wrapping per batch
+																				   //private const int bufferSize = 1998; // Divisible by 3 and 2 for no vertex wrapping per batch
 		private Vertex[] vertices;
 		private int vertexCount = 0;
 
@@ -70,31 +70,31 @@ namespace CKGL.OpenGL
 			vbo = null;
 		}
 
-		public override void Flush()
+		internal override void Flush()
 		{
 			if (
-				(currentDrawMode == DrawMode.TriangleList && vertexCount >= 3) ||
-				(currentDrawMode == DrawMode.TriangleStrip && vertexCount >= 3) ||
-				(currentDrawMode == DrawMode.TriangleFan && vertexCount >= 3) ||
-				(currentDrawMode == DrawMode.LineList && vertexCount >= 2) ||
-				(currentDrawMode == DrawMode.LineStrip && vertexCount >= 2) ||
-				(currentDrawMode == DrawMode.LineLoop && vertexCount >= 2) ||
-				(currentDrawMode == DrawMode.PointList && vertexCount >= 1)
+				(currentPrimitiveTopology == PrimitiveTopology.TriangleList && vertexCount >= 3) ||
+				(currentPrimitiveTopology == PrimitiveTopology.TriangleStrip && vertexCount >= 3) ||
+				(currentPrimitiveTopology == PrimitiveTopology.TriangleFan && vertexCount >= 3) ||
+				(currentPrimitiveTopology == PrimitiveTopology.LineList && vertexCount >= 2) ||
+				(currentPrimitiveTopology == PrimitiveTopology.LineStrip && vertexCount >= 2) ||
+				(currentPrimitiveTopology == PrimitiveTopology.LineLoop && vertexCount >= 2) ||
+				(currentPrimitiveTopology == PrimitiveTopology.PointList && vertexCount >= 1)
 			)
 			{
 				vao.Bind();
 				vbo.LoadData(Vertex.AttributeLayout, ref vertices, vertexCount, BufferUsage.DynamicDraw);
-				Graphics.DrawVertexArrays(currentDrawMode, 0, vertexCount);
+				Graphics.DrawVertexArrays(currentPrimitiveTopology, 0, vertexCount);
 			}
 
 			// Reset vertexCount so we don't lose any vertex data
 			int remainder = 0;
-			switch (currentDrawMode)
+			switch (currentPrimitiveTopology)
 			{
-				case (DrawMode.TriangleList):
+				case (PrimitiveTopology.TriangleList):
 					remainder = vertexCount % 3;
 					break;
-				case (DrawMode.LineList):
+				case (PrimitiveTopology.LineList):
 					remainder = vertexCount % 2;
 					break;
 				default:
@@ -108,12 +108,12 @@ namespace CKGL.OpenGL
 			vertexCount = remainder;
 		}
 
-		internal override void AddVertex(DrawMode type, Vector3 position, Colour? colour, UV? uv)
+		internal override void AddVertex(PrimitiveTopology type, Vector3 position, Colour? colour, UV? uv)
 		{
-			if (currentDrawMode != type)
+			if (currentPrimitiveTopology != type)
 			{
 				Flush();
-				currentDrawMode = type;
+				currentPrimitiveTopology = type;
 				// We can lose vertices here, but it's ok as we're switching primitive types anyways
 				vertexCount = 0;
 			}

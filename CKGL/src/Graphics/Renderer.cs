@@ -27,8 +27,8 @@ namespace CKGL
 
 		public static void Flush() => renderer.Flush();
 
-		private static void AddVertex(DrawMode type, Vector3 position, Colour? colour, UV? uv)
-			=> renderer.AddVertex(type, position, colour, uv);
+		private static void AddVertex(PrimitiveTopology primitiveTopology, Vector3 position, Colour? colour, UV? uv)
+			=> renderer.AddVertex(primitiveTopology, position, colour, uv);
 
 		#region Draw
 		public static class Draw
@@ -62,19 +62,19 @@ namespace CKGL
 			#endregion
 
 			#region AddVertex
-			public static void AddVertex(DrawMode type, Vector2 position) => AddVertex(type, position, null, null);
-			public static void AddVertex(DrawMode type, Vector2 position, Colour? colour) => AddVertex(type, position, colour, null);
-			public static void AddVertex(DrawMode type, Vector2 position, Colour? colour, UV? uv)
+			public static void AddVertex(PrimitiveTopology primitiveTopology, Vector2 position) => AddVertex(primitiveTopology, position, null, null);
+			public static void AddVertex(PrimitiveTopology primitiveTopology, Vector2 position, Colour? colour) => AddVertex(primitiveTopology, position, colour, null);
+			public static void AddVertex(PrimitiveTopology primitiveTopology, Vector2 position, Colour? colour, UV? uv)
 			{
 				Vector3 positionDepth = new Vector3(position.X, position.Y, depth);
-				Renderer.AddVertex(type, positionDepth * transform?.Matrix ?? positionDepth, colour, uv);
+				Renderer.AddVertex(primitiveTopology, positionDepth * transform?.Matrix ?? positionDepth, colour, uv);
 			}
-			public static void AddVertex(DrawMode type, Vector2 position, Colour? colour, UV? uv, float rotation, Vector2? origin)
+			public static void AddVertex(PrimitiveTopology primitiveTopology, Vector2 position, Colour? colour, UV? uv, float rotation, Vector2? origin)
 			{
 				if (rotation != 0f)
-					AddVertex(type, position * (Matrix2D.CreateTranslation(-origin ?? Vector2.Zero) * Matrix2D.CreateRotationZ(rotation) * Matrix2D.CreateTranslation(origin ?? Vector2.Zero)), colour, uv);
+					AddVertex(primitiveTopology, position * (Matrix2D.CreateTranslation(-origin ?? Vector2.Zero) * Matrix2D.CreateRotationZ(rotation) * Matrix2D.CreateTranslation(origin ?? Vector2.Zero)), colour, uv);
 				else
-					AddVertex(type, position, colour, uv);
+					AddVertex(primitiveTopology, position, colour, uv);
 			}
 			#endregion
 
@@ -84,17 +84,17 @@ namespace CKGL
 			public static void Triangle(Vector2 v1, Vector2 v2, Vector2 v3, Colour? c1, Colour? c2, Colour? c3) => Triangle(v1, v2, v3, c1, c2, c3, null, null, null);
 			public static void Triangle(Vector2 v1, Vector2 v2, Vector2 v3, Colour? c1, Colour? c2, Colour? c3, UV? uv1, UV? uv2, UV? uv3)
 			{
-				AddVertex(DrawMode.TriangleList, v1, c1, uv1);
-				AddVertex(DrawMode.TriangleList, v2, c2, uv2);
-				AddVertex(DrawMode.TriangleList, v3, c3, uv3);
+				AddVertex(PrimitiveTopology.TriangleList, v1, c1, uv1);
+				AddVertex(PrimitiveTopology.TriangleList, v2, c2, uv2);
+				AddVertex(PrimitiveTopology.TriangleList, v3, c3, uv3);
 			}
 			public static void Triangle(Vector2 v1, Vector2 v2, Vector2 v3, Colour? c1, Colour? c2, Colour? c3, UV? uv1, UV? uv2, UV? uv3, float rotation, Vector2? origin)
 			{
 				if (rotation != 0f)
 				{
-					AddVertex(DrawMode.TriangleList, v1, c1, uv1, rotation, origin);
-					AddVertex(DrawMode.TriangleList, v2, c2, uv2, rotation, origin);
-					AddVertex(DrawMode.TriangleList, v3, c3, uv3, rotation, origin);
+					AddVertex(PrimitiveTopology.TriangleList, v1, c1, uv1, rotation, origin);
+					AddVertex(PrimitiveTopology.TriangleList, v2, c2, uv2, rotation, origin);
+					AddVertex(PrimitiveTopology.TriangleList, v3, c3, uv3, rotation, origin);
 				}
 				else
 				{
@@ -120,12 +120,12 @@ namespace CKGL
 			public static void Rectangle(Vector2 v1, Vector2 v2, Colour? c1, Colour? c2, Colour? c3, Colour? c4, UV? uv1, UV? uv2, UV? uv3, UV? uv4) => Rectangle(new Vector2(v1.X, v1.Y), new Vector2(v2.X, v1.Y), new Vector2(v1.X, v2.Y), new Vector2(v2.X, v2.Y), c1, c2, c3, c4, uv1, uv2, uv3, uv4);
 			public static void Rectangle(Vector2 v1, Vector2 v2, Vector2 v3, Vector2 v4, Colour? c1, Colour? c2, Colour? c3, Colour? c4, UV? uv1, UV? uv2, UV? uv3, UV? uv4)
 			{
-				AddVertex(DrawMode.TriangleList, v1, c1, uv1);
-				AddVertex(DrawMode.TriangleList, v2, c2, uv2);
-				AddVertex(DrawMode.TriangleList, v3, c3, uv3);
-				AddVertex(DrawMode.TriangleList, v3, c3, uv3);
-				AddVertex(DrawMode.TriangleList, v2, c2, uv2);
-				AddVertex(DrawMode.TriangleList, v4, c4, uv4);
+				AddVertex(PrimitiveTopology.TriangleList, v1, c1, uv1);
+				AddVertex(PrimitiveTopology.TriangleList, v2, c2, uv2);
+				AddVertex(PrimitiveTopology.TriangleList, v3, c3, uv3);
+				AddVertex(PrimitiveTopology.TriangleList, v3, c3, uv3);
+				AddVertex(PrimitiveTopology.TriangleList, v2, c2, uv2);
+				AddVertex(PrimitiveTopology.TriangleList, v4, c4, uv4);
 			}
 
 			public static void Rectangle(Vector2 v1, Vector2 v2, float rotation, Vector2 origin) => Rectangle(v1, v2, null, null, null, null, null, null, null, null, rotation, origin);
@@ -136,12 +136,12 @@ namespace CKGL
 			{
 				if (rotation != 0f)
 				{
-					AddVertex(DrawMode.TriangleList, v1, c1, uv1, rotation, origin);
-					AddVertex(DrawMode.TriangleList, v2, c2, uv2, rotation, origin);
-					AddVertex(DrawMode.TriangleList, v3, c3, uv3, rotation, origin);
-					AddVertex(DrawMode.TriangleList, v3, c3, uv3, rotation, origin);
-					AddVertex(DrawMode.TriangleList, v2, c2, uv2, rotation, origin);
-					AddVertex(DrawMode.TriangleList, v4, c4, uv4, rotation, origin);
+					AddVertex(PrimitiveTopology.TriangleList, v1, c1, uv1, rotation, origin);
+					AddVertex(PrimitiveTopology.TriangleList, v2, c2, uv2, rotation, origin);
+					AddVertex(PrimitiveTopology.TriangleList, v3, c3, uv3, rotation, origin);
+					AddVertex(PrimitiveTopology.TriangleList, v3, c3, uv3, rotation, origin);
+					AddVertex(PrimitiveTopology.TriangleList, v2, c2, uv2, rotation, origin);
+					AddVertex(PrimitiveTopology.TriangleList, v4, c4, uv4, rotation, origin);
 				}
 				else
 				{
@@ -497,9 +497,9 @@ namespace CKGL
 					var v1 = center + radius * new Vector2(Math.Cos(theta), Math.Sin(theta));
 					var v2 = center + radius * new Vector2(Math.Cos(theta + increment), Math.Sin(theta + increment));
 
-					AddVertex(DrawMode.TriangleList, v0, c1);
-					AddVertex(DrawMode.TriangleList, v1, c2);
-					AddVertex(DrawMode.TriangleList, v2, c2);
+					AddVertex(PrimitiveTopology.TriangleList, v0, c1);
+					AddVertex(PrimitiveTopology.TriangleList, v1, c2);
+					AddVertex(PrimitiveTopology.TriangleList, v2, c2);
 
 					theta += increment;
 				}
@@ -512,7 +512,7 @@ namespace CKGL
 			public static void Point(Vector2 v) => Point(v, null);
 			public static void Point(Vector2 v, Colour? c)
 			{
-				AddVertex(DrawMode.PointList, v, c);
+				AddVertex(PrimitiveTopology.PointList, v, c);
 			}
 			#endregion
 
@@ -542,8 +542,8 @@ namespace CKGL
 			public static void Line(Vector2 v1, Vector2 v2, Colour? c1, Colour? c2) => Line(v1, v2, c1, c2, null, null);
 			public static void Line(Vector2 v1, Vector2 v2, Colour? c1, Colour? c2, UV? uv1, UV? uv2)
 			{
-				AddVertex(DrawMode.LineList, v1, c1, uv1);
-				AddVertex(DrawMode.LineList, v2, c2, uv2);
+				AddVertex(PrimitiveTopology.LineList, v1, c1, uv1);
+				AddVertex(PrimitiveTopology.LineList, v2, c2, uv2);
 			}
 			#endregion
 
@@ -667,19 +667,19 @@ namespace CKGL
 			{
 				public static void AddVertex(Vector2 position)
 				{
-					Draw.AddVertex(DrawMode.LineStrip, position);
+					Draw.AddVertex(PrimitiveTopology.LineStrip, position);
 				}
 				public static void AddVertex(Vector2 position, Colour? colour)
 				{
-					Draw.AddVertex(DrawMode.LineStrip, position, colour);
+					Draw.AddVertex(PrimitiveTopology.LineStrip, position, colour);
 				}
 				public static void AddVertex(Vector2 position, Colour? colour, UV? uv)
 				{
-					Draw.AddVertex(DrawMode.LineStrip, position, colour, uv);
+					Draw.AddVertex(PrimitiveTopology.LineStrip, position, colour, uv);
 				}
 				public static void AddVertex(Vector2 position, Colour? colour, UV? uv, float rotation, Vector2? origin)
 				{
-					Draw.AddVertex(DrawMode.LineStrip, position, colour, uv, rotation, origin);
+					Draw.AddVertex(PrimitiveTopology.LineStrip, position, colour, uv, rotation, origin);
 				}
 			}
 			#endregion
@@ -723,12 +723,12 @@ namespace CKGL
 
 			//		if (lastVertex.HasValue)
 			//		{
-			//			Draw.AddVertex(DrawMode.LineList,
+			//			Draw.AddVertex(PrimitiveTopology.LineList,
 			//							   new Vector2(lastVertex.Value.Position.X, lastVertex.Value.Position.Y),
 			//							   lastVertex.Value.Colour,
 			//							   lastVertex.Value.Textured,
 			//							   lastVertex.Value.UV);
-			//			Draw.AddVertex(DrawMode.LineList, position, colour, uv);
+			//			Draw.AddVertex(PrimitiveTopology.LineList, position, colour, uv);
 			//		}
 
 			//		lastVertex = new Vertex(new Vector3(position.X, position.Y, 0f), colour, uv);
@@ -740,19 +740,19 @@ namespace CKGL
 			{
 				public static void AddVertex(Vector2 position)
 				{
-					Draw.AddVertex(DrawMode.TriangleStrip, position);
+					Draw.AddVertex(PrimitiveTopology.TriangleStrip, position);
 				}
 				public static void AddVertex(Vector2 position, Colour? colour)
 				{
-					Draw.AddVertex(DrawMode.TriangleStrip, position, colour);
+					Draw.AddVertex(PrimitiveTopology.TriangleStrip, position, colour);
 				}
 				public static void AddVertex(Vector2 position, Colour? colour, UV? uv)
 				{
-					Draw.AddVertex(DrawMode.TriangleStrip, position, colour, uv);
+					Draw.AddVertex(PrimitiveTopology.TriangleStrip, position, colour, uv);
 				}
 				public static void AddVertex(Vector2 position, Colour? colour, UV? uv, float rotation, Vector2? origin)
 				{
-					Draw.AddVertex(DrawMode.TriangleStrip, position, colour, uv, rotation, origin);
+					Draw.AddVertex(PrimitiveTopology.TriangleStrip, position, colour, uv, rotation, origin);
 				}
 			}
 			#endregion
@@ -799,17 +799,17 @@ namespace CKGL
 
 			//		if (lastLastVertex.HasValue && lastVertex.HasValue)
 			//		{
-			//			Draw.AddVertex(DrawMode.TriangleList,
+			//			Draw.AddVertex(PrimitiveTopology.TriangleList,
 			//							   new Vector2(lastLastVertex.Value.Position.X, lastLastVertex.Value.Position.Y),
 			//							   lastLastVertex.Value.Colour,
 			//							   lastLastVertex.Value.Textured,
 			//							   lastLastVertex.Value.UV);
-			//			Draw.AddVertex(DrawMode.TriangleList,
+			//			Draw.AddVertex(PrimitiveTopology.TriangleList,
 			//							   new Vector2(lastVertex.Value.Position.X, lastVertex.Value.Position.Y),
 			//							   lastVertex.Value.Colour,
 			//							   lastVertex.Value.Textured,
 			//							   lastVertex.Value.UV);
-			//			Draw.AddVertex(DrawMode.TriangleList, position, colour, uv);
+			//			Draw.AddVertex(PrimitiveTopology.TriangleList, position, colour, uv);
 			//		}
 
 			//		lastLastVertex = lastVertex;
@@ -836,11 +836,11 @@ namespace CKGL
 			#endregion
 
 			#region AddVertex
-			public static void AddVertex(DrawMode type, Vector3 position) => AddVertex(type, position, null, null);
-			public static void AddVertex(DrawMode type, Vector3 position, Colour? colour) => AddVertex(type, position, colour, null);
-			public static void AddVertex(DrawMode type, Vector3 position, Colour? colour, UV? uv)
+			public static void AddVertex(PrimitiveTopology primitiveTopology, Vector3 position) => AddVertex(primitiveTopology, position, null, null);
+			public static void AddVertex(PrimitiveTopology primitiveTopology, Vector3 position, Colour? colour) => AddVertex(primitiveTopology, position, colour, null);
+			public static void AddVertex(PrimitiveTopology primitiveTopology, Vector3 position, Colour? colour, UV? uv)
 			{
-				Renderer.AddVertex(type, position * transform?.Matrix ?? position, colour, uv);
+				Renderer.AddVertex(primitiveTopology, position * transform?.Matrix ?? position, colour, uv);
 			}
 			#endregion
 
@@ -850,9 +850,9 @@ namespace CKGL
 			public static void Triangle(Vector3 v1, Vector3 v2, Vector3 v3, Colour? c1, Colour? c2, Colour? c3) => Triangle(v1, v2, v3, c1, c2, c3, null, null, null);
 			public static void Triangle(Vector3 v1, Vector3 v2, Vector3 v3, Colour? c1, Colour? c2, Colour? c3, UV? uv1, UV? uv2, UV? uv3)
 			{
-				AddVertex(DrawMode.TriangleList, v1, c1, uv1);
-				AddVertex(DrawMode.TriangleList, v2, c2, uv2);
-				AddVertex(DrawMode.TriangleList, v3, c3, uv3);
+				AddVertex(PrimitiveTopology.TriangleList, v1, c1, uv1);
+				AddVertex(PrimitiveTopology.TriangleList, v2, c2, uv2);
+				AddVertex(PrimitiveTopology.TriangleList, v3, c3, uv3);
 			}
 			#endregion
 
@@ -863,12 +863,12 @@ namespace CKGL
 			public static void Rectangle(Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4, Colour? c1, Colour? c2, Colour? c3, Colour? c4) => Rectangle(v1, v2, v3, v4, c1, c2, c3, c4, null, null, null, null);
 			public static void Rectangle(Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4, Colour? c1, Colour? c2, Colour? c3, Colour? c4, UV? uv1, UV? uv2, UV? uv3, UV? uv4)
 			{
-				AddVertex(DrawMode.TriangleList, v1, c1, uv1);
-				AddVertex(DrawMode.TriangleList, v2, c2, uv2);
-				AddVertex(DrawMode.TriangleList, v3, c3, uv3);
-				AddVertex(DrawMode.TriangleList, v3, c3, uv3);
-				AddVertex(DrawMode.TriangleList, v2, c2, uv2);
-				AddVertex(DrawMode.TriangleList, v4, c4, uv4);
+				AddVertex(PrimitiveTopology.TriangleList, v1, c1, uv1);
+				AddVertex(PrimitiveTopology.TriangleList, v2, c2, uv2);
+				AddVertex(PrimitiveTopology.TriangleList, v3, c3, uv3);
+				AddVertex(PrimitiveTopology.TriangleList, v3, c3, uv3);
+				AddVertex(PrimitiveTopology.TriangleList, v2, c2, uv2);
+				AddVertex(PrimitiveTopology.TriangleList, v4, c4, uv4);
 			}
 			#endregion
 
@@ -878,7 +878,7 @@ namespace CKGL
 			public static void Point(Vector3 v) => Point(v, null);
 			public static void Point(Vector3 v, Colour? c)
 			{
-				AddVertex(DrawMode.PointList, v, c);
+				AddVertex(PrimitiveTopology.PointList, v, c);
 			}
 			#endregion
 
@@ -888,8 +888,8 @@ namespace CKGL
 			public static void Line(Vector3 v1, Vector3 v2, Colour? c1, Colour? c2) => Line(v1, v2, c1, c2, null, null);
 			public static void Line(Vector3 v1, Vector3 v2, Colour? c1, Colour? c2, UV? uv1, UV? uv2)
 			{
-				AddVertex(DrawMode.LineList, v1, c1, uv1);
-				AddVertex(DrawMode.LineList, v2, c2, uv2);
+				AddVertex(PrimitiveTopology.LineList, v1, c1, uv1);
+				AddVertex(PrimitiveTopology.LineList, v2, c2, uv2);
 			}
 			#endregion
 

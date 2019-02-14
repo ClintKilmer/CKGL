@@ -181,12 +181,15 @@ namespace CKGL.OpenGLBindings
 			{
 				if (field.Name.StartsWith("gl", StringComparison.Ordinal))
 				{
-					addr = Platform.GetProcAddress(field.Name);
-					if (addr == IntPtr.Zero)
-						throw new Exception("OpenGL function not available: " + field.Name);
-
-					var del = Marshal.GetDelegateForFunctionPointer(addr, field.FieldType);
-					field.SetValue(null, del);
+					try
+					{
+						field.SetValue(null, GetProcAddress(field.Name, field.FieldType));
+					}
+					catch (Exception e)
+					{
+						Output.WriteLine($"*****OpenGL function not available: {field.Name}");
+						Output.WriteLine($"*****Exception: {e.Message}");
+					}
 				}
 			}
 
@@ -243,9 +246,9 @@ namespace CKGL.OpenGLBindings
 		private static void CheckError()
 		{
 			var err = glGetError();
-			//Debug.Assert(err == ErrorCode.NoError, $"OpenGL Error {(int)err:X}: {err.ToString()}");
 			if (err != ErrorCode.NoError)
 				throw new Exception($"OpenGL Error {(int)err:X}: {err.ToString()}");
+			//Debug.Assert(err == ErrorCode.NoError, $"OpenGL Error {(int)err:X}: {err.ToString()}");
 		}
 
 		[Shared]
@@ -261,18 +264,18 @@ namespace CKGL.OpenGLBindings
 		[Shared]
 		private static _glGetIntegerv glGetIntegerv;
 		private unsafe delegate void _glGetIntegerv(Integers name, GLint* data);
-		private unsafe static void GetIntegerv(Integers name, out GLint val)
+		private unsafe static void GetIntegerv(Integers name, out int val)
 		{
-			fixed (GLint* p = &val)
+			fixed (int* p = &val)
 			{
 				glGetIntegerv(name, p);
 				val = *p;
 			}
 			CheckError();
 		}
-		public static GLint GetIntegerv(Integers name)
+		public static int GetIntegerv(Integers name)
 		{
-			GetIntegerv(name, out GLint val);
+			GetIntegerv(name, out int val);
 			return val;
 		}
 		#endregion
@@ -743,6 +746,28 @@ namespace CKGL.OpenGLBindings
 		#endregion
 
 		#region Drawing Functions
+		[Shared]
+		private static _glDrawArrays glDrawArrays;
+		private delegate void _glDrawArrays(PrimitiveMode mode, GLint first, GLint count);
+		public static void DrawArrays(PrimitiveMode mode, int start, int count)
+		{
+			glDrawArrays(mode, start, count);
+			CheckError();
+		}
+
+		[Shared]
+		private static _glDrawElements glDrawElements;
+		private delegate void _glDrawElements(PrimitiveMode mode, GLint count, IndexType type, IntPtr indices);
+		public static void DrawElements(PrimitiveMode mode, int count, IndexType type, IntPtr offset)
+		{
+			glDrawElements(mode, count, type, offset);
+			CheckError();
+		}
+		public static void DrawElements(PrimitiveMode mode, int count, IndexType type, int offset)
+		{
+			glDrawElements(mode, count, type, new IntPtr(offset));
+			CheckError();
+		}
 		#endregion
 
 		#region Query Functions
@@ -1120,25 +1145,13 @@ namespace CKGL.OpenGLBindings
 			CheckError();
 		}
 
-		private delegate void _glDrawArrays(DrawMode mode, GLint start, GLint count);
-		private static _glDrawArrays glDrawArrays;
-		public static void DrawArrays(DrawMode mode, GLint start, GLint count)
-		{
-			glDrawArrays(mode, start, count);
-			CheckError();
-		}
 
-		private delegate void _glDrawElements(DrawMode mode, GLint count, IndexType type, IntPtr offset);
-		private static _glDrawElements glDrawElements;
-		public static void DrawElements(DrawMode mode, GLint count, IndexType type, IntPtr offset)
-		{
-			glDrawElements(mode, count, type, offset);
-			CheckError();
-		}
-		public static void DrawElements(DrawMode mode, GLint count, IndexType type, GLint offset)
-		{
-			DrawElements(mode, count, type, new IntPtr(offset));
-		}
+
+
+
+
+
+
 
 		private delegate void _glBlitFramebuffer(int srcX0, int srcY0, int srcX1, int srcY1, int dstX0, int dstY0, int dstX1, int dstY1, BufferBit mask, BlitFilter filter);
 		private static _glBlitFramebuffer glBlitFramebuffer;

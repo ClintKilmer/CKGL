@@ -834,7 +834,7 @@ namespace CKGL
 
 		private static unsafe bool TestIndividualOpenGLVersion(bool es, int major, int minor)
 		{
-			if(es)
+			if (es)
 				SDL_SetHint("SDL_HINT_OPENGL_ES_DRIVER", "1");
 
 			SDL_GLprofile profileMask = es ? SDL_GLprofile.SDL_GL_CONTEXT_PROFILE_ES : SDL_GLprofile.SDL_GL_CONTEXT_PROFILE_CORE;

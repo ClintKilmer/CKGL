@@ -32,7 +32,7 @@ Random:
 - Test Quaternion.CreateLookAt
 - RAM function seems to force GC
 - Vector 2/3 rotate around
-- Renderer - add lineloop and any figure out all DrawModes
+- Renderer - add lineloop and any figure out all PrimitiveTopologies
 - Add Texture2dSampler, and CubeMap to Shader Uniform Set - Have generic Set Texture Uniform
 - ResourceHandle? GLResource?
 
