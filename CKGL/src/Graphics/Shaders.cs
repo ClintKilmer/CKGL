@@ -3,13 +3,17 @@ namespace CKGL
 	public static class ShaderIncludes
 	{
 		#region Common
-		private static readonly string Common = @"
-#version 330 core
-//#version 300 es
-//precision mediump float;
+		private static readonly string OpenGL = "#version 330 core";
+		private static readonly string OpenGLES = @"#version 300 es
+precision mediump float;
 
 //#extension GL_EXT_geometry_shader: require
-//#extension GL_OES_geometry_shader: require
+//#extension GL_OES_geometry_shader: require";
+
+		private static readonly string Common = Platform.GraphicsBackend == GraphicsBackend.OpenGLES
+			? OpenGLES
+			: OpenGL
+			+ @"
 
 float fog_linear(const float dist, const float start, const float end)
 {
