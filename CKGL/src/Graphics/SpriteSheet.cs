@@ -34,14 +34,15 @@ namespace CKGL
 			this.padding = padding;
 		}
 
-		public Sprite AddSprite(Texture2D texture)
+		public Sprite AddSprite(string file)
 		{
-			return AddSprite(texture, new RectangleI(0, 0, texture.Width, texture.Height));
+			Platform.LoadImage(file, out int width, out int height, out byte[] imageData);
+			return AddSprite(file, new RectangleI(width, height));
 		}
-		public Sprite AddSprite(Texture2D texture, RectangleI source)
+		public Sprite AddSprite(string file, RectangleI source)
 		{
-			Colour[,] spriteData = texture.GetData2D();
-			texture.Destroy();
+			Platform.LoadImage(file, out int width, out int height, out byte[] imageData);
+			Colour[,] spriteData = Colour.ConvertBytesToColour2DArray(imageData, width, height);
 
 #if DEBUG
 			Point2 offset = GetValidPlacementNaive(source.W, source.H);
@@ -61,14 +62,12 @@ namespace CKGL
 			return sprite;
 		}
 
-		public Sprite AddSpriteFontGlyph(Texture2D texture, bool xtrim = false)
+		public Sprite AddSpriteFontGlyph(Colour[,] spriteData, bool xtrim = false)
 		{
-			return AddSpriteFontGlyph(texture, new RectangleI(0, 0, texture.Width, texture.Height), xtrim);
+			return AddSpriteFontGlyph(spriteData, new RectangleI(0, 0, spriteData.GetLength(0), spriteData.GetLength(1)), xtrim);
 		}
-		public Sprite AddSpriteFontGlyph(Texture2D texture, RectangleI source, bool xtrim = false)
+		public Sprite AddSpriteFontGlyph(Colour[,] spriteData, RectangleI source, bool xtrim = false)
 		{
-			Colour[,] spriteData = texture.GetData2D();
-
 			int spriteOffsetX = 0;
 			int spriteWidth = source.W;
 

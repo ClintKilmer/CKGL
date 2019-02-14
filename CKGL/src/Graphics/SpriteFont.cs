@@ -23,11 +23,11 @@ namespace CKGL
 		public float SpaceWidth;
 		public float LineHeight;
 
-		private Sprite[] glyphs;
-		private char start;
-		private char end;
+		private readonly Sprite[] glyphs;
+		private readonly char start;
+		private readonly char end;
 
-		public SpriteFont(SpriteSheet spriteSheet, string path, int glyphWidth, int glyphHeight, char startASCII, char endASCII, float charSpacing, float spaceWidth, float lineHeight, bool xtrim)
+		public SpriteFont(SpriteSheet spriteSheet, string file, int glyphWidth, int glyphHeight, char startASCII, char endASCII, float charSpacing, float spaceWidth, float lineHeight, bool xtrim)
 		{
 			SpriteSheet = spriteSheet;
 			CharSpacing = charSpacing;
@@ -39,11 +39,12 @@ namespace CKGL
 
 			glyphs = new Sprite[end + 1];
 
+			Platform.LoadImage(file, out int width, out int height, out byte[] imageData);
+			Colour[,] spriteData = Colour.ConvertBytesToColour2DArray(imageData, width, height);
+
 			for (int i = start; i <= end; i++)
 			{
-				Texture2D texture = Texture2D.CreateFromFile(path);
-				glyphs[i] = spriteSheet.AddSpriteFontGlyph(texture, new RectangleI(glyphWidth * (i - start), 0, glyphWidth, glyphHeight), xtrim);
-				texture.Destroy();
+				glyphs[i] = spriteSheet.AddSpriteFontGlyph(spriteData, new RectangleI(glyphWidth * (i - start), 0, glyphWidth, glyphHeight), xtrim);
 			}
 		}
 

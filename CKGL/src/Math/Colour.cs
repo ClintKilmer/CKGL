@@ -221,6 +221,41 @@ namespace CKGL
 		}
 		#endregion
 
+		#region Static Methods
+		public static Colour[,] ConvertBytesToColour2DArray(byte[] imageData, int width, int height, PixelFormat pixelFormat = PixelFormat.RGBA)
+		{
+			Colour[,] spriteData = new Colour[width, height];
+			int components = pixelFormat.Components();
+
+			for (int i = 0; i < width * height * components; i += components)
+			{
+				int j = i / components;
+				int y = j / width;
+				int x = j - y * width;
+				switch (components)
+				{
+					case 1:
+						spriteData[x, y] = new Colour(imageData[i], 0, 0, 255);
+						break;
+					case 2:
+						spriteData[x, y] = new Colour(imageData[i], imageData[i + 1], 0, 255);
+						break;
+					case 3:
+						spriteData[x, y] = new Colour(imageData[i], imageData[i + 1], imageData[i + 2], 255);
+						break;
+					case 4:
+						spriteData[x, y] = new Colour(imageData[i], imageData[i + 1], imageData[i + 2], imageData[i + 3]);
+						break;
+					default:
+						throw new CKGLException("");
+
+				}
+			}
+
+			return spriteData;
+		}
+		#endregion
+
 		#region Overrides
 		public override string ToString()
 		{

@@ -42,9 +42,9 @@ namespace CKGLTest2D
 
 	public static class Sprites
 	{
-		public static Sprite Test1 = SpriteSheets.SpriteSheet.AddSprite(Texture2D.CreateFromFile($"textures/Character1.png"));
-		public static Sprite Test2 = SpriteSheets.SpriteSheet.AddSprite(Texture2D.CreateFromFile($"textures/Character2.png"));
-		public static Sprite Test3 = SpriteSheets.SpriteSheet.AddSprite(Texture2D.CreateFromFile($"textures/Character3.png"));
+		public static Sprite Test1 = SpriteSheets.SpriteSheet.AddSprite("textures/Character1.png");
+		public static Sprite Test2 = SpriteSheets.SpriteSheet.AddSprite("textures/Character2.png");
+		public static Sprite Test3 = SpriteSheets.SpriteSheet.AddSprite("textures/Character3.png");
 	}
 
 	public static class Textures
