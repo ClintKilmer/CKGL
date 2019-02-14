@@ -94,7 +94,7 @@ namespace CKGL
 #if DEBUG
 			Point2 offset = GetValidPlacementNaive(spriteWidth, source.H);
 #else
-			Point2 offset = GetValidPlacement(spriteWidth, texture.Height);
+			Point2 offset = GetValidPlacement(spriteWidth, source.H);
 #endif
 
 			for (int y = 0; y < source.H; y++)
