@@ -535,17 +535,17 @@ namespace CKGLTest
 
 			Renderer.Draw.Sprite(Sprites.Test1,
 								 new Vector2(4f, -0.5f),
-								 Vector2.One / 8f,
+								 Vector2.One / Sprites.Test1.MaxLength,
 								 Colour.White);
 
 			Renderer.Draw.Sprite(Sprites.Test2,
 								 new Vector2(6f, -0.5f),
-								 Vector2.One / 8f,
+								 Vector2.One / Sprites.Test2.MaxLength,
 								 Colour.White);
 
 			Renderer.Draw.Sprite(Sprites.Test3,
 								 new Vector2(8f, -0.5f),
-								 Vector2.One / 8f,
+								 Vector2.One / Sprites.Test3.MaxLength,
 								 Colour.White);
 
 			Renderer.Draw.Text(SpriteFonts.Font,

@@ -683,8 +683,23 @@ namespace CKGL
 		public static void LoadImage(string file, out int width, out int height, out byte[] data)
 		{
 			IntPtr surfaceID = SDL_image.IMG_Load(file);
+
+			// If image load fails, generate a default pink error texture
 			if (surfaceID == IntPtr.Zero)
-				throw new FileNotFoundException($"TextureDataFromStream: {SDL_GetError()}", file);
+			{
+				//throw new FileNotFoundException($"TextureDataFromStream: {SDL_GetError()}", file);
+
+				surfaceID = SDL_CreateRGBSurfaceWithFormat(0, 32, 32, 0, SDL_PIXELFORMAT_ABGR8888);
+
+				unsafe
+				{
+					SDL_Surface* surfacePtr = (SDL_Surface*)surfaceID;
+					SDL_PixelFormat* pixelFormatPtr = (SDL_PixelFormat*)surfacePtr->format;
+					SDL_FillRect(surfaceID, IntPtr.Zero, SDL_MapRGB((IntPtr)pixelFormatPtr, 255, 20, 147));
+				}
+
+			}
+
 			surfaceID = ConvertSurfaceFormat(surfaceID);
 
 			unsafe
@@ -695,6 +710,7 @@ namespace CKGL
 				data = new byte[width * height * PixelFormat.RGBA.Components()];
 				Marshal.Copy(surface->pixels, data, 0, data.Length);
 			}
+
 			SDL_FreeSurface(surfaceID);
 
 			// Enforce alpha

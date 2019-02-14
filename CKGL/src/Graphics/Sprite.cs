@@ -12,9 +12,10 @@ namespace CKGL
 		public UV UV_TL { get; private set; }
 		public UV UV_TR { get; private set; }
 
-		public Vector2 Position { get { return new Vector2(X, Y); } }
-		public Vector2 Size { get { return new Vector2(Width, Height); } }
-		public RectangleI Bounds { get { return new RectangleI(X, Y, Width, Height); } }
+		public Vector2 Position => new Vector2(X, Y);
+		public Vector2 Size => new Vector2(Width, Height);
+		public RectangleI Bounds => new RectangleI(X, Y, Width, Height);
+		public int MaxLength => Math.Max(Width, Height);
 
 		public Sprite(SpriteSheet spriteSheet, int x, int y, int width, int height)
 		{
