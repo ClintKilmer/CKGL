@@ -743,6 +743,171 @@ namespace CKGL.OpenGLBindings
 		#endregion
 
 		#region Framebuffer Functions
+		[Shared]
+		private static _glGenFramebuffers glGenFramebuffers;
+		private unsafe delegate void _glGenFramebuffers(GLint n, GLuint* framebuffers);
+		public unsafe static void GenFramebuffers(int n, uint[] framebuffers)
+		{
+			fixed (uint* ptr = framebuffers) { glGenFramebuffers(n, ptr); }
+			CheckError();
+		}
+		public unsafe static uint GenFramebuffer()
+		{
+			uint fbo = 0;
+			glGenFramebuffers(1, &fbo);
+			CheckError();
+			return fbo;
+		}
+
+		[Shared]
+		private static _glDeleteFramebuffers glDeleteFramebuffers;
+		private unsafe delegate void _glDeleteFramebuffers(GLint n, GLuint* framebuffers);
+		public unsafe static void DeleteFramebuffers(int n, uint[] framebuffers)
+		{
+			fixed (uint* ptr = framebuffers) { glDeleteFramebuffers(n, ptr); }
+			CheckError();
+		}
+		public unsafe static void DeleteFramebuffer(uint framebuffer)
+		{
+			glDeleteFramebuffers(1, &framebuffer);
+			CheckError();
+		}
+
+		[Shared]
+		private static _glBindFramebuffer glBindFramebuffer;
+		private delegate void _glBindFramebuffer(FramebufferTarget target, GLuint framebuffer);
+		public static void BindFramebuffer(FramebufferTarget target, uint framebuffer)
+		{
+			glBindFramebuffer(target, framebuffer);
+			CheckError();
+		}
+
+		[Shared]
+		private static _glFramebufferTexture2D glFramebufferTexture2D;
+		private delegate void _glFramebufferTexture2D(FramebufferTarget target, TextureAttachment attachment, TexImageTarget textarget, GLuint texture, GLint level);
+		public static void FramebufferTexture2D(FramebufferTarget target, TextureAttachment attachment, TexImageTarget textarget, uint texture, int level)
+		{
+			if (attachment != TextureAttachment.Depth)
+			{
+				uint texn = (uint)attachment - (uint)TextureAttachment.Colour0;
+				if (texn >= MaxColourAttachments)
+					throw new Exception("Exceeding max colour attachments: " + MaxColourAttachments);
+			}
+			glFramebufferTexture2D(target, attachment, textarget, texture, level);
+			CheckError();
+		}
+
+		[Shared]
+		private static _glCheckFramebufferStatus glCheckFramebufferStatus;
+		private delegate FramebufferStatus _glCheckFramebufferStatus(FramebufferTarget target);
+		public static FramebufferStatus CheckFramebufferStatus(FramebufferTarget target)
+		{
+			var status = glCheckFramebufferStatus(target);
+			CheckError();
+			return status;
+		}
+
+		[Shared]
+		private static _glDrawBuffers glDrawBuffers;
+		private unsafe delegate void _glDrawBuffers(GLint n, DrawBuffer* bufs);
+		public unsafe static void DrawBuffers(int n, DrawBuffer[] bufs)
+		{
+			if (n > bufs.Length)
+				throw new Exception("Not enough buffers in array.");
+			if (n > MaxDrawBuffers)
+				throw new Exception("Exceeded maximum number of draw buffers: " + MaxDrawBuffers);
+
+			fixed (DrawBuffer* ptr = bufs) { glDrawBuffers(n, ptr); }
+			CheckError();
+		}
+
+		[Shared]
+		private static _glReadBuffer glReadBuffer;
+		private delegate void _glReadBuffer(ReadBuffer buffer);
+		public static void ReadBuffer(ReadBuffer buffer)
+		{
+			glReadBuffer(buffer);
+			CheckError();
+		}
+
+		[Shared]
+		private static _glBlitFramebuffer glBlitFramebuffer;
+		private delegate void _glBlitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, BufferBit mask, BlitFilter filter);
+		public static void BlitFramebuffer(RectangleI src, RectangleI dst, BufferBit mask, BlitFilter filter)
+		{
+			glBlitFramebuffer(src.X, src.Y, src.MaxX, src.MaxY, dst.X, dst.Y, dst.MaxX, dst.MaxY, mask, filter);
+			CheckError();
+		}
+
+		[Shared]
+		private static _glReadPixels glReadPixels;
+		private unsafe delegate void _glReadPixels(GLint x, GLint y, GLint w, GLint h, PixelFormat format, DataType type, byte* data);
+		public unsafe static void ReadPixels(RectangleI rect, PixelFormat format, byte[] data)
+		{
+			if (data.Length < rect.Area * format.Components())
+				throw new Exception("Data array is not large enough.");
+			fixed (byte* ptr = data) { glReadPixels(rect.X, rect.Y, rect.W, rect.H, format, DataType.UnsignedByte, ptr); }
+			CheckError();
+		}
+		#endregion
+
+		#region Renderbuffer Functions
+		[Shared]
+		private static _glGenRenderbuffers glGenRenderbuffers;
+		private unsafe delegate void _glGenRenderbuffers(GLint n, GLuint* renderbuffers);
+		public unsafe static void GenRenderbuffers(int n, uint[] renderbuffers)
+		{
+			fixed (uint* ptr = renderbuffers) { glGenFramebuffers(n, ptr); }
+			CheckError();
+		}
+		public unsafe static uint GenRenderbuffer()
+		{
+			uint rbo = 0;
+			glGenRenderbuffers(1, &rbo);
+			CheckError();
+			return rbo;
+		}
+
+		[Shared]
+		private static _glDeleteRenderbuffers glDeleteRenderbuffers;
+		private unsafe delegate void _glDeleteRenderbuffers(GLint n, GLuint* renderbuffers);
+		public unsafe static void DeleteRenderbuffers(int n, uint[] renderbuffers)
+		{
+			fixed (uint* ptr = renderbuffers) { glDeleteRenderbuffers(n, ptr); }
+			CheckError();
+		}
+		public unsafe static void DeleteRenderbuffer(uint renderbuffer)
+		{
+			glDeleteRenderbuffers(1, &renderbuffer);
+			CheckError();
+		}
+
+		[Shared]
+		private static _glBindRenderbuffer glBindRenderbuffer;
+		private delegate void _glBindRenderbuffer(GLuint target, GLuint buffer);
+		public static void BindRenderbuffer(uint buffer)
+		{
+			glBindRenderbuffer(GL_RENDERBUFFER, buffer);
+			CheckError();
+		}
+
+		[Shared]
+		private static _glRenderbufferStorage glRenderbufferStorage;
+		private delegate void _glRenderbufferStorage(GLuint target, TextureFormat internalformat, GLint width, GLint height);
+		public static void RenderbufferStorage(TextureFormat internalformat, int width, int height)
+		{
+			glRenderbufferStorage(GL_RENDERBUFFER, internalformat, width, height);
+			CheckError();
+		}
+
+		[Shared]
+		private static _glFramebufferRenderbuffer glFramebufferRenderbuffer;
+		private delegate void _glFramebufferRenderbuffer(FramebufferTarget target, TextureAttachment attachment, GLuint renderbufferTarget, GLuint renderbuffer);
+		public static void FramebufferRenderbuffer(FramebufferTarget target, TextureAttachment attachment, uint renderbuffer)
+		{
+			glFramebufferRenderbuffer(target, attachment, GL_RENDERBUFFER, renderbuffer);
+			CheckError();
+		}
 		#endregion
 
 		#region Vertex Attribute Functions
@@ -1026,152 +1191,11 @@ namespace CKGL.OpenGLBindings
 
 
 
-		private unsafe delegate void _glGenFramebuffers(GLint n, uint* framebuffers);
-		private static _glGenFramebuffers glGenFramebuffers;
-		public unsafe static void GenFramebuffers(GLint n, uint[] framebuffers)
-		{
-			fixed (uint* ptr = framebuffers) { glGenFramebuffers(n, ptr); }
-			CheckError();
-		}
-		public unsafe static uint GenFramebuffer()
-		{
-			uint fbo = 0;
-			glGenFramebuffers(1, &fbo);
-			CheckError();
-			return fbo;
-		}
-
-		private unsafe delegate void _glDeleteFramebuffers(GLint n, uint* framebuffers);
-		private static _glDeleteFramebuffers glDeleteFramebuffers;
-		public unsafe static void DeleteFramebuffers(GLint n, uint[] framebuffers)
-		{
-			fixed (uint* ptr = framebuffers) { glDeleteFramebuffers(n, ptr); }
-			CheckError();
-		}
-		public unsafe static void DeleteFramebuffer(uint framebuffer)
-		{
-			glDeleteFramebuffers(1, &framebuffer);
-			CheckError();
-		}
-
-		private delegate void _glBindFramebuffer(FramebufferTarget target, uint framebuffer);
-		private static _glBindFramebuffer glBindFramebuffer;
-		public static void BindFramebuffer(FramebufferTarget target, uint framebuffer)
-		{
-			glBindFramebuffer(target, framebuffer);
-			CheckError();
-		}
-
-		private delegate void _glFramebufferTexture2D(FramebufferTarget target, TextureAttachment attachment, TexImageTarget textarget, uint texture, int level);
-		private static _glFramebufferTexture2D glFramebufferTexture2D;
-		public static void FramebufferTexture2D(FramebufferTarget target, TextureAttachment attachment, TexImageTarget textarget, uint texture, int level)
-		{
-			if (attachment != TextureAttachment.Depth)
-			{
-				uint texn = (uint)attachment - (uint)TextureAttachment.Colour0;
-				if (texn >= MaxColourAttachments)
-					throw new Exception("Exceeding max colour attachments: " + MaxColourAttachments);
-			}
-			glFramebufferTexture2D(target, attachment, textarget, texture, level);
-			CheckError();
-		}
-
-		private unsafe delegate void _glDrawBuffers(GLint n, DrawBuffer* bufs);
-		private static _glDrawBuffers glDrawBuffers;
-		public unsafe static void DrawBuffers(GLint n, DrawBuffer[] bufs)
-		{
-			if (n > bufs.Length)
-				throw new Exception("Not enough buffers in array.");
-			if (n > MaxDrawBuffers)
-				throw new Exception("Exceeded maximum number of draw buffers: " + MaxDrawBuffers);
-
-			fixed (DrawBuffer* ptr = bufs) { glDrawBuffers(n, ptr); }
-			CheckError();
-		}
-
-		private delegate void _glReadBuffer(ReadBuffer buffer);
-		private static _glReadBuffer glReadBuffer;
-		public static void ReadBuffer(ReadBuffer buffer)
-		{
-			glReadBuffer(buffer);
-			CheckError();
-		}
-
-		private unsafe delegate void _glReadPixels(int x, int y, GLint w, GLint h, PixelFormat format, DataType type, byte* data);
-		private static _glReadPixels glReadPixels;
-		public unsafe static void ReadPixels(RectangleI rect, byte[] data)
-		{
-			if (data.Length < rect.Area)
-				throw new Exception("Data array is not large enough.");
-			fixed (byte* ptr = data) { glReadPixels(rect.X, rect.Y, rect.W, rect.H, PixelFormat.RGBA, DataType.UnsignedByte, ptr); }
-			CheckError();
-		}
-
-		private unsafe delegate void _glGenRenderbuffers(GLint n, uint* renderbuffers);
-		private static _glGenRenderbuffers glGenRenderbuffers;
-		public unsafe static void GenRenderbuffers(GLint n, uint[] renderbuffers)
-		{
-			fixed (uint* ptr = renderbuffers) { glGenFramebuffers(n, ptr); }
-			CheckError();
-		}
-		public unsafe static uint GenRenderbuffer()
-		{
-			uint rbo = 0;
-			glGenRenderbuffers(1, &rbo);
-			CheckError();
-			return rbo;
-		}
-
-		private const GLuint GL_RENDERBUFFER = 0x8D41;
-
-		private delegate void _glBindRenderbuffer(GLuint target, uint buffer);
-		private static _glBindRenderbuffer glBindRenderbuffer;
-		public static void BindRenderbuffer(uint buffer)
-		{
-			glBindRenderbuffer(GL_RENDERBUFFER, buffer);
-			CheckError();
-		}
-
-		private delegate void _glRenderbufferStorage(GLuint target, TextureFormat format, int width, int height);
-		private static _glRenderbufferStorage glRenderbufferStorage;
-		public static void RenderbufferStorage(TextureFormat format, int width, int height)
-		{
-			glRenderbufferStorage(GL_RENDERBUFFER, format, width, height);
-			CheckError();
-		}
-
-		private delegate void _glFramebufferRenderbuffer(FramebufferTarget target, TextureAttachment attachment, GLuint renderbufferTarget, uint renderbuffer);
-		private static _glFramebufferRenderbuffer glFramebufferRenderbuffer;
-		public static void FramebufferRenderbuffer(FramebufferTarget target, TextureAttachment attachment, uint renderbuffer)
-		{
-			glFramebufferRenderbuffer(target, attachment, GL_RENDERBUFFER, renderbuffer);
-			CheckError();
-		}
 
 
 
 
 
-
-
-
-
-		private delegate void _glBlitFramebuffer(int srcX0, int srcY0, int srcX1, int srcY1, int dstX0, int dstY0, int dstX1, int dstY1, BufferBit mask, BlitFilter filter);
-		private static _glBlitFramebuffer glBlitFramebuffer;
-		public static void BlitFramebuffer(RectangleI src, RectangleI dst, BufferBit mask, BlitFilter filter)
-		{
-			glBlitFramebuffer(src.X, src.Y, src.MaxX, src.MaxY, dst.X, dst.Y, dst.MaxX, dst.MaxY, mask, filter);
-			CheckError();
-		}
-
-		private delegate FramebufferStatus _glCheckFramebufferStatus(FramebufferTarget target);
-		private static _glCheckFramebufferStatus glCheckFramebufferStatus;
-		public static FramebufferStatus CheckFramebufferStatus(FramebufferTarget target)
-		{
-			var status = glCheckFramebufferStatus(target);
-			CheckError();
-			return status;
-		}
 
 		private delegate void _glUniform1f(int location, float v0);
 		private delegate void _glUniform2f(int location, float v0, float v1);

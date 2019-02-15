@@ -1596,26 +1596,67 @@ namespace CKGL.OpenGLBindings
 		UnsignedInt = GL_UNSIGNED_INT
 	}
 
-	//////////////////////////////////////////////////////////
+	public enum FramebufferTarget : GLuint
+	{
+		Framebuffer = GL_FRAMEBUFFER,
+		Draw = GL_DRAW_FRAMEBUFFER,
+		Read = GL_READ_FRAMEBUFFER
+	}
 
 	public enum FramebufferStatus : GLuint
 	{
-		Complete = 0x8CD5,
-		Undefined = 0x8219,
-		IncompleteAttachment = 0x8CD6,
-		IncompleteMissingAttachment = 0x8CD7,
-		IncompleteDrawBuffer = 0x8CDB,
-		IncompleteReadBuffer = 0x8CDC,
-		Unsupported = 0x8CDD,
-		IncompleteMultisample = 0x8D56,
-		IncompleteLayerTargets = 0x8DA8
+		Complete = GL_FRAMEBUFFER_COMPLETE,
+		Undefined = GL_FRAMEBUFFER_UNDEFINED,
+		IncompleteAttachment = GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT,
+		IncompleteMissingAttachment = GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT,
+		IncompleteDrawBuffer = GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER,
+		IncompleteReadBuffer = GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER,
+		Unsupported = GL_FRAMEBUFFER_UNSUPPORTED,
+		IncompleteMultisample = GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE,
+		IncompleteLayerTargets = GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS
 	}
 
-	public enum FramebufferTarget : GLuint
+	public enum DrawBuffer : GLuint
 	{
-		Framebuffer = 0x8D40,
-		Draw = 0x8CA9,
-		Read = 0x8CA8
+		None = GL_NONE,
+		Back = GL_BACK,
+		Colour0 = GL_COLOR_ATTACHMENT0,
+		Colour1 = GL_COLOR_ATTACHMENT1,
+		Colour2 = GL_COLOR_ATTACHMENT2,
+		Colour3 = GL_COLOR_ATTACHMENT3,
+		Colour4 = GL_COLOR_ATTACHMENT4,
+		Colour5 = GL_COLOR_ATTACHMENT5,
+		Colour6 = GL_COLOR_ATTACHMENT6,
+		Colour7 = GL_COLOR_ATTACHMENT7,
+		Colour8 = GL_COLOR_ATTACHMENT8,
+		Colour9 = GL_COLOR_ATTACHMENT9,
+		Colour10 = GL_COLOR_ATTACHMENT10,
+		Colour11 = GL_COLOR_ATTACHMENT11,
+		Colour12 = GL_COLOR_ATTACHMENT12,
+		Colour13 = GL_COLOR_ATTACHMENT13,
+		Colour14 = GL_COLOR_ATTACHMENT14,
+		Colour15 = GL_COLOR_ATTACHMENT15
+	}
+
+	public enum ReadBuffer : GLuint
+	{
+		Depth = GL_DEPTH_ATTACHMENT,
+		Colour0 = GL_COLOR_ATTACHMENT0,
+		Colour1 = GL_COLOR_ATTACHMENT1,
+		Colour2 = GL_COLOR_ATTACHMENT2,
+		Colour3 = GL_COLOR_ATTACHMENT3,
+		Colour4 = GL_COLOR_ATTACHMENT4,
+		Colour5 = GL_COLOR_ATTACHMENT5,
+		Colour6 = GL_COLOR_ATTACHMENT6,
+		Colour7 = GL_COLOR_ATTACHMENT7,
+		Colour8 = GL_COLOR_ATTACHMENT8,
+		Colour9 = GL_COLOR_ATTACHMENT9,
+		Colour10 = GL_COLOR_ATTACHMENT10,
+		Colour11 = GL_COLOR_ATTACHMENT11,
+		Colour12 = GL_COLOR_ATTACHMENT12,
+		Colour13 = GL_COLOR_ATTACHMENT13,
+		Colour14 = GL_COLOR_ATTACHMENT14,
+		Colour15 = GL_COLOR_ATTACHMENT15
 	}
 
 	public enum BlitFilter : GLuint
@@ -1623,6 +1664,8 @@ namespace CKGL.OpenGLBindings
 		Nearest = GL_NEAREST,
 		Linear = GL_LINEAR
 	}
+
+	//////////////////////////////////////////////////////////
 
 	// Unused
 	//public enum DepthTextureMode : GLuint
@@ -1673,48 +1716,5 @@ namespace CKGL.OpenGLBindings
 		Mat4 = 0x8B5C,
 		Sampler2D = 0x8B5E,
 		SamplerCube = 0x8B60
-	}
-
-	public enum DrawBuffer : GLuint
-	{
-		None = 0,
-		Back = 0x0405,
-		Colour0 = GL_COLOR_ATTACHMENT0,
-		Colour1 = GL_COLOR_ATTACHMENT1,
-		Colour2 = GL_COLOR_ATTACHMENT2,
-		Colour3 = GL_COLOR_ATTACHMENT3,
-		Colour4 = GL_COLOR_ATTACHMENT4,
-		Colour5 = GL_COLOR_ATTACHMENT5,
-		Colour6 = GL_COLOR_ATTACHMENT6,
-		Colour7 = GL_COLOR_ATTACHMENT7,
-		Colour8 = GL_COLOR_ATTACHMENT8,
-		Colour9 = GL_COLOR_ATTACHMENT9,
-		Colour10 = GL_COLOR_ATTACHMENT10,
-		Colour11 = GL_COLOR_ATTACHMENT11,
-		Colour12 = GL_COLOR_ATTACHMENT12,
-		Colour13 = GL_COLOR_ATTACHMENT13,
-		Colour14 = GL_COLOR_ATTACHMENT14,
-		Colour15 = GL_COLOR_ATTACHMENT15
-	}
-
-	public enum ReadBuffer : GLuint
-	{
-		Depth = GL_DEPTH_ATTACHMENT,
-		Colour0 = GL_COLOR_ATTACHMENT0,
-		Colour1 = GL_COLOR_ATTACHMENT1,
-		Colour2 = GL_COLOR_ATTACHMENT2,
-		Colour3 = GL_COLOR_ATTACHMENT3,
-		Colour4 = GL_COLOR_ATTACHMENT4,
-		Colour5 = GL_COLOR_ATTACHMENT5,
-		Colour6 = GL_COLOR_ATTACHMENT6,
-		Colour7 = GL_COLOR_ATTACHMENT7,
-		Colour8 = GL_COLOR_ATTACHMENT8,
-		Colour9 = GL_COLOR_ATTACHMENT9,
-		Colour10 = GL_COLOR_ATTACHMENT10,
-		Colour11 = GL_COLOR_ATTACHMENT11,
-		Colour12 = GL_COLOR_ATTACHMENT12,
-		Colour13 = GL_COLOR_ATTACHMENT13,
-		Colour14 = GL_COLOR_ATTACHMENT14,
-		Colour15 = GL_COLOR_ATTACHMENT15
 	}
 }

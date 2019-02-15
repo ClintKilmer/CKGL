@@ -245,7 +245,7 @@ namespace CKGL
 
 								if (tag.Length == 2)
 								{
-									if (tag[0] == "colour" || tag[0] == "colour")
+									if (tag[0] == "colour" || tag[0] == "color")
 									{
 										string[] value = tag[1].Split(',');
 
@@ -257,12 +257,12 @@ namespace CKGL
 											}
 											catch
 											{
-												throw new Exception("Text modifier value parse error.");
+												throw new CKGLException("Text modifier value parse error.");
 											}
 										}
 										else
 										{
-											throw new Exception("Unrecognized text modifier value.");
+											throw new CKGLException("Unrecognized text modifier value.");
 										}
 									}
 									else if (tag[0] == "shadow")
@@ -280,7 +280,7 @@ namespace CKGL
 											}
 											catch
 											{
-												throw new Exception("Text modifier value parse error.");
+												throw new CKGLException("Text modifier value parse error.");
 											}
 										}
 										else if (value.Length == 1 && (value[0] == "disable" || value[0] == "off"))
@@ -289,7 +289,7 @@ namespace CKGL
 										}
 										else
 										{
-											throw new Exception("Unrecognized text modifier value.");
+											throw new CKGLException("Unrecognized text modifier value.");
 										}
 									}
 									else if (tag[0] == "outline")
@@ -307,7 +307,7 @@ namespace CKGL
 											}
 											catch
 											{
-												throw new Exception("Text modifier value parse error.");
+												throw new CKGLException("Text modifier value parse error.");
 											}
 										}
 										else if (value.Length == 1 && (value[0] == "disable" || value[0] == "off"))
@@ -316,17 +316,17 @@ namespace CKGL
 										}
 										else
 										{
-											throw new Exception("Unrecognized text modifier value.");
+											throw new CKGLException("Unrecognized text modifier value.");
 										}
 									}
 									else
 									{
-										throw new Exception("Unrecognized text modifier key.");
+										throw new CKGLException("Unrecognized text modifier key.");
 									}
 								}
 								else
 								{
-									throw new Exception("Text modifier parse error.");
+									throw new CKGLException("Text modifier parse error.");
 								}
 
 								mod = false;
@@ -341,7 +341,7 @@ namespace CKGL
 						{
 							if (c == ' ')
 							{
-								offsetX += font.SpaceWidth;
+								offsetX += font.SpaceWidth * scale.X;
 							}
 							else if (c == '\a')
 							{
@@ -445,7 +445,7 @@ namespace CKGL
 			private static void RenderTargetBindTexture(RenderTarget renderTarget, TextureSlot textureSlot)
 			{
 				if (renderTarget == null)
-					throw new Exception("Can't bind default framebuffer textures, use a RenderTarget instead.");
+					throw new CKGLException("Can't bind default framebuffer textures, use a RenderTarget instead.");
 
 				renderTarget.GetTexture(textureSlot).Bind();
 			}
@@ -693,7 +693,7 @@ namespace CKGL
 			//	public static void Begin()
 			//	{
 			//		if (working)
-			//			throw new Exception("End must be called before Begin can be called again.");
+			//			throw new CKGLException("End must be called before Begin can be called again.");
 
 			//		working = true;
 			//		lastVertex = null;
@@ -702,7 +702,7 @@ namespace CKGL
 			//	public static void End()
 			//	{
 			//		if (!working)
-			//			throw new Exception("Begin must be called before End can be called.");
+			//			throw new CKGLException("Begin must be called before End can be called.");
 
 			//		working = false;
 			//		lastVertex = null;
@@ -719,7 +719,7 @@ namespace CKGL
 			//	public static void AddVertex(Vector2 position, Colour colour, UV uv)
 			//	{
 			//		if (!working)
-			//			throw new Exception("Begin must be called before AddVertex can be called.");
+			//			throw new CKGLException("Begin must be called before AddVertex can be called.");
 
 			//		if (lastVertex.HasValue)
 			//		{
@@ -767,7 +767,7 @@ namespace CKGL
 			//	public static void Begin()
 			//	{
 			//		if (working)
-			//			throw new Exception("End must be called before Begin can be called again.");
+			//			throw new CKGLException("End must be called before Begin can be called again.");
 
 			//		working = true;
 			//		lastVertex = null;
@@ -777,7 +777,7 @@ namespace CKGL
 			//	public static void End()
 			//	{
 			//		if (!working)
-			//			throw new Exception("Begin must be called before End can be called.");
+			//			throw new CKGLException("Begin must be called before End can be called.");
 
 			//		working = false;
 			//		lastVertex = null;
@@ -795,7 +795,7 @@ namespace CKGL
 			//	public static void AddVertex(Vector2 position, Colour colour, UV uv)
 			//	{
 			//		if (!working)
-			//			throw new Exception("Begin must be called before AddVertex can be called.");
+			//			throw new CKGLException("Begin must be called before AddVertex can be called.");
 
 			//		if (lastLastVertex.HasValue && lastVertex.HasValue)
 			//		{

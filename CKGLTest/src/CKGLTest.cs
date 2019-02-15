@@ -613,7 +613,7 @@ namespace CKGLTest
 			//				   VAlign.Top);
 
 			//Renderer.Draw.Text(SpriteFonts.Font,
-			//				   "|:shadow=0,-1,0.01,0,0,0,0.5:|Test Test\nStill testing...",
+			//				   "|:outline=1,0.01,0,0,0,1:|Test Test Test Test Test Test Test Test Test\nStill testing... ... ...",
 			//				   new Vector2(width / 2, height / 2),
 			//				   Vector2.One * (1f + Math.SinNormalized(Time.TotalSeconds * 2f)),
 			//				   Colour.White,
@@ -712,9 +712,9 @@ namespace CKGLTest
 			// Screenshot
 			if (Input.Keyboard.Pressed(KeyCode.F9))
 			{
-				string s = @"X:\Dropbox\Clint\Gamedev\2018-03-22 CKGL\screenshots\";
+				string s = "X:/Dropbox/Clint/Gamedev/2018-03-22 CKGL/screenshots/";
 				if (!System.IO.Directory.Exists(s))
-					s = @"C:\Users\Clint Kilmer\Dropbox\Clint\Gamedev\2018-03-22 CKGL\screenshots\";
+					s = "C:/Users/Clint Kilmer/Dropbox/Clint/Gamedev/2018-03-22 CKGL/screenshots/";
 
 				int sequentialNumber = 1;
 				while (System.IO.File.Exists($@"{s}{System.DateTime.Now:yyyy-MM-dd HH.mm.ss}-{sequentialNumber} [CKGL].png"))

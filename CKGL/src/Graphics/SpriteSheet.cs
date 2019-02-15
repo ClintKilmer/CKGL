@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 namespace CKGL
@@ -19,9 +18,9 @@ namespace CKGL
 		public SpriteSheet(int width, int height, int padding)
 		{
 			if (padding < 0)
-				throw new Exception("Padding must be greater or equal to 0");
+				throw new CKGLException("Padding must be greater or equal to 0");
 			else if (padding >= Math.Min(width, height))
-				throw new Exception("Padding cannot be larger than the width or height of SpriteSheet.Texture");
+				throw new CKGLException("Padding cannot be larger than the width or height of SpriteSheet.Texture");
 
 			Texture = new Texture2D(width, height, TextureFormat.RGBA8, TextureFilter.Nearest, TextureWrap.Clamp);
 			data = new Colour[Texture.Width, Texture.Height];
@@ -140,7 +139,7 @@ namespace CKGL
 				}
 			}
 
-			throw new Exception("SpriteSheet.Texture is not large enough for submitted sprites.");
+			throw new CKGLException("SpriteSheet.Texture is not large enough for submitted sprites.");
 		}
 
 		// Fast, naive version
@@ -163,7 +162,7 @@ namespace CKGL
 
 			if (_offsetY + height > Texture.Height)
 			{
-				throw new Exception("SpriteSheet.Texture is not large enough for submitted sprites.");
+				throw new CKGLException("SpriteSheet.Texture is not large enough for submitted sprites.");
 			}
 
 			Point2 Point2 = new Point2(_offsetX, _offsetY);
