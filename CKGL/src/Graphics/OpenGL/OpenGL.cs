@@ -514,7 +514,8 @@ namespace CKGL.OpenGLBindings
 			}
 			else
 			{
-				throw new NotSupportedException("glPolygonMode is not available in OpenGL ES.");
+				Output.WriteLine("glPolygonMode is not available in OpenGL ES.");
+				//throw new NotSupportedException("glPolygonMode is not available in OpenGL ES.");
 			}
 		}
 		#endregion
@@ -645,7 +646,8 @@ namespace CKGL.OpenGLBindings
 			}
 			else
 			{
-				throw new NotSupportedException("glGetTexImage is not available in OpenGL ES.");
+				Output.WriteLine("glGetTexImage is not available in OpenGL ES.");
+				//throw new NotSupportedException("glGetTexImage is not available in OpenGL ES.");
 			}
 		}
 		#endregion
@@ -734,7 +736,8 @@ namespace CKGL.OpenGLBindings
 			}
 			else
 			{
-				throw new NotSupportedException("glGetBufferSubData is not available in OpenGL ES.");
+				Output.WriteLine("glGetBufferSubData is not available in OpenGL ES.");
+				//throw new NotSupportedException("glGetBufferSubData is not available in OpenGL ES.");
 			}
 		}
 		#endregion
