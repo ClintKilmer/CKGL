@@ -23,7 +23,7 @@ namespace CKGL.OpenGL
 
 			internal readonly static VertexAttributeLayout AttributeLayout = new VertexAttributeLayout
 			(
-				Marshal.SizeOf(typeof(Vertex)),                         // Dynamic Stride - For larger StructLayout Pack sizes
+				Marshal.SizeOf(typeof(Vertex)),                       // Dynamic Stride - For larger StructLayout Pack sizes
 				new VertexAttribute(DataType.Float, 3, false),        // Position
 				new VertexAttribute(DataType.UnsignedByte, 4, true),  // Colour
 				new VertexAttribute(DataType.UnsignedShort, 2, true), // UV
