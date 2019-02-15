@@ -245,7 +245,7 @@ namespace CKGL
 
 								if (tag.Length == 2)
 								{
-									if (tag[0] == "colour" || tag[0] == "colour")
+									if (tag[0] == "colour" || tag[0] == "color")
 									{
 										string[] value = tag[1].Split(',');
 
@@ -341,7 +341,7 @@ namespace CKGL
 						{
 							if (c == ' ')
 							{
-								offsetX += font.SpaceWidth;
+								offsetX += font.SpaceWidth * scale.X;
 							}
 							else if (c == '\a')
 							{

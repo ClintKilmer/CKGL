@@ -613,7 +613,7 @@ namespace CKGLTest
 			//				   VAlign.Top);
 
 			//Renderer.Draw.Text(SpriteFonts.Font,
-			//				   "|:shadow=0,-1,0.01,0,0,0,0.5:|Test Test\nStill testing...",
+			//				   "|:outline=1,0.01,0,0,0,1:|Test Test Test Test Test Test Test Test Test\nStill testing... ... ...",
 			//				   new Vector2(width / 2, height / 2),
 			//				   Vector2.One * (1f + Math.SinNormalized(Time.TotalSeconds * 2f)),
 			//				   Colour.White,
