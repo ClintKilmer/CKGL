@@ -674,6 +674,11 @@ namespace CKGL
 			return SDL_GL_GetProcAddress(proc);
 		}
 
+		public static bool OpenGLExtensionSupported(string function)
+		{
+			return SDL_GL_ExtensionSupported(function) == SDL_bool.SDL_TRUE;
+		}
+
 		public static void Delay(uint ms)
 		{
 			SDL_Delay(ms); //release the thread

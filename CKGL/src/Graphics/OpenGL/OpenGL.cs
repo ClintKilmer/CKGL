@@ -1112,6 +1112,25 @@ namespace CKGL.OpenGLBindings
 		public const GLuint GL_TIME_ELAPSED = 0x88BF;
 		public const GLuint GL_TIMESTAMP = 0x8E28;
 		public const GLuint GL_INT_2_10_10_10_REV = 0x8D9F;
+		// Source Enum Values
+		public const GLuint GL_DEBUG_SOURCE_API = 0x8246;
+		public const GLuint GL_DEBUG_SOURCE_WINDOW_SYSTEM = 0x8247;
+		public const GLuint GL_DEBUG_SOURCE_SHADER_COMPILER = 0x8248;
+		public const GLuint GL_DEBUG_SOURCE_THIRD_PARTY = 0x8249;
+		public const GLuint GL_DEBUG_SOURCE_APPLICATION = 0x824A;
+		public const GLuint GL_DEBUG_SOURCE_OTHER = 0x824B;
+		// Type Enum Values
+		public const GLuint GL_DEBUG_TYPE_ERROR = 0x824C;
+		public const GLuint GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR = 0x824D;
+		public const GLuint GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR = 0x824E;
+		public const GLuint GL_DEBUG_TYPE_PORTABILITY = 0x824F;
+		public const GLuint GL_DEBUG_TYPE_PERFORMANCE = 0x8250;
+		public const GLuint GL_DEBUG_TYPE_OTHER = 0x8251;
+		// Severity Enum Values
+		public const GLuint GL_DEBUG_SEVERITY_HIGH = 0x9146;
+		public const GLuint GL_DEBUG_SEVERITY_MEDIUM = 0x9147;
+		public const GLuint GL_DEBUG_SEVERITY_LOW = 0x9148;
+		public const GLuint GL_DEBUG_SEVERITY_NOTIFICATION = 0x826B;
 	}
 	#endregion
 
@@ -1723,6 +1742,36 @@ namespace CKGL.OpenGLBindings
 		Sampler2D = GL_SAMPLER_2D,
 		SamplerCube = GL_SAMPLER_CUBE
 	}
+
+	public enum DebugSource : GLuint
+	{
+		DontCare = GL_DONT_CARE, API = GL_DEBUG_SOURCE_API,
+		WindowSystem = GL_DEBUG_SOURCE_WINDOW_SYSTEM,
+		ShaderCompiler = GL_DEBUG_SOURCE_SHADER_COMPILER,
+		ThirdParty = GL_DEBUG_SOURCE_THIRD_PARTY,
+		Application = GL_DEBUG_SOURCE_APPLICATION,
+		Other = GL_DEBUG_SOURCE_OTHER
+	}
+
+	public enum DebugType : GLuint
+	{
+		DontCare = GL_DONT_CARE,
+		Error = GL_DEBUG_TYPE_ERROR,
+		DeprecatedBehavior = GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR,
+		UndefinedBehavior = GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR,
+		Portability = GL_DEBUG_TYPE_PORTABILITY,
+		Performance = GL_DEBUG_TYPE_PERFORMANCE,
+		Other = GL_DEBUG_TYPE_OTHER
+	}
+
+	public enum DebugSeverity : GLuint
+	{
+		DontCare = GL_DONT_CARE,
+		High = GL_DEBUG_SEVERITY_HIGH,
+		Medium = GL_DEBUG_SEVERITY_MEDIUM,
+		Low = GL_DEBUG_SEVERITY_LOW,
+		Notification = GL_DEBUG_SEVERITY_NOTIFICATION
+	}
 	#endregion
 
 	internal static class GL
@@ -1879,6 +1928,62 @@ namespace CKGL.OpenGLBindings
 				}
 				glClearDepth = (depth) => glClearDepthf((float)depth);
 			}
+			#endregion
+
+			#region glDebugMessageCallback
+#if DEBUG
+			bool supportsDebugMessageCallback = true;
+			IntPtr messageCallback;
+			IntPtr messageControl;
+
+			// OpenGL requires no suffix whereas OpenGL ES requires the "KHR" suffix. https://www.khronos.org/registry/OpenGL/extensions/KHR/KHR_debug.txt
+			// Try None/KHR first
+			if (es)
+			{
+				messageCallback = Platform.GetProcAddress("glDebugMessageCallbackKHR");
+				messageControl = Platform.GetProcAddress("glDebugMessageControlKHR");
+			}
+			else
+			{
+				messageCallback = Platform.GetProcAddress("glDebugMessageCallback");
+				messageControl = Platform.GetProcAddress("glDebugMessageControl");
+			}
+			// Then try ARB_debug_output
+			if (messageCallback == IntPtr.Zero || messageControl == IntPtr.Zero)
+			{
+				messageCallback = Platform.GetProcAddress("glDebugMessageCallbackARB");
+				messageControl = Platform.GetProcAddress("glDebugMessageControlARB");
+			}
+			if (messageCallback == IntPtr.Zero || messageControl == IntPtr.Zero)
+			{
+				supportsDebugMessageCallback = false;
+			}
+
+			// Check for stub functions (android drivers)
+			if (es)
+			{
+				if (Platform.OpenGLExtensionSupported("KHR_debug") && Platform.OpenGLExtensionSupported("ARB_debug_output"))
+				{
+					supportsDebugMessageCallback = false;
+				}
+			}
+
+			// Assign the callback
+			if (supportsDebugMessageCallback)
+			{
+				glDebugMessageCallback = (_glDebugMessageCallback)Marshal.GetDelegateForFunctionPointer(messageCallback, typeof(_glDebugMessageCallback));
+				glDebugMessageControl = (_glDebugMessageControl)Marshal.GetDelegateForFunctionPointer(messageControl, typeof(_glDebugMessageControl));
+				glDebugMessageControl(DebugSource.DontCare, DebugType.DontCare, DebugSeverity.DontCare, 0, IntPtr.Zero, true);
+				glDebugMessageControl(DebugSource.DontCare, DebugType.Other, DebugSeverity.Low, 0, IntPtr.Zero, false);
+				glDebugMessageControl(DebugSource.DontCare, DebugType.Other, DebugSeverity.Notification, 0, IntPtr.Zero, false);
+				glDebugMessageCallback(Marshal.GetFunctionPointerForDelegate(DebugCall), IntPtr.Zero);
+				Output.WriteLine("glDebugMessageCallback Supported");
+			}
+			else
+			{
+				Output.WriteLine("glDebugMessageCallback Unsupported");
+			}
+#endif
 			#endregion
 
 			// Strings
@@ -3170,6 +3275,25 @@ namespace CKGL.OpenGLBindings
 		#endregion
 
 		#region Debug Output Functions
+		private static _glDebugMessageCallback glDebugMessageCallback;
+		private delegate void _glDebugMessageCallback(IntPtr debugCallback, IntPtr userParam);
+
+		private static _glDebugMessageControl glDebugMessageControl;
+		private delegate void _glDebugMessageControl(DebugSource source, DebugType type, DebugSeverity severity, GLint count, IntPtr ids, bool enabled);
+
+		// ARB_debug_output/KHR_debug callback
+		private static DebugProc DebugCall = DebugCallback;
+		private delegate void DebugProc(DebugSource source, DebugType type, GLuint id, DebugSeverity severity, GLint length, IntPtr message, IntPtr userParam);
+		private static void DebugCallback(DebugSource source, DebugType type, uint id, DebugSeverity severity, int length, IntPtr message, IntPtr userParam)
+		{
+			string error = $"{Marshal.PtrToStringAnsi(message)}\n\tSource: {source.ToString()}\n\tType: {type.ToString()}\n\tSeverity: {severity.ToString()}";
+			if (type == DebugType.Error)
+			{
+				Output.WriteLine($"OpenGL Error: {error}");
+				throw new InvalidOperationException(error);
+			}
+			Output.WriteLine($"OpenGL Warning: {error}");
+		}
 		#endregion
 
 #pragma warning restore IDE0044
