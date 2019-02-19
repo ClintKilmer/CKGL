@@ -1,7 +1,6 @@
 CKGL TODO List:
 
 Features:
-- SpriteSheet.AddSpriteFontGlyph fails when file not found, add pink error textures instead
 - Texture.SavePNG doesn't work in Init(), only in Update or later...
 - ANGLE can't use adaptive sync
 - Texture.GetParam can't convert from OpenGLBindings to CKGL enums...

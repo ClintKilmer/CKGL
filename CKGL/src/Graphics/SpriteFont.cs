@@ -44,7 +44,12 @@ namespace CKGL
 
 			for (int i = start; i <= end; i++)
 			{
-				glyphs[i] = spriteSheet.AddSpriteFontGlyph(spriteData, new RectangleI(glyphWidth * (i - start), 0, glyphWidth, glyphHeight), xtrim);
+				// Make sure loaded image is large enough
+				// If image is not large enough, generate error glyphs
+				if (width >= glyphWidth * (i - start) + glyphWidth)
+					glyphs[i] = spriteSheet.AddSpriteFontGlyph(spriteData, new RectangleI(glyphWidth * (i - start), 0, glyphWidth, glyphHeight), xtrim);
+				else
+					glyphs[i] = spriteSheet.AddSpriteFontGlyph(spriteData, new RectangleI(0, 0, glyphWidth.Min(width), glyphHeight.Min(height)), false);
 			}
 		}
 
