@@ -1800,7 +1800,7 @@ namespace CKGL.OpenGLBindings
 				{
 					field.SetValue(null, GetProcAddress(field.Name, field.FieldType));
 					// Debug
-					Output.WriteLine($"Shared - {field.Name}");
+					//Output.WriteLine($"Shared - {field.Name}");
 				}
 
 				if (!es)
@@ -1809,7 +1809,7 @@ namespace CKGL.OpenGLBindings
 					{
 						field.SetValue(null, GetProcAddress(field.Name, field.FieldType));
 						// Debug
-						Output.WriteLine($"OpenGL - {field.Name}");
+						//Output.WriteLine($"OpenGL - {field.Name}");
 					}
 				}
 
@@ -1819,7 +1819,7 @@ namespace CKGL.OpenGLBindings
 					{
 						field.SetValue(null, GetProcAddress(field.Name, field.FieldType));
 						// Debug
-						Output.WriteLine($"OpenGL ES - {field.Name}");
+						//Output.WriteLine($"OpenGL ES - {field.Name}");
 					}
 
 					// NVIDIA / Desktop ES Functions
@@ -1831,7 +1831,7 @@ namespace CKGL.OpenGLBindings
 						{
 							field.SetValue(null, GetProcAddress(field.Name, field.FieldType));
 							// Debug
-							Output.WriteLine($"Desktop ES - {field.Name}");
+							//Output.WriteLine($"Desktop ES - {field.Name}");
 						}
 						catch { }
 					}
@@ -1880,27 +1880,6 @@ namespace CKGL.OpenGLBindings
 				glClearDepth = (depth) => glClearDepthf((float)depth);
 			}
 			#endregion
-
-			// For testing purposes only - remove when conversion complete
-			foreach (var field in typeof(GL).GetFields(BindingFlags.NonPublic | BindingFlags.Static).Where(field => field.Name.StartsWith("gl", StringComparison.Ordinal)))
-			{
-				try
-				{
-					if (field.GetValue(null) == null)
-					{
-						field.SetValue(null, GetProcAddress(field.Name, field.FieldType));
-						Output.WriteLine($"All [Success]: {field.Name}");
-					}
-					else
-					{
-						//Output.WriteLine($"All [Already Loaded]: {field.Name}");
-					}
-				}
-				catch (Exception e)
-				{
-					Output.WriteLine($"All [Failed]: {e.Message}");
-				}
-			}
 
 			// Strings
 			Version = GetString(Strings.Version);
