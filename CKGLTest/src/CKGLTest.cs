@@ -240,7 +240,7 @@ namespace CKGLTest
 									 Math.Sin(Time.TotalSeconds * 1.8f) * 0.3f, Math.Sin(Time.TotalSeconds * 1.8f) * 0.3f,
 									 Math.Sin(Time.TotalSeconds * 1.9f) * 0.4f, Math.Sin(Time.TotalSeconds * 1.7f) * 0.2f);
 
-			test2.Position = new Vector3(0f, 2f, -4f);
+			test2.Position = new Vector3(-10f, 2f, 10f);
 			//test2.Rotation = Quaternion.CreateFromEuler(new Vector3(Time.TotalSeconds * 0.3f, Time.TotalSeconds * 0.25f, Time.TotalSeconds * 0.09f));
 			test2.Rotation = test.Rotation;
 			test2.Scale = Vector3.One + Vector3.One * Math.SinNormalized(-Time.TotalSeconds) * 1f;
@@ -292,8 +292,6 @@ namespace CKGLTest
 			// Start Drawing
 
 			Renderer.Draw3D.SetTransform(test);
-			//Colour c = new Colour(Math.SinNormalized(Time.TotalSeconds * 1.5f), Math.SinNormalized(Time.TotalSeconds * 1.4f), Math.SinNormalized(Time.TotalSeconds * 1.3f), 1f);
-			//Renderer.Draw3D.CubeWireframe(c);
 			Renderer.Draw3D.Cube(Colour.Cyan,
 								 Colour.Yellow,
 								 Colour.Red,
@@ -301,17 +299,24 @@ namespace CKGLTest
 								 Colour.Green,
 								 Colour.Magenta);
 			Renderer.Draw3D.ResetTransform();
-			//Renderer.Draw3D.Cube(new Colour(0f, 0f, 0f, 1f),
-			//					 new Colour(1f, 0f, 0f, 1f),
-			//					 new Colour(0f, 1f, 0f, 1f),
-			//					 new Colour(1f, 1f, 0f, 1f),
-			//					 new Colour(0f, 0f, 1f, 1f),
-			//					 new Colour(1f, 0f, 1f, 1f),
-			//					 new Colour(0f, 1f, 1f, 1f),
-			//					 new Colour(1f, 1f, 1f, 1f));
-			//Renderer.Draw3D.SetTransform(test2);
-			//Colour c2 = new Colour(Math.CosNormalized(Time.TotalSeconds * 1.5f), Math.CosNormalized(Time.TotalSeconds * 1.4f), Math.CosNormalized(Time.TotalSeconds * 1.3f), 1f);
-			//Renderer.Draw3D.CubeWireframe(c2);
+
+			Renderer.Draw3D.SetTransform(test2);
+			Colour c2 = new Colour(Math.CosNormalized(Time.TotalSeconds * 1.5f), Math.CosNormalized(Time.TotalSeconds * 1.4f), Math.CosNormalized(Time.TotalSeconds * 1.3f), 1f);
+			Renderer.Draw3D.CubeWireframe(c2);
+			Renderer.Draw3D.ResetTransform();
+
+			test2.Position += new Vector3(-8f, 0f, 0f);
+			Renderer.Draw3D.SetTransform(test2);
+			Renderer.Draw3D.Cube(new Colour(0f, 0f, 0f, 1f),
+								 new Colour(1f, 0f, 0f, 1f),
+								 new Colour(0f, 1f, 0f, 1f),
+								 new Colour(1f, 1f, 0f, 1f),
+								 new Colour(0f, 0f, 1f, 1f),
+								 new Colour(1f, 0f, 1f, 1f),
+								 new Colour(0f, 1f, 1f, 1f),
+								 new Colour(1f, 1f, 1f, 1f));
+			Renderer.Draw3D.ResetTransform();
+
 			Transform cubeGridTransformParent = new Transform();
 			cubeGridTransformParent.Position = new Vector3(80, 0, 80);
 			for (int x = 0; x < 5; x++)
