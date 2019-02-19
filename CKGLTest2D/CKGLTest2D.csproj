@@ -56,9 +56,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\CKGL\CKGL.csproj">
       <Project>{185d708a-8291-480d-a4cd-c327b175c074}</Project>
       <Name>CKGL</Name>
