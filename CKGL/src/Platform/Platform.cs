@@ -702,7 +702,6 @@ namespace CKGL
 					SDL_PixelFormat* pixelFormatPtr = (SDL_PixelFormat*)surfacePtr->format;
 					SDL_FillRect(surfaceID, IntPtr.Zero, SDL_MapRGB((IntPtr)pixelFormatPtr, 255, 20, 147));
 				}
-
 			}
 
 			surfaceID = ConvertSurfaceFormat(surfaceID);
