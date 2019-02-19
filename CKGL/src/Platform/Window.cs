@@ -6,7 +6,7 @@ namespace CKGL
 {
 	public static class Window
 	{
-		private static IntPtr IntPtr = IntPtr.Zero;
+		private static IntPtr IntPtr;
 		private static IntPtr GL_Context;
 
 		public static uint ID => SDL_GetWindowID(IntPtr);
@@ -161,6 +161,12 @@ namespace CKGL
 			set => SDL_SetWindowBordered(IntPtr, value ? SDL_bool.SDL_FALSE : SDL_bool.SDL_TRUE);
 		}
 
+		public static bool Visible
+		{
+			get => ((SDL_WindowFlags)SDL_GetWindowFlags(IntPtr) & SDL_WindowFlags.SDL_WINDOW_SHOWN) == SDL_WindowFlags.SDL_WINDOW_SHOWN;
+			set { if (value) SDL_ShowWindow(IntPtr); else SDL_HideWindow(IntPtr); }
+		}
+
 		public static void Center() => SDL_SetWindowPosition(IntPtr, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
 
 		public static void SwapBuffers() => SDL_GL_SwapWindow(IntPtr);
@@ -177,7 +183,7 @@ namespace CKGL
 
 		public static void Init(string title, int width, int height, bool vsync, bool fullscreen, bool resizable, bool borderless)
 		{
-			SDL_WindowFlags flags = SDL_WindowFlags.SDL_WINDOW_SHOWN |
+			SDL_WindowFlags flags = SDL_WindowFlags.SDL_WINDOW_HIDDEN |
 									SDL_WindowFlags.SDL_WINDOW_ALLOW_HIGHDPI;
 
 			switch (Platform.GraphicsBackend)
@@ -230,6 +236,11 @@ namespace CKGL
 			{
 				SDL_GL_DeleteContext(GL_Context);
 				GL_Context = default;
+
+				SDL_SetHintWithPriority(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, "0", SDL_HintPriority.SDL_HINT_OVERRIDE);
+
+				SDL_DestroyWindow(IntPtr);
+				IntPtr = default;
 			}
 		}
 	}

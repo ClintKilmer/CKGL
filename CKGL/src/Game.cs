@@ -42,6 +42,7 @@ namespace CKGL
 		public void GameLoop()
 		{
 			Init();
+			Window.Visible = true;
 			while (Platform.Running)
 			{
 				Time.Tick();
