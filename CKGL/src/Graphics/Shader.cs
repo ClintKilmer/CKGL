@@ -1,7 +1,7 @@
-using CKGL.OpenGLBindings;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using CKGL.OpenGLBindings;
 using GLint = System.Int32;
 using GLuint = System.UInt32;
 
@@ -230,7 +230,7 @@ namespace CKGL
 				if (boolValue != value)
 				{
 					Graphics.State.OnStateChanging.Invoke();
-					GL.Uniform1I(Location, value ? 1 : 0);
+					GL.Uniform1i(Location, value ? 1 : 0);
 					UniformSwaps++;
 					boolValue = value;
 					Graphics.State.OnStateChanged.Invoke();
@@ -241,7 +241,7 @@ namespace CKGL
 				if (intValue != value)
 				{
 					Graphics.State.OnStateChanging.Invoke();
-					GL.Uniform1I(Location, value);
+					GL.Uniform1i(Location, value);
 					UniformSwaps++;
 					intValue = value;
 					Graphics.State.OnStateChanged.Invoke();
@@ -252,7 +252,7 @@ namespace CKGL
 				if (floatValue != value)
 				{
 					Graphics.State.OnStateChanging.Invoke();
-					GL.Uniform1F(Location, value);
+					GL.Uniform1f(Location, value);
 					UniformSwaps++;
 					floatValue = value;
 					Graphics.State.OnStateChanged.Invoke();
@@ -263,7 +263,7 @@ namespace CKGL
 				if (floatValueX != x && floatValueY != y)
 				{
 					Graphics.State.OnStateChanging.Invoke();
-					GL.Uniform2F(Location, x, y);
+					GL.Uniform2f(Location, x, y);
 					UniformSwaps++;
 					floatValueX = x;
 					floatValueY = y;
@@ -275,7 +275,7 @@ namespace CKGL
 				if (floatValueX != x && floatValueY != y && floatValueZ != z)
 				{
 					Graphics.State.OnStateChanging.Invoke();
-					GL.Uniform3F(Location, x, y, z);
+					GL.Uniform3f(Location, x, y, z);
 					UniformSwaps++;
 					floatValueX = x;
 					floatValueY = y;
@@ -288,7 +288,7 @@ namespace CKGL
 				if (floatValueX != x && floatValueY != y && floatValueZ != z && floatValueW != w)
 				{
 					Graphics.State.OnStateChanging.Invoke();
-					GL.Uniform4F(Location, x, y, z, w);
+					GL.Uniform4f(Location, x, y, z, w);
 					UniformSwaps++;
 					floatValueX = x;
 					floatValueY = y;
@@ -302,7 +302,7 @@ namespace CKGL
 				if (Vector2Value != value)
 				{
 					Graphics.State.OnStateChanging.Invoke();
-					GL.Uniform2F(Location, value.X, value.Y);
+					GL.Uniform2f(Location, value.X, value.Y);
 					UniformSwaps++;
 					Vector2Value = value;
 					Graphics.State.OnStateChanged.Invoke();
@@ -313,7 +313,7 @@ namespace CKGL
 				if (Vector3Value != value)
 				{
 					Graphics.State.OnStateChanging.Invoke();
-					GL.Uniform3F(Location, value.X, value.Y, value.Z);
+					GL.Uniform3f(Location, value.X, value.Y, value.Z);
 					UniformSwaps++;
 					Vector3Value = value;
 					Graphics.State.OnStateChanged.Invoke();
@@ -324,7 +324,7 @@ namespace CKGL
 				if (Vector4Value != value)
 				{
 					Graphics.State.OnStateChanging.Invoke();
-					GL.Uniform4F(Location, value.X, value.Y, value.Z, value.W);
+					GL.Uniform4f(Location, value.X, value.Y, value.Z, value.W);
 					UniformSwaps++;
 					Vector4Value = value;
 					Graphics.State.OnStateChanged.Invoke();
@@ -335,7 +335,7 @@ namespace CKGL
 				if (ColourValue != value)
 				{
 					Graphics.State.OnStateChanging.Invoke();
-					GL.Uniform4F(Location, value.R, value.G, value.B, value.A);
+					GL.Uniform4f(Location, value.R, value.G, value.B, value.A);
 					UniformSwaps++;
 					ColourValue = value;
 					Graphics.State.OnStateChanged.Invoke();
@@ -346,7 +346,7 @@ namespace CKGL
 				if (Matrix2DValue != value)
 				{
 					Graphics.State.OnStateChanging.Invoke();
-					GL.UniformMatrix3x2FV(Location, 1, false, value.ToArrayColumnMajor());
+					GL.UniformMatrix3x2fv(Location, 1, false, value.ToArrayColumnMajor());
 					UniformSwaps++;
 					Matrix2DValue = value;
 					Graphics.State.OnStateChanged.Invoke();
@@ -357,7 +357,7 @@ namespace CKGL
 				if (MatrixValue != value)
 				{
 					Graphics.State.OnStateChanging.Invoke();
-					GL.UniformMatrix4FV(Location, 1, false, value.ToArrayColumnMajor());
+					GL.UniformMatrix4fv(Location, 1, false, value.ToArrayColumnMajor());
 					UniformSwaps++;
 					MatrixValue = value;
 					Graphics.State.OnStateChanged.Invoke();
@@ -369,7 +369,7 @@ namespace CKGL
 				{
 					Graphics.State.OnStateChanging.Invoke();
 					value.Bind(textureSlot);
-					GL.Uniform1I(Location, (GLint)textureSlot);
+					GL.Uniform1i(Location, (GLint)textureSlot);
 					UniformSwaps++;
 					TextureValue = value;
 					GLuintValue = textureSlot;
@@ -382,7 +382,7 @@ namespace CKGL
 			//	{
 			//		Graphics.State.OnStateChanging.Invoke();
 			//		int slot = Texture.Bind(value.ID, value.BindTarget);
-			//		GL.Uniform1I(Location, slot);
+			//		GL.Uniform1i(Location, slot);
 			//		UniformSwaps++;
 			//		UniformSampler2DValue = value;
 			//		Graphics.State.OnStateChanged.Invoke();
@@ -394,7 +394,7 @@ namespace CKGL
 			//	{
 			//		Graphics.State.OnStateChanging.Invoke();
 			//		int slot = Texture.Bind(value.ID, TextureTarget.TextureCubeMap);
-			//		GL.Uniform1I(Location, slot);
+			//		GL.Uniform1i(Location, slot);
 			//		UniformSwaps++;
 			//		UniformSamplerCubeValue = value;
 			//		Graphics.State.OnStateChanged.Invoke();
