@@ -288,6 +288,3 @@ __pycache__/
 *.btm.cs
 *.odx.cs
 *.xsd.cs
-
-# CKGL
-CKGL/lib/SDL_GameControllerDB/
