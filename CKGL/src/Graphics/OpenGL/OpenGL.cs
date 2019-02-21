@@ -1776,6 +1776,11 @@ namespace CKGL.OpenGLBindings
 
 	internal static class GL
 	{
+		// Errors
+		private static bool supportsDebugMessageCallback = true;
+		private static IntPtr messageCallback;
+		private static IntPtr messageControl;
+
 		// Strings
 		public static string Version { get; private set; }
 		public static string GLSLVersion { get; private set; }
@@ -1932,10 +1937,6 @@ namespace CKGL.OpenGLBindings
 
 			#region glDebugMessageCallback
 #if DEBUG
-			bool supportsDebugMessageCallback = true;
-			IntPtr messageCallback;
-			IntPtr messageControl;
-
 			// OpenGL requires no suffix whereas OpenGL ES requires the "KHR" suffix. https://www.khronos.org/registry/OpenGL/extensions/KHR/KHR_debug.txt
 			// Try None/KHR first
 			if (es)
@@ -1981,7 +1982,7 @@ namespace CKGL.OpenGLBindings
 			}
 			else
 			{
-				Output.WriteLine("glDebugMessageCallback Unsupported");
+				Output.WriteLine("glDebugMessageCallback Unsupported, using glCheckError instead");
 			}
 #endif
 			#endregion
@@ -2031,19 +2032,44 @@ namespace CKGL.OpenGLBindings
 #pragma warning disable CS0649
 #pragma warning disable IDE0044
 
-		#region Get Error/String/Integer Functions
+		#region Error/Debug Functions
 		[Shared]
 		private static _glGetError glGetError;
 		private delegate ErrorCode _glGetError();
 		[Conditional("DEBUG")]
 		private static void CheckError()
 		{
-			var err = glGetError();
-			if (err != ErrorCode.NoError)
-				throw new Exception($"OpenGL Error {(int)err:X}: {err.ToString()}");
-			//Debug.Assert(err == ErrorCode.NoError, $"OpenGL Error {(int)err:X}: {err.ToString()}");
+			if (!supportsDebugMessageCallback)
+			{
+				var err = glGetError();
+				if (err != ErrorCode.NoError)
+					throw new InvalidOperationException($"OpenGL Error {(int)err:X}: {err.ToString()}");
+				//Debug.Assert(err == ErrorCode.NoError, $"OpenGL Error {(int)err:X}: {err.ToString()}");
+			}
 		}
 
+		private static _glDebugMessageCallback glDebugMessageCallback;
+		private delegate void _glDebugMessageCallback(IntPtr debugCallback, IntPtr userParam);
+
+		private static _glDebugMessageControl glDebugMessageControl;
+		private delegate void _glDebugMessageControl(DebugSource source, DebugType type, DebugSeverity severity, GLint count, IntPtr ids, bool enabled);
+
+		// ARB_debug_output/KHR_debug callback
+		private static DebugProc DebugCall = DebugCallback;
+		private delegate void DebugProc(DebugSource source, DebugType type, GLuint id, DebugSeverity severity, GLint length, IntPtr message, IntPtr userParam);
+		private static void DebugCallback(DebugSource source, DebugType type, uint id, DebugSeverity severity, int length, IntPtr message, IntPtr userParam)
+		{
+			string error = $"{Marshal.PtrToStringAnsi(message)}\n\tSource: {source.ToString()}\n\tType: {type.ToString()}\n\tSeverity: {severity.ToString()}";
+			if (type == DebugType.Error)
+			{
+				Output.WriteLine($"OpenGL Error: {error}");
+				throw new InvalidOperationException(error);
+			}
+			Output.WriteLine($"OpenGL Warning: {error}");
+		}
+		#endregion
+
+		#region Get String/Integer Functions
 		[Shared]
 		private static _glGetString glGetString;
 		private delegate IntPtr _glGetString(Strings name);
@@ -3272,28 +3298,6 @@ namespace CKGL.OpenGLBindings
 		#endregion
 
 		#region 3.2 Core Functions
-		#endregion
-
-		#region Debug Output Functions
-		private static _glDebugMessageCallback glDebugMessageCallback;
-		private delegate void _glDebugMessageCallback(IntPtr debugCallback, IntPtr userParam);
-
-		private static _glDebugMessageControl glDebugMessageControl;
-		private delegate void _glDebugMessageControl(DebugSource source, DebugType type, DebugSeverity severity, GLint count, IntPtr ids, bool enabled);
-
-		// ARB_debug_output/KHR_debug callback
-		private static DebugProc DebugCall = DebugCallback;
-		private delegate void DebugProc(DebugSource source, DebugType type, GLuint id, DebugSeverity severity, GLint length, IntPtr message, IntPtr userParam);
-		private static void DebugCallback(DebugSource source, DebugType type, uint id, DebugSeverity severity, int length, IntPtr message, IntPtr userParam)
-		{
-			string error = $"{Marshal.PtrToStringAnsi(message)}\n\tSource: {source.ToString()}\n\tType: {type.ToString()}\n\tSeverity: {severity.ToString()}";
-			if (type == DebugType.Error)
-			{
-				Output.WriteLine($"OpenGL Error: {error}");
-				throw new InvalidOperationException(error);
-			}
-			Output.WriteLine($"OpenGL Warning: {error}");
-		}
 		#endregion
 
 #pragma warning restore IDE0044
