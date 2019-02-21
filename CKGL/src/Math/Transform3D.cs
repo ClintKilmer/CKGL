@@ -251,5 +251,10 @@ namespace CKGL
 		{
 			return t.IsAncestorOf(this);
 		}
+
+		public Transform Clone()
+		{
+			return (Transform)MemberwiseClone();
+		}
 	}
 }

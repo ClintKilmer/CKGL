@@ -238,5 +238,10 @@ namespace CKGL
 		{
 			return t.IsAncestorOf(this);
 		}
+
+		public Transform2D Clone()
+		{
+			return (Transform2D)MemberwiseClone();
+		}
 	}
 }
