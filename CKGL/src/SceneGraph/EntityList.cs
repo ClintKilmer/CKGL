@@ -24,12 +24,12 @@ namespace CKGL
 			toRemove = new List<Entity>();
 		}
 
-		public void SetUnsorted()
+		internal void SetUnsorted()
 		{
 			unsorted = true;
 		}
 
-		public void UpdateLists()
+		private void UpdateLists()
 		{
 			if (toAdd.Count > 0)
 			{
@@ -181,6 +181,7 @@ namespace CKGL
 
 		public void Update()
 		{
+			UpdateLists();
 			foreach (var entity in entities)
 				if (entity.Active)
 					entity.Update();

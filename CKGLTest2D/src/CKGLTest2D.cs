@@ -136,9 +136,7 @@ namespace CKGLTest2D
 
 			debugString = $"|:outline=1,0.01,0,0,0,1:|Cam Pos: {Camera.Position.X:n1}, {Camera.Position.Y:n1}\nCam Rot: {Camera.Rotation:n2}\nMem: {RAM:n1}MB\nVSync: {Window.GetVSyncMode()}\n{Time.UPS:n0}ups | {Time.FPSSmoothed:n0}fps\nDraw Calls: {Graphics.DrawCalls}\nState Changes: {Graphics.State.Changes}\nRenderTarget Swaps/Blits: {RenderTarget.Swaps}/{RenderTarget.Blits}\nTexture Swaps: {Texture.Swaps}\nShader/Uniform Swaps: {Shader.Swaps}/{Shader.UniformSwaps}\nWinPos: [{Window.X}, {Window.Y}]\nSize: [{Window.Size}]\nMouse Global: [{Input.Mouse.PositionDisplay}]\nMouse: [{Input.Mouse.Position}]\nMouse Relative: [{Input.Mouse.PositionRelative}]";
 
-			Scene?.BeforeUpdate();
-			Scene?.Update();
-			Scene?.AfterUpdate();
+			Scene.Current?.Update();
 		}
 
 		public override void Draw()
@@ -163,7 +161,7 @@ namespace CKGLTest2D
 			Renderer.Draw3D.ResetTransform();
 
 			// Start Drawing
-			Scene?.Draw();
+			Scene.Current?.Draw();
 
 			//Renderer.Draw.Text(SpriteFonts.Font,
 			//				   "|:shadow=0,-1,0.01,0,0,0,0.5:|Test Test\nStill testing...\nhhhheeeelllloooo",

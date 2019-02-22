@@ -250,9 +250,9 @@ namespace CKGLTest
 
 			debugString = $"|:outline=1,0.01,0,0,0,1:|Cam Pos: {Camera.Position.X:n1}, {Camera.Position.Y:n1}, {Camera.Position.Z:n1}\nCam Rot: {Camera.Rotation.Euler.X:n2}, {Camera.Rotation.Euler.Y:n2}, {Camera.Rotation.Euler.Z:n2}\nMem: {RAM:n1}MB\nVSync: {Window.GetVSyncMode()}\n{Time.UPS:n0}ups | {Time.FPSSmoothed:n0}fps\nDraw Calls: {Graphics.DrawCalls}\nState Changes: {Graphics.State.Changes}\nRenderTarget Swaps/Blits: {RenderTarget.Swaps}/{RenderTarget.Blits}\nTexture Swaps: {Texture.Swaps}\nShader/Uniform Swaps: {Shader.Swaps}/{Shader.UniformSwaps}\nWinPos: [{Window.X}, {Window.Y}]\nSize: [{Window.Size}]\nMouse Global: [{Input.Mouse.PositionDisplay}]\nMouse: [{Input.Mouse.Position}]\nMouse Relative: [{Input.Mouse.PositionRelative}]";
 
-			Scene?.BeforeUpdate();
-			Scene?.Update();
-			Scene?.AfterUpdate();
+			Scene.Current?.BeforeUpdate();
+			Scene.Current?.Update();
+			Scene.Current?.AfterUpdate();
 		}
 
 		Transform test = new Transform();
@@ -581,7 +581,7 @@ namespace CKGLTest
 			// GUI Layer
 
 			DepthState.Off.Set();
-			Scene?.Draw();
+			Scene.Current?.Draw();
 
 			Camera2D.Width = RenderTarget.Current.Width;
 			Camera2D.Height = RenderTarget.Current.Height;

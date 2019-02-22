@@ -2,6 +2,8 @@ namespace CKGL
 {
 	public class Scene
 	{
+		public static Scene Current = new Scene();
+
 		public EntityList Entities;
 
 		public Colour ClearColour = Colour.Grey;
@@ -26,12 +28,13 @@ namespace CKGL
 
 		public virtual void BeforeUpdate()
 		{
-			Entities.UpdateLists();
 		}
 
 		public void Update()
 		{
+			BeforeUpdate();
 			Entities.Update();
+			AfterUpdate();
 		}
 
 		public virtual void AfterUpdate()

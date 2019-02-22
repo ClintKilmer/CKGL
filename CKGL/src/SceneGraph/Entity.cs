@@ -75,8 +75,7 @@ namespace CKGL
 				if (depth != value)
 				{
 					depth = value;
-					if (Scene != null)
-						Scene.Entities.SetUnsorted();
+					Scene?.Entities.SetUnsorted();
 				}
 			}
 		}
@@ -94,7 +93,7 @@ namespace CKGL
 			Rotation = rotation ?? Rotation.Zero;
 			Depth = depth;
 
-			Game.Scene.Entities.Add(this);
+			Scene.Current.Entities.Add(this);
 		}
 
 		public virtual void SceneBegin()
