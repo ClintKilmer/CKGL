@@ -84,7 +84,7 @@ namespace CKGL
 		public static float AspectRatio => Width / (float)Height;
 
 		#region VSync
-		public class VSyncMode
+		private class VSyncMode
 		{
 			// Late Swap Tearing - https://wiki.libsdl.org/SDL_GL_SetSwapInterval
 			// Adaptive VSync - https://www.khronos.org/opengl/wiki/Swap_Interval
@@ -99,10 +99,18 @@ namespace CKGL
 			{
 				if (value)
 				{
-					if (SDL_GL_SetSwapInterval(VSyncMode.Adaptive) == -1)
+					if (Platform.OS == OS.WinRT || Platform.OS == OS.Mac) // TODO - Check for Google ANGLE here, as it reports success, even though it doesn't seem to work
 					{
 						SDL_GL_SetSwapInterval(VSyncMode.On);
-						Output.WriteLine("Adaptive VSync Mode not supported. Standard VSync enabled instead.");
+					}
+					else
+					{
+						if (SDL_GL_SetSwapInterval(VSyncMode.Adaptive) == -1)
+						{
+							SDL_ClearError();
+							SDL_GL_SetSwapInterval(VSyncMode.On);
+							Output.WriteLine("Adaptive VSync Mode not supported. Standard VSync enabled instead.");
+						}
 					}
 				}
 				else

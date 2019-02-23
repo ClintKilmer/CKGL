@@ -2,7 +2,7 @@ CKGL TODO List:
 
 Features:
 - Texture.SavePNG doesn't work in Init(), only in Update or later...
-- ANGLE can't use adaptive sync
+- ANGLE can't use adaptive sync - even though is reports that it does
 - Texture.GetParam can't convert from OpenGLBindings to CKGL enums...
 - Move GL-specific debug/Metrics info to GL backend/Metrics - Make Debug/Metrics output GraphicsBackend agnostic
 - CKGL Exception - Illegal<Value> from Veldrid - States/GraphicsBackends
