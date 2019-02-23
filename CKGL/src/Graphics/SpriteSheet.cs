@@ -57,7 +57,7 @@ namespace CKGL
 
 			Sprite sprite = new Sprite(this, offset.X, offset.Y, source.W, source.H);
 			Sprites.Add(sprite);
-			aabbs.Add(new AABBi(sprite.X, sprite.Y, sprite.Width + padding, sprite.Height + padding));
+			aabbs.Add(new AABBi(sprite.SpriteSheetX, sprite.SpriteSheetY, sprite.Width + padding, sprite.Height + padding));
 			return sprite;
 		}
 
@@ -104,7 +104,7 @@ namespace CKGL
 
 			Sprite sprite = new Sprite(this, offset.X, offset.Y, spriteWidth, source.H);
 			Sprites.Add(sprite);
-			aabbs.Add(new AABBi(sprite.X, sprite.Y, sprite.Width + padding, sprite.Height + padding));
+			aabbs.Add(new AABBi(sprite.SpriteSheetX, sprite.SpriteSheetY, sprite.Width + padding, sprite.Height + padding));
 			return sprite;
 		}
 

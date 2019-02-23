@@ -7,7 +7,6 @@
  * Matrix3x2.cs in the Rise Library: https://github.com/ChevyRay/Rise
  */
 
-using System;
 using System.Runtime.CompilerServices;
 
 namespace CKGL
@@ -234,7 +233,12 @@ namespace CKGL
 				transformMatrix *= CreateRotationZ(rotations);
 
 			if (position != Vector2.Zero)
-				transformMatrix *= CreateTranslation(position);
+			{
+				if (origin != Vector2.Zero)
+					transformMatrix *= CreateTranslation(position - origin);
+				else
+					transformMatrix *= CreateTranslation(position);
+			}
 
 			if (origin != Vector2.Zero)
 				transformMatrix *= CreateTranslation(origin);

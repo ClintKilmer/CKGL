@@ -288,7 +288,12 @@ namespace CKGL
 				transformMatrix *= rotation.Matrix;
 
 			if (position != Vector3.Zero)
-				transformMatrix *= CreateTranslation(position);
+			{
+				if (origin != Vector3.Zero)
+					transformMatrix *= CreateTranslation(position - origin);
+				else
+					transformMatrix *= CreateTranslation(position);
+			}
 
 			if (origin != Vector3.Zero)
 				transformMatrix *= CreateTranslation(origin);

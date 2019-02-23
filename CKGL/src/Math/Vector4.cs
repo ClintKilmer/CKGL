@@ -25,6 +25,13 @@ namespace CKGL
 			Z = value;
 			W = value;
 		}
+		public Vector4(Vector3 v, float w)
+		{
+			X = v.X;
+			Y = v.Y;
+			Z = v.Z;
+			W = w;
+		}
 		#endregion
 
 		#region Static Constructors

@@ -7,9 +7,8 @@ namespace CKGLTest2D
 		public Sprite Sprite = Sprites.Test1;
 		public Colour Colour = Colour.White;
 		public Colour ShadowColour = Colour.Black;
-		public Vector2 Size = new Vector2(8f, 8f);
 		public new Vector2 Scale = new Vector2(1f, 1f);
-		public new Vector2 Origin { get { return Size * Scale * 0.5f; } }
+		public new Vector2 Origin { get { return Sprite.Size * Scale * 0.5f; } }
 
 		public Player()
 		{
@@ -53,6 +52,13 @@ namespace CKGLTest2D
 
 		public override void Draw()
 		{
+			Transform2D t = new Transform2D();
+			t.Origin = Sprites.Test2.Size * 0.5f;
+			t.Position = Position + new Vector2(9f, 0f);
+			t.Scale = Scale;
+			t.Rotation = Position.X * -0.01f;
+			Renderer.Draw.Sprite(Sprites.Test2, t, Colour.White.Alpha(0.5f));
+
 			//Renderer.SetBlendState(nsBlendState.Additive);
 			//Renderer.Draw.Rectangle(Position - Origin, Position - Origin + Size, Colour);
 			//Renderer.Draw.Sprite(Sprite, Position - Origin, Colour.White.Alpha(0.5f));

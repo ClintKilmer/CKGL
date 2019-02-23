@@ -76,6 +76,23 @@ namespace CKGL
 				else
 					AddVertex(primitiveTopology, position, colour, uv);
 			}
+
+			public static void AddVertex(PrimitiveTopology primitiveTopology, Vector2 position, Matrix2D? matrix, Colour? colour, UV? uv)
+			{
+				Renderer.AddVertex(primitiveTopology, position * matrix ?? position, colour, uv);
+			}
+			public static void AddVertex(PrimitiveTopology primitiveTopology, Vector3 position, Matrix? matrix, Colour? colour, UV? uv)
+			{
+				Renderer.AddVertex(primitiveTopology, position * matrix ?? position, colour, uv);
+			}
+			public static void AddVertex(PrimitiveTopology primitiveTopology, Transform transform, Colour? colour, UV? uv)
+			{
+				Renderer.AddVertex(primitiveTopology, transform.GlobalPosition, colour, uv);
+			}
+			public static void AddVertex(PrimitiveTopology primitiveTopology, Transform2D transform2D, Colour? colour, UV? uv)
+			{
+				Renderer.AddVertex(primitiveTopology, new Vector3(transform2D.GlobalPosition, depth), colour, uv);
+			}
 			#endregion
 
 			#region Triangle
@@ -172,6 +189,16 @@ namespace CKGL
 					Rectangle(position.X, position.Y, sprite.Width * scale.Value.X, sprite.Height * scale.Value.Y, colour, colour, colour, colour, sprite.UV_BL, sprite.UV_BR, sprite.UV_TL, sprite.UV_TR, rotation, origin);
 				else
 					Rectangle(position.X, position.Y, sprite.Width, sprite.Height, colour, colour, colour, colour, sprite.UV_BL, sprite.UV_BR, sprite.UV_TL, sprite.UV_TR, rotation, origin);
+			}
+			public static void Sprite(Sprite sprite, Transform2D transform2D = null, Colour? colour = null)
+			{
+				sprite.SpriteSheet.Texture.Bind();
+				AddVertex(PrimitiveTopology.TriangleList, sprite.Position_BL * transform2D?.Matrix ?? sprite.Position_BL, colour, sprite.UV_BL);
+				AddVertex(PrimitiveTopology.TriangleList, sprite.Position_BR * transform2D?.Matrix ?? sprite.Position_BR, colour, sprite.UV_BR);
+				AddVertex(PrimitiveTopology.TriangleList, sprite.Position_TL * transform2D?.Matrix ?? sprite.Position_TL, colour, sprite.UV_TL);
+				AddVertex(PrimitiveTopology.TriangleList, sprite.Position_TL * transform2D?.Matrix ?? sprite.Position_TL, colour, sprite.UV_TL);
+				AddVertex(PrimitiveTopology.TriangleList, sprite.Position_BR * transform2D?.Matrix ?? sprite.Position_BR, colour, sprite.UV_BR);
+				AddVertex(PrimitiveTopology.TriangleList, sprite.Position_TR * transform2D?.Matrix ?? sprite.Position_TR, colour, sprite.UV_TR);
 			}
 			#endregion
 
