@@ -10,10 +10,7 @@ precision mediump float;
 //#extension GL_EXT_geometry_shader: require
 //#extension GL_OES_geometry_shader: require";
 
-		private static readonly string Common = Platform.GraphicsBackend == GraphicsBackend.OpenGLES
-			? OpenGLES
-			: OpenGL
-			+ @"
+		private static readonly string Common = (Platform.GraphicsBackend == GraphicsBackend.OpenGLES ? OpenGLES : OpenGL) + @"
 
 float fog_linear(const float dist, const float start, const float end)
 {
@@ -66,19 +63,16 @@ layout(location = 3) in float textured;
 
 uniform mat4 MVP;
 
-out DATA
-{
-	vec4 colour;
-	vec2 uv;
-	float textured;
-} o;
+out vec4 vColour;
+out vec2 vUV;
+out float vTextured;
 
 void main()
 {
 	gl_Position = vec4(position.xyz, 1.0) * MVP;
-	o.colour = colour;
-	o.uv = uv;
-	o.textured = textured;
+	vColour = colour;
+	vUV = uv;
+	vTextured = textured;
 }
 
 
@@ -88,18 +82,13 @@ layout(location = 0) out vec4 colour;
 
 uniform sampler2D Texture;
 
-in DATA
-{
-	vec4 colour;
-	vec2 uv;
-	float textured;
-} i;
+in vec4 vColour;
+in vec2 vUV;
+in float vTextured;
 
 void main()
 {
-	colour = mix(i.colour, texture(Texture, i.uv) * i.colour, i.textured);
-	if(colour.a == 0.0)
-		discard;
+	colour = mix(vColour, texture(Texture, vUV) * vColour, vTextured);
 }";
 			#endregion
 
@@ -134,23 +123,20 @@ uniform mat4 MV;
 uniform float FogStart;// = 20.0;
 uniform float FogEnd;// = 50.0;
 
-out DATA
-{
-	vec4 colour;
-	vec2 uv;
-	float textured;
-	vec4 viewSpace;
-	float linearFogAmount;
-} o;
+out vec4 vColour;
+out vec2 vUV;
+out float vTextured;
+out vec4 vViewSpace;
+out float vLinearFogAmount;
 
 void main()
 {
 	gl_Position = vec4(position.xyz, 1.0) * MVP;
-	o.colour = colour;
-	o.uv = uv;
-	o.textured = textured;
-	o.viewSpace = vec4(position.xyz, 1.0) * MV;
-	o.linearFogAmount = fog_linear(length(o.viewSpace), FogStart, FogEnd);
+	vColour = colour;
+	vUV = uv;
+	vTextured = textured;
+	vViewSpace = vec4(position.xyz, 1.0) * MV;
+	vLinearFogAmount = fog_linear(length(vViewSpace), FogStart, FogEnd);
 }
 
 
@@ -165,27 +151,24 @@ uniform float FogDensity;// = 0.03;
 uniform float FogStart;// = 20.0;
 uniform float FogEnd;// = 50.0;
 
-in DATA
-{
-	vec4 colour;
-	vec2 uv;
-	float textured;
-	vec4 viewSpace;
-	float linearFogAmount;
-} i;
+in vec4 vColour;
+in vec2 vUV;
+in float vTextured;
+in vec4 vViewSpace;
+in float vLinearFogAmount;
 
 void main()
 {
-    colour = mix(i.colour, texture(Texture, i.uv) * i.colour, i.textured);
+	colour = mix(vColour, texture(Texture, vUV) * vColour, vTextured);
 	
 	if(FogType == 0) // Fog - Linear Vertex
-		colour.rgb = mix(colour.rgb, FogColour.rgb, i.linearFogAmount);
+		colour.rgb = mix(colour.rgb, FogColour.rgb, vLinearFogAmount);
 	else if(FogType == 1) // Fog - Linear
-		colour.rgb = mix(colour.rgb, FogColour.rgb, fog_linear(length(i.viewSpace), FogStart, FogEnd));
+		colour.rgb = mix(colour.rgb, FogColour.rgb, fog_linear(length(vViewSpace), FogStart, FogEnd));
 	else if(FogType == 2) // Fog - Exponential
-		colour.rgb = mix(colour.rgb, FogColour.rgb, fog_exp(length(i.viewSpace), FogDensity));
+		colour.rgb = mix(colour.rgb, FogColour.rgb, fog_exp(length(vViewSpace), FogDensity));
 	else if(FogType == 3) // Fog - Exponential2
-		colour.rgb = mix(colour.rgb, FogColour.rgb, fog_exp2(length(i.viewSpace), FogDensity));
+		colour.rgb = mix(colour.rgb, FogColour.rgb, fog_exp2(length(vViewSpace), FogDensity));
 }";
 			#endregion
 
@@ -214,17 +197,14 @@ layout(location = 2) in vec2 uv;
 
 uniform mat4 MVP;
 
-out DATA
-{
-	vec4 colour;
-	vec2 uv;
-} o;
+out vec4 vColour;
+out vec2 vUV;
 
 void main()
 {
 	gl_Position = vec4(position.xyz, 1.0) * MVP;
-	o.colour = colour;
-	o.uv = uv;
+	vColour = colour;
+	vUV = uv;
 }
 
 
@@ -236,16 +216,13 @@ uniform sampler2D Texture;
 uniform float zNear;// = 0.5;
 uniform float zFar;// = 1000.0;
 
-in DATA
-{
-	vec4 colour;
-	vec2 uv;
-} i;
+in vec4 vColour;
+in vec2 vUV;
 
 void main()
 {
-	float c = LinearizeDepth(texture(Texture, i.uv).x, zNear, zFar);
-	colour = vec4(c, c, c, 1.0) * i.colour;
+	float c = LinearizeDepth(texture(Texture, vUV).x, zNear, zFar);
+	colour = vec4(c, c, c, 1.0) * vColour;
 }";
 			#endregion
 
