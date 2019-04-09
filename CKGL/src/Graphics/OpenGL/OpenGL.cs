@@ -1963,7 +1963,7 @@ namespace CKGL.OpenGLBindings
 			// Check for stub functions (android drivers)
 			if (es)
 			{
-				if (Platform.OpenGLExtensionSupported("KHR_debug") && Platform.OpenGLExtensionSupported("ARB_debug_output"))
+				if (Platform.OpenGLExtensionSupported("GL_KHR_debug") && Platform.OpenGLExtensionSupported("GL_ARB_debug_output"))
 				{
 					supportsDebugMessageCallback = false;
 				}
