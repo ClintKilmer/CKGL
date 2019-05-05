@@ -108,10 +108,7 @@ namespace CKGLTest2D
 				new Box { X = Random.Range(-width, width) / 8 * 8, Y = Random.Range(-height, height) / 8 * 8 };
 			}
 
-			if (Platform.GraphicsBackend == GraphicsBackend.OpenGLES)
-				surface = new RenderTarget(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth16);
-			else
-				surface = new RenderTarget(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth24);
+			surface = new RenderTarget(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth);
 		}
 
 		public override void Update()
@@ -281,11 +278,7 @@ namespace CKGLTest2D
 			//surface.Destroy();
 			//width = Window.Width;
 			//height = Window.Height;
-
-			//if (Platform.GraphicsBackend == GraphicsBackend.OpenGLES)
-			//	surface = new RenderTarget(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth16);
-			//else
-			//	surface = new RenderTarget(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth24);
+			//surface = new RenderTarget(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth);
 		}
 	}
 }

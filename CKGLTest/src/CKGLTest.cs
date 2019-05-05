@@ -124,10 +124,7 @@ namespace CKGLTest
 			//SpriteSheets.SpriteSheet.Texture.SavePNG($@"{System.IO.Directory.GetCurrentDirectory()}/SpriteSheet.png");
 			//SpriteSheets.SpriteSheet.Texture.SavePNG("SpriteSheet.png");
 
-			if (Platform.GraphicsBackend == GraphicsBackend.OpenGLES)
-				surface = new RenderTarget(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth16);
-			else
-				surface = new RenderTarget(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth24);
+			surface = new RenderTarget(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth);
 		}
 
 		public override void Update()
@@ -753,7 +750,7 @@ namespace CKGLTest
 			//surface.Destroy();
 			//width = Window.Width;
 			//height = Window.Height;
-			//surface = new RenderTarget(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth24);
+			//surface = new RenderTarget(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth);
 
 			Camera.AspectRatio = surface.AspectRatio;
 			//Camera.AspectRatio = Window.AspectRatio;
