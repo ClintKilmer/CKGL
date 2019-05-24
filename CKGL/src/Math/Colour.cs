@@ -261,6 +261,28 @@ namespace CKGL
 		{
 			return $"{R}, {G}, {B}, {A}";
 		}
+
+		public override bool Equals(object obj)
+		{
+			return obj is Colour && Equals((Colour)obj);
+		}
+		public bool Equals(Colour colour)
+		{
+			return this == colour;
+		}
+
+		public override int GetHashCode()
+		{
+			unchecked
+			{
+				int hash = 17;
+				hash = hash * 23 + r.GetHashCode();
+				hash = hash * 23 + g.GetHashCode();
+				hash = hash * 23 + b.GetHashCode();
+				hash = hash * 23 + a.GetHashCode();
+				return hash;
+			}
+		}
 		#endregion
 
 		#region Operators

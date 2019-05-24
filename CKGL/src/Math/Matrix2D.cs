@@ -375,6 +375,30 @@ namespace CKGL
 			return this == Identity ? "Identity" : $"T:({Translation.X:0.##}, {Translation.Y:0.##}), R:{Rotation:0.##}, S:({Scale.X:0.##},{Scale.Y:0.##})";
 			//return $"{{M11:{M11} M12:{M12}}} {{M21:{M21} M22:{M22}}} {{M31:{M31} M32:{M32}}}";
 		}
+
+		public override bool Equals(object obj)
+		{
+			return obj is Matrix2D && Equals((Matrix2D)obj);
+		}
+		public bool Equals(Matrix2D matrix)
+		{
+			return this == matrix;
+		}
+
+		public override int GetHashCode()
+		{
+			unchecked
+			{
+				int hash = 17;
+				hash = hash * 23 + M11.GetHashCode();
+				hash = hash * 23 + M12.GetHashCode();
+				hash = hash * 23 + M21.GetHashCode();
+				hash = hash * 23 + M22.GetHashCode();
+				hash = hash * 23 + M31.GetHashCode();
+				hash = hash * 23 + M32.GetHashCode();
+				return hash;
+			}
+		}
 		#endregion
 
 		#region Operators

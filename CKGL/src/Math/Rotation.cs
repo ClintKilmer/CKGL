@@ -92,6 +92,25 @@ namespace CKGL
 		{
 			return $"{r}";
 		}
+
+		public override bool Equals(object obj)
+		{
+			return obj is Rotation && Equals((Rotation)obj);
+		}
+		public bool Equals(Rotation rotation)
+		{
+			return this == rotation;
+		}
+
+		public override int GetHashCode()
+		{
+			unchecked
+			{
+				int hash = 17;
+				hash = hash * 23 + r.GetHashCode();
+				return hash;
+			}
+		}
 		#endregion
 
 		#region Operators

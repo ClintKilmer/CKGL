@@ -62,6 +62,26 @@ namespace CKGL
 		{
 			return $"{U}, {V}";
 		}
+
+		public override bool Equals(object obj)
+		{
+			return obj is UV && Equals((UV)obj);
+		}
+		public bool Equals(UV uv)
+		{
+			return this == uv;
+		}
+
+		public override int GetHashCode()
+		{
+			unchecked
+			{
+				int hash = 17;
+				hash = hash * 23 + u.GetHashCode();
+				hash = hash * 23 + v.GetHashCode();
+				return hash;
+			}
+		}
 		#endregion
 
 		#region Operators

@@ -26,6 +26,26 @@ namespace CKGL
 		{
 			return $"{X}, {Y}";
 		}
+
+		public override bool Equals(object obj)
+		{
+			return obj is Point2 && Equals((Point2)obj);
+		}
+		public bool Equals(Point2 point2)
+		{
+			return this == point2;
+		}
+
+		public override int GetHashCode()
+		{
+			unchecked
+			{
+				int hash = 17;
+				hash = hash * 23 + X.GetHashCode();
+				hash = hash * 23 + Y.GetHashCode();
+				return hash;
+			}
+		}
 		#endregion
 
 		#region Operators

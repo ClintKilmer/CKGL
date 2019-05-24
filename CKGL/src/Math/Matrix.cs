@@ -660,6 +660,39 @@ namespace CKGL
 				 + "{M21:" + M21 + " M22:" + M22 + " M23:" + M23 + " M24:" + M24 + "}"
 				 + "{M31:" + M31 + " M32:" + M32 + " M33:" + M33 + " M34:" + M34 + "}"
 				 + "{M41:" + M41 + " M42:" + M42 + " M43:" + M43 + " M44:" + M44 + "}";
+
+		public override bool Equals(object obj)
+		{
+			return obj is Matrix && Equals((Matrix)obj);
+		}
+		public bool Equals(Matrix matrix)
+		{
+			return this == matrix;
+		}
+
+		public override int GetHashCode()
+		{
+			unchecked
+			{
+				int hash = 17;
+				hash = hash * 23 + M11.GetHashCode();
+				hash = hash * 23 + M12.GetHashCode();
+				hash = hash * 23 + M13.GetHashCode();
+				hash = hash * 23 + M14.GetHashCode();
+				hash = hash * 23 + M21.GetHashCode();
+				hash = hash * 23 + M22.GetHashCode();
+				hash = hash * 23 + M23.GetHashCode();
+				hash = hash * 23 + M24.GetHashCode();
+				hash = hash * 23 + M31.GetHashCode();
+				hash = hash * 23 + M32.GetHashCode();
+				hash = hash * 23 + M33.GetHashCode();
+				hash = hash * 23 + M34.GetHashCode();
+				hash = hash * 23 + M41.GetHashCode();
+				hash = hash * 23 + M42.GetHashCode();
+				hash = hash * 23 + M43.GetHashCode();
+				hash = hash * 23 + M44.GetHashCode();
+				return hash;
+			}
 		}
 		#endregion
 

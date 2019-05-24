@@ -171,6 +171,28 @@ namespace CKGL
 		{
 			return $"{X}, {Y}, {W}, {H}";
 		}
+
+		public override bool Equals(object obj)
+		{
+			return obj is RectangleI && Equals((RectangleI)obj);
+		}
+		public bool Equals(RectangleI rectangleI)
+		{
+			return this == rectangleI;
+		}
+
+		public override int GetHashCode()
+		{
+			unchecked
+			{
+				int hash = 17;
+				hash = hash * 23 + X.GetHashCode();
+				hash = hash * 23 + Y.GetHashCode();
+				hash = hash * 23 + W.GetHashCode();
+				hash = hash * 23 + H.GetHashCode();
+				return hash;
+			}
+		}
 		#endregion
 
 		#region Operators

@@ -33,6 +33,30 @@ namespace CKGL
 		{
 			return $"XY: {XY}, XZ: {XZ}, YX: {YX}, YZ: {YZ}, ZX: {ZX}, ZY: {ZY}";
 		}
+
+		public override bool Equals(object obj)
+		{
+			return obj is Shear3D && Equals((Shear3D)obj);
+		}
+		public bool Equals(Shear3D shear3D)
+		{
+			return this == shear3D;
+		}
+
+		public override int GetHashCode()
+		{
+			unchecked
+			{
+				int hash = 17;
+				hash = hash * 23 + XY.GetHashCode();
+				hash = hash * 23 + XZ.GetHashCode();
+				hash = hash * 23 + YX.GetHashCode();
+				hash = hash * 23 + YZ.GetHashCode();
+				hash = hash * 23 + ZX.GetHashCode();
+				hash = hash * 23 + ZY.GetHashCode();
+				return hash;
+			}
+		}
 		#endregion
 
 		#region Operators
