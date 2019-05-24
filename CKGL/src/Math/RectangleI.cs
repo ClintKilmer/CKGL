@@ -206,14 +206,14 @@ namespace CKGL
 			return a.X != b.X || a.Y != b.Y || a.W != b.W || a.H != b.H;
 		}
 
-		public static RectangleI operator *(RectangleI a, int b)
+		public static RectangleI operator *(RectangleI r, int n)
 		{
-			return new RectangleI(a.X * b, a.Y * b, a.W * b, a.H * b);
+			return new RectangleI(r.X * n, r.Y * n, r.W * n, r.H * n);
 		}
 
-		public static RectangleI operator /(RectangleI a, int b)
+		public static RectangleI operator /(RectangleI r, int n)
 		{
-			return new RectangleI(a.X / b, a.Y / b, a.W / b, a.H / b);
+			return new RectangleI(r.X / n, r.Y / n, r.W / n, r.H / n);
 		}
 		#endregion
 

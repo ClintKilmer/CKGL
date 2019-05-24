@@ -380,9 +380,9 @@ namespace CKGL
 		{
 			return obj is Matrix2D && Equals((Matrix2D)obj);
 		}
-		public bool Equals(Matrix2D matrix)
+		public bool Equals(Matrix2D matrix2D)
 		{
-			return this == matrix;
+			return this == matrix2D;
 		}
 
 		public override int GetHashCode()
