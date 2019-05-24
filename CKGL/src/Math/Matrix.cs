@@ -656,10 +656,8 @@ namespace CKGL
 		#region Overrides
 		public override string ToString()
 		{
-			return "{M11:" + M11 + " M12:" + M12 + " M13:" + M13 + " M14:" + M14 + "}"
-				 + "{M21:" + M21 + " M22:" + M22 + " M23:" + M23 + " M24:" + M24 + "}"
-				 + "{M31:" + M31 + " M32:" + M32 + " M33:" + M33 + " M34:" + M34 + "}"
-				 + "{M41:" + M41 + " M42:" + M42 + " M43:" + M43 + " M44:" + M44 + "}";
+			return $"{{M11:{M11} M12:{M12} M13:{M13} M14:{M14}}} {{M21:{M21} M22:{M22} M23:{M23} M24:{M24}}} {{M31:{M31} M32:{M32} M33:{M33} M34:{M34}}} {{M41:{M41} M42:{M42} M43:{M43} M44:{M44}}}";
+		}
 
 		public override bool Equals(object obj)
 		{
@@ -699,7 +697,7 @@ namespace CKGL
 		#region Operators
 		public static bool operator ==(Matrix matrix1, Matrix matrix2)
 		{
-			return (
+			return
 				matrix1.M11 == matrix2.M11 &&
 				matrix1.M12 == matrix2.M12 &&
 				matrix1.M13 == matrix2.M13 &&
@@ -716,12 +714,12 @@ namespace CKGL
 				matrix1.M42 == matrix2.M42 &&
 				matrix1.M43 == matrix2.M43 &&
 				matrix1.M44 == matrix2.M44
-				);
+				;
 		}
 
 		public static bool operator !=(Matrix matrix1, Matrix matrix2)
 		{
-			return (
+			return
 				matrix1.M11 != matrix2.M11 ||
 				matrix1.M12 != matrix2.M12 ||
 				matrix1.M13 != matrix2.M13 ||
@@ -738,7 +736,7 @@ namespace CKGL
 				matrix1.M42 != matrix2.M42 ||
 				matrix1.M43 != matrix2.M43 ||
 				matrix1.M44 != matrix2.M44
-				);
+				;
 		}
 
 		public static Matrix operator +(Matrix matrix1, Matrix matrix2)
@@ -786,22 +784,22 @@ namespace CKGL
 		// Using matrix multiplication algorithm - see http://en.wikipedia.org/wiki/Matrix_multiplication.
 		public static Matrix operator *(Matrix matrix1, Matrix matrix2)
 		{
-			var m11 = (((matrix1.M11 * matrix2.M11) + (matrix1.M12 * matrix2.M21)) + (matrix1.M13 * matrix2.M31)) + (matrix1.M14 * matrix2.M41);
-			var m12 = (((matrix1.M11 * matrix2.M12) + (matrix1.M12 * matrix2.M22)) + (matrix1.M13 * matrix2.M32)) + (matrix1.M14 * matrix2.M42);
-			var m13 = (((matrix1.M11 * matrix2.M13) + (matrix1.M12 * matrix2.M23)) + (matrix1.M13 * matrix2.M33)) + (matrix1.M14 * matrix2.M43);
-			var m14 = (((matrix1.M11 * matrix2.M14) + (matrix1.M12 * matrix2.M24)) + (matrix1.M13 * matrix2.M34)) + (matrix1.M14 * matrix2.M44);
-			var m21 = (((matrix1.M21 * matrix2.M11) + (matrix1.M22 * matrix2.M21)) + (matrix1.M23 * matrix2.M31)) + (matrix1.M24 * matrix2.M41);
-			var m22 = (((matrix1.M21 * matrix2.M12) + (matrix1.M22 * matrix2.M22)) + (matrix1.M23 * matrix2.M32)) + (matrix1.M24 * matrix2.M42);
-			var m23 = (((matrix1.M21 * matrix2.M13) + (matrix1.M22 * matrix2.M23)) + (matrix1.M23 * matrix2.M33)) + (matrix1.M24 * matrix2.M43);
-			var m24 = (((matrix1.M21 * matrix2.M14) + (matrix1.M22 * matrix2.M24)) + (matrix1.M23 * matrix2.M34)) + (matrix1.M24 * matrix2.M44);
-			var m31 = (((matrix1.M31 * matrix2.M11) + (matrix1.M32 * matrix2.M21)) + (matrix1.M33 * matrix2.M31)) + (matrix1.M34 * matrix2.M41);
-			var m32 = (((matrix1.M31 * matrix2.M12) + (matrix1.M32 * matrix2.M22)) + (matrix1.M33 * matrix2.M32)) + (matrix1.M34 * matrix2.M42);
-			var m33 = (((matrix1.M31 * matrix2.M13) + (matrix1.M32 * matrix2.M23)) + (matrix1.M33 * matrix2.M33)) + (matrix1.M34 * matrix2.M43);
-			var m34 = (((matrix1.M31 * matrix2.M14) + (matrix1.M32 * matrix2.M24)) + (matrix1.M33 * matrix2.M34)) + (matrix1.M34 * matrix2.M44);
-			var m41 = (((matrix1.M41 * matrix2.M11) + (matrix1.M42 * matrix2.M21)) + (matrix1.M43 * matrix2.M31)) + (matrix1.M44 * matrix2.M41);
-			var m42 = (((matrix1.M41 * matrix2.M12) + (matrix1.M42 * matrix2.M22)) + (matrix1.M43 * matrix2.M32)) + (matrix1.M44 * matrix2.M42);
-			var m43 = (((matrix1.M41 * matrix2.M13) + (matrix1.M42 * matrix2.M23)) + (matrix1.M43 * matrix2.M33)) + (matrix1.M44 * matrix2.M43);
-			var m44 = (((matrix1.M41 * matrix2.M14) + (matrix1.M42 * matrix2.M24)) + (matrix1.M43 * matrix2.M34)) + (matrix1.M44 * matrix2.M44);
+			var m11 = (matrix1.M11 * matrix2.M11) + (matrix1.M12 * matrix2.M21) + (matrix1.M13 * matrix2.M31) + (matrix1.M14 * matrix2.M41);
+			var m12 = (matrix1.M11 * matrix2.M12) + (matrix1.M12 * matrix2.M22) + (matrix1.M13 * matrix2.M32) + (matrix1.M14 * matrix2.M42);
+			var m13 = (matrix1.M11 * matrix2.M13) + (matrix1.M12 * matrix2.M23) + (matrix1.M13 * matrix2.M33) + (matrix1.M14 * matrix2.M43);
+			var m14 = (matrix1.M11 * matrix2.M14) + (matrix1.M12 * matrix2.M24) + (matrix1.M13 * matrix2.M34) + (matrix1.M14 * matrix2.M44);
+			var m21 = (matrix1.M21 * matrix2.M11) + (matrix1.M22 * matrix2.M21) + (matrix1.M23 * matrix2.M31) + (matrix1.M24 * matrix2.M41);
+			var m22 = (matrix1.M21 * matrix2.M12) + (matrix1.M22 * matrix2.M22) + (matrix1.M23 * matrix2.M32) + (matrix1.M24 * matrix2.M42);
+			var m23 = (matrix1.M21 * matrix2.M13) + (matrix1.M22 * matrix2.M23) + (matrix1.M23 * matrix2.M33) + (matrix1.M24 * matrix2.M43);
+			var m24 = (matrix1.M21 * matrix2.M14) + (matrix1.M22 * matrix2.M24) + (matrix1.M23 * matrix2.M34) + (matrix1.M24 * matrix2.M44);
+			var m31 = (matrix1.M31 * matrix2.M11) + (matrix1.M32 * matrix2.M21) + (matrix1.M33 * matrix2.M31) + (matrix1.M34 * matrix2.M41);
+			var m32 = (matrix1.M31 * matrix2.M12) + (matrix1.M32 * matrix2.M22) + (matrix1.M33 * matrix2.M32) + (matrix1.M34 * matrix2.M42);
+			var m33 = (matrix1.M31 * matrix2.M13) + (matrix1.M32 * matrix2.M23) + (matrix1.M33 * matrix2.M33) + (matrix1.M34 * matrix2.M43);
+			var m34 = (matrix1.M31 * matrix2.M14) + (matrix1.M32 * matrix2.M24) + (matrix1.M33 * matrix2.M34) + (matrix1.M34 * matrix2.M44);
+			var m41 = (matrix1.M41 * matrix2.M11) + (matrix1.M42 * matrix2.M21) + (matrix1.M43 * matrix2.M31) + (matrix1.M44 * matrix2.M41);
+			var m42 = (matrix1.M41 * matrix2.M12) + (matrix1.M42 * matrix2.M22) + (matrix1.M43 * matrix2.M32) + (matrix1.M44 * matrix2.M42);
+			var m43 = (matrix1.M41 * matrix2.M13) + (matrix1.M42 * matrix2.M23) + (matrix1.M43 * matrix2.M33) + (matrix1.M44 * matrix2.M43);
+			var m44 = (matrix1.M41 * matrix2.M14) + (matrix1.M42 * matrix2.M24) + (matrix1.M43 * matrix2.M34) + (matrix1.M44 * matrix2.M44);
 			matrix1.M11 = m11;
 			matrix1.M12 = m12;
 			matrix1.M13 = m13;
@@ -865,23 +863,23 @@ namespace CKGL
 
 		public static Matrix operator /(Matrix matrix, float scalar)
 		{
-			float num = 1f / scalar;
-			matrix.M11 = matrix.M11 * num;
-			matrix.M12 = matrix.M12 * num;
-			matrix.M13 = matrix.M13 * num;
-			matrix.M14 = matrix.M14 * num;
-			matrix.M21 = matrix.M21 * num;
-			matrix.M22 = matrix.M22 * num;
-			matrix.M23 = matrix.M23 * num;
-			matrix.M24 = matrix.M24 * num;
-			matrix.M31 = matrix.M31 * num;
-			matrix.M32 = matrix.M32 * num;
-			matrix.M33 = matrix.M33 * num;
-			matrix.M34 = matrix.M34 * num;
-			matrix.M41 = matrix.M41 * num;
-			matrix.M42 = matrix.M42 * num;
-			matrix.M43 = matrix.M43 * num;
-			matrix.M44 = matrix.M44 * num;
+			float inverseScalar = 1f / scalar;
+			matrix.M11 = matrix.M11 * inverseScalar;
+			matrix.M12 = matrix.M12 * inverseScalar;
+			matrix.M13 = matrix.M13 * inverseScalar;
+			matrix.M14 = matrix.M14 * inverseScalar;
+			matrix.M21 = matrix.M21 * inverseScalar;
+			matrix.M22 = matrix.M22 * inverseScalar;
+			matrix.M23 = matrix.M23 * inverseScalar;
+			matrix.M24 = matrix.M24 * inverseScalar;
+			matrix.M31 = matrix.M31 * inverseScalar;
+			matrix.M32 = matrix.M32 * inverseScalar;
+			matrix.M33 = matrix.M33 * inverseScalar;
+			matrix.M34 = matrix.M34 * inverseScalar;
+			matrix.M41 = matrix.M41 * inverseScalar;
+			matrix.M42 = matrix.M42 * inverseScalar;
+			matrix.M43 = matrix.M43 * inverseScalar;
+			matrix.M44 = matrix.M44 * inverseScalar;
 			return matrix;
 		}
 
