@@ -24,7 +24,7 @@ namespace CKGL
 		#endregion
 
 		#region Properties
-		public float R
+		private float R
 		{
 			get { return r; }
 			set
@@ -37,15 +37,6 @@ namespace CKGL
 					else if (r < 0f)
 						r = r % -1f + 1f;
 				}
-			}
-		}
-
-		public float Rotations
-		{
-			get { return r; }
-			set
-			{
-				R = value;
 			}
 		}
 
