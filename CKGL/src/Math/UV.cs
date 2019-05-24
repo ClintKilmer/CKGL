@@ -8,8 +8,8 @@ namespace CKGL
 		private ushort u;
 		private ushort v;
 
-		public float U { get { return u / ushort.MaxValue; } set { u = (ushort)(value * ushort.MaxValue); } }
-		public float V { get { return v / ushort.MaxValue; } set { v = (ushort)(value * ushort.MaxValue); } }
+		public float U { get { return u / 65535f; } set { u = (ushort)(value * ushort.MaxValue); } }
+		public float V { get { return v / 65535f; } set { v = (ushort)(value * ushort.MaxValue); } }
 
 		#region Constructors
 		public UV(float u, float v)
