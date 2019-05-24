@@ -53,6 +53,7 @@ namespace CKGL
 		{
 			return a.X == b.X && a.Y == b.Y;
 		}
+
 		public static bool operator !=(Point2 a, Point2 b)
 		{
 			return a.X != b.X || a.Y != b.Y;

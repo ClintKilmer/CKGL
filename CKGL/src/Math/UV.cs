@@ -89,6 +89,7 @@ namespace CKGL
 		{
 			return a.U == b.U && a.V == b.V;
 		}
+
 		public static bool operator !=(UV a, UV b)
 		{
 			return a.U != b.U || a.V != b.V;

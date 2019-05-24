@@ -64,6 +64,7 @@ namespace CKGL
 		{
 			return a.XY == b.XY && a.XZ == b.XZ && a.YX == b.YX && a.YZ == b.YZ && a.ZX == b.ZX && a.ZY == b.ZY;
 		}
+
 		public static bool operator !=(Shear3D a, Shear3D b)
 		{
 			return a.XY != b.XY || a.XZ != b.XZ || a.YX != b.YX || a.YZ != b.YZ || a.ZX != b.ZX || a.ZY != b.ZY;

@@ -200,6 +200,7 @@ namespace CKGL
 		{
 			return a.X == b.X && a.Y == b.Y && a.W == b.W && a.H == b.H;
 		}
+
 		public static bool operator !=(RectangleI a, RectangleI b)
 		{
 			return a.X != b.X || a.Y != b.Y || a.W != b.W || a.H != b.H;

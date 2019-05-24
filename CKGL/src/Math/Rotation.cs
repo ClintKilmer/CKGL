@@ -118,6 +118,7 @@ namespace CKGL
 		{
 			return a.r == b.r;
 		}
+
 		public static bool operator !=(Rotation a, Rotation b)
 		{
 			return a.r != b.r;
