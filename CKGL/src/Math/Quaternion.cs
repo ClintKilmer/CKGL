@@ -489,28 +489,27 @@ namespace CKGL
 
 		public static Quaternion operator *(Quaternion a, Quaternion b)
 		{
-			Quaternion result = new Quaternion(
+			return new Quaternion(
 				a.X * b.W + b.X * a.W + (a.Y * b.Z - a.Z * b.Y),
 				a.Y * b.W + b.Y * a.W + (a.Z * b.X - a.X * b.Z),
 				a.Z * b.W + b.Z * a.W + (a.X * b.Y - a.Y * b.X),
 				a.W * b.W - (a.X * b.X + a.Y * b.Y + a.Z * b.Z));
-			return result;
 		}
-		public static Quaternion operator *(Quaternion v, float n)
+		public static Quaternion operator *(Quaternion q, float n)
 		{
-			v.X *= n;
-			v.Y *= n;
-			v.Z *= n;
-			v.W *= n;
-			return v;
+			q.X *= n;
+			q.Y *= n;
+			q.Z *= n;
+			q.W *= n;
+			return q;
 		}
-		public static Quaternion operator *(float n, Quaternion v)
+		public static Quaternion operator *(float n, Quaternion q)
 		{
-			v.X *= n;
-			v.Y *= n;
-			v.Z *= n;
-			v.W *= n;
-			return v;
+			q.X *= n;
+			q.Y *= n;
+			q.Z *= n;
+			q.W *= n;
+			return q;
 		}
 
 		public static Quaternion operator /(Quaternion a, Quaternion b)
@@ -541,22 +540,22 @@ namespace CKGL
 			return a;
 		}
 
-		public static Quaternion operator /(Quaternion v, float n)
+		public static Quaternion operator /(Quaternion q, float n)
 		{
-			v.X /= n;
-			v.Y /= n;
-			v.Z /= n;
-			v.W /= n;
-			return v;
+			q.X /= n;
+			q.Y /= n;
+			q.Z /= n;
+			q.W /= n;
+			return q;
 		}
 
-		public static Quaternion operator -(Quaternion v)
+		public static Quaternion operator -(Quaternion q)
 		{
-			v.X = -v.X;
-			v.Y = -v.Y;
-			v.Z = -v.Z;
-			v.W = -v.W;
-			return v;
+			q.X = -q.X;
+			q.Y = -q.Y;
+			q.Z = -q.Z;
+			q.W = -q.W;
+			return q;
 		}
 		#endregion
 	}
