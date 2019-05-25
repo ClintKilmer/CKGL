@@ -95,6 +95,7 @@ namespace CKGL
 		{
 			return a.Enabled == b.Enabled && a.Face == b.Face;
 		}
+
 		public static bool operator !=(CullModeState a, CullModeState b)
 		{
 			return a.Enabled != b.Enabled || a.Face != b.Face;

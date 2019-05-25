@@ -82,6 +82,7 @@ namespace CKGL
 		{
 			return a.R == b.R && a.G == b.G && a.B == b.B && a.A == b.A;
 		}
+
 		public static bool operator !=(ColourMaskState a, ColourMaskState b)
 		{
 			return a.R != b.R || a.G != b.G || a.B != b.B || a.A != b.A;

@@ -225,6 +225,7 @@ namespace CKGL
 				   a.ColourEquation == b.ColourEquation &&
 				   a.AlphaEquation == b.AlphaEquation;
 		}
+
 		public static bool operator !=(BlendState a, BlendState b)
 		{
 			return a.Enabled != b.Enabled ||

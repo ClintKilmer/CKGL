@@ -116,6 +116,7 @@ namespace CKGL
 		{
 			return a.Enabled == b.Enabled && a.DepthFunction == b.DepthFunction;
 		}
+
 		public static bool operator !=(DepthState a, DepthState b)
 		{
 			return a.Enabled != b.Enabled || a.DepthFunction != b.DepthFunction;

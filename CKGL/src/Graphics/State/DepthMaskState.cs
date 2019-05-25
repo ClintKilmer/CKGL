@@ -62,6 +62,7 @@ namespace CKGL
 		{
 			return a.Depth == b.Depth;
 		}
+
 		public static bool operator !=(DepthMaskState a, DepthMaskState b)
 		{
 			return a.Depth != b.Depth;

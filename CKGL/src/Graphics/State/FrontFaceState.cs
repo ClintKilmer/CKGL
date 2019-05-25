@@ -88,6 +88,7 @@ namespace CKGL
 		{
 			return a.FrontFace == b.FrontFace;
 		}
+
 		public static bool operator !=(FrontFaceState a, FrontFaceState b)
 		{
 			return a.FrontFace != b.FrontFace;

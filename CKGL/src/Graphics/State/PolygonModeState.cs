@@ -92,6 +92,7 @@ namespace CKGL
 		{
 			return a.PolygonMode == b.PolygonMode;
 		}
+
 		public static bool operator !=(PolygonModeState a, PolygonModeState b)
 		{
 			return a.PolygonMode != b.PolygonMode;

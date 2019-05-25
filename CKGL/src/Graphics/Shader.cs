@@ -495,6 +495,7 @@ namespace CKGL
 		{
 			return (a?.id ?? null) == (b?.id ?? null);
 		}
+
 		public static bool operator !=(Shader a, Shader b)
 		{
 			return (a?.id ?? null) != (b?.id ?? null);

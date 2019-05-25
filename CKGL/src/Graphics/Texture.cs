@@ -155,6 +155,7 @@ namespace CKGL
 		{
 			return (a?.id ?? null) == (b?.id ?? null);
 		}
+
 		public static bool operator !=(Texture a, Texture b)
 		{
 			return (a?.id ?? null) != (b?.id ?? null);
