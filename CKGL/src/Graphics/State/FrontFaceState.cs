@@ -81,6 +81,25 @@ namespace CKGL
 		{
 			return $"FrontFaceState: [FrontFace: {FrontFace}]";
 		}
+
+		public override bool Equals(object obj)
+		{
+			return obj is FrontFaceState && Equals((FrontFaceState)obj);
+		}
+		public bool Equals(FrontFaceState frontFaceState)
+		{
+			return this == frontFaceState;
+		}
+
+		public override int GetHashCode()
+		{
+			unchecked
+			{
+				int hash = 17;
+				hash = hash * 23 + FrontFace.GetHashCode();
+				return hash;
+			}
+		}
 		#endregion
 
 		#region Operators

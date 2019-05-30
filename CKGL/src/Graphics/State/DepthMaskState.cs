@@ -55,6 +55,25 @@ namespace CKGL
 		{
 			return $"DepthMaskState: [Depth: {Depth}]";
 		}
+
+		public override bool Equals(object obj)
+		{
+			return obj is DepthMaskState && Equals((DepthMaskState)obj);
+		}
+		public bool Equals(DepthMaskState depthMaskState)
+		{
+			return this == depthMaskState;
+		}
+
+		public override int GetHashCode()
+		{
+			unchecked
+			{
+				int hash = 17;
+				hash = hash * 23 + Depth.GetHashCode();
+				return hash;
+			}
+		}
 		#endregion
 
 		#region Operators

@@ -88,6 +88,26 @@ namespace CKGL
 		{
 			return $"CullModeState: [Enabled: {Enabled}, Face: {Face}]";
 		}
+
+		public override bool Equals(object obj)
+		{
+			return obj is CullModeState && Equals((CullModeState)obj);
+		}
+		public bool Equals(CullModeState cullModeState)
+		{
+			return this == cullModeState;
+		}
+
+		public override int GetHashCode()
+		{
+			unchecked
+			{
+				int hash = 17;
+				hash = hash * 23 + Enabled.GetHashCode();
+				hash = hash * 23 + Face.GetHashCode();
+				return hash;
+			}
+		}
 		#endregion
 
 		#region Operators

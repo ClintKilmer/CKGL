@@ -2,6 +2,7 @@ CKGL TODO List:
 
 Features:
 - in / ref optimization
+- .ToString() consistency
 - Texture.SavePNG doesn't work in Init(), only in Update or later...
 - ANGLE can't use adaptive sync - even though it reports that it does
 - Texture.GetParam can't convert from OpenGLBindings to CKGL enums...

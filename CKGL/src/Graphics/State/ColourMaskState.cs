@@ -75,6 +75,28 @@ namespace CKGL
 		{
 			return $"ColourMaskState: [R: {R}, G: {G}, B: {B}, A: {A}]";
 		}
+
+		public override bool Equals(object obj)
+		{
+			return obj is ColourMaskState && Equals((ColourMaskState)obj);
+		}
+		public bool Equals(ColourMaskState colourMaskState)
+		{
+			return this == colourMaskState;
+		}
+
+		public override int GetHashCode()
+		{
+			unchecked
+			{
+				int hash = 17;
+				hash = hash * 23 + R.GetHashCode();
+				hash = hash * 23 + G.GetHashCode();
+				hash = hash * 23 + B.GetHashCode();
+				hash = hash * 23 + A.GetHashCode();
+				return hash;
+			}
+		}
 		#endregion
 
 		#region Operators

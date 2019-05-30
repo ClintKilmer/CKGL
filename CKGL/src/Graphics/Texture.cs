@@ -1,4 +1,3 @@
-using System;
 using CKGL.OpenGLBindings;
 using GLint = System.Int32;
 using GLuint = System.UInt32;
@@ -146,7 +145,26 @@ namespace CKGL
 		#region Overrides
 		public override string ToString()
 		{
-			return $"{id}";
+			return $"Texture: [id: {id}]";
+		}
+
+		public override bool Equals(object obj)
+		{
+			return obj is Texture && Equals((Texture)obj);
+		}
+		public bool Equals(Texture shader)
+		{
+			return this == shader;
+		}
+
+		public override int GetHashCode()
+		{
+			unchecked
+			{
+				int hash = 17;
+				hash = hash * 23 + id.GetHashCode();
+				return hash;
+			}
 		}
 		#endregion
 

@@ -85,6 +85,25 @@ namespace CKGL
 		{
 			return $"PolygonModeState: [PolygonMode: {PolygonMode}]";
 		}
+
+		public override bool Equals(object obj)
+		{
+			return obj is PolygonModeState && Equals((PolygonModeState)obj);
+		}
+		public bool Equals(PolygonModeState polygonModeState)
+		{
+			return this == polygonModeState;
+		}
+
+		public override int GetHashCode()
+		{
+			unchecked
+			{
+				int hash = 17;
+				hash = hash * 23 + PolygonMode.GetHashCode();
+				return hash;
+			}
+		}
 		#endregion
 
 		#region Operators

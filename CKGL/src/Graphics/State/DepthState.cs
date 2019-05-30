@@ -109,6 +109,26 @@ namespace CKGL
 		{
 			return $"DepthState: [Enabled: {Enabled}, Func: {DepthFunction}]";
 		}
+
+		public override bool Equals(object obj)
+		{
+			return obj is DepthState && Equals((DepthState)obj);
+		}
+		public bool Equals(DepthState depth)
+		{
+			return this == depth;
+		}
+
+		public override int GetHashCode()
+		{
+			unchecked
+			{
+				int hash = 17;
+				hash = hash * 23 + Enabled.GetHashCode();
+				hash = hash * 23 + DepthFunction.GetHashCode();
+				return hash;
+			}
+		}
 		#endregion
 
 		#region Operators
