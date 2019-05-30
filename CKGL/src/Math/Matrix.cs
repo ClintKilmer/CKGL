@@ -695,213 +695,213 @@ namespace CKGL
 		#endregion
 
 		#region Operators
-		public static bool operator ==(Matrix matrix1, Matrix matrix2)
+		public static bool operator ==(Matrix a, Matrix b)
 		{
 			return
-				matrix1.M11 == matrix2.M11 &&
-				matrix1.M12 == matrix2.M12 &&
-				matrix1.M13 == matrix2.M13 &&
-				matrix1.M14 == matrix2.M14 &&
-				matrix1.M21 == matrix2.M21 &&
-				matrix1.M22 == matrix2.M22 &&
-				matrix1.M23 == matrix2.M23 &&
-				matrix1.M24 == matrix2.M24 &&
-				matrix1.M31 == matrix2.M31 &&
-				matrix1.M32 == matrix2.M32 &&
-				matrix1.M33 == matrix2.M33 &&
-				matrix1.M34 == matrix2.M34 &&
-				matrix1.M41 == matrix2.M41 &&
-				matrix1.M42 == matrix2.M42 &&
-				matrix1.M43 == matrix2.M43 &&
-				matrix1.M44 == matrix2.M44
+				a.M11 == b.M11 &&
+				a.M12 == b.M12 &&
+				a.M13 == b.M13 &&
+				a.M14 == b.M14 &&
+				a.M21 == b.M21 &&
+				a.M22 == b.M22 &&
+				a.M23 == b.M23 &&
+				a.M24 == b.M24 &&
+				a.M31 == b.M31 &&
+				a.M32 == b.M32 &&
+				a.M33 == b.M33 &&
+				a.M34 == b.M34 &&
+				a.M41 == b.M41 &&
+				a.M42 == b.M42 &&
+				a.M43 == b.M43 &&
+				a.M44 == b.M44
 				;
 		}
 
-		public static bool operator !=(Matrix matrix1, Matrix matrix2)
+		public static bool operator !=(Matrix a, Matrix b)
 		{
 			return
-				matrix1.M11 != matrix2.M11 ||
-				matrix1.M12 != matrix2.M12 ||
-				matrix1.M13 != matrix2.M13 ||
-				matrix1.M14 != matrix2.M14 ||
-				matrix1.M21 != matrix2.M21 ||
-				matrix1.M22 != matrix2.M22 ||
-				matrix1.M23 != matrix2.M23 ||
-				matrix1.M24 != matrix2.M24 ||
-				matrix1.M31 != matrix2.M31 ||
-				matrix1.M32 != matrix2.M32 ||
-				matrix1.M33 != matrix2.M33 ||
-				matrix1.M34 != matrix2.M34 ||
-				matrix1.M41 != matrix2.M41 ||
-				matrix1.M42 != matrix2.M42 ||
-				matrix1.M43 != matrix2.M43 ||
-				matrix1.M44 != matrix2.M44
+				a.M11 != b.M11 ||
+				a.M12 != b.M12 ||
+				a.M13 != b.M13 ||
+				a.M14 != b.M14 ||
+				a.M21 != b.M21 ||
+				a.M22 != b.M22 ||
+				a.M23 != b.M23 ||
+				a.M24 != b.M24 ||
+				a.M31 != b.M31 ||
+				a.M32 != b.M32 ||
+				a.M33 != b.M33 ||
+				a.M34 != b.M34 ||
+				a.M41 != b.M41 ||
+				a.M42 != b.M42 ||
+				a.M43 != b.M43 ||
+				a.M44 != b.M44
 				;
 		}
 
-		public static Matrix operator +(Matrix matrix1, Matrix matrix2)
+		public static Matrix operator +(Matrix a, Matrix b)
 		{
-			matrix1.M11 = matrix1.M11 + matrix2.M11;
-			matrix1.M12 = matrix1.M12 + matrix2.M12;
-			matrix1.M13 = matrix1.M13 + matrix2.M13;
-			matrix1.M14 = matrix1.M14 + matrix2.M14;
-			matrix1.M21 = matrix1.M21 + matrix2.M21;
-			matrix1.M22 = matrix1.M22 + matrix2.M22;
-			matrix1.M23 = matrix1.M23 + matrix2.M23;
-			matrix1.M24 = matrix1.M24 + matrix2.M24;
-			matrix1.M31 = matrix1.M31 + matrix2.M31;
-			matrix1.M32 = matrix1.M32 + matrix2.M32;
-			matrix1.M33 = matrix1.M33 + matrix2.M33;
-			matrix1.M34 = matrix1.M34 + matrix2.M34;
-			matrix1.M41 = matrix1.M41 + matrix2.M41;
-			matrix1.M42 = matrix1.M42 + matrix2.M42;
-			matrix1.M43 = matrix1.M43 + matrix2.M43;
-			matrix1.M44 = matrix1.M44 + matrix2.M44;
-			return matrix1;
+			a.M11 = a.M11 + b.M11;
+			a.M12 = a.M12 + b.M12;
+			a.M13 = a.M13 + b.M13;
+			a.M14 = a.M14 + b.M14;
+			a.M21 = a.M21 + b.M21;
+			a.M22 = a.M22 + b.M22;
+			a.M23 = a.M23 + b.M23;
+			a.M24 = a.M24 + b.M24;
+			a.M31 = a.M31 + b.M31;
+			a.M32 = a.M32 + b.M32;
+			a.M33 = a.M33 + b.M33;
+			a.M34 = a.M34 + b.M34;
+			a.M41 = a.M41 + b.M41;
+			a.M42 = a.M42 + b.M42;
+			a.M43 = a.M43 + b.M43;
+			a.M44 = a.M44 + b.M44;
+			return a;
 		}
 
-		public static Matrix operator -(Matrix matrix1, Matrix matrix2)
+		public static Matrix operator -(Matrix a, Matrix b)
 		{
-			matrix1.M11 = matrix1.M11 - matrix2.M11;
-			matrix1.M12 = matrix1.M12 - matrix2.M12;
-			matrix1.M13 = matrix1.M13 - matrix2.M13;
-			matrix1.M14 = matrix1.M14 - matrix2.M14;
-			matrix1.M21 = matrix1.M21 - matrix2.M21;
-			matrix1.M22 = matrix1.M22 - matrix2.M22;
-			matrix1.M23 = matrix1.M23 - matrix2.M23;
-			matrix1.M24 = matrix1.M24 - matrix2.M24;
-			matrix1.M31 = matrix1.M31 - matrix2.M31;
-			matrix1.M32 = matrix1.M32 - matrix2.M32;
-			matrix1.M33 = matrix1.M33 - matrix2.M33;
-			matrix1.M34 = matrix1.M34 - matrix2.M34;
-			matrix1.M41 = matrix1.M41 - matrix2.M41;
-			matrix1.M42 = matrix1.M42 - matrix2.M42;
-			matrix1.M43 = matrix1.M43 - matrix2.M43;
-			matrix1.M44 = matrix1.M44 - matrix2.M44;
-			return matrix1;
+			a.M11 = a.M11 - b.M11;
+			a.M12 = a.M12 - b.M12;
+			a.M13 = a.M13 - b.M13;
+			a.M14 = a.M14 - b.M14;
+			a.M21 = a.M21 - b.M21;
+			a.M22 = a.M22 - b.M22;
+			a.M23 = a.M23 - b.M23;
+			a.M24 = a.M24 - b.M24;
+			a.M31 = a.M31 - b.M31;
+			a.M32 = a.M32 - b.M32;
+			a.M33 = a.M33 - b.M33;
+			a.M34 = a.M34 - b.M34;
+			a.M41 = a.M41 - b.M41;
+			a.M42 = a.M42 - b.M42;
+			a.M43 = a.M43 - b.M43;
+			a.M44 = a.M44 - b.M44;
+			return a;
 		}
 
 		// Using matrix multiplication algorithm - see http://en.wikipedia.org/wiki/Matrix_multiplication.
-		public static Matrix operator *(Matrix matrix1, Matrix matrix2)
+		public static Matrix operator *(Matrix a, Matrix b)
 		{
-			var m11 = (matrix1.M11 * matrix2.M11) + (matrix1.M12 * matrix2.M21) + (matrix1.M13 * matrix2.M31) + (matrix1.M14 * matrix2.M41);
-			var m12 = (matrix1.M11 * matrix2.M12) + (matrix1.M12 * matrix2.M22) + (matrix1.M13 * matrix2.M32) + (matrix1.M14 * matrix2.M42);
-			var m13 = (matrix1.M11 * matrix2.M13) + (matrix1.M12 * matrix2.M23) + (matrix1.M13 * matrix2.M33) + (matrix1.M14 * matrix2.M43);
-			var m14 = (matrix1.M11 * matrix2.M14) + (matrix1.M12 * matrix2.M24) + (matrix1.M13 * matrix2.M34) + (matrix1.M14 * matrix2.M44);
-			var m21 = (matrix1.M21 * matrix2.M11) + (matrix1.M22 * matrix2.M21) + (matrix1.M23 * matrix2.M31) + (matrix1.M24 * matrix2.M41);
-			var m22 = (matrix1.M21 * matrix2.M12) + (matrix1.M22 * matrix2.M22) + (matrix1.M23 * matrix2.M32) + (matrix1.M24 * matrix2.M42);
-			var m23 = (matrix1.M21 * matrix2.M13) + (matrix1.M22 * matrix2.M23) + (matrix1.M23 * matrix2.M33) + (matrix1.M24 * matrix2.M43);
-			var m24 = (matrix1.M21 * matrix2.M14) + (matrix1.M22 * matrix2.M24) + (matrix1.M23 * matrix2.M34) + (matrix1.M24 * matrix2.M44);
-			var m31 = (matrix1.M31 * matrix2.M11) + (matrix1.M32 * matrix2.M21) + (matrix1.M33 * matrix2.M31) + (matrix1.M34 * matrix2.M41);
-			var m32 = (matrix1.M31 * matrix2.M12) + (matrix1.M32 * matrix2.M22) + (matrix1.M33 * matrix2.M32) + (matrix1.M34 * matrix2.M42);
-			var m33 = (matrix1.M31 * matrix2.M13) + (matrix1.M32 * matrix2.M23) + (matrix1.M33 * matrix2.M33) + (matrix1.M34 * matrix2.M43);
-			var m34 = (matrix1.M31 * matrix2.M14) + (matrix1.M32 * matrix2.M24) + (matrix1.M33 * matrix2.M34) + (matrix1.M34 * matrix2.M44);
-			var m41 = (matrix1.M41 * matrix2.M11) + (matrix1.M42 * matrix2.M21) + (matrix1.M43 * matrix2.M31) + (matrix1.M44 * matrix2.M41);
-			var m42 = (matrix1.M41 * matrix2.M12) + (matrix1.M42 * matrix2.M22) + (matrix1.M43 * matrix2.M32) + (matrix1.M44 * matrix2.M42);
-			var m43 = (matrix1.M41 * matrix2.M13) + (matrix1.M42 * matrix2.M23) + (matrix1.M43 * matrix2.M33) + (matrix1.M44 * matrix2.M43);
-			var m44 = (matrix1.M41 * matrix2.M14) + (matrix1.M42 * matrix2.M24) + (matrix1.M43 * matrix2.M34) + (matrix1.M44 * matrix2.M44);
-			matrix1.M11 = m11;
-			matrix1.M12 = m12;
-			matrix1.M13 = m13;
-			matrix1.M14 = m14;
-			matrix1.M21 = m21;
-			matrix1.M22 = m22;
-			matrix1.M23 = m23;
-			matrix1.M24 = m24;
-			matrix1.M31 = m31;
-			matrix1.M32 = m32;
-			matrix1.M33 = m33;
-			matrix1.M34 = m34;
-			matrix1.M41 = m41;
-			matrix1.M42 = m42;
-			matrix1.M43 = m43;
-			matrix1.M44 = m44;
-			return matrix1;
+			var m11 = (a.M11 * b.M11) + (a.M12 * b.M21) + (a.M13 * b.M31) + (a.M14 * b.M41);
+			var m12 = (a.M11 * b.M12) + (a.M12 * b.M22) + (a.M13 * b.M32) + (a.M14 * b.M42);
+			var m13 = (a.M11 * b.M13) + (a.M12 * b.M23) + (a.M13 * b.M33) + (a.M14 * b.M43);
+			var m14 = (a.M11 * b.M14) + (a.M12 * b.M24) + (a.M13 * b.M34) + (a.M14 * b.M44);
+			var m21 = (a.M21 * b.M11) + (a.M22 * b.M21) + (a.M23 * b.M31) + (a.M24 * b.M41);
+			var m22 = (a.M21 * b.M12) + (a.M22 * b.M22) + (a.M23 * b.M32) + (a.M24 * b.M42);
+			var m23 = (a.M21 * b.M13) + (a.M22 * b.M23) + (a.M23 * b.M33) + (a.M24 * b.M43);
+			var m24 = (a.M21 * b.M14) + (a.M22 * b.M24) + (a.M23 * b.M34) + (a.M24 * b.M44);
+			var m31 = (a.M31 * b.M11) + (a.M32 * b.M21) + (a.M33 * b.M31) + (a.M34 * b.M41);
+			var m32 = (a.M31 * b.M12) + (a.M32 * b.M22) + (a.M33 * b.M32) + (a.M34 * b.M42);
+			var m33 = (a.M31 * b.M13) + (a.M32 * b.M23) + (a.M33 * b.M33) + (a.M34 * b.M43);
+			var m34 = (a.M31 * b.M14) + (a.M32 * b.M24) + (a.M33 * b.M34) + (a.M34 * b.M44);
+			var m41 = (a.M41 * b.M11) + (a.M42 * b.M21) + (a.M43 * b.M31) + (a.M44 * b.M41);
+			var m42 = (a.M41 * b.M12) + (a.M42 * b.M22) + (a.M43 * b.M32) + (a.M44 * b.M42);
+			var m43 = (a.M41 * b.M13) + (a.M42 * b.M23) + (a.M43 * b.M33) + (a.M44 * b.M43);
+			var m44 = (a.M41 * b.M14) + (a.M42 * b.M24) + (a.M43 * b.M34) + (a.M44 * b.M44);
+			a.M11 = m11;
+			a.M12 = m12;
+			a.M13 = m13;
+			a.M14 = m14;
+			a.M21 = m21;
+			a.M22 = m22;
+			a.M23 = m23;
+			a.M24 = m24;
+			a.M31 = m31;
+			a.M32 = m32;
+			a.M33 = m33;
+			a.M34 = m34;
+			a.M41 = m41;
+			a.M42 = m42;
+			a.M43 = m43;
+			a.M44 = m44;
+			return a;
 		}
 
-		public static Matrix operator *(Matrix matrix, float scalar)
+		public static Matrix operator *(Matrix m, float n)
 		{
-			matrix.M11 = matrix.M11 * scalar;
-			matrix.M12 = matrix.M12 * scalar;
-			matrix.M13 = matrix.M13 * scalar;
-			matrix.M14 = matrix.M14 * scalar;
-			matrix.M21 = matrix.M21 * scalar;
-			matrix.M22 = matrix.M22 * scalar;
-			matrix.M23 = matrix.M23 * scalar;
-			matrix.M24 = matrix.M24 * scalar;
-			matrix.M31 = matrix.M31 * scalar;
-			matrix.M32 = matrix.M32 * scalar;
-			matrix.M33 = matrix.M33 * scalar;
-			matrix.M34 = matrix.M34 * scalar;
-			matrix.M41 = matrix.M41 * scalar;
-			matrix.M42 = matrix.M42 * scalar;
-			matrix.M43 = matrix.M43 * scalar;
-			matrix.M44 = matrix.M44 * scalar;
-			return matrix;
+			m.M11 = m.M11 * n;
+			m.M12 = m.M12 * n;
+			m.M13 = m.M13 * n;
+			m.M14 = m.M14 * n;
+			m.M21 = m.M21 * n;
+			m.M22 = m.M22 * n;
+			m.M23 = m.M23 * n;
+			m.M24 = m.M24 * n;
+			m.M31 = m.M31 * n;
+			m.M32 = m.M32 * n;
+			m.M33 = m.M33 * n;
+			m.M34 = m.M34 * n;
+			m.M41 = m.M41 * n;
+			m.M42 = m.M42 * n;
+			m.M43 = m.M43 * n;
+			m.M44 = m.M44 * n;
+			return m;
 		}
 
-		public static Matrix operator /(Matrix matrix1, Matrix matrix2)
+		public static Matrix operator /(Matrix a, Matrix b)
 		{
-			matrix1.M11 = matrix1.M11 / matrix2.M11;
-			matrix1.M12 = matrix1.M12 / matrix2.M12;
-			matrix1.M13 = matrix1.M13 / matrix2.M13;
-			matrix1.M14 = matrix1.M14 / matrix2.M14;
-			matrix1.M21 = matrix1.M21 / matrix2.M21;
-			matrix1.M22 = matrix1.M22 / matrix2.M22;
-			matrix1.M23 = matrix1.M23 / matrix2.M23;
-			matrix1.M24 = matrix1.M24 / matrix2.M24;
-			matrix1.M31 = matrix1.M31 / matrix2.M31;
-			matrix1.M32 = matrix1.M32 / matrix2.M32;
-			matrix1.M33 = matrix1.M33 / matrix2.M33;
-			matrix1.M34 = matrix1.M34 / matrix2.M34;
-			matrix1.M41 = matrix1.M41 / matrix2.M41;
-			matrix1.M42 = matrix1.M42 / matrix2.M42;
-			matrix1.M43 = matrix1.M43 / matrix2.M43;
-			matrix1.M44 = matrix1.M44 / matrix2.M44;
-			return matrix1;
+			a.M11 = a.M11 / b.M11;
+			a.M12 = a.M12 / b.M12;
+			a.M13 = a.M13 / b.M13;
+			a.M14 = a.M14 / b.M14;
+			a.M21 = a.M21 / b.M21;
+			a.M22 = a.M22 / b.M22;
+			a.M23 = a.M23 / b.M23;
+			a.M24 = a.M24 / b.M24;
+			a.M31 = a.M31 / b.M31;
+			a.M32 = a.M32 / b.M32;
+			a.M33 = a.M33 / b.M33;
+			a.M34 = a.M34 / b.M34;
+			a.M41 = a.M41 / b.M41;
+			a.M42 = a.M42 / b.M42;
+			a.M43 = a.M43 / b.M43;
+			a.M44 = a.M44 / b.M44;
+			return a;
 		}
 
-		public static Matrix operator /(Matrix matrix, float scalar)
+		public static Matrix operator /(Matrix m, float n)
 		{
-			float inverseScalar = 1f / scalar;
-			matrix.M11 = matrix.M11 * inverseScalar;
-			matrix.M12 = matrix.M12 * inverseScalar;
-			matrix.M13 = matrix.M13 * inverseScalar;
-			matrix.M14 = matrix.M14 * inverseScalar;
-			matrix.M21 = matrix.M21 * inverseScalar;
-			matrix.M22 = matrix.M22 * inverseScalar;
-			matrix.M23 = matrix.M23 * inverseScalar;
-			matrix.M24 = matrix.M24 * inverseScalar;
-			matrix.M31 = matrix.M31 * inverseScalar;
-			matrix.M32 = matrix.M32 * inverseScalar;
-			matrix.M33 = matrix.M33 * inverseScalar;
-			matrix.M34 = matrix.M34 * inverseScalar;
-			matrix.M41 = matrix.M41 * inverseScalar;
-			matrix.M42 = matrix.M42 * inverseScalar;
-			matrix.M43 = matrix.M43 * inverseScalar;
-			matrix.M44 = matrix.M44 * inverseScalar;
-			return matrix;
+			float inverseScalar = 1f / n;
+			m.M11 = m.M11 * inverseScalar;
+			m.M12 = m.M12 * inverseScalar;
+			m.M13 = m.M13 * inverseScalar;
+			m.M14 = m.M14 * inverseScalar;
+			m.M21 = m.M21 * inverseScalar;
+			m.M22 = m.M22 * inverseScalar;
+			m.M23 = m.M23 * inverseScalar;
+			m.M24 = m.M24 * inverseScalar;
+			m.M31 = m.M31 * inverseScalar;
+			m.M32 = m.M32 * inverseScalar;
+			m.M33 = m.M33 * inverseScalar;
+			m.M34 = m.M34 * inverseScalar;
+			m.M41 = m.M41 * inverseScalar;
+			m.M42 = m.M42 * inverseScalar;
+			m.M43 = m.M43 * inverseScalar;
+			m.M44 = m.M44 * inverseScalar;
+			return m;
 		}
 
-		public static Matrix operator -(Matrix matrix)
+		public static Matrix operator -(Matrix m)
 		{
-			matrix.M11 = -matrix.M11;
-			matrix.M12 = -matrix.M12;
-			matrix.M13 = -matrix.M13;
-			matrix.M14 = -matrix.M14;
-			matrix.M21 = -matrix.M21;
-			matrix.M22 = -matrix.M22;
-			matrix.M23 = -matrix.M23;
-			matrix.M24 = -matrix.M24;
-			matrix.M31 = -matrix.M31;
-			matrix.M32 = -matrix.M32;
-			matrix.M33 = -matrix.M33;
-			matrix.M34 = -matrix.M34;
-			matrix.M41 = -matrix.M41;
-			matrix.M42 = -matrix.M42;
-			matrix.M43 = -matrix.M43;
-			matrix.M44 = -matrix.M44;
-			return matrix;
+			m.M11 = -m.M11;
+			m.M12 = -m.M12;
+			m.M13 = -m.M13;
+			m.M14 = -m.M14;
+			m.M21 = -m.M21;
+			m.M22 = -m.M22;
+			m.M23 = -m.M23;
+			m.M24 = -m.M24;
+			m.M31 = -m.M31;
+			m.M32 = -m.M32;
+			m.M33 = -m.M33;
+			m.M34 = -m.M34;
+			m.M41 = -m.M41;
+			m.M42 = -m.M42;
+			m.M43 = -m.M43;
+			m.M44 = -m.M44;
+			return m;
 		}
 		#endregion
 

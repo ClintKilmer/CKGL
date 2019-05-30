@@ -286,23 +286,23 @@ namespace CKGL
 		#endregion
 
 		#region Operators
-		public static bool operator ==(Colour c1, Colour c2)
+		public static bool operator ==(Colour a, Colour b)
 		{
-			return c1.r == c2.r && c1.g == c2.g && c1.b == c2.b && c1.a == c2.a;
+			return a.r == b.r && a.g == b.g && a.b == b.b && a.a == b.a;
 		}
 
-		public static bool operator !=(Colour c1, Colour c2)
+		public static bool operator !=(Colour a, Colour b)
 		{
-			return c1.r != c2.r || c1.g != c2.g || c1.b != c2.b || c1.a != c2.a; ;
+			return a.r != b.r || a.g != b.g || a.b != b.b || a.a != b.a; ;
 		}
 
-		public static Colour operator *(Colour c1, Colour c2)
+		public static Colour operator *(Colour a, Colour b)
 		{
-			c1.r *= c2.r;
-			c1.g *= c2.g;
-			c1.b *= c2.b;
-			c1.a *= c2.a;
-			return c1;
+			a.r *= b.r;
+			a.g *= b.g;
+			a.b *= b.b;
+			a.a *= b.a;
+			return a;
 		}
 
 		public static Colour operator *(Colour c, float n)

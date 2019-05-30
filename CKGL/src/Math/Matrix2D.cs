@@ -402,143 +402,143 @@ namespace CKGL
 		#endregion
 
 		#region Operators
-		public static bool operator ==(Matrix2D matrix1, Matrix2D matrix2)
+		public static bool operator ==(Matrix2D a, Matrix2D b)
 		{
 			return
-				matrix1.M11 == matrix2.M11 &&
-				matrix1.M21 == matrix2.M21 &&
-				matrix1.M31 == matrix2.M31 &&
-				matrix1.M12 == matrix2.M12 &&
-				matrix1.M22 == matrix2.M22 &&
-				matrix1.M32 == matrix2.M32
+				a.M11 == b.M11 &&
+				a.M21 == b.M21 &&
+				a.M31 == b.M31 &&
+				a.M12 == b.M12 &&
+				a.M22 == b.M22 &&
+				a.M32 == b.M32
 				;
 		}
 
-		public static bool operator !=(Matrix2D matrix1, Matrix2D matrix2)
+		public static bool operator !=(Matrix2D a, Matrix2D b)
 		{
 			return
-				matrix1.M11 != matrix2.M11 ||
-				matrix1.M21 != matrix2.M21 ||
-				matrix1.M31 != matrix2.M31 ||
-				matrix1.M12 != matrix2.M12 ||
-				matrix1.M22 != matrix2.M22 ||
-				matrix1.M32 != matrix2.M32
+				a.M11 != b.M11 ||
+				a.M21 != b.M21 ||
+				a.M31 != b.M31 ||
+				a.M12 != b.M12 ||
+				a.M22 != b.M22 ||
+				a.M32 != b.M32
 				;
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static Matrix2D operator +(Matrix2D matrix1, Matrix2D matrix2)
+		public static Matrix2D operator +(Matrix2D a, Matrix2D b)
 		{
-			matrix1.M11 = matrix1.M11 + matrix2.M11;
-			matrix1.M12 = matrix1.M12 + matrix2.M12;
+			a.M11 = a.M11 + b.M11;
+			a.M12 = a.M12 + b.M12;
 
-			matrix1.M21 = matrix1.M21 + matrix2.M21;
-			matrix1.M22 = matrix1.M22 + matrix2.M22;
+			a.M21 = a.M21 + b.M21;
+			a.M22 = a.M22 + b.M22;
 
-			matrix1.M31 = matrix1.M31 + matrix2.M31;
-			matrix1.M32 = matrix1.M32 + matrix2.M32;
+			a.M31 = a.M31 + b.M31;
+			a.M32 = a.M32 + b.M32;
 
-			return matrix1;
+			return a;
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static Matrix2D operator -(Matrix2D matrix1, Matrix2D matrix2)
+		public static Matrix2D operator -(Matrix2D a, Matrix2D b)
 		{
-			matrix1.M11 = matrix1.M11 - matrix2.M11;
-			matrix1.M12 = matrix1.M12 - matrix2.M12;
+			a.M11 = a.M11 - b.M11;
+			a.M12 = a.M12 - b.M12;
 
-			matrix1.M21 = matrix1.M21 - matrix2.M21;
-			matrix1.M22 = matrix1.M22 - matrix2.M22;
+			a.M21 = a.M21 - b.M21;
+			a.M22 = a.M22 - b.M22;
 
-			matrix1.M31 = matrix1.M31 - matrix2.M31;
-			matrix1.M32 = matrix1.M32 - matrix2.M32;
+			a.M31 = a.M31 - b.M31;
+			a.M32 = a.M32 - b.M32;
 
-			return matrix1;
+			return a;
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static Matrix2D operator *(Matrix2D matrix1, Matrix2D matrix2)
+		public static Matrix2D operator *(Matrix2D a, Matrix2D b)
 		{
-			var m11 = matrix1.M11 * matrix2.M11 + matrix1.M12 * matrix2.M21;
-			var m12 = matrix1.M11 * matrix2.M12 + matrix1.M12 * matrix2.M22;
+			var m11 = a.M11 * b.M11 + a.M12 * b.M21;
+			var m12 = a.M11 * b.M12 + a.M12 * b.M22;
 
-			var m21 = matrix1.M21 * matrix2.M11 + matrix1.M22 * matrix2.M21;
-			var m22 = matrix1.M21 * matrix2.M12 + matrix1.M22 * matrix2.M22;
+			var m21 = a.M21 * b.M11 + a.M22 * b.M21;
+			var m22 = a.M21 * b.M12 + a.M22 * b.M22;
 
-			var m31 = matrix1.M31 * matrix2.M11 + matrix1.M32 * matrix2.M21 + matrix2.M31;
-			var m32 = matrix1.M31 * matrix2.M12 + matrix1.M32 * matrix2.M22 + matrix2.M32;
+			var m31 = a.M31 * b.M11 + a.M32 * b.M21 + b.M31;
+			var m32 = a.M31 * b.M12 + a.M32 * b.M22 + b.M32;
 
-			matrix1.M11 = m11;
-			matrix1.M12 = m12;
+			a.M11 = m11;
+			a.M12 = m12;
 
-			matrix1.M21 = m21;
-			matrix1.M22 = m22;
+			a.M21 = m21;
+			a.M22 = m22;
 
-			matrix1.M31 = m31;
-			matrix1.M32 = m32;
+			a.M31 = m31;
+			a.M32 = m32;
 
-			return matrix1;
+			return a;
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static Matrix2D operator *(Matrix2D matrix, float scalar)
+		public static Matrix2D operator *(Matrix2D m, float n)
 		{
-			matrix.M11 = matrix.M11 * scalar;
-			matrix.M12 = matrix.M12 * scalar;
+			m.M11 = m.M11 * n;
+			m.M12 = m.M12 * n;
 
-			matrix.M21 = matrix.M21 * scalar;
-			matrix.M22 = matrix.M22 * scalar;
+			m.M21 = m.M21 * n;
+			m.M22 = m.M22 * n;
 
-			matrix.M31 = matrix.M31 * scalar;
-			matrix.M32 = matrix.M32 * scalar;
+			m.M31 = m.M31 * n;
+			m.M32 = m.M32 * n;
 
-			return matrix;
+			return m;
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static Matrix2D operator /(Matrix2D matrix1, Matrix2D matrix2)
+		public static Matrix2D operator /(Matrix2D a, Matrix2D b)
 		{
-			matrix1.M11 = matrix1.M11 / matrix2.M11;
-			matrix1.M12 = matrix1.M12 / matrix2.M12;
+			a.M11 = a.M11 / b.M11;
+			a.M12 = a.M12 / b.M12;
 
-			matrix1.M21 = matrix1.M21 / matrix2.M21;
-			matrix1.M22 = matrix1.M22 / matrix2.M22;
+			a.M21 = a.M21 / b.M21;
+			a.M22 = a.M22 / b.M22;
 
-			matrix1.M31 = matrix1.M31 / matrix2.M31;
-			matrix1.M32 = matrix1.M32 / matrix2.M32;
+			a.M31 = a.M31 / b.M31;
+			a.M32 = a.M32 / b.M32;
 
-			return matrix1;
+			return a;
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static Matrix2D operator /(Matrix2D matrix, float scalar)
+		public static Matrix2D operator /(Matrix2D m, float n)
 		{
-			float inverseScalar = 1f / scalar;
-			matrix.M11 = matrix.M11 * inverseScalar;
-			matrix.M12 = matrix.M12 * inverseScalar;
+			float inverseScalar = 1f / n;
+			m.M11 = m.M11 * inverseScalar;
+			m.M12 = m.M12 * inverseScalar;
 
-			matrix.M21 = matrix.M21 * inverseScalar;
-			matrix.M22 = matrix.M22 * inverseScalar;
+			m.M21 = m.M21 * inverseScalar;
+			m.M22 = m.M22 * inverseScalar;
 
-			matrix.M31 = matrix.M31 * inverseScalar;
-			matrix.M32 = matrix.M32 * inverseScalar;
+			m.M31 = m.M31 * inverseScalar;
+			m.M32 = m.M32 * inverseScalar;
 
-			return matrix;
+			return m;
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static Matrix2D operator -(Matrix2D matrix)
+		public static Matrix2D operator -(Matrix2D m)
 		{
-			matrix.M11 = -matrix.M11;
-			matrix.M12 = -matrix.M12;
+			m.M11 = -m.M11;
+			m.M12 = -m.M12;
 
-			matrix.M21 = -matrix.M21;
-			matrix.M22 = -matrix.M22;
+			m.M21 = -m.M21;
+			m.M22 = -m.M22;
 
-			matrix.M31 = -matrix.M31;
-			matrix.M32 = -matrix.M32;
+			m.M31 = -m.M31;
+			m.M32 = -m.M32;
 
-			return matrix;
+			return m;
 		}
 		#endregion
 
