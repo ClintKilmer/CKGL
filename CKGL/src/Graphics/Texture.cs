@@ -152,9 +152,9 @@ namespace CKGL
 		{
 			return obj is Texture && Equals((Texture)obj);
 		}
-		public bool Equals(Texture shader)
+		public bool Equals(Texture texture)
 		{
-			return this == shader;
+			return this == texture;
 		}
 
 		public override int GetHashCode()
