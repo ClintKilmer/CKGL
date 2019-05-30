@@ -212,6 +212,31 @@ namespace CKGL
 		{
 			return $"BlendState: [Enabled: {Enabled}, ColourSource: {ColourSource}, AlphaSource: {AlphaSource}, ColourDestination: {ColourDestination}, AlphaDestination: {AlphaDestination}, ColourEquation: {ColourEquation}, AlphaEquation: {AlphaEquation}]";
 		}
+
+		public override bool Equals(object obj)
+		{
+			return obj is BlendState && Equals((BlendState)obj);
+		}
+		public bool Equals(BlendState blendState)
+		{
+			return this == blendState;
+		}
+
+		public override int GetHashCode()
+		{
+			unchecked
+			{
+				int hash = 17;
+				hash = hash * 23 + Enabled.GetHashCode();
+				hash = hash * 23 + ColourSource.GetHashCode();
+				hash = hash * 23 + AlphaSource.GetHashCode();
+				hash = hash * 23 + ColourDestination.GetHashCode();
+				hash = hash * 23 + AlphaDestination.GetHashCode();
+				hash = hash * 23 + ColourEquation.GetHashCode();
+				hash = hash * 23 + AlphaEquation.GetHashCode();
+				return hash;
+			}
+		}
 		#endregion
 
 		#region Operators

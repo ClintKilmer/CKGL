@@ -490,6 +490,32 @@ namespace CKGL
 		//}
 		#endregion
 
+		#region Overrides
+		public override string ToString()
+		{
+			return $"Shader: [id: {id}]";
+		}
+
+		public override bool Equals(object obj)
+		{
+			return obj is Shader && Equals((Shader)obj);
+		}
+		public bool Equals(Shader shader)
+		{
+			return this == shader;
+		}
+
+		public override int GetHashCode()
+		{
+			unchecked
+			{
+				int hash = 17;
+				hash = hash * 23 + id.GetHashCode();
+				return hash;
+			}
+		}
+		#endregion
+
 		#region Operators
 		public static bool operator ==(Shader a, Shader b)
 		{
