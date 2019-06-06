@@ -32,11 +32,11 @@ namespace CKGL.OpenGL
 			}
 		}
 
-		internal void AddBuffer(VertexBuffer vertexBuffer, VertexAttributeLayout vertexDeclaration)
+		internal void AddBuffer(VertexBuffer vertexBuffer, VertexAttributeLayout vertexAttributeLayout)
 		{
 			Bind();
 			vertexBuffer.Bind();
-			vertexDeclaration.SetVertexAttributes();
+			vertexAttributeLayout.SetVertexAttributes();
 		}
 	}
 }

@@ -1,6 +1,7 @@
 CKGL TODO List:
 
 Features:
+- Vertex Format/Declaration(DX?)/Layout/Specification(GL)
 - in / ref optimization
 - .ToString() consistency
 - Texture.SavePNG doesn't work in Init(), only in Update or later...
