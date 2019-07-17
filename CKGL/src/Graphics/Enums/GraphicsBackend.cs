@@ -5,5 +5,5 @@ namespace CKGL
 		Vulkan,
 		OpenGL,
 		OpenGLES
-	} 
+	}
 }
