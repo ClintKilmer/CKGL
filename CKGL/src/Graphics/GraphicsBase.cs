@@ -4,6 +4,11 @@ namespace CKGL
 	{
 		internal abstract void Init();
 
+		#region Resources
+		internal abstract VertexBuffer CreateVertexBuffer(BufferUsage bufferUsage);
+		internal abstract GeometryInput CreateGeometryInput(VertexStream[] vertexStreams);
+		#endregion
+
 		#region Viewport
 		internal abstract void SetViewport();
 		internal abstract void SetViewport(RenderTarget renderTarget);

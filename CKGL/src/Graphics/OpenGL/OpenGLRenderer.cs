@@ -5,8 +5,8 @@ namespace CKGL.OpenGL
 {
 	internal class OpenGLRenderer : RendererBase
 	{
-		[StructLayout(LayoutKind.Sequential, Pack = 4)]
-		internal struct Vertex : IVertex
+		[StructLayout(LayoutKind.Sequential, Pack = 1)]
+		internal struct Vertex
 		{
 			internal Vector3 Position;
 			internal Colour Colour;
@@ -21,23 +21,13 @@ namespace CKGL.OpenGL
 				Textured = (byte)(textured ? 255 : 0);
 			}
 
-			internal readonly static VertexAttributeLayout AttributeLayout = new VertexAttributeLayout
-			(
-				Marshal.SizeOf(typeof(Vertex)),                       // Dynamic Stride - For larger StructLayout Pack sizes
-				new VertexAttribute(DataType.Float, 3, false),        // Position
-				new VertexAttribute(DataType.UnsignedByte, 4, true),  // Colour
-				new VertexAttribute(DataType.UnsignedShort, 2, true), // UV
-				new VertexAttribute(DataType.UnsignedByte, 1, true)   // Textured
-			);
-
-			VertexAttributeLayout IVertex.AttributeLayout
-			{
-				get { return AttributeLayout; }
-			}
+			internal Vertex(Vector3 position, Colour? colour, UV? uv)
+				: this(position, colour ?? Colour.White, uv ?? UV.Zero, uv != null) { }
 		}
 
-		private VertexArray vao;
-		private VertexBuffer vbo;
+		private VertexBuffer vertexBuffer;
+		private VertexFormat vertexFormat;
+		private GeometryInput geometryInput;
 		private PrimitiveTopology currentPrimitiveTopology = PrimitiveTopology.TriangleList;
 		// Adaptive vertex buffer size
 		//private int bufferSize = 16384; // Performant on Laptop
@@ -49,9 +39,15 @@ namespace CKGL.OpenGL
 
 		internal override void Init()
 		{
-			vao = new VertexArray();
-			vbo = new VertexBuffer();
-			vao.AddBuffer(vbo, Vertex.AttributeLayout);
+			vertexBuffer = VertexBuffer.Create(BufferUsage.Dynamic);
+			vertexFormat = new VertexFormat(
+				Marshal.SizeOf(typeof(Vertex)),                       // Dynamic Stride - For larger StructLayout Pack sizes
+				new VertexAttribute(DataType.Float, 3, false),        // Position
+				new VertexAttribute(DataType.UnsignedByte, 4, true),  // Colour
+				new VertexAttribute(DataType.UnsignedShort, 2, true), // UV
+				new VertexAttribute(DataType.UnsignedByte, 1, true)   // Textured
+			);
+			geometryInput = GeometryInput.Create(new VertexStream(vertexBuffer, vertexFormat));
 
 			vertices = new Vertex[bufferSize];
 
@@ -63,11 +59,11 @@ namespace CKGL.OpenGL
 
 		internal override void Destroy()
 		{
-			vao.Destroy();
-			vbo.Destroy();
+			geometryInput.Destroy();
+			vertexBuffer.Destroy();
 
-			vao = null;
-			vbo = null;
+			geometryInput = null;
+			vertexBuffer = null;
 		}
 
 		internal override void Flush()
@@ -82,8 +78,8 @@ namespace CKGL.OpenGL
 				(currentPrimitiveTopology == PrimitiveTopology.PointList && vertexCount >= 1)
 			)
 			{
-				vao.Bind();
-				vbo.LoadData(Vertex.AttributeLayout, ref vertices, vertexCount, BufferUsage.DynamicDraw);
+				geometryInput.Bind();
+				vertexBuffer.LoadData(ref vertices);
 				Graphics.DrawVertexArrays(currentPrimitiveTopology, 0, vertexCount);
 			}
 
@@ -135,7 +131,7 @@ namespace CKGL.OpenGL
 				}
 			}
 
-			vertices[vertexCount] = new Vertex(position, colour ?? Colour.White, uv ?? UV.Zero, uv != null);
+			vertices[vertexCount] = new Vertex(position, colour, uv);
 			vertexCount++;
 		}
 	}

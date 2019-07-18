@@ -9,6 +9,18 @@ namespace CKGL.OpenGL
 			GL.Init();
 		}
 
+		#region Resources
+		internal override VertexBuffer CreateVertexBuffer(BufferUsage bufferUsage)
+		{
+			return new OpenGLVertexBuffer(bufferUsage);
+		}
+
+		internal override GeometryInput CreateGeometryInput(VertexStream[] vertexStreams)
+		{
+			return new OpenGLGeometryInput(vertexStreams);
+		}
+		#endregion
+
 		#region Viewport
 		internal override void SetViewport() => SetViewport(RenderTarget.Current);
 		internal override void SetViewport(RenderTarget renderTarget)

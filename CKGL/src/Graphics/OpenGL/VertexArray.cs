@@ -31,12 +31,5 @@ namespace CKGL.OpenGL
 				currentlyBoundVertexArray = id;
 			}
 		}
-
-		internal void AddBuffer(VertexBuffer vertexBuffer, VertexAttributeLayout vertexAttributeLayout)
-		{
-			Bind();
-			vertexBuffer.Bind();
-			vertexAttributeLayout.SetVertexAttributes();
-		}
 	}
 }
