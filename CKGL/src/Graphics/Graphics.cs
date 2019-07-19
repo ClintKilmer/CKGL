@@ -44,7 +44,8 @@ namespace CKGL
 
 		#region Resources
 		internal static VertexBuffer CreateVertexBuffer(BufferUsage bufferUsage) => graphics.CreateVertexBuffer(bufferUsage);
-		internal static GeometryInput CreateGeometryInput(VertexStream[] vertexStreams) => graphics.CreateGeometryInput(vertexStreams);
+		internal static IndexBuffer CreateIndexBuffer(BufferUsage bufferUsage) => graphics.CreateIndexBuffer(bufferUsage);
+		internal static GeometryInput CreateGeometryInput(IndexBuffer indexBuffer, VertexStream[] vertexStreams) => graphics.CreateGeometryInput(indexBuffer, vertexStreams);
 		#endregion
 
 		// TODO - Move SetViewport() to own state

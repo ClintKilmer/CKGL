@@ -6,7 +6,8 @@ namespace CKGL
 
 		#region Resources
 		internal abstract VertexBuffer CreateVertexBuffer(BufferUsage bufferUsage);
-		internal abstract GeometryInput CreateGeometryInput(VertexStream[] vertexStreams);
+		internal abstract IndexBuffer CreateIndexBuffer(BufferUsage bufferUsage);
+		internal abstract GeometryInput CreateGeometryInput(IndexBuffer indexBuffer, VertexStream[] vertexStreams);
 		#endregion
 
 		#region Viewport

@@ -16,16 +16,18 @@
 	{
 		public VertexStream[] VertexStreams { get; protected set; }
 		public int VertexStreamCount => VertexStreams.Length;
+		public IndexBuffer IndexBuffer { get; protected set; } = null;
 
 		//public static GeometryInput Default { get; private set; }
 		//public static GeometryInput Current { get; private set; }
 
-		public static GeometryInput Create(params VertexStream[] vertexStreams)
+		public static GeometryInput Create(params VertexStream[] vertexStreams) => Create(null, vertexStreams);
+		public static GeometryInput Create(IndexBuffer IndexBuffer, params VertexStream[] vertexStreams)
 		{
 			if (vertexStreams.Length < 1)
 				throw new CKGLException("GeometryInput constructor requires at least 1 VertexStream");
 
-			return Graphics.CreateGeometryInput(vertexStreams);
+			return Graphics.CreateGeometryInput(IndexBuffer, vertexStreams);
 		}
 
 		public abstract void Destroy();

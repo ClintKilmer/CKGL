@@ -1,4 +1,3 @@
-using System;
 using System.Runtime.InteropServices;
 using CKGL.OpenGLBindings;
 using GLuint = System.UInt32;
@@ -10,12 +9,11 @@ namespace CKGL.OpenGL
 		private static GLuint currentlyBoundVertexBuffer;
 
 		private GLuint id;
-		private readonly BufferUsage bufferUsage;
 
 		internal OpenGLVertexBuffer(BufferUsage bufferUsage)
 		{
 			id = GL.GenBuffer();
-			this.bufferUsage = bufferUsage;
+			BufferUsage = bufferUsage;
 		}
 
 		public override void Destroy()
@@ -36,16 +34,16 @@ namespace CKGL.OpenGL
 			}
 		}
 
-		public override void LoadData(ref byte[] data)
+		public override void LoadData(in byte[] data)
 		{
 			Bind();
-			GL.BufferData(BufferTarget.Array, sizeof(byte) * data.Length, data, bufferUsage.ToOpenGL());
+			GL.BufferData(BufferTarget.Array, sizeof(byte) * data.Length, data, BufferUsage.ToOpenGL());
 		}
 
-public override void LoadData<T>(ref T[] data)// where T : struct // TODO - add this back in .NET Core 3.0
+		public override void LoadData<T>(in T[] data)// where T : struct // TODO - add this back in .NET Core 3.0
 		{
 			Bind();
-			GL.BufferData(BufferTarget.Array, Marshal.SizeOf(typeof(T)) * data.Length, data, bufferUsage.ToOpenGL());
+			GL.BufferData(BufferTarget.Array, Marshal.SizeOf(typeof(T)) * data.Length, data, BufferUsage.ToOpenGL());
 		}
 	}
 }

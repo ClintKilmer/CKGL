@@ -79,7 +79,7 @@ namespace CKGL.OpenGL
 			)
 			{
 				geometryInput.Bind();
-				vertexBuffer.LoadData(ref vertices);
+				vertexBuffer.LoadData(in vertices);
 				Graphics.DrawVertexArrays(currentPrimitiveTopology, 0, vertexCount);
 			}
 

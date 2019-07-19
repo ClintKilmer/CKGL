@@ -2,7 +2,7 @@ namespace CKGL
 {
 	public enum IndexType : byte
 	{
-		UnsignedByte,
+		//UnsignedByte, // Available in OpenGL, Unavailable in Vulkan, Unavailable in D3D11
 		UnsignedShort,
 		UnsignedInt
 	}
@@ -13,8 +13,8 @@ namespace CKGL
 		{
 			switch (indexType)
 			{
-				case IndexType.UnsignedByte:
-					return OpenGLBindings.IndexType.UnsignedByte;
+				//case IndexType.UnsignedByte:
+				//	return OpenGLBindings.IndexType.UnsignedByte;
 				case IndexType.UnsignedShort:
 					return OpenGLBindings.IndexType.UnsignedShort;
 				case IndexType.UnsignedInt:

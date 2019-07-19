@@ -8,12 +8,13 @@ namespace CKGL.OpenGL
 	{
 		private readonly VertexArray vao;
 
-		internal OpenGLGeometryInput(VertexStream[] vertexStreams)
+		internal OpenGLGeometryInput(IndexBuffer indexBuffer, VertexStream[] vertexStreams)
 		{
 			if (vertexStreams.Length < 1)
 				throw new CKGLException("GeometryInput constructor requires at least 1 VertexStream");
 
 			VertexStreams = vertexStreams;
+			IndexBuffer = indexBuffer;
 
 			vao = new VertexArray();
 
@@ -31,6 +32,11 @@ namespace CKGL.OpenGL
 					//Output.WriteLine($"id: {i}, Count: {vertexStream.VertexFormat.Attributes[(int)i].Count}, Type: {vertexStream.VertexFormat.Attributes[(int)i].Type}, Normalized: {vertexStream.VertexFormat.Attributes[(int)i].Normalized}, Size/Stride: {vertexStream.VertexFormat.Attributes[(int)i].Size}/{vertexStream.VertexFormat.Stride}, offset: {offset}"); // Debug
 					offset += vertexStream.VertexFormat.Attributes[(int)i].Size;
 				}
+			}
+
+			if (!(indexBuffer is null))
+			{
+				indexBuffer.Bind();
 			}
 		}
 

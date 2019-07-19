@@ -15,9 +15,14 @@ namespace CKGL.OpenGL
 			return new OpenGLVertexBuffer(bufferUsage);
 		}
 
-		internal override GeometryInput CreateGeometryInput(VertexStream[] vertexStreams)
+		internal override IndexBuffer CreateIndexBuffer(BufferUsage bufferUsage)
 		{
-			return new OpenGLGeometryInput(vertexStreams);
+			return new OpenGLIndexBuffer(bufferUsage);
+		}
+
+		internal override GeometryInput CreateGeometryInput(IndexBuffer indexBuffer, VertexStream[] vertexStreams)
+		{
+			return new OpenGLGeometryInput(indexBuffer, vertexStreams);
 		}
 		#endregion
 
