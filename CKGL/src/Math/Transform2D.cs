@@ -3,6 +3,7 @@ namespace CKGL
 	public class Transform2D
 	{
 		private Transform2D parent;
+		private Transform2D child;
 		private Vector2 origin = Vector2.Zero;
 		private Vector2 position = Vector2.Zero;
 		private Rotation rotation = 0f;
@@ -19,7 +20,22 @@ namespace CKGL
 				if (parent != value)
 				{
 					parent = value;
-					dirty = true;
+					parent.child = this;
+					SetDirty();
+				}
+			}
+		}
+
+		public Transform2D Child
+		{
+			get { return child; }
+			set
+			{
+				if (child != value)
+				{
+					child = value;
+					child.parent = this;
+					SetDirty();
 				}
 			}
 		}
@@ -32,7 +48,7 @@ namespace CKGL
 				if (origin != value)
 				{
 					origin = value;
-					dirty = true;
+					SetDirty();
 				}
 			}
 		}
@@ -45,7 +61,7 @@ namespace CKGL
 				if (origin.X != value)
 				{
 					origin.X = value;
-					dirty = true;
+					SetDirty();
 				}
 			}
 		}
@@ -58,7 +74,7 @@ namespace CKGL
 				if (origin.Y != value)
 				{
 					origin.Y = value;
-					dirty = true;
+					SetDirty();
 				}
 			}
 		}
@@ -71,7 +87,7 @@ namespace CKGL
 				if (position != value)
 				{
 					position = value;
-					dirty = true;
+					SetDirty();
 				}
 			}
 		}
@@ -84,7 +100,7 @@ namespace CKGL
 				if (position.X != value)
 				{
 					position.X = value;
-					dirty = true;
+					SetDirty();
 				}
 			}
 		}
@@ -97,7 +113,7 @@ namespace CKGL
 				if (position.Y != value)
 				{
 					position.Y = value;
-					dirty = true;
+					SetDirty();
 				}
 			}
 		}
@@ -110,7 +126,7 @@ namespace CKGL
 				if (rotation != value)
 				{
 					rotation = value;
-					dirty = true;
+					SetDirty();
 				}
 			}
 		}
@@ -123,7 +139,7 @@ namespace CKGL
 				if (scale != value)
 				{
 					scale = value;
-					dirty = true;
+					SetDirty();
 				}
 			}
 		}
@@ -136,7 +152,7 @@ namespace CKGL
 				if (scale.X != value)
 				{
 					scale.X = value;
-					dirty = true;
+					SetDirty();
 				}
 			}
 		}
@@ -149,7 +165,7 @@ namespace CKGL
 				if (scale.Y != value)
 				{
 					scale.Y = value;
-					dirty = true;
+					SetDirty();
 				}
 			}
 		}
@@ -162,7 +178,7 @@ namespace CKGL
 				if (shear != value)
 				{
 					shear = value;
-					dirty = true;
+					SetDirty();
 				}
 			}
 		}
@@ -175,7 +191,7 @@ namespace CKGL
 				if (shear.X != value)
 				{
 					shear.X = value;
-					dirty = true;
+					SetDirty();
 				}
 			}
 		}
@@ -188,7 +204,7 @@ namespace CKGL
 				if (shear.Y != value)
 				{
 					shear.Y = value;
-					dirty = true;
+					SetDirty();
 				}
 			}
 		}
@@ -242,6 +258,13 @@ namespace CKGL
 		public Transform2D Clone()
 		{
 			return (Transform2D)MemberwiseClone();
+		}
+
+		private void SetDirty()
+		{
+			dirty = true;
+			if (child != null)
+				child.SetDirty();
 		}
 	}
 }
