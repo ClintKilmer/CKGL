@@ -235,6 +235,7 @@ void main()
 		};
 
 		Colour lightColour = new Colour(0.95f, 1f, 0.75f, 1f);
+		Transform lightParentTransform = new Transform();
 		Transform lightTransform = new Transform { Position = new Vector3(2f, 3f, -1f), Scale = new Vector3(0.1f, 0.1f, 0.1f) };
 		Transform cubeTransform = new Transform { Position = new Vector3(0f, 2f, 0f) };
 		Transform planeTransform = new Transform { Scale = new Vector3(100f, 1f, 100f) };
@@ -275,6 +276,8 @@ void main()
 			cubeIndexBuffer.LoadData(in cubeIndices);
 			planeVertexBuffer.LoadData(in planeVertices);
 			planeIndexBuffer.LoadData(in planeIndices);
+
+			lightTransform.Parent = lightParentTransform;
 		}
 
 		public override void Update()
@@ -350,6 +353,7 @@ void main()
 			cameraLookatNoVertical = new Vector3(cameraLookat.X, 0f, cameraLookat.Z).Normalized;
 
 			cubeTransform.Rotation = Quaternion.CreateFromEuler(new Vector3(-Time.TotalSeconds * 0.3f, -Time.TotalSeconds * 0.25f, -Time.TotalSeconds * 0.09f));
+			lightParentTransform.Rotation = Quaternion.CreateFromEuler(new Vector3(0f, -Time.TotalSeconds * 0.25f, 0f));
 
 			debugString = $"|:outline=1,0.01,0,0,0,1:|Cam Pos: {Camera.Position.X:n1}, {Camera.Position.Y:n1}, {Camera.Position.Z:n1}\nCam Rot: {Camera.Rotation.Euler.X:n2}, {Camera.Rotation.Euler.Y:n2}, {Camera.Rotation.Euler.Z:n2}\nMem: {RAM:n1}MB\nVSync: {Window.GetVSyncMode()}\n{Time.UPS:n0}ups | {Time.FPSSmoothed:n0}fps\nDraw Calls: {Graphics.DrawCalls}\nState Changes: {Graphics.State.Changes}\nRenderTarget Swaps/Blits: {RenderTarget.Swaps}/{RenderTarget.Blits}\nTexture Swaps: {Texture.Swaps}\nShader/Uniform Swaps: {Shader.Swaps}/{Shader.UniformSwaps}\nWinPos: [{Window.X}, {Window.Y}]\nSize: [{Window.Size}]\nMouse Global: [{Input.Mouse.PositionDisplay}]\nMouse: [{Input.Mouse.Position}]\nMouse Relative: [{Input.Mouse.PositionRelative}]";
 		}
@@ -365,6 +369,7 @@ void main()
 				Graphics.Clear(Colour.Black);
 
 			Graphics.State.Reset();
+			CullModeState.Back.Set();
 			DepthState.LessEqual.Set();
 
 			Shaders.Renderer.Bind();
@@ -374,17 +379,6 @@ void main()
 			Renderer.Draw3D.ResetTransform();
 
 			// Start Drawing
-
-			CullModeState.Back.Set();
-			//Renderer.Draw3D.SetTransform(cubeTransform);
-			//Renderer.Draw3D.Cube(Colour.Cyan,
-			//					 Colour.Yellow,
-			//					 Colour.Red,
-			//					 Colour.Blue,
-			//					 Colour.Green,
-			//					 Colour.Magenta);
-			//Renderer.Draw3D.ResetTransform();
-
 			Renderer.Draw3D.SetTransform(lightTransform);
 			Renderer.Draw3D.Cube(lightColour);
 			Renderer.Draw3D.ResetTransform();
@@ -397,7 +391,7 @@ void main()
 			//Shaders.CubeShader.DirectionalLight = Vector3.Forward * Matrix.CreateRotationX(0.05f) * Matrix.CreateRotationY(-0.1f);
 			// Point Light
 			Shaders.PointLightShader.CameraPosition = Camera.Position;
-			Shaders.PointLightShader.LightPosition = lightTransform.Position;
+			Shaders.PointLightShader.LightPosition = lightTransform.GlobalPosition;
 			Shaders.PointLightShader.LightColour = lightColour;
 			cubeGeometryInput.Bind();
 			Graphics.DrawIndexedVertexArrays(PrimitiveTopology.TriangleList, 0, cubeIndices.Length, cubeIndexBuffer.IndexType);
@@ -406,39 +400,16 @@ void main()
 			planeGeometryInput.Bind();
 			Graphics.DrawIndexedVertexArrays(PrimitiveTopology.TriangleList, 0, planeIndices.Length, planeIndexBuffer.IndexType);
 
-			// GUI Layer
-
-			DepthState.Off.Set();
-			Scene.Current?.Draw();
-
-			Camera2D.Width = RenderTarget.Current.Width;
-			Camera2D.Height = RenderTarget.Current.Height;
-			Shaders.Renderer.Bind();
-			Shaders.Renderer.MVP = Camera2D.Matrix;
-
 			// Draw to Screen
 			RenderTarget.Default.Bind();
 			Graphics.Clear(new Colour(0.1f, 0.1f, 0.1f, 1f));
 			Graphics.State.Reset();
 
-			scale = Math.Max(1, Math.Min(Window.Width / width, Window.Height / height));
-
 			// Render RenderTarget
 			Shaders.Renderer.Bind();
 			Shaders.Renderer.MVP = RenderTarget.Default.Matrix;
+			scale = Math.Max(1, Math.Min(Window.Width / width, Window.Height / height));
 			Renderer.Draw.RenderTarget(surface, TextureSlot.Colour0, (Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, scale, Colour.White);
-			//Renderer.Draw.RenderTarget(surface, TextureSlot.Colour0, (Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, scale, Math.Sin(Time.TotalSeconds) * 0.03f, new Vector2(Window.Width / 2f, Window.Height / 2f), Colour.White);
-
-			// Blit RenderTarget
-			//surface.BlitTextureTo(RenderTarget.Default, TextureSlot.Colour0, BlitFilter.Nearest, new RectangleI((Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, width * scale, height * scale));
-
-			//Renderer.Draw.Text(SpriteFonts.Font,
-			//				   debugString,
-			//				   new Vector2(2, RenderTarget.Current.Height - 1),
-			//				   Vector2.One * 3f,
-			//				   Colour.White,
-			//				   HAlign.Left,
-			//				   VAlign.Top);
 
 			Renderer.Flush();
 
