@@ -34,7 +34,7 @@ namespace CKGL.OpenGL
 				}
 			}
 
-			if (!(indexBuffer is null))
+			if (indexBuffer != null)
 			{
 				indexBuffer.Bind();
 			}
