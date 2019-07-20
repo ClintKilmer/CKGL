@@ -75,7 +75,7 @@ void main()
 
 	float intensity = max(dot(vNormal, -lightDirection), 0.0);
 
-	float spec = pow(max(dot(viewDirection, reflectDirection), 0.0), 32);
+	float spec = pow(max(dot(viewDirection, reflectDirection), 0.0), 32.0);
 	vec3 specular = specularStrength * spec * LightColour.rgb;
 
 	colour = mix(vColour, texture(Texture, vUV) * vColour, vTextured);
