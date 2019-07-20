@@ -12,6 +12,8 @@ namespace CKGL
 		private Matrix2D matrix;
 		private bool dirty = true;
 
+		public Vector2 GlobalPosition { get; private set; } = Vector2.Zero;
+
 		public Transform2D Parent
 		{
 			get { return parent; }
@@ -216,22 +218,16 @@ namespace CKGL
 				if (dirty)
 				{
 					matrix = Matrix2D.CreateTransform(origin, position, rotation, scale, shear);
+					GlobalPosition = position;
 					if (parent != null)
-						matrix = matrix * parent.Matrix;
+					{
+						matrix *= parent.Matrix;
+						GlobalPosition *= parent.Matrix;
+					}
 					dirty = false;
 				}
 
 				return matrix;
-			}
-		}
-
-		public Vector2 GlobalPosition
-		{
-			get
-			{
-				if (parent != null)
-					return position * parent.Matrix;
-				return position;
 			}
 		}
 

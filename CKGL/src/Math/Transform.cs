@@ -12,6 +12,8 @@ namespace CKGL
 		private Matrix matrix;
 		private bool dirty = true;
 
+		public Vector3 GlobalPosition { get; private set; } = Vector3.Zero;
+
 		public Transform Parent
 		{
 			get { return parent; }
@@ -229,22 +231,16 @@ namespace CKGL
 				if (dirty)
 				{
 					matrix = Matrix.CreateTransform(origin, position, rotation, scale, shear);
+					GlobalPosition = position;
 					if (parent != null)
-						matrix = matrix * parent.Matrix;
+					{
+						matrix *= parent.Matrix;
+						GlobalPosition *= parent.Matrix;
+					}
 					dirty = false;
 				}
 
 				return matrix;
-			}
-		}
-
-		public Vector3 GlobalPosition
-		{
-			get
-			{
-				if (parent != null)
-					return position * parent.Matrix;
-				return position;
 			}
 		}
 
