@@ -1,6 +1,7 @@
 CKGL TODO List:
 
 Features:
+- Colour Lerp
 - in / ref optimization
 - .ToString() consistency
 - Texture.SavePNG doesn't work in Init(), only in Update or later...
