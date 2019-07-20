@@ -11,6 +11,7 @@ namespace CKGLTest2D
 		public static float Global { get; } = 2;
 		public static float Player { get; } = 3;
 		public static float Tri { get; } = 4;
+		public static float TransformTest { get; } = 5;
 	}
 	#endregion
 
@@ -98,7 +99,7 @@ namespace CKGLTest2D
 
 			Player = new Player { Position = new Vector2(2f, 2f) };
 
-			for (int i = 0; i < 20; i++)
+			for (int i = 7; i < 27; i++)
 			{
 				new Tri { X = i * 20, Y = -i * 20/*, Depth = -i * 20*/ };
 			}
@@ -107,6 +108,8 @@ namespace CKGLTest2D
 			{
 				new Box { X = Random.Range(-width, width) / 8 * 8, Y = Random.Range(-height, height) / 8 * 8 };
 			}
+
+			TransformTest transformTest = new TransformTest();
 
 			surface = new RenderTarget(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth);
 		}
