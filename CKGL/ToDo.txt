@@ -1,6 +1,7 @@
 CKGL TODO List:
 
 Features:
+- Audio init throws exception if no device available
 - Colour Lerp
 - in / ref optimization
 - .ToString() consistency
