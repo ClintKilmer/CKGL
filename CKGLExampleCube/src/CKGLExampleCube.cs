@@ -24,7 +24,8 @@ layout(location = 3) in vec2 uv;
 layout(location = 4) in float textured;
 
 uniform mat4 M;
-uniform mat4 VP;
+uniform mat4 V;
+uniform mat4 P;
 
 out vec3 vFragPosition;
 out vec3 vNormal;
@@ -34,9 +35,9 @@ out float vTextured;
 
 void main()
 {
-	gl_Position = vec4(position, 1.0) * M * VP;
+	gl_Position = vec4(position, 1.0) * M * V * P;
     vFragPosition = vec3(vec4(position, 1.0) * M);
-	vNormal = normal * mat3(transpose(inverse(M)));
+	vNormal = normal * mat3(transpose(inverse(M))); // 3x3 Normal Matrix - TODO: move this to shader uniform for performnce
 	vColour = colour;
 	vUV = uv;
 	vTextured = textured;
@@ -49,8 +50,21 @@ layout(location = 0) out vec4 colour;
 
 uniform sampler2D Texture;
 uniform vec3 CameraPosition;
-uniform vec3 LightPosition;
-uniform vec4 LightColour;
+
+struct PointLight
+{
+	vec3 position;
+	vec4 colour;
+	
+	//float constant;
+	//float linear;
+	//float quadratic;
+	
+	vec3 diffuse;
+	vec3 specular;
+};
+#define NR_POINT_LIGHTS 3
+uniform PointLight pointLights[NR_POINT_LIGHTS];
 
 in vec3 vFragPosition;
 in vec3 vNormal;
@@ -58,36 +72,65 @@ in vec4 vColour;
 in vec2 vUV;
 in float vTextured;
 
+float constant = 1.0;
+float linear = 0.09;
+float quadratic = 0.032;
+
+vec3 CalculatePointLight(PointLight light, vec3 normal, vec3 fragPosition, vec3 viewDirection, float specularStrength)
+{
+	vec3 lightDirection = normalize(light.position - fragPosition);
+	
+	// diffuse shading
+	vec3 diffuse = light.colour.rgb * max(dot(normal, lightDirection), 0.0);
+	
+	// specular shading
+	// Phong
+	//vec3 reflectDirection = reflect(-lightDirection, normal);
+	//float spec = pow(max(dot(viewDirection, reflectDirection), 0.0), 32.0);
+	//vec3 specular = light.colour.rgb * spec * specularStrength;
+	// Blinn-Phong
+	vec3 halfwayDirection = normalize(lightDirection + viewDirection);
+	float spec = pow(max(dot(normal, halfwayDirection), 0.0), 16.0);
+	vec3 specular = light.colour.rgb * spec;// * specularStrength;
+	
+	// attenuation
+	float distance = length(light.position - fragPosition);
+	//float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
+	//float attenuation = 1.0 / (constant + linear * distance + quadratic * (distance * distance)); // Quadratic
+	float attenuation = 1.0 / (constant + linear * distance + quadratic * (distance * distance)); // Linear
+	
+	// combine
+	return (diffuse + specular) * attenuation;
+}
+
 void main()
 {
-	// Directional Light
-	//float intensity = max(dot(vNormal, -normalize(DirectionalLight)), 0.0);
-	//colour = mix(vColour, texture(Texture, vUV) * vColour, vTextured);
-	//colour = vec4(colour.rgb * max(intensity, 0.1), colour.a);
-	
-	//Point Light
 	float specularStrength = 0.5;
-
-	vec3 lightDirection = normalize(vFragPosition - LightPosition);
-
 	vec3 viewDirection = normalize(CameraPosition - vFragPosition);
-	vec3 reflectDirection = reflect(lightDirection, vNormal);
-
-	float intensity = max(dot(vNormal, -lightDirection), 0.0);
-
-	float spec = pow(max(dot(viewDirection, reflectDirection), 0.0), 32.0);
-	vec3 specular = specularStrength * spec * LightColour.rgb;
-
+	
+	vec3 result = vec3(0.0, 0.0, 0.0);
+	for(int i = 0; i < NR_POINT_LIGHTS; i++)
+        result += CalculatePointLight(pointLights[i], vNormal, vFragPosition, viewDirection, specularStrength);
+	
 	colour = mix(vColour, texture(Texture, vUV) * vColour, vTextured);
-	colour = vec4(colour.rgb * max(intensity * LightColour.rgb + specular, 0.1), colour.a);
+	colour = vec4(colour.rgb * result, colour.a);
+	
+	// apply gamma correction
+	float gamma = 2.2;
+	colour.rgb = pow(colour.rgb, vec3(1.0 / gamma));
 }";
 		#endregion
 
 		public Matrix M { set { SetUniform("M", value); } }
-		public Matrix VP { set { SetUniform("VP", value); } }
+		public Matrix V { set { SetUniform("V", value); } }
+		public Matrix P { set { SetUniform("P", value); } }
 		public Vector3 CameraPosition { set { SetUniform("CameraPosition", value); } }
-		public Vector3 LightPosition { set { SetUniform("LightPosition", value); } }
-		public Colour LightColour { set { SetUniform("LightColour", value); } }
+		public Vector3 Light1Position { set { SetUniform("pointLights[0].position", value); } }
+		public Vector3 Light2Position { set { SetUniform("pointLights[1].position", value); } }
+		public Vector3 Light3Position { set { SetUniform("pointLights[2].position", value); } }
+		public Colour Light1Colour { set { SetUniform("pointLights[0].colour", value); } }
+		public Colour Light2Colour { set { SetUniform("pointLights[1].colour", value); } }
+		public Colour Light3Colour { set { SetUniform("pointLights[2].colour", value); } }
 
 		public PointLightShader() : base(glsl) { }
 	}
@@ -109,6 +152,9 @@ void main()
 		//private static int width = 16;
 		//private static int height = 9;
 		//private static int scale = 100;
+		//private static int width = 506;
+		//private static int height = 253;
+		//private static int scale = 1;
 
 		public CKGLExampleCube()
 			: base(windowTitle: "CKGL Example - Cube",
@@ -234,10 +280,18 @@ void main()
 			2, 3, 1,
 		};
 
-		Colour lightColour = new Colour(0.95f, 1f, 0.75f, 1f);
-		Transform lightParentTransform = new Transform();
-		Transform lightTransform = new Transform { Position = new Vector3(2f, 3f, -1f), Scale = new Vector3(0.1f, 0.1f, 0.1f) };
+		Colour light1Colour = Colour.Red;
+		Colour light2Colour = Colour.Green;
+		Colour light3Colour = Colour.Blue;
+		Transform light1ParentTransform = new Transform();
+		Transform light2ParentTransform = new Transform();
+		Transform light3ParentTransform = new Transform();
+		Transform light1Transform = new Transform { Position = new Vector3(2f, 3f, -1f), Scale = new Vector3(0.1f, 0.1f, 0.1f) };
+		Transform light2Transform = new Transform { Position = new Vector3(2f, 3f, -1f), Scale = new Vector3(0.1f, 0.1f, 0.1f) };
+		Transform light3Transform = new Transform { Position = new Vector3(2f, 3f, -1f), Scale = new Vector3(0.1f, 0.1f, 0.1f) };
 		Transform cubeTransform = new Transform { Position = new Vector3(0f, 2f, 0f) };
+		Transform cube2Transform = new Transform { Position = new Vector3(5f, 1f, 5f) };
+		Transform cube3Transform = new Transform { Position = new Vector3(-5f, 4f, -3f), Rotation = Quaternion.CreateFromEuler(0.3f, 0.4f, 0.6f) };
 		Transform planeTransform = new Transform { Scale = new Vector3(100f, 1f, 100f) };
 
 		public override void Init()
@@ -277,7 +331,9 @@ void main()
 			planeVertexBuffer.LoadData(in planeVertices);
 			planeIndexBuffer.LoadData(in planeIndices);
 
-			lightTransform.Parent = lightParentTransform;
+			light1Transform.Parent = light1ParentTransform;
+			light2Transform.Parent = light2ParentTransform;
+			light3Transform.Parent = light3ParentTransform;
 		}
 
 		public override void Update()
@@ -353,7 +409,12 @@ void main()
 			cameraLookatNoVertical = new Vector3(cameraLookat.X, 0f, cameraLookat.Z).Normalized;
 
 			cubeTransform.Rotation = Quaternion.CreateFromEuler(new Vector3(-Time.TotalSeconds * 0.3f, -Time.TotalSeconds * 0.25f, -Time.TotalSeconds * 0.09f));
-			lightParentTransform.Rotation = Quaternion.CreateFromEuler(new Vector3(0f, -Time.TotalSeconds * 0.25f, 0f));
+			light1ParentTransform.Rotation = Quaternion.CreateFromEuler(new Vector3(0f, -Time.TotalSeconds * 0.25f, 0f));
+			light2ParentTransform.Rotation = Quaternion.CreateFromEuler(new Vector3(0f, -Time.TotalSeconds * 0.5f, 0f));
+			light3ParentTransform.Rotation = Quaternion.CreateFromEuler(new Vector3(0f, -Time.TotalSeconds * 0.75f, 0f));
+			light1Transform.Y = 2f + Math.Sin(Time.TotalSeconds * 0.5f) * 2f;
+			light2Transform.Y = 2f + Math.Sin(Time.TotalSeconds * 0.6f) * 2f;
+			light3Transform.Y = 2f + Math.Sin(Time.TotalSeconds * 0.7f) * 2f;
 
 			debugString = $"|:outline=1,0.01,0,0,0,1:|Cam Pos: {Camera.Position.X:n1}, {Camera.Position.Y:n1}, {Camera.Position.Z:n1}\nCam Rot: {Camera.Rotation.Euler.X:n2}, {Camera.Rotation.Euler.Y:n2}, {Camera.Rotation.Euler.Z:n2}\nMem: {RAM:n1}MB\nVSync: {Window.GetVSyncMode()}\n{Time.UPS:n0}ups | {Time.FPSSmoothed:n0}fps\nDraw Calls: {Graphics.DrawCalls}\nState Changes: {Graphics.State.Changes}\nRenderTarget Swaps/Blits: {RenderTarget.Swaps}/{RenderTarget.Blits}\nTexture Swaps: {Texture.Swaps}\nShader/Uniform Swaps: {Shader.Swaps}/{Shader.UniformSwaps}\nWinPos: [{Window.X}, {Window.Y}]\nSize: [{Window.Size}]\nMouse Global: [{Input.Mouse.PositionDisplay}]\nMouse: [{Input.Mouse.Position}]\nMouse Relative: [{Input.Mouse.PositionRelative}]";
 		}
@@ -379,21 +440,36 @@ void main()
 			Renderer.Draw3D.ResetTransform();
 
 			// Start Drawing
-			Renderer.Draw3D.SetTransform(lightTransform);
-			Renderer.Draw3D.Cube(lightColour);
+			Renderer.Draw3D.SetTransform(light1Transform);
+			Renderer.Draw3D.Cube(light1Colour);
+			Renderer.Draw3D.SetTransform(light2Transform);
+			Renderer.Draw3D.Cube(light2Colour);
+			Renderer.Draw3D.SetTransform(light3Transform);
+			Renderer.Draw3D.Cube(light3Colour);
 			Renderer.Draw3D.ResetTransform();
 
 			Shaders.PointLightShader.Bind();
 
 			Shaders.PointLightShader.M = cubeTransform.Matrix;
-			Shaders.PointLightShader.VP = Camera.Matrix;
+			Shaders.PointLightShader.V = Camera.ViewMatrix;
+			Shaders.PointLightShader.P = Camera.ProjectionMatrix;
 			// Directional Light
 			//Shaders.CubeShader.DirectionalLight = Vector3.Forward * Matrix.CreateRotationX(0.05f) * Matrix.CreateRotationY(-0.1f);
 			// Point Light
 			Shaders.PointLightShader.CameraPosition = Camera.Position;
-			Shaders.PointLightShader.LightPosition = lightTransform.GlobalPosition;
-			Shaders.PointLightShader.LightColour = lightColour;
+			Shaders.PointLightShader.Light1Position = light1Transform.GlobalPosition;
+			Shaders.PointLightShader.Light2Position = light2Transform.GlobalPosition;
+			Shaders.PointLightShader.Light3Position = light3Transform.GlobalPosition;
+			Shaders.PointLightShader.Light1Colour = light1Colour;
+			Shaders.PointLightShader.Light2Colour = light2Colour;
+			Shaders.PointLightShader.Light3Colour = light3Colour;
 			cubeGeometryInput.Bind();
+			Graphics.DrawIndexedVertexArrays(PrimitiveTopology.TriangleList, 0, cubeIndices.Length, cubeIndexBuffer.IndexType);
+
+			Shaders.PointLightShader.M = cube2Transform.Matrix;
+			Graphics.DrawIndexedVertexArrays(PrimitiveTopology.TriangleList, 0, cubeIndices.Length, cubeIndexBuffer.IndexType);
+
+			Shaders.PointLightShader.M = cube3Transform.Matrix;
 			Graphics.DrawIndexedVertexArrays(PrimitiveTopology.TriangleList, 0, cubeIndices.Length, cubeIndexBuffer.IndexType);
 
 			Shaders.PointLightShader.M = planeTransform.Matrix;
