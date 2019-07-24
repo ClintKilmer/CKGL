@@ -55,10 +55,8 @@ struct PointLight
 {
 	vec3 position;
 	vec4 colour;
-	
-	//float constant;
-	//float linear;
-	//float quadratic;
+
+	float radius;
 	
 	vec3 diffuse;
 	vec3 specular;
@@ -72,45 +70,46 @@ in vec4 vColour;
 in vec2 vUV;
 in float vTextured;
 
-float constant = 1.0;
-float linear = 0.09;
-float quadratic = 0.032;
-
-vec3 CalculatePointLight(PointLight light, vec3 normal, vec3 fragPosition, vec3 viewDirection, float specularStrength)
+vec3 CalculatePointLight(PointLight light, vec3 normal, vec3 fragPosition, vec3 viewDirection)
 {
 	vec3 lightDirection = normalize(light.position - fragPosition);
 	
-	// diffuse shading
-	vec3 diffuse = light.colour.rgb * max(dot(normal, lightDirection), 0.0);
+	// Diffuse Shading
+	float diffuseFactor = max(dot(normal, lightDirection), 0.0);
 	
-	// specular shading
+	// Specular Shading
 	// Phong
 	//vec3 reflectDirection = reflect(-lightDirection, normal);
 	//float spec = pow(max(dot(viewDirection, reflectDirection), 0.0), 32.0);
 	//vec3 specular = light.colour.rgb * spec * specularStrength;
 	// Blinn-Phong
 	vec3 halfwayDirection = normalize(lightDirection + viewDirection);
-	float spec = pow(max(dot(normal, halfwayDirection), 0.0), 16.0);
-	vec3 specular = light.colour.rgb * spec;// * specularStrength;
+	float IsDiffuseFactorGreaterThanZero = max(sign(diffuseFactor), 0.0);
+	float specularFactor = pow(max(dot(normal, halfwayDirection), 0.0), 16.0) * IsDiffuseFactorGreaterThanZero;
 	
-	// attenuation
+	// Attenuation
 	float distance = length(light.position - fragPosition);
 	//float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
 	//float attenuation = 1.0 / (constant + linear * distance + quadratic * (distance * distance)); // Quadratic
-	float attenuation = 1.0 / (constant + linear * distance + quadratic * (distance * distance)); // Linear
+	float attenuation = 1.0 / (1.0 + (4.5 / light.radius) * distance + (75.0 / (light.radius * light.radius)) * (distance * distance)); // Quadratic
+	//float attenuation = 1.0 / distance; // Linear
+	//float attenuation = clamp(1.0 - distance / (light.radius), 0.0, 1.0); attenuation *= attenuation;
+	//float attenuation = clamp(1.0 - (distance * distance) / (light.radius * light.radius), 0.0, 1.0); attenuation *= attenuation;
 	
-	// combine
-	return (diffuse + specular) * attenuation;
+	// Combine
+	return light.colour.rgb * (diffuseFactor + specularFactor) * attenuation;
+	//return light.colour.rgb * (diffuseFactor + specularFactor * 0.0001) * attenuation; // Diffuse only
+	//return light.colour.rgb * (specularFactor) * attenuation; // Specular only
 }
 
 void main()
 {
-	float specularStrength = 0.5;
 	vec3 viewDirection = normalize(CameraPosition - vFragPosition);
 	
-	vec3 result = vec3(0.0, 0.0, 0.0);
+	vec3 result = vec3(0.0);
 	for(int i = 0; i < NR_POINT_LIGHTS; i++)
-        result += CalculatePointLight(pointLights[i], vNormal, vFragPosition, viewDirection, specularStrength);
+        result += CalculatePointLight(pointLights[i], vNormal, vFragPosition, viewDirection);
+	result = max(result, vec3(0.001));
 	
 	colour = mix(vColour, texture(Texture, vUV) * vColour, vTextured);
 	colour = vec4(colour.rgb * result, colour.a);
@@ -131,6 +130,9 @@ void main()
 		public Colour Light1Colour { set { SetUniform("pointLights[0].colour", value); } }
 		public Colour Light2Colour { set { SetUniform("pointLights[1].colour", value); } }
 		public Colour Light3Colour { set { SetUniform("pointLights[2].colour", value); } }
+		public float Light1Radius { set { SetUniform("pointLights[0].radius", value); } }
+		public float Light2Radius { set { SetUniform("pointLights[1].radius", value); } }
+		public float Light3Radius { set { SetUniform("pointLights[2].radius", value); } }
 
 		public PointLightShader() : base(glsl) { }
 	}
@@ -463,6 +465,9 @@ void main()
 			Shaders.PointLightShader.Light1Colour = light1Colour;
 			Shaders.PointLightShader.Light2Colour = light2Colour;
 			Shaders.PointLightShader.Light3Colour = light3Colour;
+			Shaders.PointLightShader.Light1Radius = 50f;
+			Shaders.PointLightShader.Light2Radius = 50f;
+			Shaders.PointLightShader.Light3Radius = 50f;
 			cubeGeometryInput.Bind();
 			Graphics.DrawIndexedVertexArrays(PrimitiveTopology.TriangleList, 0, cubeIndices.Length, cubeIndexBuffer.IndexType);
 
