@@ -185,6 +185,9 @@ void main()
 
 		RenderTarget surface;
 
+		CullModeState cullModeState = CullModeState.Back;
+		PolygonModeState polygonModeState = PolygonModeState.Fill;
+
 		[StructLayout(LayoutKind.Sequential, Pack = 1)]
 		public struct Vertex
 		{
@@ -380,6 +383,28 @@ void main()
 			if (Input.Keyboard.Pressed(KeyCode.Escape))
 				Platform.RelativeMouseMode = !Platform.RelativeMouseMode;
 
+			if (Input.Keyboard.Pressed(KeyCode.F2))
+			{
+				if (polygonModeState == PolygonModeState.Fill)
+					polygonModeState = PolygonModeState.Line;
+				else if (polygonModeState == PolygonModeState.Line)
+					polygonModeState = PolygonModeState.Point;
+				else if (polygonModeState == PolygonModeState.Point)
+					polygonModeState = PolygonModeState.Fill;
+			}
+
+			if (Input.Keyboard.Pressed(KeyCode.F3))
+			{
+				if (cullModeState == CullModeState.Off)
+					cullModeState = CullModeState.Back;
+				else if (cullModeState == CullModeState.Back)
+					cullModeState = CullModeState.Front;
+				else if (cullModeState == CullModeState.Front)
+					cullModeState = CullModeState.FrontAndBack;
+				else if (cullModeState == CullModeState.FrontAndBack)
+					cullModeState = CullModeState.Off;
+			}
+
 			if (!Platform.RelativeMouseMode)
 			{
 				if (Input.Mouse.LeftPressed)
@@ -455,8 +480,9 @@ void main()
 				Graphics.Clear(Colour.Black);
 
 			Graphics.State.Reset();
-			CullModeState.Back.Set();
 			DepthState.LessEqual.Set();
+			CullModeState.Set(cullModeState);
+			PolygonModeState.Set(polygonModeState);
 
 			Shaders.Renderer.Bind();
 			Shaders.Renderer.MVP = Camera.Matrix;
