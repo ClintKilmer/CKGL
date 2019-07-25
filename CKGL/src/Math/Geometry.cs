@@ -45,10 +45,10 @@ namespace CKGL
 			}
 		}
 
-		public static Geometry Icosahedron(float radius = 1f) => Icosphere(radius, 0);
+		public static Geometry Icosahedron(float radius = 0.5f) => Icosphere(radius, 0);
 
 		// Adapted from: http://blog.andreaskahler.com/2009/06/creating-icosphere-mesh-in-code.html
-		public static Geometry Icosphere(float radius = 1f, uint subdivisions = 0)
+		public static Geometry Icosphere(float radius = 0.5f, uint subdivisions = 0)
 		{
 			List<Vector3> vertices = new List<Vector3>();
 			List<TriangleIndices> faces = new List<TriangleIndices>();
@@ -103,6 +103,76 @@ namespace CKGL
 			faces.Add(new TriangleIndices( 6, 10,  2));
 			faces.Add(new TriangleIndices( 8,  7,  6));
 			faces.Add(new TriangleIndices( 9,  1,  8));
+
+			// Subdivide faces
+			for (int i = 0; i < subdivisions; i++)
+			{
+				List<TriangleIndices> subdividedFaces = new List<TriangleIndices>();
+				foreach (TriangleIndices face in faces)
+				{
+					// Generate midpoints between vertices
+					int a = generateSubdividedVertex(face.i1, face.i2);
+					int b = generateSubdividedVertex(face.i2, face.i3);
+					int c = generateSubdividedVertex(face.i3, face.i1);
+
+					// Subdivide each face with 4 new faces
+					subdividedFaces.Add(new TriangleIndices(face.i1, a, c));
+					subdividedFaces.Add(new TriangleIndices(face.i2, b, a));
+					subdividedFaces.Add(new TriangleIndices(face.i3, c, b));
+					subdividedFaces.Add(new TriangleIndices(a, b, c));
+				}
+				faces = subdividedFaces;
+			}
+
+			// Calculate geometry data
+			ushort[] indices16 = new ushort[faces.Count * 3];
+			uint[] indices32 = new uint[faces.Count * 3];
+			for (int i = 0; i < faces.Count; i++)
+			{
+				indices16[3 * i] = (ushort)faces[i].i1;
+				indices16[3 * i + 1] = (ushort)faces[i].i2;
+				indices16[3 * i + 2] = (ushort)faces[i].i3;
+				indices32[3 * i] = (uint)faces[i].i1;
+				indices32[3 * i + 1] = (uint)faces[i].i2;
+				indices32[3 * i + 2] = (uint)faces[i].i3;
+			}
+
+			Vertex[] assembledVertices = new Vertex[vertices.Count];
+			for (int i = 0; i < assembledVertices.Length; i++)
+				assembledVertices[i] = new Vertex(vertices[i] * radius, vertices[i], Colour.White, UV.Zero);
+
+			return new Geometry(assembledVertices, indices16, indices32);
+		}
+
+		public static Geometry Octahedron(float radius = 0.5f, uint subdivisions = 0)
+		{
+			List<Vector3> vertices = new List<Vector3>();
+			List<TriangleIndices> faces = new List<TriangleIndices>();
+
+			int generateSubdividedVertex(int index1, int index2)
+			{
+				vertices.Add(((vertices[index1] + vertices[index2]) * 0.5f).Normalized);
+
+				return vertices.Count - 1;
+			}
+
+			// Octahedron vertices
+			vertices.Add(Vector3.Down);
+			vertices.Add(Vector3.Forward);
+			vertices.Add(Vector3.Left);
+			vertices.Add(Vector3.Backward);
+			vertices.Add(Vector3.Right);
+			vertices.Add(Vector3.Up);
+
+			// Octahedron faces
+			faces.Add(new TriangleIndices(0, 2, 1));
+            faces.Add(new TriangleIndices(0, 3, 2));
+            faces.Add(new TriangleIndices(0, 4, 3));
+            faces.Add(new TriangleIndices(0, 1, 4));
+            faces.Add(new TriangleIndices(5, 1, 2));
+            faces.Add(new TriangleIndices(5, 2, 3));
+            faces.Add(new TriangleIndices(5, 3, 4));
+            faces.Add(new TriangleIndices(5, 4, 1));
 
 			// Subdivide faces
 			for (int i = 0; i < subdivisions; i++)
