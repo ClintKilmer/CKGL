@@ -477,8 +477,10 @@ void main()
 
 			Shaders.PointLightShader.V = Camera.ViewMatrix;
 			Shaders.PointLightShader.P = Camera.ProjectionMatrix;
+
 			// Directional Light
 			//Shaders.CubeShader.DirectionalLight = Vector3.Forward * Matrix.CreateRotationX(0.05f) * Matrix.CreateRotationY(-0.1f);
+
 			// Point Light
 			Shaders.PointLightShader.CameraPosition = Camera.Position;
 			Shaders.PointLightShader.Light1Position = light1Transform.GlobalPosition;
