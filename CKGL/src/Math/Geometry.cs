@@ -11,7 +11,7 @@ namespace CKGL
 			public readonly Colour Colour;
 			public readonly UV UV;
 
-			internal Vertex(in Vector3 position, in Vector3 normal, in Colour colour, in UV uv)
+			internal Vertex(Vector3 position, Vector3 normal, Colour colour, UV uv)
 			{
 				Position = position;
 				Normal = normal;
@@ -24,7 +24,7 @@ namespace CKGL
 		public readonly ushort[] Indices16;
 		public readonly uint[] Indices32;
 
-		internal Geometry(in Vertex[] vertices, in ushort[] indices16, in uint[] indices32)
+		internal Geometry(Vertex[] vertices, ushort[] indices16, uint[] indices32)
 		{
 			Vertices = vertices;
 			Indices16 = indices16;
@@ -37,7 +37,7 @@ namespace CKGL
 			public readonly int i2;
 			public readonly int i3;
 
-			public TriangleIndices(in int i1, in int i2, in int i3)
+			public TriangleIndices(int i1, int i2, int i3)
 			{
 				this.i1 = i1;
 				this.i2 = i2;
@@ -195,7 +195,7 @@ namespace CKGL
 			}
 
 			// Calculate geometry data
-			if(flat)
+			if (flat)
 			{
 				Vertex[] assembledVertices = new Vertex[faces.Count * 3];
 				ushort[] indices16 = new ushort[faces.Count * 3];

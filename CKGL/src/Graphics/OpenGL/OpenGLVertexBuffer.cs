@@ -34,13 +34,13 @@ namespace CKGL.OpenGL
 			}
 		}
 
-		public override void LoadData(in byte[] data)
+		public override void LoadData(byte[] data)
 		{
 			Bind();
 			GL.BufferData(BufferTarget.Array, sizeof(byte) * data.Length, data, BufferUsage.ToOpenGL());
 		}
 
-		public override void LoadData<T>(in T[] data)// where T : struct // TODO - add this back in .NET Core 3.0
+		public override void LoadData<T>(T[] data)// where T : struct // TODO - add this back in .NET Core 3.0
 		{
 			Bind();
 			GL.BufferData(BufferTarget.Array, Marshal.SizeOf(typeof(T)) * data.Length, data, BufferUsage.ToOpenGL());

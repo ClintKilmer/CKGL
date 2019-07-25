@@ -35,7 +35,7 @@ namespace CKGL.OpenGL
 			}
 		}
 
-		public override void LoadData(in GLushort[] indices)
+		public override void LoadData(GLushort[] indices)
 		{
 			Bind();
 			GL.BufferData(BufferTarget.ElementArray, sizeof(GLushort) * indices.Length, indices, BufferUsage.ToOpenGL());
@@ -43,7 +43,7 @@ namespace CKGL.OpenGL
 			Count = indices.Length;
 		}
 
-		public override void LoadData(in GLuint[] indices)
+		public override void LoadData(GLuint[] indices)
 		{
 			Bind();
 			GL.BufferData(BufferTarget.ElementArray, sizeof(GLuint) * indices.Length, indices, BufferUsage.ToOpenGL());

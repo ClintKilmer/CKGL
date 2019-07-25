@@ -15,8 +15,8 @@ namespace CKGL
 
 		internal abstract void Bind();
 
-		public abstract void LoadData(in ushort[] indices);
+		public abstract void LoadData(ushort[] indices);
 
-		public abstract void LoadData(in uint[] indices);
+		public abstract void LoadData(uint[] indices);
 	}
 }

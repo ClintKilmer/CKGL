@@ -13,8 +13,8 @@ namespace CKGL
 
 		internal abstract void Bind();
 
-		public abstract void LoadData(in byte[] data);
+		public abstract void LoadData(byte[] data);
 
-		public abstract void LoadData<T>(in T[] data) where T : struct;
+		public abstract void LoadData<T>(T[] data) where T : struct;
 	}
 }

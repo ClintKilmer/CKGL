@@ -17,13 +17,9 @@ namespace CKGL
 		private GLuint id;
 		private Dictionary<string, Uniform> uniforms = new Dictionary<string, Uniform>(StringComparer.Ordinal);
 
-		public Shader(ref string source)
-		{
-			Compile(ref source);
-		}
 		public Shader(string source)
 		{
-			Compile(ref source);
+			Compile(source);
 		}
 		public static Shader FromFile(string file)
 		{
@@ -45,7 +41,7 @@ namespace CKGL
 				throw new Exception("Shader compile error: " + GL.GetShaderInfoLog(shaderID));
 		}
 
-		private void Compile(ref string source)
+		private void Compile(string source)
 		{
 			int vertex = source.IndexOf("#vertex", StringComparison.Ordinal);
 			int geometry = source.IndexOf("#geometry", StringComparison.Ordinal);

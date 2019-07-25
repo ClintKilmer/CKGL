@@ -348,12 +348,12 @@ void main()
 			cubeGeometryInput = GeometryInput.Create(cubeIndexBuffer, new VertexStream(cubeVertexBuffer, vertexFormat));
 			icosphereGeometryInput = GeometryInput.Create(icosphereIndexBuffer, new VertexStream(icosphereVertexBuffer, vertexFormat));
 			planeGeometryInput = GeometryInput.Create(planeIndexBuffer, new VertexStream(planeVertexBuffer, vertexFormat));
-			cubeVertexBuffer.LoadData(in cubeVertices);
-			cubeIndexBuffer.LoadData(in cubeIndices);
-			icosphereVertexBuffer.LoadData(in icosphereVertices);
-			icosphereIndexBuffer.LoadData(in icosphereIndices);
-			planeVertexBuffer.LoadData(in planeVertices);
-			planeIndexBuffer.LoadData(in planeIndices);
+			cubeVertexBuffer.LoadData(cubeVertices);
+			cubeIndexBuffer.LoadData(cubeIndices);
+			icosphereVertexBuffer.LoadData(icosphereVertices);
+			icosphereIndexBuffer.LoadData(icosphereIndices);
+			planeVertexBuffer.LoadData(planeVertices);
+			planeIndexBuffer.LoadData(planeIndices);
 
 			light1Transform.Parent = light1ParentTransform;
 			light2Transform.Parent = light2ParentTransform;
