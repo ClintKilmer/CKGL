@@ -275,53 +275,58 @@ void main()
 			2 + 4 * 5, 3 + 4 * 5, 1 + 4 * 5,
 		};
 
-		private static float t = (1f + Math.Sqrt(5f)) / 2f;
-		private readonly Vertex[] icosahedronVertices = new Vertex[] {
-			new Vertex(new Vector3(-1f,  t, 0f).Normalized, new Vector3(-1f,  t, 0f).Normalized, Colour.White, UV.Zero, false),
-			new Vertex(new Vector3( 1f,  t, 0f).Normalized, new Vector3( 1f,  t, 0f).Normalized, Colour.White, UV.Zero, false),
-			new Vertex(new Vector3(-1f, -t, 0f).Normalized, new Vector3(-1f, -t, 0f).Normalized, Colour.White, UV.Zero, false),
-			new Vertex(new Vector3( 1f, -t, 0f).Normalized, new Vector3( 1f, -t, 0f).Normalized, Colour.White, UV.Zero, false),
+		#region Old Icosahedron implementation
+		//private static float t = (1f + Math.Sqrt(5f)) / 2f;
+		//private readonly Vertex[] icosahedronVertices = new Vertex[] {
+		//	new Vertex(new Vector3(-1f,  t, 0f).Normalized, new Vector3(-1f,  t, 0f).Normalized, Colour.White, UV.Zero, false),
+		//	new Vertex(new Vector3( 1f,  t, 0f).Normalized, new Vector3( 1f,  t, 0f).Normalized, Colour.White, UV.Zero, false),
+		//	new Vertex(new Vector3(-1f, -t, 0f).Normalized, new Vector3(-1f, -t, 0f).Normalized, Colour.White, UV.Zero, false),
+		//	new Vertex(new Vector3( 1f, -t, 0f).Normalized, new Vector3( 1f, -t, 0f).Normalized, Colour.White, UV.Zero, false),
 
-			new Vertex(new Vector3(0f, -1f,  t).Normalized, new Vector3(0f, -1f,  t).Normalized, Colour.White, UV.Zero, false),
-			new Vertex(new Vector3(0f,  1f,  t).Normalized, new Vector3(0f,  1f,  t).Normalized, Colour.White, UV.Zero, false),
-			new Vertex(new Vector3(0f, -1f, -t).Normalized, new Vector3(0f, -1f, -t).Normalized, Colour.White, UV.Zero, false),
-			new Vertex(new Vector3(0f,  1f, -t).Normalized, new Vector3(0f,  1f, -t).Normalized, Colour.White, UV.Zero, false),
+		//	new Vertex(new Vector3(0f, -1f,  t).Normalized, new Vector3(0f, -1f,  t).Normalized, Colour.White, UV.Zero, false),
+		//	new Vertex(new Vector3(0f,  1f,  t).Normalized, new Vector3(0f,  1f,  t).Normalized, Colour.White, UV.Zero, false),
+		//	new Vertex(new Vector3(0f, -1f, -t).Normalized, new Vector3(0f, -1f, -t).Normalized, Colour.White, UV.Zero, false),
+		//	new Vertex(new Vector3(0f,  1f, -t).Normalized, new Vector3(0f,  1f, -t).Normalized, Colour.White, UV.Zero, false),
 
-			new Vertex(new Vector3( t, 0f, -1f).Normalized, new Vector3( t, 0f, -1f).Normalized, Colour.White, UV.Zero, false),
-			new Vertex(new Vector3( t, 0f,  1f).Normalized, new Vector3( t, 0f,  1f).Normalized, Colour.White, UV.Zero, false),
-			new Vertex(new Vector3(-t, 0f, -1f).Normalized, new Vector3(-t, 0f, -1f).Normalized, Colour.White, UV.Zero, false),
-			new Vertex(new Vector3(-t, 0f,  1f).Normalized, new Vector3(-t, 0f,  1f).Normalized, Colour.White, UV.Zero, false),
-		};
+		//	new Vertex(new Vector3( t, 0f, -1f).Normalized, new Vector3( t, 0f, -1f).Normalized, Colour.White, UV.Zero, false),
+		//	new Vertex(new Vector3( t, 0f,  1f).Normalized, new Vector3( t, 0f,  1f).Normalized, Colour.White, UV.Zero, false),
+		//	new Vertex(new Vector3(-t, 0f, -1f).Normalized, new Vector3(-t, 0f, -1f).Normalized, Colour.White, UV.Zero, false),
+		//	new Vertex(new Vector3(-t, 0f,  1f).Normalized, new Vector3(-t, 0f,  1f).Normalized, Colour.White, UV.Zero, false),
+		//};
 
-		private readonly ushort[] icosahedronIndices = new ushort[] {
-			// 5 faces around point 0
-			 0,  5, 11,
-			 0,  1,  5,
-			 0,  7,  1,
-			 0, 10,  7,
-			 0, 11, 10,
+		//private readonly ushort[] icosahedronIndices = new ushort[] {
+		//	// 5 faces around point 0
+		//	 0,  5, 11,
+		//	 0,  1,  5,
+		//	 0,  7,  1,
+		//	 0, 10,  7,
+		//	 0, 11, 10,
 
-			// 5 adjacent faces
-			 1,  9,  5,
-			 5,  4, 11,
-			11,  2, 10,
-			10,  6,  7,
-			 7,  8,  1,
+		//	// 5 adjacent faces
+		//	 1,  9,  5,
+		//	 5,  4, 11,
+		//	11,  2, 10,
+		//	10,  6,  7,
+		//	 7,  8,  1,
 
-			// 5 faces around point 3
-			 3,  4,  9,
-			 3,  2,  4,
-			 3,  6,  2,
-			 3,  8,  6,
-			 3,  9,  8,
+		//	// 5 faces around point 3
+		//	 3,  4,  9,
+		//	 3,  2,  4,
+		//	 3,  6,  2,
+		//	 3,  8,  6,
+		//	 3,  9,  8,
 
-			// 5 adjacent faces
-			 4,  5,  9,
-			 2, 11,  4,
-			 6, 10,  2,
-			 8,  7,  6,
-			 9,  1,  8,
-		};
+		//	// 5 adjacent faces
+		//	 4,  5,  9,
+		//	 2, 11,  4,
+		//	 6, 10,  2,
+		//	 8,  7,  6,
+		//	 9,  1,  8,
+		//}; 
+		#endregion
+
+		private Vertex[] icosahedronVertices;
+		private ushort[] icosahedronIndices;
 
 		private readonly Vertex[] planeVertices = new Vertex[] {
 			new Vertex(new Vector3(-1f,  0f,  1f), Vector3.Up, Colour.White, UV.TopLeft, false),
@@ -377,6 +382,13 @@ void main()
 				new VertexAttribute(DataType.UnsignedShort, 2, true), // UV
 				new VertexAttribute(DataType.UnsignedByte, 1, true)   // Textured
 			);
+
+			Geometry icosphereGeometry = Geometry.Icosphere(0.5f, 3);
+			icosahedronVertices = new Vertex[icosphereGeometry.Vertices.Length];
+			for (int i = 0; i < icosphereGeometry.Vertices.Length; i++)
+				icosahedronVertices[i] = new Vertex(icosphereGeometry.Vertices[i], icosphereGeometry.Normals[i], Colour.White, icosphereGeometry.UVs[i]);
+			icosahedronIndices = icosphereGeometry.Indices16;
+
 			cubeVertexBuffer = VertexBuffer.Create(BufferUsage.Static);
 			cubeIndexBuffer = IndexBuffer.Create(BufferUsage.Static);
 			icosahedronVertexBuffer = VertexBuffer.Create(BufferUsage.Static);
