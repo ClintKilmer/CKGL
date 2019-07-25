@@ -4,68 +4,79 @@ namespace CKGL
 {
 	public struct Geometry
 	{
-		public readonly Vector3[] Vertices;
+		public struct Vertex
+		{
+			public readonly Vector3 Position;
+			public readonly Vector3 Normal;
+			public readonly Colour Colour;
+			public readonly UV UV;
+
+			internal Vertex(in Vector3 position, in Vector3 normal, in Colour colour, in UV uv)
+			{
+				Position = position;
+				Normal = normal;
+				Colour = colour;
+				UV = uv;
+			}
+		}
+
+		public readonly Vertex[] Vertices;
 		public readonly ushort[] Indices16;
 		public readonly uint[] Indices32;
-		public readonly Vector3[] Normals;
-		public readonly UV[] UVs;
 
-		internal Geometry(Vector3[] vertices, ushort[] indices16, uint[] indices32, Vector3[] normals, UV[] uvs)
+		internal Geometry(in Vertex[] vertices, in ushort[] indices16, in uint[] indices32)
 		{
 			Vertices = vertices;
 			Indices16 = indices16;
 			Indices32 = indices32;
-			Normals = normals;
-			UVs = uvs;
 		}
 
 		private struct TriangleIndices
 		{
-			public int v1;
-			public int v2;
-			public int v3;
+			public readonly int i1;
+			public readonly int i2;
+			public readonly int i3;
 
-			public TriangleIndices(int v1, int v2, int v3)
+			public TriangleIndices(in int i1, in int i2, in int i3)
 			{
-				this.v1 = v1;
-				this.v2 = v2;
-				this.v3 = v3;
+				this.i1 = i1;
+				this.i2 = i2;
+				this.i3 = i3;
 			}
 		}
 
-		public static Geometry Icosphere(float radius = 1f, uint subdivisions = 1)
+		public static Geometry Icosahedron(float radius = 1f) => Icosphere(radius, 0);
+
+		// Adapted from: http://blog.andreaskahler.com/2009/06/creating-icosphere-mesh-in-code.html
+		public static Geometry Icosphere(float radius = 1f, uint subdivisions = 0)
 		{
 			List<Vector3> vertices = new List<Vector3>();
 			List<TriangleIndices> faces = new List<TriangleIndices>();
 
 			int generateSubdividedVertex(int index1, int index2)
 			{
-				vertices.Add((((index1 < index2 ? vertices[index1] : vertices[index2]) + (index1 < index2 ? vertices[index2] : vertices[index1])) * 0.5f).Normalized * radius);
-				//vertices.Add(new Vector3(
-				//	(vertices[index1].X + vertices[index2].X) / 2f,
-				//	(vertices[index1].Y + vertices[index2].Y) / 2f,
-				//	(vertices[index1].Z + vertices[index2].Z) / 2f).Normalized * radius);
+				vertices.Add(((vertices[index1] + vertices[index2]) * 0.5f).Normalized);
 
-				return vertices.Count;
+				return vertices.Count - 1;
 			}
 
 			// Icosahedron vertices
 			float t = (1f + Math.Sqrt(5f)) / 2f;
 			// XY plane
-			vertices.Add(new Vector3(-1f,  t, 0f).Normalized * radius);
-			vertices.Add(new Vector3( 1f,  t, 0f).Normalized * radius);
-			vertices.Add(new Vector3(-1f, -t, 0f).Normalized * radius);
-			vertices.Add(new Vector3( 1f, -t, 0f).Normalized * radius);
+			vertices.Add(new Vector3(-1f,  t, 0f).Normalized);
+			vertices.Add(new Vector3( 1f,  t, 0f).Normalized);
+			vertices.Add(new Vector3(-1f, -t, 0f).Normalized);
+			vertices.Add(new Vector3( 1f, -t, 0f).Normalized);
 			// YZ plane
-			vertices.Add(new Vector3(0f, -1f,  t).Normalized * radius);
-			vertices.Add(new Vector3(0f,  1f,  t).Normalized * radius);
-			vertices.Add(new Vector3(0f, -1f, -t).Normalized * radius);
-			vertices.Add(new Vector3(0f,  1f, -t).Normalized * radius);
+			vertices.Add(new Vector3(0f, -1f,  t).Normalized);
+			vertices.Add(new Vector3(0f,  1f,  t).Normalized);
+			vertices.Add(new Vector3(0f, -1f, -t).Normalized);
+			vertices.Add(new Vector3(0f,  1f, -t).Normalized);
 			// XZ plane
-			vertices.Add(new Vector3( t, 0f, -1f).Normalized * radius);
-			vertices.Add(new Vector3( t, 0f,  1f).Normalized * radius);
-			vertices.Add(new Vector3(-t, 0f, -1f).Normalized * radius);
-			vertices.Add(new Vector3(-t, 0f,  1f).Normalized * radius);
+			vertices.Add(new Vector3( t, 0f, -1f).Normalized);
+			vertices.Add(new Vector3( t, 0f,  1f).Normalized);
+			vertices.Add(new Vector3(-t, 0f, -1f).Normalized);
+			vertices.Add(new Vector3(-t, 0f,  1f).Normalized);
 
 			// Icosahedron faces
 			// 5 faces around point 0
@@ -91,24 +102,24 @@ namespace CKGL
 			faces.Add(new TriangleIndices( 2, 11,  4));
 			faces.Add(new TriangleIndices( 6, 10,  2));
 			faces.Add(new TriangleIndices( 8,  7,  6));
-			faces.Add(new TriangleIndices (9,  1,  8));
+			faces.Add(new TriangleIndices( 9,  1,  8));
 
 			// Subdivide faces
 			for (int i = 0; i < subdivisions; i++)
 			{
 				List<TriangleIndices> subdividedFaces = new List<TriangleIndices>();
-				foreach (TriangleIndices tri in faces)
+				foreach (TriangleIndices face in faces)
 				{
-					// Subdivide each face with 4 new faces
-					int a = generateSubdividedVertex(tri.v1, tri.v2);
-					int b = generateSubdividedVertex(tri.v2, tri.v3);
-					int c = generateSubdividedVertex(tri.v3, tri.v1);
+					// Generate midpoints between vertices
+					int a = generateSubdividedVertex(face.i1, face.i2);
+					int b = generateSubdividedVertex(face.i2, face.i3);
+					int c = generateSubdividedVertex(face.i3, face.i1);
 
-					//subdividedFaces.Add(new TriangleIndices(tri.v1, c, a));
-					//subdividedFaces.Add(new TriangleIndices(tri.v2, a, b));
-					//subdividedFaces.Add(new TriangleIndices(tri.v3, b, c));
-					//subdividedFaces.Add(new TriangleIndices(a, b, c));
-					subdividedFaces.Add(new TriangleIndices(tri.v1, tri.v2, a));
+					// Subdivide each face with 4 new faces
+					subdividedFaces.Add(new TriangleIndices(face.i1, a, c));
+					subdividedFaces.Add(new TriangleIndices(face.i2, b, a));
+					subdividedFaces.Add(new TriangleIndices(face.i3, c, b));
+					subdividedFaces.Add(new TriangleIndices(a, b, c));
 				}
 				faces = subdividedFaces;
 			}
@@ -118,21 +129,19 @@ namespace CKGL
 			uint[] indices32 = new uint[faces.Count * 3];
 			for (int i = 0; i < faces.Count; i++)
 			{
-				indices16[3 * i] = (ushort)faces[i].v1;
-				indices16[3 * i + 1] = (ushort)faces[i].v2;
-				indices16[3 * i + 2] = (ushort)faces[i].v3;
-				indices32[3 * i] = (uint)faces[i].v1;
-				indices32[3 * i + 1] = (uint)faces[i].v2;
-				indices32[3 * i + 2] = (uint)faces[i].v3;
+				indices16[3 * i] = (ushort)faces[i].i1;
+				indices16[3 * i + 1] = (ushort)faces[i].i2;
+				indices16[3 * i + 2] = (ushort)faces[i].i3;
+				indices32[3 * i] = (uint)faces[i].i1;
+				indices32[3 * i + 1] = (uint)faces[i].i2;
+				indices32[3 * i + 2] = (uint)faces[i].i3;
 			}
 
-			Vector3[] normals = new Vector3[vertices.Count];
-			for (int i = 0; i < normals.Length; i++)
-				normals[i] = vertices[i].Normalized;
+			Vertex[] assembledVertices = new Vertex[vertices.Count];
+			for (int i = 0; i < assembledVertices.Length; i++)
+				assembledVertices[i] = new Vertex(vertices[i] * radius, vertices[i], Colour.White, UV.Zero);
 
-			UV[] uvs = new UV[vertices.Count];
-
-			return new Geometry(vertices.ToArray(), indices16, indices32, normals, uvs);
+			return new Geometry(assembledVertices, indices16, indices32);
 		}
 	}
 }

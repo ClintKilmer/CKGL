@@ -98,7 +98,7 @@ vec3 CalculatePointLight(PointLight light, vec3 normal, vec3 fragPosition, vec3 
 	
 	// Combine
 	//return light.colour.rgb * (diffuseFactor + specularFactor) * attenuation;
-	return light.colour.rgb * diffuseFactor * attenuation + (light.colour.rgb + light.colour.rgb + vec3(1.0)) / 3 * specularFactor * attenuation;
+	return light.colour.rgb * diffuseFactor * attenuation + (light.colour.rgb + light.colour.rgb + vec3(1.0)) / 3.0 * specularFactor * attenuation;
 	//return light.colour.rgb * (diffuseFactor + specularFactor * 0.0001) * attenuation; // Diffuse only
 	//return light.colour.rgb * (specularFactor) * attenuation; // Specular only
 }
@@ -213,9 +213,9 @@ void main()
 		private IndexBuffer cubeIndexBuffer;
 		private GeometryInput cubeGeometryInput;
 
-		private VertexBuffer icosahedronVertexBuffer;
-		private IndexBuffer icosahedronIndexBuffer;
-		private GeometryInput icosahedronGeometryInput;
+		private VertexBuffer icosphereVertexBuffer;
+		private IndexBuffer icosphereIndexBuffer;
+		private GeometryInput icosphereGeometryInput;
 
 		private VertexBuffer planeVertexBuffer;
 		private IndexBuffer planeIndexBuffer;
@@ -275,64 +275,14 @@ void main()
 			2 + 4 * 5, 3 + 4 * 5, 1 + 4 * 5,
 		};
 
-		#region Old Icosahedron implementation
-		//private static float t = (1f + Math.Sqrt(5f)) / 2f;
-		//private readonly Vertex[] icosahedronVertices = new Vertex[] {
-		//	new Vertex(new Vector3(-1f,  t, 0f).Normalized, new Vector3(-1f,  t, 0f).Normalized, Colour.White, UV.Zero, false),
-		//	new Vertex(new Vector3( 1f,  t, 0f).Normalized, new Vector3( 1f,  t, 0f).Normalized, Colour.White, UV.Zero, false),
-		//	new Vertex(new Vector3(-1f, -t, 0f).Normalized, new Vector3(-1f, -t, 0f).Normalized, Colour.White, UV.Zero, false),
-		//	new Vertex(new Vector3( 1f, -t, 0f).Normalized, new Vector3( 1f, -t, 0f).Normalized, Colour.White, UV.Zero, false),
-
-		//	new Vertex(new Vector3(0f, -1f,  t).Normalized, new Vector3(0f, -1f,  t).Normalized, Colour.White, UV.Zero, false),
-		//	new Vertex(new Vector3(0f,  1f,  t).Normalized, new Vector3(0f,  1f,  t).Normalized, Colour.White, UV.Zero, false),
-		//	new Vertex(new Vector3(0f, -1f, -t).Normalized, new Vector3(0f, -1f, -t).Normalized, Colour.White, UV.Zero, false),
-		//	new Vertex(new Vector3(0f,  1f, -t).Normalized, new Vector3(0f,  1f, -t).Normalized, Colour.White, UV.Zero, false),
-
-		//	new Vertex(new Vector3( t, 0f, -1f).Normalized, new Vector3( t, 0f, -1f).Normalized, Colour.White, UV.Zero, false),
-		//	new Vertex(new Vector3( t, 0f,  1f).Normalized, new Vector3( t, 0f,  1f).Normalized, Colour.White, UV.Zero, false),
-		//	new Vertex(new Vector3(-t, 0f, -1f).Normalized, new Vector3(-t, 0f, -1f).Normalized, Colour.White, UV.Zero, false),
-		//	new Vertex(new Vector3(-t, 0f,  1f).Normalized, new Vector3(-t, 0f,  1f).Normalized, Colour.White, UV.Zero, false),
-		//};
-
-		//private readonly ushort[] icosahedronIndices = new ushort[] {
-		//	// 5 faces around point 0
-		//	 0,  5, 11,
-		//	 0,  1,  5,
-		//	 0,  7,  1,
-		//	 0, 10,  7,
-		//	 0, 11, 10,
-
-		//	// 5 adjacent faces
-		//	 1,  9,  5,
-		//	 5,  4, 11,
-		//	11,  2, 10,
-		//	10,  6,  7,
-		//	 7,  8,  1,
-
-		//	// 5 faces around point 3
-		//	 3,  4,  9,
-		//	 3,  2,  4,
-		//	 3,  6,  2,
-		//	 3,  8,  6,
-		//	 3,  9,  8,
-
-		//	// 5 adjacent faces
-		//	 4,  5,  9,
-		//	 2, 11,  4,
-		//	 6, 10,  2,
-		//	 8,  7,  6,
-		//	 9,  1,  8,
-		//}; 
-		#endregion
-
-		private Vertex[] icosahedronVertices;
-		private ushort[] icosahedronIndices;
+		private Vertex[] icosphereVertices;
+		private ushort[] icosphereIndices;
 
 		private readonly Vertex[] planeVertices = new Vertex[] {
-			new Vertex(new Vector3(-1f,  0f,  1f), Vector3.Up, Colour.White, UV.TopLeft, false),
-			new Vertex(new Vector3( 1f,  0f,  1f), Vector3.Up, Colour.White, UV.TopRight, false),
-			new Vertex(new Vector3(-1f,  0f, -1f), Vector3.Up, Colour.White, UV.BottomLeft, false),
-			new Vertex(new Vector3( 1f,  0f, -1f), Vector3.Up, Colour.White, UV.BottomRight, false),
+			new Vertex(new Vector3(-1f,  0f,  1f), Vector3.Up, Colour.Grey, UV.TopLeft, false),
+			new Vertex(new Vector3( 1f,  0f,  1f), Vector3.Up, Colour.Grey, UV.TopRight, false),
+			new Vertex(new Vector3(-1f,  0f, -1f), Vector3.Up, Colour.Grey, UV.BottomLeft, false),
+			new Vertex(new Vector3( 1f,  0f, -1f), Vector3.Up, Colour.Grey, UV.BottomRight, false),
 		};
 
 		private readonly ushort[] planeIndices = new ushort[] {
@@ -353,7 +303,7 @@ void main()
 		Transform cubeTransform = new Transform { Position = new Vector3(0f, 2f, 0f) };
 		Transform cube2Transform = new Transform { Position = new Vector3(5f, 1f, 5f) };
 		Transform cube3Transform = new Transform { Position = new Vector3(-5f, 4f, -3f), Rotation = Quaternion.CreateFromEuler(0.3f, 0.4f, 0.6f) };
-		Transform icosahedronTransform = new Transform { Position = new Vector3(-5f, 4f, 5f), Scale = Vector3.One * 3f };
+		Transform icosphereTransform = new Transform { Position = new Vector3(-5f, 4f, 5f), Scale = Vector3.One * 4f };
 		Transform planeTransform = new Transform { Scale = new Vector3(10000f, 1f, 10000f) };
 
 		public override void Init()
@@ -383,25 +333,25 @@ void main()
 				new VertexAttribute(DataType.UnsignedByte, 1, true)   // Textured
 			);
 
-			Geometry icosphereGeometry = Geometry.Icosphere(0.5f, 3);
-			icosahedronVertices = new Vertex[icosphereGeometry.Vertices.Length];
+			Geometry icosphereGeometry = Geometry.Icosphere(0.5f, 4);
+			icosphereVertices = new Vertex[icosphereGeometry.Vertices.Length];
 			for (int i = 0; i < icosphereGeometry.Vertices.Length; i++)
-				icosahedronVertices[i] = new Vertex(icosphereGeometry.Vertices[i], icosphereGeometry.Normals[i], Colour.White, icosphereGeometry.UVs[i]);
-			icosahedronIndices = icosphereGeometry.Indices16;
+				icosphereVertices[i] = new Vertex(icosphereGeometry.Vertices[i].Position, icosphereGeometry.Vertices[i].Normal, icosphereGeometry.Vertices[i].Colour, null);
+			icosphereIndices = icosphereGeometry.Indices16;
 
 			cubeVertexBuffer = VertexBuffer.Create(BufferUsage.Static);
 			cubeIndexBuffer = IndexBuffer.Create(BufferUsage.Static);
-			icosahedronVertexBuffer = VertexBuffer.Create(BufferUsage.Static);
-			icosahedronIndexBuffer = IndexBuffer.Create(BufferUsage.Static);
+			icosphereVertexBuffer = VertexBuffer.Create(BufferUsage.Static);
+			icosphereIndexBuffer = IndexBuffer.Create(BufferUsage.Static);
 			planeVertexBuffer = VertexBuffer.Create(BufferUsage.Static);
 			planeIndexBuffer = IndexBuffer.Create(BufferUsage.Static);
 			cubeGeometryInput = GeometryInput.Create(cubeIndexBuffer, new VertexStream(cubeVertexBuffer, vertexFormat));
-			icosahedronGeometryInput = GeometryInput.Create(icosahedronIndexBuffer, new VertexStream(icosahedronVertexBuffer, vertexFormat));
+			icosphereGeometryInput = GeometryInput.Create(icosphereIndexBuffer, new VertexStream(icosphereVertexBuffer, vertexFormat));
 			planeGeometryInput = GeometryInput.Create(planeIndexBuffer, new VertexStream(planeVertexBuffer, vertexFormat));
 			cubeVertexBuffer.LoadData(in cubeVertices);
 			cubeIndexBuffer.LoadData(in cubeIndices);
-			icosahedronVertexBuffer.LoadData(in icosahedronVertices);
-			icosahedronIndexBuffer.LoadData(in icosahedronIndices);
+			icosphereVertexBuffer.LoadData(in icosphereVertices);
+			icosphereIndexBuffer.LoadData(in icosphereIndices);
 			planeVertexBuffer.LoadData(in planeVertices);
 			planeIndexBuffer.LoadData(in planeIndices);
 
@@ -483,7 +433,7 @@ void main()
 			cameraLookatNoVertical = new Vector3(cameraLookat.X, 0f, cameraLookat.Z).Normalized;
 
 			cubeTransform.Rotation = Quaternion.CreateFromEuler(new Vector3(-Time.TotalSeconds * 0.3f, -Time.TotalSeconds * 0.25f, -Time.TotalSeconds * 0.09f));
-			icosahedronTransform.Rotation = Quaternion.CreateFromEuler(new Vector3(-Time.TotalSeconds * -0.07f, -Time.TotalSeconds * 0.05f, -Time.TotalSeconds * 0.06f));
+			//icosphereTransform.Rotation = Quaternion.CreateFromEuler(new Vector3(-Time.TotalSeconds * -0.07f, -Time.TotalSeconds * 0.05f, -Time.TotalSeconds * 0.06f));
 			light1ParentTransform.Rotation = Quaternion.CreateFromEuler(new Vector3(0f, -Time.TotalSeconds * 0.25f, 0f));
 			light2ParentTransform.Rotation = Quaternion.CreateFromEuler(new Vector3(0f, -Time.TotalSeconds * 0.4f, 0f));
 			light3ParentTransform.Rotation = Quaternion.CreateFromEuler(new Vector3(0f, -Time.TotalSeconds * 0.55f, 0f));
@@ -543,23 +493,23 @@ void main()
 
 			Shaders.PointLightShader.M = cubeTransform.Matrix;
 			cubeGeometryInput.Bind();
-			Graphics.DrawIndexedVertexArrays(PrimitiveTopology.TriangleList, 0, cubeIndices.Length, cubeIndexBuffer.IndexType);
+			Graphics.DrawIndexedVertexArrays(PrimitiveTopology.TriangleList, 0, cubeIndexBuffer.Count, cubeIndexBuffer.IndexType);
 
 			Shaders.PointLightShader.M = cube2Transform.Matrix;
 			cubeGeometryInput.Bind(); // Redundant
-			Graphics.DrawIndexedVertexArrays(PrimitiveTopology.TriangleList, 0, cubeIndices.Length, cubeIndexBuffer.IndexType);
+			Graphics.DrawIndexedVertexArrays(PrimitiveTopology.TriangleList, 0, cubeIndexBuffer.Count, cubeIndexBuffer.IndexType);
 
 			Shaders.PointLightShader.M = cube3Transform.Matrix;
 			cubeGeometryInput.Bind(); // Redundant
-			Graphics.DrawIndexedVertexArrays(PrimitiveTopology.TriangleList, 0, cubeIndices.Length, cubeIndexBuffer.IndexType);
+			Graphics.DrawIndexedVertexArrays(PrimitiveTopology.TriangleList, 0, cubeIndexBuffer.Count, cubeIndexBuffer.IndexType);
 
-			Shaders.PointLightShader.M = icosahedronTransform.Matrix;
-			icosahedronGeometryInput.Bind();
-			Graphics.DrawIndexedVertexArrays(PrimitiveTopology.TriangleList, 0, icosahedronIndices.Length, icosahedronIndexBuffer.IndexType);
+			Shaders.PointLightShader.M = icosphereTransform.Matrix;
+			icosphereGeometryInput.Bind();
+			Graphics.DrawIndexedVertexArrays(PrimitiveTopology.TriangleList, 0, icosphereIndexBuffer.Count, icosphereIndexBuffer.IndexType);
 
 			Shaders.PointLightShader.M = planeTransform.Matrix;
 			planeGeometryInput.Bind();
-			Graphics.DrawIndexedVertexArrays(PrimitiveTopology.TriangleList, 0, planeIndices.Length, planeIndexBuffer.IndexType);
+			Graphics.DrawIndexedVertexArrays(PrimitiveTopology.TriangleList, 0, planeIndexBuffer.Count, planeIndexBuffer.IndexType);
 
 			// Draw to Screen
 			RenderTarget.Default.Bind();
