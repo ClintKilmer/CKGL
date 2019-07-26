@@ -10,6 +10,18 @@ namespace CKGLExampleCube
 		public static PointLightShader PointLightShader = new PointLightShader();
 	}
 
+	#region Sprites
+	public static class SpriteSheets
+	{
+		public static SpriteSheet SpriteSheet = new SpriteSheet(128, 1);
+	}
+
+	public static class SpriteFonts
+	{
+		public static SpriteFont Font = new SpriteFont(SpriteSheets.SpriteSheet, "textures/font[5x7].png", 5, 7, '!', '~', 1, 3, 7, true);
+	}
+	#endregion
+
 	#region Cube
 	public class PointLightShader : Shader
 	{
