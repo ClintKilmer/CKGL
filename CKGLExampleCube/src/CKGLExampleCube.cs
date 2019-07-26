@@ -238,7 +238,6 @@ void main()
 		};
 
 		private readonly ushort[] planeIndices = new ushort[] {
-			// Front
 			0, 2, 1,
 			2, 3, 1,
 		};

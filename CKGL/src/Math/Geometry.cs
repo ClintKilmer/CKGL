@@ -293,13 +293,13 @@ namespace CKGL
 
 			// Octahedron faces
 			faces.Add(new TriangleIndices(0, 2, 1));
-            faces.Add(new TriangleIndices(0, 3, 2));
-            faces.Add(new TriangleIndices(0, 4, 3));
-            faces.Add(new TriangleIndices(0, 1, 4));
-            faces.Add(new TriangleIndices(5, 1, 2));
-            faces.Add(new TriangleIndices(5, 2, 3));
-            faces.Add(new TriangleIndices(5, 3, 4));
-            faces.Add(new TriangleIndices(5, 4, 1));
+			faces.Add(new TriangleIndices(0, 3, 2));
+			faces.Add(new TriangleIndices(0, 4, 3));
+			faces.Add(new TriangleIndices(0, 1, 4));
+			faces.Add(new TriangleIndices(5, 1, 2));
+			faces.Add(new TriangleIndices(5, 2, 3));
+			faces.Add(new TriangleIndices(5, 3, 4));
+			faces.Add(new TriangleIndices(5, 4, 1));
 
 			// Subdivide faces
 			for (int i = 0; i < subdivisions; i++)
