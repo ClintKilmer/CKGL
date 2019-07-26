@@ -224,59 +224,8 @@ void main()
 		private IndexBuffer planeIndexBuffer;
 		private GeometryInput planeGeometryInput;
 
-		private readonly Vertex[] cubeVertices = new Vertex[] {
-			// Front
-			new Vertex(new Vector3(-1f,  1f, -1f), Vector3.Backward, Colour.White, UV.TopLeft, false),
-			new Vertex(new Vector3( 1f,  1f, -1f), Vector3.Backward, Colour.White, UV.TopRight, false),
-			new Vertex(new Vector3(-1f, -1f, -1f), Vector3.Backward, Colour.White, UV.BottomLeft, false),
-			new Vertex(new Vector3( 1f, -1f, -1f), Vector3.Backward, Colour.White, UV.BottomRight, false),
-			// Back
-			new Vertex(new Vector3( 1f,  1f,  1f), Vector3.Forward, Colour.White, UV.TopLeft, false),
-			new Vertex(new Vector3(-1f,  1f,  1f), Vector3.Forward, Colour.White, UV.TopRight, false),
-			new Vertex(new Vector3( 1f, -1f,  1f), Vector3.Forward, Colour.White, UV.BottomLeft, false),
-			new Vertex(new Vector3(-1f, -1f,  1f), Vector3.Forward, Colour.White, UV.BottomRight, false),
-			// Top
-			new Vertex(new Vector3(-1f,  1f,  1f), Vector3.Up, Colour.White, UV.TopLeft, false),
-			new Vertex(new Vector3( 1f,  1f,  1f), Vector3.Up, Colour.White, UV.TopRight, false),
-			new Vertex(new Vector3(-1f,  1f, -1f), Vector3.Up, Colour.White, UV.BottomLeft, false),
-			new Vertex(new Vector3( 1f,  1f, -1f), Vector3.Up, Colour.White, UV.BottomRight, false),
-			// Bottom
-			new Vertex(new Vector3( 1f, -1f,  1f), Vector3.Down, Colour.White, UV.TopLeft, false),
-			new Vertex(new Vector3(-1f, -1f,  1f), Vector3.Down, Colour.White, UV.TopRight, false),
-			new Vertex(new Vector3( 1f, -1f, -1f), Vector3.Down, Colour.White, UV.BottomLeft, false),
-			new Vertex(new Vector3(-1f, -1f, -1f), Vector3.Down, Colour.White, UV.BottomRight, false),
-			// Left
-			new Vertex(new Vector3(-1f,  1f,  1f), Vector3.Left, Colour.White, UV.TopLeft, false),
-			new Vertex(new Vector3(-1f,  1f, -1f), Vector3.Left, Colour.White, UV.TopRight, false),
-			new Vertex(new Vector3(-1f, -1f,  1f), Vector3.Left, Colour.White, UV.BottomLeft, false),
-			new Vertex(new Vector3(-1f, -1f, -1f), Vector3.Left, Colour.White, UV.BottomRight, false),
-			// Right
-			new Vertex(new Vector3( 1f,  1f, -1f), Vector3.Right, Colour.White, UV.TopLeft, false),
-			new Vertex(new Vector3( 1f,  1f,  1f), Vector3.Right, Colour.White, UV.TopRight, false),
-			new Vertex(new Vector3( 1f, -1f, -1f), Vector3.Right, Colour.White, UV.BottomLeft, false),
-			new Vertex(new Vector3( 1f, -1f,  1f), Vector3.Right, Colour.White, UV.BottomRight, false),
-		};
-
-		private readonly ushort[] cubeIndices = new ushort[] {
-			// Front
-			0, 2, 1,
-			2, 3, 1,
-			// Back
-			0 + 4, 2 + 4, 1 + 4,
-			2 + 4, 3 + 4, 1 + 4,
-			// Top
-			0 + 4 * 2, 2 + 4 * 2, 1 + 4 * 2,
-			2 + 4 * 2, 3 + 4 * 2, 1 + 4 * 2,
-			// Bottom
-			0 + 4 * 3, 2 + 4 * 3, 1 + 4 * 3,
-			2 + 4 * 3, 3 + 4 * 3, 1 + 4 * 3,
-			// Left
-			0 + 4 * 4, 2 + 4 * 4, 1 + 4 * 4,
-			2 + 4 * 4, 3 + 4 * 4, 1 + 4 * 4,
-			// Right
-			0 + 4 * 5, 2 + 4 * 5, 1 + 4 * 5,
-			2 + 4 * 5, 3 + 4 * 5, 1 + 4 * 5,
-		};
+		private Vertex[] cubeVertices;
+		private ushort[] cubeIndices;
 
 		private Vertex[] icosphereVertices;
 		private ushort[] icosphereIndices;
@@ -300,13 +249,13 @@ void main()
 		Transform light1ParentTransform = new Transform();
 		Transform light2ParentTransform = new Transform();
 		Transform light3ParentTransform = new Transform();
-		Transform light1Transform = new Transform { Position = new Vector3(3f, 3f, 0f), Scale = new Vector3(0.1f, 0.1f, 0.1f) };
-		Transform light2Transform = new Transform { Position = new Vector3(3f, 3f, 0f), Scale = new Vector3(0.1f, 0.1f, 0.1f) };
-		Transform light3Transform = new Transform { Position = new Vector3(3f, 3f, 0f), Scale = new Vector3(0.1f, 0.1f, 0.1f) };
-		Transform cubeTransform = new Transform { Position = new Vector3(0f, 2f, 0f) };
-		Transform cube2Transform = new Transform { Position = new Vector3(5f, 1f, 5f) };
-		Transform cube3Transform = new Transform { Position = new Vector3(-5f, 4f, -3f), Rotation = Quaternion.CreateFromEuler(0.3f, 0.4f, 0.6f) };
-		Transform icosphereTransform = new Transform { Position = new Vector3(-5f, 4f, 5f), Scale = Vector3.One * 4f };
+		Transform light1Transform = new Transform { Position = new Vector3(3f, 3f, 0f), Scale = new Vector3(0.1f) };
+		Transform light2Transform = new Transform { Position = new Vector3(3f, 3f, 0f), Scale = new Vector3(0.1f) };
+		Transform light3Transform = new Transform { Position = new Vector3(3f, 3f, 0f), Scale = new Vector3(0.1f) };
+		Transform cubeTransform = new Transform { Position = new Vector3(0f, 2f, 0f), Scale = new Vector3(2f) };
+		Transform cube2Transform = new Transform { Position = new Vector3(5f, 1f, 5f), Scale = new Vector3(2f) };
+		Transform cube3Transform = new Transform { Position = new Vector3(-5f, 4f, -3f), Scale = new Vector3(2f), Rotation = Quaternion.CreateFromEuler(0.3f, 0.4f, 0.6f) };
+		Transform icosphereTransform = new Transform { Position = new Vector3(-5f, 4f, 5f), Scale = new Vector3(4f) };
 		Transform planeTransform = new Transform { Scale = new Vector3(10000f, 1f, 10000f) };
 
 		public override void Init()
@@ -336,10 +285,16 @@ void main()
 				new VertexAttribute(DataType.UnsignedByte, 1, true)   // Textured
 			);
 
+			Geometry cubeGeometry = Geometry.Cube();
+			cubeVertices = new Vertex[cubeGeometry.Vertices.Length];
+			for (int i = 0; i < cubeGeometry.Vertices.Length; i++)
+				cubeVertices[i] = new Vertex(cubeGeometry.Vertices[i].Position, cubeGeometry.Vertices[i].Normal, cubeGeometry.Vertices[i].Colour, cubeGeometry.Vertices[i].UV, false);
+			cubeIndices = cubeGeometry.Indices16;
+
 			Geometry icosphereGeometry = Geometry.Icosphere(0.5f, 4);
 			icosphereVertices = new Vertex[icosphereGeometry.Vertices.Length];
 			for (int i = 0; i < icosphereGeometry.Vertices.Length; i++)
-				icosphereVertices[i] = new Vertex(icosphereGeometry.Vertices[i].Position, icosphereGeometry.Vertices[i].Normal, icosphereGeometry.Vertices[i].Colour, null);
+				icosphereVertices[i] = new Vertex(icosphereGeometry.Vertices[i].Position, icosphereGeometry.Vertices[i].Normal, icosphereGeometry.Vertices[i].Colour, icosphereGeometry.Vertices[i].UV, false);
 			icosphereIndices = icosphereGeometry.Indices16;
 
 			cubeVertexBuffer = VertexBuffer.Create(BufferUsage.Static);

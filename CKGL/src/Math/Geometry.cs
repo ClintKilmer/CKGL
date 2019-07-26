@@ -6,12 +6,12 @@ namespace CKGL
 	{
 		public struct Vertex
 		{
-			public readonly Vector3 Position;
-			public readonly Vector3 Normal;
-			public readonly Colour Colour;
-			public readonly UV UV;
+			public Vector3 Position;
+			public Vector3 Normal;
+			public Colour Colour;
+			public UV UV;
 
-			internal Vertex(Vector3 position, Vector3 normal, Colour colour, UV uv)
+			public Vertex(Vector3 position, Vector3 normal, Colour colour, UV uv)
 			{
 				Position = position;
 				Normal = normal;
@@ -20,11 +20,11 @@ namespace CKGL
 			}
 		}
 
-		public readonly Vertex[] Vertices;
-		public readonly ushort[] Indices16;
-		public readonly uint[] Indices32;
+		public Vertex[] Vertices;
+		public ushort[] Indices16;
+		public uint[] Indices32;
 
-		internal Geometry(Vertex[] vertices, ushort[] indices16, uint[] indices32)
+		public Geometry(Vertex[] vertices, ushort[] indices16, uint[] indices32)
 		{
 			Vertices = vertices;
 			Indices16 = indices16;
@@ -45,8 +45,133 @@ namespace CKGL
 			}
 		}
 
-		public static Geometry Icosahedron(float radius = 0.5f) => Icosphere(radius, 0);
+		#region Cube
+		public static Geometry Cube(float unitLength = 1f)
+		{
+			float t = unitLength * 0.5f;
 
+			Vertex[] vertices = new Vertex[] {
+				// Front
+				new Vertex(new Vector3(-t,  t, -t), Vector3.Backward, Colour.White, UV.TopLeft),
+				new Vertex(new Vector3( t,  t, -t), Vector3.Backward, Colour.White, UV.TopRight),
+				new Vertex(new Vector3(-t, -t, -t), Vector3.Backward, Colour.White, UV.BottomLeft),
+				new Vertex(new Vector3( t, -t, -t), Vector3.Backward, Colour.White, UV.BottomRight),
+				// Back
+				new Vertex(new Vector3( t,  t,  t), Vector3.Forward, Colour.White, UV.TopLeft),
+				new Vertex(new Vector3(-t,  t,  t), Vector3.Forward, Colour.White, UV.TopRight),
+				new Vertex(new Vector3( t, -t,  t), Vector3.Forward, Colour.White, UV.BottomLeft),
+				new Vertex(new Vector3(-t, -t,  t), Vector3.Forward, Colour.White, UV.BottomRight),
+				// Top
+				new Vertex(new Vector3(-t,  t,  t), Vector3.Up, Colour.White, UV.TopLeft),
+				new Vertex(new Vector3( t,  t,  t), Vector3.Up, Colour.White, UV.TopRight),
+				new Vertex(new Vector3(-t,  t, -t), Vector3.Up, Colour.White, UV.BottomLeft),
+				new Vertex(new Vector3( t,  t, -t), Vector3.Up, Colour.White, UV.BottomRight),
+				// Bottom
+				new Vertex(new Vector3( t, -t,  t), Vector3.Down, Colour.White, UV.BottomRight),
+				new Vertex(new Vector3(-t, -t,  t), Vector3.Down, Colour.White, UV.BottomLeft),
+				new Vertex(new Vector3( t, -t, -t), Vector3.Down, Colour.White, UV.TopRight),
+				new Vertex(new Vector3(-t, -t, -t), Vector3.Down, Colour.White, UV.TopLeft),
+				// Left
+				new Vertex(new Vector3(-t,  t,  t), Vector3.Left, Colour.White, UV.TopLeft),
+				new Vertex(new Vector3(-t,  t, -t), Vector3.Left, Colour.White, UV.TopRight),
+				new Vertex(new Vector3(-t, -t,  t), Vector3.Left, Colour.White, UV.BottomLeft),
+				new Vertex(new Vector3(-t, -t, -t), Vector3.Left, Colour.White, UV.BottomRight),
+				// Right
+				new Vertex(new Vector3( t,  t, -t), Vector3.Right, Colour.White, UV.TopLeft),
+				new Vertex(new Vector3( t,  t,  t), Vector3.Right, Colour.White, UV.TopRight),
+				new Vertex(new Vector3( t, -t, -t), Vector3.Right, Colour.White, UV.BottomLeft),
+				new Vertex(new Vector3( t, -t,  t), Vector3.Right, Colour.White, UV.BottomRight)
+			};
+
+			ushort[] indices16 = new ushort[] {
+				// Front
+				0, 2, 1,
+				2, 3, 1,
+				// Back
+				0 + 4, 2 + 4, 1 + 4,
+				2 + 4, 3 + 4, 1 + 4,
+				// Top
+				0 + 4 * 2, 2 + 4 * 2, 1 + 4 * 2,
+				2 + 4 * 2, 3 + 4 * 2, 1 + 4 * 2,
+				// Bottom
+				0 + 4 * 3, 2 + 4 * 3, 1 + 4 * 3,
+				2 + 4 * 3, 3 + 4 * 3, 1 + 4 * 3,
+				// Left
+				0 + 4 * 4, 2 + 4 * 4, 1 + 4 * 4,
+				2 + 4 * 4, 3 + 4 * 4, 1 + 4 * 4,
+				// Right
+				0 + 4 * 5, 2 + 4 * 5, 1 + 4 * 5,
+				2 + 4 * 5, 3 + 4 * 5, 1 + 4 * 5
+			};
+
+			uint[] indices32 = new uint[indices16.Length];
+			for (int i = 0; i < indices32.Length; i++)
+				indices32[i] = indices16[i];
+
+			return new Geometry(vertices, indices16, indices32);
+		}
+		#endregion
+
+		#region Plane
+		//public static Geometry Plane(float unitLength = 1f, uint cellsX = 10, int cellsZ = 10, bool flat = false)
+		//{
+		//	float t = unitLength;
+		//	float tX = unitLength * cellsX;
+		//	float tZ = unitLength * cellsZ;
+		//	float tXH = tX * 0.5f;
+		//	float tZH = tZ * 0.5f;
+
+		//	List<Vector3> vertices = new List<Vector3>();
+		//	List<TriangleIndices> faces = new List<TriangleIndices>();
+
+		//	for(int z = 0; z < cellsZ; z++)
+		//	{
+		//		for (int x = 0; x < cellsX; x++)
+		//		{
+		//			vertices.Add(new Vector3(-t, 0f, ).Normalized);
+		//		}
+		//	}
+		//	Vertex[] vertices = new Vertex[] {
+		//		new Vertex(new Vector3(-t,  t,  t), Vector3.Up, Colour.White, UV.TopLeft),
+		//		new Vertex(new Vector3( t,  t,  t), Vector3.Up, Colour.White, UV.TopRight),
+		//		new Vertex(new Vector3(-t,  t, -t), Vector3.Up, Colour.White, UV.BottomLeft),
+		//		new Vertex(new Vector3( t,  t, -t), Vector3.Up, Colour.White, UV.BottomRight)
+		//	};
+
+		//	ushort[] indices16 = new ushort[] {
+		//		// Front
+		//		0, 2, 1,
+		//		2, 3, 1,
+		//		// Back
+		//		0 + 4, 2 + 4, 1 + 4,
+		//		2 + 4, 3 + 4, 1 + 4,
+		//		// Top
+		//		0 + 4 * 2, 2 + 4 * 2, 1 + 4 * 2,
+		//		2 + 4 * 2, 3 + 4 * 2, 1 + 4 * 2,
+		//		// Bottom
+		//		0 + 4 * 3, 2 + 4 * 3, 1 + 4 * 3,
+		//		2 + 4 * 3, 3 + 4 * 3, 1 + 4 * 3,
+		//		// Left
+		//		0 + 4 * 4, 2 + 4 * 4, 1 + 4 * 4,
+		//		2 + 4 * 4, 3 + 4 * 4, 1 + 4 * 4,
+		//		// Right
+		//		0 + 4 * 5, 2 + 4 * 5, 1 + 4 * 5,
+		//		2 + 4 * 5, 3 + 4 * 5, 1 + 4 * 5
+		//	};
+
+		//	uint[] indices32 = new uint[indices16.Length];
+		//	for (int i = 0; i < indices32.Length; i++)
+		//		indices32[i] = indices16[i];
+
+		//	return new Geometry(vertices, indices16, indices32);
+		//}
+		#endregion
+
+		#region Icosahedron
+		public static Geometry Icosahedron(float radius = 0.5f) => Icosphere(radius, 0);
+		#endregion
+
+		#region Icosphere
 		// Adapted from: http://blog.andreaskahler.com/2009/06/creating-icosphere-mesh-in-code.html
 		public static Geometry Icosphere(float radius = 0.5f, uint subdivisions = 0)
 		{
@@ -143,7 +268,9 @@ namespace CKGL
 
 			return new Geometry(assembledVertices, indices16, indices32);
 		}
+		#endregion
 
+		#region Octahedron
 		public static Geometry Octahedron(float radius = 0.5f, uint subdivisions = 0, bool flat = false)
 		{
 			List<Vector3> vertices = new List<Vector3>();
@@ -240,5 +367,6 @@ namespace CKGL
 				return new Geometry(assembledVertices, indices16, indices32);
 			}
 		}
+		#endregion
 	}
 }
