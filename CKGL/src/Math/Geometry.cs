@@ -168,22 +168,15 @@ namespace CKGL
 		#endregion
 
 		#region Icosahedron
-		public static Geometry Icosahedron(float radius = 0.5f) => Icosphere(radius, 0);
+		public static Geometry Icosahedron(float radius = 0.5f, bool flat = false) => Icosphere(radius, 0, flat);
 		#endregion
 
 		#region Icosphere
 		// Adapted from: http://blog.andreaskahler.com/2009/06/creating-icosphere-mesh-in-code.html
-		public static Geometry Icosphere(float radius = 0.5f, uint subdivisions = 0)
+		public static Geometry Icosphere(float radius = 0.5f, uint subdivisions = 0, bool flat = false)
 		{
 			List<Vector3> vertices = new List<Vector3>();
 			List<TriangleIndices> faces = new List<TriangleIndices>();
-
-			int generateSubdividedVertex(int index1, int index2)
-			{
-				vertices.Add(((vertices[index1] + vertices[index2]) * 0.5f).Normalized);
-
-				return vertices.Count - 1;
-			}
 
 			// Icosahedron vertices
 			float t = (1f + Math.Sqrt(5f)) / 2f;
@@ -230,6 +223,12 @@ namespace CKGL
 			faces.Add(new TriangleIndices( 9,  1,  8));
 
 			// Subdivide faces
+			int generateSubdividedVertex(int index1, int index2)
+			{
+				vertices.Add(((vertices[index1] + vertices[index2]) * 0.5f).Normalized);
+
+				return vertices.Count - 1;
+			}
 			for (int i = 0; i < subdivisions; i++)
 			{
 				List<TriangleIndices> subdividedFaces = new List<TriangleIndices>();
@@ -249,24 +248,59 @@ namespace CKGL
 				faces = subdividedFaces;
 			}
 
+			// Scale by radius
+			for (int i = 0; i < vertices.Count; i++)
+				vertices[i] *= radius;
+
 			// Calculate geometry data
-			ushort[] indices16 = new ushort[faces.Count * 3];
-			uint[] indices32 = new uint[faces.Count * 3];
-			for (int i = 0; i < faces.Count; i++)
+			if (flat)
 			{
-				indices16[3 * i] = (ushort)faces[i].i1;
-				indices16[3 * i + 1] = (ushort)faces[i].i2;
-				indices16[3 * i + 2] = (ushort)faces[i].i3;
-				indices32[3 * i] = (uint)faces[i].i1;
-				indices32[3 * i + 1] = (uint)faces[i].i2;
-				indices32[3 * i + 2] = (uint)faces[i].i3;
+				Vertex[] assembledVertices = new Vertex[faces.Count * 3];
+				ushort[] indices16 = new ushort[faces.Count * 3];
+				uint[] indices32 = new uint[faces.Count * 3];
+				for (int i = 0; i < faces.Count; i++)
+				{
+					Vector3 v1 = vertices[faces[i].i1];
+					Vector3 v2 = vertices[faces[i].i2];
+					Vector3 v3 = vertices[faces[i].i3];
+					Vector3 normal = ((v1 + v2 + v3) / 3f).Normalized;
+
+					assembledVertices[3 * i] = new Vertex(v1, normal, Colour.White, UV.Zero);
+					assembledVertices[3 * i + 1] = new Vertex(v2, normal, Colour.White, UV.Zero);
+					assembledVertices[3 * i + 2] = new Vertex(v3, normal, Colour.White, UV.Zero);
+
+					indices16[3 * i] = (ushort)(3 * i);
+					indices16[3 * i + 1] = (ushort)(3 * i + 1);
+					indices16[3 * i + 2] = (ushort)(3 * i + 2);
+
+					indices32[3 * i] = (uint)(3 * i);
+					indices32[3 * i + 1] = (uint)(3 * i + 1);
+					indices32[3 * i + 2] = (uint)(3 * i + 2);
+				}
+
+				return new Geometry(assembledVertices, indices16, indices32);
 			}
+			else
+			{
+				Vertex[] assembledVertices = new Vertex[vertices.Count];
+				ushort[] indices16 = new ushort[faces.Count * 3];
+				uint[] indices32 = new uint[faces.Count * 3];
+				for (int i = 0; i < faces.Count; i++)
+				{
+					indices16[3 * i] = (ushort)faces[i].i1;
+					indices16[3 * i + 1] = (ushort)faces[i].i2;
+					indices16[3 * i + 2] = (ushort)faces[i].i3;
 
-			Vertex[] assembledVertices = new Vertex[vertices.Count];
-			for (int i = 0; i < assembledVertices.Length; i++)
-				assembledVertices[i] = new Vertex(vertices[i] * radius, vertices[i], Colour.White, UV.Zero);
+					indices32[3 * i] = (uint)faces[i].i1;
+					indices32[3 * i + 1] = (uint)faces[i].i2;
+					indices32[3 * i + 2] = (uint)faces[i].i3;
+				}
 
-			return new Geometry(assembledVertices, indices16, indices32);
+				for (int i = 0; i < assembledVertices.Length; i++)
+					assembledVertices[i] = new Vertex(vertices[i], vertices[i].Normalized, Colour.White, UV.Zero);
+
+				return new Geometry(assembledVertices, indices16, indices32);
+			}
 		}
 		#endregion
 
