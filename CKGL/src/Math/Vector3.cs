@@ -173,9 +173,9 @@ namespace CKGL
 		public static Vector3 Cross(Vector3 lhs, Vector3 rhs)
 		{
 			return new Vector3(
-				lhs.Y * rhs.Z - rhs.Y * lhs.Z,
-				lhs.X * rhs.Z - rhs.X * lhs.Z,
-				lhs.X * rhs.Y - rhs.X * lhs.Y
+				lhs.Y * rhs.Z - lhs.Z * rhs.Y,
+				lhs.Z * rhs.X - lhs.X * rhs.Z,
+				lhs.X * rhs.Y - lhs.Y * rhs.X
 			);
 		}
 		#endregion
