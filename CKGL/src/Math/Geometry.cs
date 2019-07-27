@@ -263,7 +263,7 @@ namespace CKGL
 					Vector3 v1 = vertices[faces[i].i1];
 					Vector3 v2 = vertices[faces[i].i2];
 					Vector3 v3 = vertices[faces[i].i3];
-					Vector3 normal = ((v1 + v2 + v3) / 3f).Normalized;
+					Vector3 normal = Vector3.Cross(v2 - v1, v2 - v3).Normalized;
 
 					assembledVertices[3 * i] = new Vertex(v1, normal, Colour.White, UV.Zero);
 					assembledVertices[3 * i + 1] = new Vertex(v2, normal, Colour.White, UV.Zero);
@@ -527,7 +527,7 @@ namespace CKGL
 					Vector3 v1 = vertices[faces[i].i1];
 					Vector3 v2 = vertices[faces[i].i2];
 					Vector3 v3 = vertices[faces[i].i3];
-					Vector3 normal = ((v1 + v2 + v3) / 3f).Normalized;
+					Vector3 normal = Vector3.Cross(v2 - v1, v2 - v3).Normalized;
 
 					assembledVertices[3 * i] = new Vertex(v1, normal, Colour.White, uvs[faces[i].i1]);
 					assembledVertices[3 * i + 1] = new Vertex(v2, normal, Colour.White, uvs[faces[i].i2]);
