@@ -148,11 +148,6 @@ namespace CKGL
 				M43 = value.Z;
 			}
 		}
-
-		public Matrix Inverse
-		{
-			get { return Invert(); }
-		}
 		#endregion
 
 		#region Methods
@@ -204,7 +199,7 @@ namespace CKGL
 			return ((((num22 * (((num11 * num18) - (num10 * num17)) + (num9 * num16))) - (num21 * (((num12 * num18) - (num10 * num15)) + (num9 * num14)))) + (num20 * (((num12 * num17) - (num11 * num15)) + (num9 * num13)))) - (num19 * (((num12 * num16) - (num11 * num14)) + (num10 * num13))));
 		}
 
-		public Matrix Invert()
+		public Matrix Inverse()
 		{
 			Matrix result = Identity;
 
