@@ -341,7 +341,7 @@ namespace CKGL
 		{
 			Matrix result = Identity;
 
-			var lookForward = Vector3.Normalize(cameraPosition - cameraTarget);
+			var lookForward = Vector3.Normalize(cameraTarget - cameraPosition);
 			var lookRight = Vector3.Normalize(Vector3.Cross(up, lookForward));
 			var lookUp = Vector3.Cross(lookForward, lookRight);
 			result.M11 = lookRight.X;
