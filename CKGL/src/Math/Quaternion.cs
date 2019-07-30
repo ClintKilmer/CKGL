@@ -167,6 +167,25 @@ namespace CKGL
 				return new Quaternion(X * mult, Y * mult, Z * mult, W * mult);
 			}
 		}
+
+		public Quaternion Inverse()
+		{
+			Quaternion result = Identity;
+
+			float num2 = (
+				(X * X) +
+				(Y * Y) +
+				(Z * Z) +
+				(W * W)
+			);
+			float num = 1f / num2;
+			result.X = -X * num;
+			result.Y = -Y * num;
+			result.Z = -Z * num;
+			result.W = W * num;
+
+			return result;
+		}
 		#endregion
 
 		#region Static Methods
@@ -331,21 +350,7 @@ namespace CKGL
 
 		public static Quaternion Inverse(Quaternion quaternion)
 		{
-			Quaternion result = Identity;
-
-			float num2 = (
-				(quaternion.X * quaternion.X) +
-				(quaternion.Y * quaternion.Y) +
-				(quaternion.Z * quaternion.Z) +
-				(quaternion.W * quaternion.W)
-			);
-			float num = 1f / num2;
-			result.X = -quaternion.X * num;
-			result.Y = -quaternion.Y * num;
-			result.Z = -quaternion.Z * num;
-			result.W = quaternion.W * num;
-
-			return result;
+			return quaternion.Inverse();
 		}
 
 		public static Quaternion Lerp(Quaternion a, Quaternion b, float t)
