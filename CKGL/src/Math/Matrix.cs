@@ -337,28 +337,28 @@ namespace CKGL
 			return Quaternion.CreateFromEuler(x, y, z).Matrix;
 		}
 
-		public static Matrix CreateLookAt(Vector3 cameraPosition, Vector3 cameraTarget, Vector3 cameraUpVector)
+		public static Matrix CreateLookAt(Vector3 cameraPosition, Vector3 cameraTarget, Vector3 up)
 		{
 			Matrix result = Identity;
 
-			var vector = Vector3.Normalize(cameraPosition - cameraTarget);
-			var vector2 = Vector3.Normalize(Vector3.Cross(cameraUpVector, vector));
-			var vector3 = Vector3.Cross(vector, vector2);
-			result.M11 = vector2.X;
-			result.M12 = vector3.X;
-			result.M13 = vector.X;
+			var lookForward = Vector3.Normalize(cameraPosition - cameraTarget);
+			var lookRight = Vector3.Normalize(Vector3.Cross(up, lookForward));
+			var lookUp = Vector3.Cross(lookForward, lookRight);
+			result.M11 = lookRight.X;
+			result.M12 = lookUp.X;
+			result.M13 = lookForward.X;
 			result.M14 = 0f;
-			result.M21 = vector2.Y;
-			result.M22 = vector3.Y;
-			result.M23 = vector.Y;
+			result.M21 = lookRight.Y;
+			result.M22 = lookUp.Y;
+			result.M23 = lookForward.Y;
 			result.M24 = 0f;
-			result.M31 = vector2.Z;
-			result.M32 = vector3.Z;
-			result.M33 = vector.Z;
+			result.M31 = lookRight.Z;
+			result.M32 = lookUp.Z;
+			result.M33 = lookForward.Z;
 			result.M34 = 0f;
-			result.M41 = -Vector3.Dot(vector2, cameraPosition);
-			result.M42 = -Vector3.Dot(vector3, cameraPosition);
-			result.M43 = -Vector3.Dot(vector, cameraPosition);
+			result.M41 = -Vector3.Dot(lookRight, cameraPosition);
+			result.M42 = -Vector3.Dot(lookUp, cameraPosition);
+			result.M43 = -Vector3.Dot(lookForward, cameraPosition);
 			result.M44 = 1f;
 
 			return result;

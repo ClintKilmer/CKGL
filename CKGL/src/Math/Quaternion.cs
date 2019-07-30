@@ -221,20 +221,20 @@ namespace CKGL
 			return CreateFromAxisAngle(Vector3.Forward, rotations);
 		}
 
-		public static Quaternion CreateLookAt(Vector3 forward, Vector3 up)
+		public static Quaternion CreateLookAt(Vector3 lookAtDirection, Vector3 up)
 		{
-			Vector3 vector = Vector3.Normalize(forward);
-			Vector3 vector2 = Vector3.Normalize(Vector3.Cross(up, vector));
-			Vector3 vector3 = Vector3.Cross(vector, vector2);
-			var m00 = vector2.X;
-			var m01 = vector2.Y;
-			var m02 = vector2.Z;
-			var m10 = vector3.X;
-			var m11 = vector3.Y;
-			var m12 = vector3.Z;
-			var m20 = vector.X;
-			var m21 = vector.Y;
-			var m22 = vector.Z;
+			Vector3 lookForward = Vector3.Normalize(lookAtDirection);
+			Vector3 lookRight = Vector3.Normalize(Vector3.Cross(up, lookForward));
+			Vector3 lookUp = Vector3.Cross(lookForward, lookRight);
+			var m00 = lookRight.X;
+			var m01 = lookRight.Y;
+			var m02 = lookRight.Z;
+			var m10 = lookUp.X;
+			var m11 = lookUp.Y;
+			var m12 = lookUp.Z;
+			var m20 = lookForward.X;
+			var m21 = lookForward.Y;
+			var m22 = lookForward.Z;
 			float num8 = (m00 + m11) + m22;
 
 			Quaternion result = new Quaternion();
