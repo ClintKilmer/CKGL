@@ -132,11 +132,6 @@ namespace CKGL
 				M22 = -value.Y;
 			}
 		}
-
-		public Matrix2D Inverse
-		{
-			get { return Invert(); }
-		}
 		#endregion
 
 		#region Methods
@@ -168,7 +163,7 @@ namespace CKGL
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public Matrix2D Invert()
+		public Matrix2D Inverse()
 		{
 			Matrix2D result = Identity;
 

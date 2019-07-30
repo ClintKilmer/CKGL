@@ -91,7 +91,7 @@ namespace CKGL
 					// https://docs.unity3d.com/ScriptReference/Camera-worldToCameraMatrix.html
 					// https://forum.unity.com/threads/reproducing-cameras-worldtocameramatrix.365645/
 					viewMatrix = Matrix2D.CreateScale(scale) * Matrix2D.CreateRotationZ(rotation) * Matrix2D.CreateTranslation(position);
-					viewMatrix = viewMatrix.Invert();
+					viewMatrix = viewMatrix.Inverse();
 					viewMatrix.M13 *= -1f;
 					viewMatrix.M23 *= -1f;
 					viewMatrix.M33 *= -1f;
