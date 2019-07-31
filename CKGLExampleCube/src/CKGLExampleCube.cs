@@ -48,8 +48,8 @@ out float vTextured;
 void main()
 {
 	gl_Position = vec4(position, 1.0) * M * V * P;
-    vFragPosition = vec3(vec4(position, 1.0) * M);
-	vNormal = normalize(normal * mat3(transpose(inverse(M)))); // 3x3 Normal Matrix - TODO: move this to shader uniform for performnce
+    vFragPosition = vec3(vec4(position, 1.0) * M * V);
+	vNormal = normalize(normal * mat3(transpose(inverse(M * V)))); // 3x3 Normal Matrix - TODO: move this to shader uniform for performnce
 	vColour = colour;
 	vUV = uv;
 	vTextured = textured;
@@ -61,7 +61,6 @@ void main()
 layout(location = 0) out vec4 colour;
 
 uniform sampler2D Texture;
-uniform vec3 CameraPosition;
 
 struct PointLight
 {
@@ -84,7 +83,8 @@ in float vTextured;
 
 vec3 CalculatePointLight(PointLight light, vec3 normal, vec3 fragPosition, vec3 viewDirection, float specularStrength)
 {
-	vec3 lightDirection = normalize(light.position - fragPosition);
+	vec3 lightPosition = light.position - fragPosition;
+	vec3 lightDirection = normalize(lightPosition);
 	
 	// Diffuse Shading
 	float diffuseFactor = max(dot(normal, lightDirection), 0.0);
@@ -100,7 +100,7 @@ vec3 CalculatePointLight(PointLight light, vec3 normal, vec3 fragPosition, vec3 
 	float specularFactor = pow(max(dot(normal, halfwayDirection), 0.0), 32.0) * IsDiffuseFactorGreaterThanZero * specularStrength;
 	
 	// Attenuation
-	float distance = length(light.position - fragPosition);
+	float distance = length(lightPosition);
 	//float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
 	//float attenuation = 1.0 / (constant + linear * distance + quadratic * (distance * distance)); // Quadratic
 	float attenuation = 1.0 / (1.0 + (4.5 / light.radius) * distance + (75.0 / (light.radius * light.radius)) * (distance * distance)); // Quadratic
@@ -117,15 +117,17 @@ vec3 CalculatePointLight(PointLight light, vec3 normal, vec3 fragPosition, vec3 
 
 void main()
 {
+	vec3 normal = normalize(vNormal);
 	float specularStrength = 0.5;
-	vec3 viewDirection = normalize(CameraPosition - vFragPosition);
+	vec3 viewDirection = normalize(-vFragPosition);
 	
 	vec3 result = vec3(0.0);
 	for(int i = 0; i < NR_POINT_LIGHTS; i++)
-        result += CalculatePointLight(pointLights[i], vNormal, vFragPosition, viewDirection, specularStrength);
+        result += CalculatePointLight(pointLights[i], normal, vFragPosition, viewDirection, specularStrength);
 	result = max(result, vec3(0.1));
 	
 	colour = mix(vColour, texture(Texture, vUV) * vColour, vTextured);
+	//colour = mix(vColour, texture(Texture, vUV * vec2(1.0, 1.0) + vec2(0.0, 0.5)) * vColour, vTextured); // Unity style texture offsets
 	colour = vec4(colour.rgb * result, colour.a);
 	
 	// apply gamma correction
@@ -474,10 +476,9 @@ void main()
 			//Shaders.CubeShader.DirectionalLight = Vector3.Forward * Matrix.CreateRotationX(0.05f) * Matrix.CreateRotationY(-0.1f);
 
 			// Point Light
-			Shaders.PointLightShader.CameraPosition = Camera.Position;
-			Shaders.PointLightShader.Light1Position = light1Transform.GlobalPosition;
-			Shaders.PointLightShader.Light2Position = light2Transform.GlobalPosition;
-			Shaders.PointLightShader.Light3Position = light3Transform.GlobalPosition;
+			Shaders.PointLightShader.Light1Position = light1Transform.GlobalPosition * Camera.ViewMatrix;
+			Shaders.PointLightShader.Light2Position = light2Transform.GlobalPosition * Camera.ViewMatrix;
+			Shaders.PointLightShader.Light3Position = light3Transform.GlobalPosition * Camera.ViewMatrix;
 			Shaders.PointLightShader.Light1Colour = light1Colour;
 			Shaders.PointLightShader.Light2Colour = light2Colour;
 			Shaders.PointLightShader.Light3Colour = light3Colour;
