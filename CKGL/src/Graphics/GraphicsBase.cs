@@ -46,6 +46,8 @@ namespace CKGL
 		#region Draw
 		internal abstract void DrawVertexArrays(PrimitiveTopology primitiveTopology, int offset, int count);
 		internal abstract void DrawIndexedVertexArrays(PrimitiveTopology primitiveTopology, int offset, int count, IndexType indexType);
+		internal abstract void DrawVertexArraysInstanced(PrimitiveTopology primitiveTopology, int offset, int count, int primitiveCount);
+		internal abstract void DrawIndexedVertexArraysInstanced(PrimitiveTopology primitiveTopology, int offset, int count, int primitiveCount, IndexType indexType);
 		#endregion
 	}
 }

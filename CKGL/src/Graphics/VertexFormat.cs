@@ -8,12 +8,15 @@ namespace CKGL
 		public readonly int Count;
 		public readonly int Size;
 		public readonly bool Normalized;
+		public readonly uint Divisor;
 
-		public VertexAttribute(DataType type, int count, bool normalized)
+		public VertexAttribute(DataType type, int count, bool normalized) : this(type, count, normalized, 0) { }
+		public VertexAttribute(DataType type, int count, bool normalized, uint divisor)
 		{
 			Type = type;
 			Count = count;
 			Normalized = normalized;
+			Divisor = divisor;
 
 			switch (Type)
 			{
