@@ -171,6 +171,16 @@ namespace CKGL.OpenGL
 		{
 			GL.DrawElements(primitiveTopology.ToOpenGL(), count, indexType.ToOpenGL(), offset);
 		}
+
+		internal override void DrawVertexArraysInstanced(PrimitiveTopology primitiveTopology, int offset, int count, int primitiveCount)
+		{
+			GL.DrawArraysInstanced(primitiveTopology.ToOpenGL(), offset, count, primitiveCount);
+		}
+
+		internal override void DrawIndexedVertexArraysInstanced(PrimitiveTopology primitiveTopology, int offset, int count, int primitiveCount, IndexType indexType)
+		{
+			GL.DrawElementsInstanced(primitiveTopology.ToOpenGL(), count, indexType.ToOpenGL(), offset, primitiveCount);
+		}
 		#endregion
 	}
 }

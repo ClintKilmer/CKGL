@@ -2785,6 +2785,15 @@ namespace CKGL.OpenGLBindings
 		}
 
 		[Shared]
+		private static _glVertexAttribDivisor glVertexAttribDivisor;
+		private delegate void _glVertexAttribDivisor(GLuint index, GLuint divisor);
+		public static void VertexAttribDivisor(uint index, uint divisor)
+		{
+			glVertexAttribDivisor(index, divisor);
+			CheckError();
+		}
+
+		[Shared]
 		private static _glEnableVertexAttribArray glEnableVertexAttribArray;
 		private delegate void _glEnableVertexAttribArray(GLuint index);
 		public static void EnableVertexAttribArray(uint index)
@@ -3290,6 +3299,29 @@ namespace CKGL.OpenGLBindings
 		public static void DrawElements(PrimitiveMode mode, int count, IndexType type, int offset)
 		{
 			glDrawElements(mode, count, type, new IntPtr(offset));
+			CheckError();
+		}
+
+		[Shared]
+		private static _glDrawArraysInstanced glDrawArraysInstanced;
+		private delegate void _glDrawArraysInstanced(PrimitiveMode mode, GLint first, GLint count, GLint primcount);
+		public static void DrawArraysInstanced(PrimitiveMode mode, int start, int count, int primcount)
+		{
+			glDrawArraysInstanced(mode, start, count, primcount);
+			CheckError();
+		}
+
+		[Shared]
+		private static _glDrawElementsInstanced glDrawElementsInstanced;
+		private delegate void _glDrawElementsInstanced(PrimitiveMode mode, GLint count, IndexType type, IntPtr indices, GLint primcount);
+		public static void DrawElementsInstanced(PrimitiveMode mode, int count, IndexType type, IntPtr offset, int primcount)
+		{
+			glDrawElementsInstanced(mode, count, type, offset, primcount);
+			CheckError();
+		}
+		public static void DrawElementsInstanced(PrimitiveMode mode, int count, IndexType type, int offset, int primcount)
+		{
+			glDrawElementsInstanced(mode, count, type, new IntPtr(offset), primcount);
 			CheckError();
 		}
 		#endregion

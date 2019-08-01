@@ -129,6 +129,18 @@ namespace CKGL
 			graphics.DrawIndexedVertexArrays(primitiveTopology, offset, count, indexType);
 			DrawCalls++;
 		}
+
+		public static void DrawVertexArraysInstanced(PrimitiveTopology primitiveTopology, int offset, int count, int primitiveCount)
+		{
+			graphics.DrawVertexArraysInstanced(primitiveTopology, offset, count, primitiveCount);
+			DrawCalls++;
+		}
+
+		public static void DrawIndexedVertexArraysInstanced(PrimitiveTopology primitiveTopology, int offset, int count, int primitiveCount, IndexType indexType)
+		{
+			graphics.DrawIndexedVertexArraysInstanced(primitiveTopology, offset, count, primitiveCount, indexType);
+			DrawCalls++;
+		}
 		#endregion
 	}
 }
