@@ -20,6 +20,11 @@ namespace CKGLExampleCube
 	{
 		public static SpriteFont Font = new SpriteFont(SpriteSheets.SpriteSheet, "textures/font[5x7].png", 5, 7, '!', '~', 1, 3, 7, true);
 	}
+
+	public static class Textures
+	{
+		public static Texture2D UVTest = Texture2D.CreateFromFile("textures/UVTest.png", TextureFilter.Nearest, TextureWrap.Repeat);
+	}
 	#endregion
 
 	#region Cube
