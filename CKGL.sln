@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CKGLTest2D", "CKGLTest2D\CK
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CKGLExampleCube", "CKGLExampleCube\CKGLExampleCube.csproj", "{05F2A05D-9525-4739-8932-38842E6F1F39}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{02193257-C6B0-4E75-B470-6322A41DC5FD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LofiEarth", "LofiEarth\LofiEarth.csproj", "{D0E9D295-896E-46E5-8F74-AA6E0B2E70A7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,9 +37,16 @@ Global
 		{05F2A05D-9525-4739-8932-38842E6F1F39}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{05F2A05D-9525-4739-8932-38842E6F1F39}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{05F2A05D-9525-4739-8932-38842E6F1F39}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0E9D295-896E-46E5-8F74-AA6E0B2E70A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0E9D295-896E-46E5-8F74-AA6E0B2E70A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0E9D295-896E-46E5-8F74-AA6E0B2E70A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0E9D295-896E-46E5-8F74-AA6E0B2E70A7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D0E9D295-896E-46E5-8F74-AA6E0B2E70A7} = {02193257-C6B0-4E75-B470-6322A41DC5FD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7604F5E2-FBBA-4692-AB2E-0A50C88F1DE5}
