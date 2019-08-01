@@ -22,7 +22,7 @@ namespace CKGLExampleCube
 	}
 	#endregion
 
-	#region Cube
+	#region PointLightShader
 	public class PointLightShader : Shader
 	{
 		#region GLSL
