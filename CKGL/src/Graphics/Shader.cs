@@ -38,7 +38,7 @@ namespace CKGL
 			// Check for shader compile errors
 			GL.GetShader(shaderID, ShaderParam.CompileStatus, out GLint status);
 			if (status == 0)
-				throw new Exception("Shader compile error: " + GL.GetShaderInfoLog(shaderID));
+				throw new CKGLException("Shader compile error: " + GL.GetShaderInfoLog(shaderID));
 		}
 
 		private void Compile(string source)
@@ -48,7 +48,7 @@ namespace CKGL
 			int fragment = source.IndexOf("#fragment", StringComparison.Ordinal);
 
 			if (vertex == -1)
-				throw new Exception("Shader source must contain a vertex shader definition.");
+				throw new CKGLException("Shader source must contain a vertex shader definition.");
 
 			bool hasGeometryDefinition = geometry != -1;
 			bool hasFragmentDefinition = fragment != -1;
@@ -105,13 +105,13 @@ namespace CKGL
 			GL.LinkProgram(id);
 			GL.GetProgram(id, ProgramParam.LinkStatus, out GLint linkStatus);
 			if (linkStatus == 0)
-				throw new Exception("Program link error: " + GL.GetProgramInfoLog(id));
+				throw new CKGLException("Program link error: " + GL.GetProgramInfoLog(id));
 
 			// Validate the program and check for errors
 			GL.ValidateProgram(id);
 			GL.GetProgram(id, ProgramParam.ValidateStatus, out GLint validateStatus);
 			if (validateStatus == 0)
-				throw new Exception("Program validate error: " + GL.GetProgramInfoLog(id));
+				throw new CKGLException("Program validate error: " + GL.GetProgramInfoLog(id));
 
 			// Once linked, we can detach and delete the shaders
 			GL.DetachShader(id, vertID);
@@ -406,7 +406,7 @@ namespace CKGL
 			if (uniforms.TryGetValue(name, out Uniform uniform))
 				return uniform;
 			else
-				throw new Exception($"No uniform with name: {name}");
+				throw new CKGLException($"No uniform with name: {name}");
 		}
 
 		public void SetUniform(string name, bool value)
