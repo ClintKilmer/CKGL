@@ -40,8 +40,8 @@ void main()
 	//vec3 pos = vec3(position.x + sin(float(gl_InstanceID)) * 0.1 * float(gl_InstanceID),
 	//				position.y + float(gl_InstanceID) * 0.1,
 	//				position.z + cos(float(gl_InstanceID)) * 0.1 * float(gl_InstanceID));
-	gl_Position = vec4(pos, 1.0) * M * V * P;
-    vFragPosition = vec3(vec4(pos, 1.0) * M * V);
+	//gl_Position = vec4(pos, 1.0) * M * V * P;
+    //vFragPosition = vec3(vec4(pos, 1.0) * M * V);
 	vNormal = normalize(normal * mat3(transpose(inverse(M * V)))); // 3x3 Normal Matrix - TODO: move this to shader uniform for performnce
 	vColour = colour;
 	vUV = uv;
