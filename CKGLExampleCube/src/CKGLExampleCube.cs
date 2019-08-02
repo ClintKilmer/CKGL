@@ -10,23 +10,6 @@ namespace CKGLExampleCube
 		public static PointLightShader PointLightShader = new PointLightShader();
 	}
 
-	#region Sprites
-	public static class SpriteSheets
-	{
-		public static SpriteSheet SpriteSheet = new SpriteSheet(128, 1);
-	}
-
-	public static class SpriteFonts
-	{
-		public static SpriteFont Font = new SpriteFont(SpriteSheets.SpriteSheet, "textures/font[5x7].png", 5, 7, '!', '~', 1, 3, 7, true);
-	}
-
-	public static class Textures
-	{
-		public static Texture2D UVTest = Texture2D.CreateFromFile("textures/UVTest.png", TextureFilter.Nearest, TextureWrap.Repeat);
-	}
-	#endregion
-
 	#region PointLightShader
 	public class PointLightShader : Shader
 	{
@@ -164,6 +147,23 @@ void main()
 	}
 	#endregion
 
+	#endregion
+
+	#region Sprites
+	public static class SpriteSheets
+	{
+		public static SpriteSheet SpriteSheet = new SpriteSheet(128, 1);
+	}
+
+	public static class SpriteFonts
+	{
+		public static SpriteFont Font = new SpriteFont(SpriteSheets.SpriteSheet, "textures/font[5x7].png", 5, 7, '!', '~', 1, 3, 7, true);
+	}
+
+	public static class Textures
+	{
+		public static Texture2D UVTest = Texture2D.CreateFromFile("textures/UVTest.png", TextureFilter.Nearest, TextureWrap.Repeat);
+	}
 	#endregion
 
 	public class CKGLExampleCube : Game
