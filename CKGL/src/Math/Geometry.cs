@@ -113,58 +113,106 @@ namespace CKGL
 		#endregion
 
 		#region Plane
-		//public static Geometry Plane(float unitLength = 1f, uint cellsX = 10, int cellsZ = 10, bool flat = false)
-		//{
-		//	float t = unitLength;
-		//	float tX = unitLength * cellsX;
-		//	float tZ = unitLength * cellsZ;
-		//	float tXH = tX * 0.5f;
-		//	float tZH = tZ * 0.5f;
+		public enum Orientation
+		{
+			XY,
+			XZ,
+			ZY
+		};
+		public static Geometry Plane(float unitLength = 1f, Orientation orientation = Orientation.XZ, uint cellsFirstDimension = 10, uint cellsSecondDimension = 10, bool flat = false)
+		{
+			float t = unitLength;
+			int tx = (int)cellsFirstDimension;
+			int tz = (int)cellsSecondDimension;
+			Vector3 origin = new Vector3(-tx * t * 0.5f, 0f, -tz * t * 0.5f);
 
-		//	List<Vector3> vertices = new List<Vector3>();
-		//	List<TriangleIndices> faces = new List<TriangleIndices>();
+			List<Vector3> vertices = new List<Vector3>();
+			List<UV> uvs = new List<UV>();
+			List<TriangleIndices> faces = new List<TriangleIndices>();
+			Vector3 normal = Vector3.Up;
 
-		//	for(int z = 0; z < cellsZ; z++)
-		//	{
-		//		for (int x = 0; x < cellsX; x++)
-		//		{
-		//			vertices.Add(new Vector3(-t, 0f, ).Normalized);
-		//		}
-		//	}
-		//	Vertex[] vertices = new Vertex[] {
-		//		new Vertex(new Vector3(-t,  t,  t), Vector3.Up, Colour.White, UV.TopLeft),
-		//		new Vertex(new Vector3( t,  t,  t), Vector3.Up, Colour.White, UV.TopRight),
-		//		new Vertex(new Vector3(-t,  t, -t), Vector3.Up, Colour.White, UV.BottomLeft),
-		//		new Vertex(new Vector3( t,  t, -t), Vector3.Up, Colour.White, UV.BottomRight)
-		//	};
+			// Vertices
+			for (int z = 0; z < tz + 1; z++)
+			{
+				for (int x = 0; x < tx + 1; x++)
+				{
+					vertices.Add(origin + new Vector3(t * x, 0f, t * z));
+					uvs.Add(new UV((float)x / (float)tx, (float)z / (float)tz));
+				}
+			}
 
-		//	ushort[] indices16 = new ushort[] {
-		//		// Front
-		//		0, 2, 1,
-		//		2, 3, 1,
-		//		// Back
-		//		0 + 4, 2 + 4, 1 + 4,
-		//		2 + 4, 3 + 4, 1 + 4,
-		//		// Top
-		//		0 + 4 * 2, 2 + 4 * 2, 1 + 4 * 2,
-		//		2 + 4 * 2, 3 + 4 * 2, 1 + 4 * 2,
-		//		// Bottom
-		//		0 + 4 * 3, 2 + 4 * 3, 1 + 4 * 3,
-		//		2 + 4 * 3, 3 + 4 * 3, 1 + 4 * 3,
-		//		// Left
-		//		0 + 4 * 4, 2 + 4 * 4, 1 + 4 * 4,
-		//		2 + 4 * 4, 3 + 4 * 4, 1 + 4 * 4,
-		//		// Right
-		//		0 + 4 * 5, 2 + 4 * 5, 1 + 4 * 5,
-		//		2 + 4 * 5, 3 + 4 * 5, 1 + 4 * 5
-		//	};
+			if (orientation == Orientation.XY)
+			{
+				for (int i = 0; i < vertices.Count; i++)
+					vertices[i] = new Vector3(vertices[i].X, vertices[i].Z, 0f);
+				normal = Vector3.Backward;
+			}
+			else if (orientation == Orientation.ZY)
+			{
+				for (int i = 0; i < vertices.Count; i++)
+					vertices[i] = new Vector3(0f, vertices[i].Z, vertices[i].X);
+				normal = Vector3.Right;
+			}
 
-		//	uint[] indices32 = new uint[indices16.Length];
-		//	for (int i = 0; i < indices32.Length; i++)
-		//		indices32[i] = indices16[i];
+			// Faces
+			for (int z = 0; z < tz; z++)
+			{
+				for (int x = 0; x < tx; x++)
+				{
+					int bl = (tx + 1) * z + x;
+					int br = bl + 1;
+					int tl = bl + (tx + 1);
+					int tr = tl + 1;
+					faces.Add(new TriangleIndices(bl, br, tr));
+					faces.Add(new TriangleIndices(bl, tr, tl));
+				}
+			}
 
-		//	return new Geometry(vertices, indices16, indices32);
-		//}
+			// Calculate geometry data
+			if (flat)
+			{
+				Vertex[] assembledVertices = new Vertex[faces.Count * 3];
+				ushort[] indices16 = new ushort[faces.Count * 3];
+				uint[] indices32 = new uint[faces.Count * 3];
+				for (int i = 0; i < faces.Count; i++)
+				{
+					assembledVertices[3 * i] = new Vertex(vertices[faces[i].i1], normal, Colour.White, uvs[faces[i].i1]);
+					assembledVertices[3 * i + 1] = new Vertex(vertices[faces[i].i2], normal, Colour.White, uvs[faces[i].i2]);
+					assembledVertices[3 * i + 2] = new Vertex(vertices[faces[i].i3], normal, Colour.White, uvs[faces[i].i3]);
+
+					indices16[3 * i] = (ushort)(3 * i);
+					indices16[3 * i + 1] = (ushort)(3 * i + 1);
+					indices16[3 * i + 2] = (ushort)(3 * i + 2);
+
+					indices32[3 * i] = (uint)(3 * i);
+					indices32[3 * i + 1] = (uint)(3 * i + 1);
+					indices32[3 * i + 2] = (uint)(3 * i + 2);
+				}
+
+				return new Geometry(assembledVertices, indices16, indices32);
+			}
+			else
+			{
+				Vertex[] assembledVertices = new Vertex[vertices.Count];
+				ushort[] indices16 = new ushort[faces.Count * 3];
+				uint[] indices32 = new uint[faces.Count * 3];
+				for (int i = 0; i < faces.Count; i++)
+				{
+					indices16[3 * i] = (ushort)faces[i].i1;
+					indices16[3 * i + 1] = (ushort)faces[i].i2;
+					indices16[3 * i + 2] = (ushort)faces[i].i3;
+
+					indices32[3 * i] = (uint)faces[i].i1;
+					indices32[3 * i + 1] = (uint)faces[i].i2;
+					indices32[3 * i + 2] = (uint)faces[i].i3;
+				}
+
+				for (int i = 0; i < assembledVertices.Length; i++)
+					assembledVertices[i] = new Vertex(vertices[i], normal, Colour.White, uvs[i]);
+
+				return new Geometry(assembledVertices, indices16, indices32);
+			}
+		}
 		#endregion
 
 		#region Icosahedron

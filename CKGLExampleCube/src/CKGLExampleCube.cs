@@ -254,17 +254,8 @@ void main()
 		private Vertex[] icosphereVertices;
 		private ushort[] icosphereIndices;
 
-		private readonly Vertex[] planeVertices = new Vertex[] {
-			new Vertex(new Vector3(-1f,  0f,  1f), Vector3.Up, Colour.Grey, UV.TopLeft, false),
-			new Vertex(new Vector3( 1f,  0f,  1f), Vector3.Up, Colour.Grey, UV.TopRight, false),
-			new Vertex(new Vector3(-1f,  0f, -1f), Vector3.Up, Colour.Grey, UV.BottomLeft, false),
-			new Vertex(new Vector3( 1f,  0f, -1f), Vector3.Up, Colour.Grey, UV.BottomRight, false),
-		};
-
-		private readonly ushort[] planeIndices = new ushort[] {
-			0, 2, 1,
-			2, 3, 1,
-		};
+		private Vertex[] planeVertices;
+		private ushort[] planeIndices;
 
 		Colour light1Colour = Colour.Red;
 		Colour light2Colour = Colour.Green;
@@ -319,6 +310,12 @@ void main()
 			for (int i = 0; i < icosphereGeometry.Vertices.Length; i++)
 				icosphereVertices[i] = new Vertex(icosphereGeometry.Vertices[i].Position, icosphereGeometry.Vertices[i].Normal, icosphereGeometry.Vertices[i].Colour, icosphereGeometry.Vertices[i].UV, false);
 			icosphereIndices = icosphereGeometry.Indices16;
+
+			Geometry planeGeometry = Geometry.Plane(1f, Geometry.Orientation.XZ, 10, 10, false);
+			planeVertices = new Vertex[planeGeometry.Vertices.Length];
+			for (int i = 0; i < planeGeometry.Vertices.Length; i++)
+				planeVertices[i] = new Vertex(planeGeometry.Vertices[i].Position, planeGeometry.Vertices[i].Normal, planeGeometry.Vertices[i].Colour, planeGeometry.Vertices[i].UV, false);
+			planeIndices = planeGeometry.Indices16;
 
 			cubeVertexBuffer = VertexBuffer.Create(BufferUsage.Static);
 			cubeIndexBuffer = IndexBuffer.Create(BufferUsage.Static);
