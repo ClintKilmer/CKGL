@@ -15,6 +15,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{02
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LofiEarth", "LofiEarth\LofiEarth.csproj", "{D0E9D295-896E-46E5-8F74-AA6E0B2E70A7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NETCoreTest", "NETCoreTest\NETCoreTest.csproj", "{D757DDBA-20DD-4E22-AD16-95D48BB072B9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,12 +43,17 @@ Global
 		{D0E9D295-896E-46E5-8F74-AA6E0B2E70A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D0E9D295-896E-46E5-8F74-AA6E0B2E70A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D0E9D295-896E-46E5-8F74-AA6E0B2E70A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D757DDBA-20DD-4E22-AD16-95D48BB072B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D757DDBA-20DD-4E22-AD16-95D48BB072B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D757DDBA-20DD-4E22-AD16-95D48BB072B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D757DDBA-20DD-4E22-AD16-95D48BB072B9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{D0E9D295-896E-46E5-8F74-AA6E0B2E70A7} = {02193257-C6B0-4E75-B470-6322A41DC5FD}
+		{D757DDBA-20DD-4E22-AD16-95D48BB072B9} = {02193257-C6B0-4E75-B470-6322A41DC5FD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7604F5E2-FBBA-4692-AB2E-0A50C88F1DE5}
