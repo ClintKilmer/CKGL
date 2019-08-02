@@ -527,6 +527,14 @@ void main()
 			scale = Math.Max(1, Math.Min(Window.Width / width, Window.Height / height));
 			Renderer.Draw.RenderTarget(surface, TextureSlot.Colour0, (Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, scale, Colour.White);
 
+			//Renderer.Draw.Text(SpriteFonts.Font,
+			//				   debugString,
+			//				   new Vector2(2, RenderTarget.Current.Height - 1),
+			//				   Vector2.One * 3f,
+			//				   Colour.White,
+			//				   HAlign.Left,
+			//				   VAlign.Top);
+
 			Renderer.Flush();
 
 			// Screenshot
