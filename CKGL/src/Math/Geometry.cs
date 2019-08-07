@@ -57,35 +57,35 @@ namespace CKGL
 
 			Vertex[] vertices = new Vertex[] {
 				// Front
-				new Vertex(new Vector3(-t,  t, -t), Vector3.Backward, Vector3.Left, Vector3.Up, Colour.White, UV.TopLeft),
-				new Vertex(new Vector3( t,  t, -t), Vector3.Backward, Vector3.Left, Vector3.Up, Colour.White, UV.TopRight),
-				new Vertex(new Vector3(-t, -t, -t), Vector3.Backward, Vector3.Left, Vector3.Up, Colour.White, UV.BottomLeft),
-				new Vertex(new Vector3( t, -t, -t), Vector3.Backward, Vector3.Left, Vector3.Up, Colour.White, UV.BottomRight),
+				new Vertex(new Vector3(-t,  t, -t), Vector3.Backward, Vector3.Right, Vector3.Up, Colour.White, UV.TopLeft),
+				new Vertex(new Vector3( t,  t, -t), Vector3.Backward, Vector3.Right, Vector3.Up, Colour.White, UV.TopRight),
+				new Vertex(new Vector3(-t, -t, -t), Vector3.Backward, Vector3.Right, Vector3.Up, Colour.White, UV.BottomLeft),
+				new Vertex(new Vector3( t, -t, -t), Vector3.Backward, Vector3.Right, Vector3.Up, Colour.White, UV.BottomRight),
 				// Back
-				new Vertex(new Vector3( t,  t,  t), Vector3.Forward, Colour.White, UV.TopLeft),
-				new Vertex(new Vector3(-t,  t,  t), Vector3.Forward, Colour.White, UV.TopRight),
-				new Vertex(new Vector3( t, -t,  t), Vector3.Forward, Colour.White, UV.BottomLeft),
-				new Vertex(new Vector3(-t, -t,  t), Vector3.Forward, Colour.White, UV.BottomRight),
+				new Vertex(new Vector3( t,  t,  t), Vector3.Forward, Vector3.Left, Vector3.Up, Colour.White, UV.TopLeft),
+				new Vertex(new Vector3(-t,  t,  t), Vector3.Forward, Vector3.Left, Vector3.Up, Colour.White, UV.TopRight),
+				new Vertex(new Vector3( t, -t,  t), Vector3.Forward, Vector3.Left, Vector3.Up, Colour.White, UV.BottomLeft),
+				new Vertex(new Vector3(-t, -t,  t), Vector3.Forward, Vector3.Left, Vector3.Up, Colour.White, UV.BottomRight),
 				// Top
-				new Vertex(new Vector3(-t,  t,  t), Vector3.Up, Vector3.Right, Vector3.Up, Colour.White, UV.TopLeft),
-				new Vertex(new Vector3( t,  t,  t), Vector3.Up, Vector3.Right, Vector3.Up, Colour.White, UV.TopRight),
-				new Vertex(new Vector3(-t,  t, -t), Vector3.Up, Vector3.Right, Vector3.Up, Colour.White, UV.BottomLeft),
-				new Vertex(new Vector3( t,  t, -t), Vector3.Up, Vector3.Right, Vector3.Up, Colour.White, UV.BottomRight),
+				new Vertex(new Vector3(-t,  t,  t), Vector3.Up, Vector3.Right, Vector3.Forward, Colour.White, UV.TopLeft),
+				new Vertex(new Vector3( t,  t,  t), Vector3.Up, Vector3.Right, Vector3.Forward, Colour.White, UV.TopRight),
+				new Vertex(new Vector3(-t,  t, -t), Vector3.Up, Vector3.Right, Vector3.Forward, Colour.White, UV.BottomLeft),
+				new Vertex(new Vector3( t,  t, -t), Vector3.Up, Vector3.Right, Vector3.Forward, Colour.White, UV.BottomRight),
 				// Bottom
-				new Vertex(new Vector3( t, -t,  t), Vector3.Down, Colour.White, UV.BottomRight),
-				new Vertex(new Vector3(-t, -t,  t), Vector3.Down, Colour.White, UV.BottomLeft),
-				new Vertex(new Vector3( t, -t, -t), Vector3.Down, Colour.White, UV.TopRight),
-				new Vertex(new Vector3(-t, -t, -t), Vector3.Down, Colour.White, UV.TopLeft),
+				new Vertex(new Vector3( t, -t,  t), Vector3.Down, Vector3.Right, Vector3.Backward, Colour.White, UV.BottomRight),
+				new Vertex(new Vector3(-t, -t,  t), Vector3.Down, Vector3.Right, Vector3.Backward, Colour.White, UV.BottomLeft),
+				new Vertex(new Vector3( t, -t, -t), Vector3.Down, Vector3.Right, Vector3.Backward, Colour.White, UV.TopRight),
+				new Vertex(new Vector3(-t, -t, -t), Vector3.Down, Vector3.Right, Vector3.Backward, Colour.White, UV.TopLeft),
 				// Left
-				new Vertex(new Vector3(-t,  t,  t), Vector3.Left, Colour.White, UV.TopLeft),
-				new Vertex(new Vector3(-t,  t, -t), Vector3.Left, Colour.White, UV.TopRight),
-				new Vertex(new Vector3(-t, -t,  t), Vector3.Left, Colour.White, UV.BottomLeft),
-				new Vertex(new Vector3(-t, -t, -t), Vector3.Left, Colour.White, UV.BottomRight),
+				new Vertex(new Vector3(-t,  t,  t), Vector3.Left, Vector3.Backward, Vector3.Up, Colour.White, UV.TopLeft),
+				new Vertex(new Vector3(-t,  t, -t), Vector3.Left, Vector3.Backward, Vector3.Up, Colour.White, UV.TopRight),
+				new Vertex(new Vector3(-t, -t,  t), Vector3.Left, Vector3.Backward, Vector3.Up, Colour.White, UV.BottomLeft),
+				new Vertex(new Vector3(-t, -t, -t), Vector3.Left, Vector3.Backward, Vector3.Up, Colour.White, UV.BottomRight),
 				// Right
-				new Vertex(new Vector3( t,  t, -t), Vector3.Right, Colour.White, UV.TopLeft),
-				new Vertex(new Vector3( t,  t,  t), Vector3.Right, Colour.White, UV.TopRight),
-				new Vertex(new Vector3( t, -t, -t), Vector3.Right, Colour.White, UV.BottomLeft),
-				new Vertex(new Vector3( t, -t,  t), Vector3.Right, Colour.White, UV.BottomRight)
+				new Vertex(new Vector3( t,  t, -t), Vector3.Right, Vector3.Forward, Vector3.Up, Colour.White, UV.TopLeft),
+				new Vertex(new Vector3( t,  t,  t), Vector3.Right, Vector3.Forward, Vector3.Up, Colour.White, UV.TopRight),
+				new Vertex(new Vector3( t, -t, -t), Vector3.Right, Vector3.Forward, Vector3.Up, Colour.White, UV.BottomLeft),
+				new Vertex(new Vector3( t, -t,  t), Vector3.Right, Vector3.Forward, Vector3.Up, Colour.White, UV.BottomRight)
 			};
 
 			ushort[] indices16 = new ushort[] {
