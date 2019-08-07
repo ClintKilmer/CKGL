@@ -8,13 +8,18 @@ namespace CKGL
 		{
 			public Vector3 Position;
 			public Vector3 Normal;
+			public Vector3 Tangent;
+			public Vector3 Bitangent;
 			public Colour Colour;
 			public UV UV;
 
-			public Vertex(Vector3 position, Vector3 normal, Colour colour, UV uv)
+			public Vertex(Vector3 position, Vector3 normal, Colour colour, UV uv) : this(position, normal, Vector3.Zero, Vector3.Zero, colour, uv) { }
+			public Vertex(Vector3 position, Vector3 normal, Vector3 tangent, Vector3 bitangent, Colour colour, UV uv)
 			{
 				Position = position;
 				Normal = normal;
+				Tangent = tangent;
+				Bitangent = bitangent;
 				Colour = colour;
 				UV = uv;
 			}
@@ -52,20 +57,20 @@ namespace CKGL
 
 			Vertex[] vertices = new Vertex[] {
 				// Front
-				new Vertex(new Vector3(-t,  t, -t), Vector3.Backward, Colour.White, UV.TopLeft),
-				new Vertex(new Vector3( t,  t, -t), Vector3.Backward, Colour.White, UV.TopRight),
-				new Vertex(new Vector3(-t, -t, -t), Vector3.Backward, Colour.White, UV.BottomLeft),
-				new Vertex(new Vector3( t, -t, -t), Vector3.Backward, Colour.White, UV.BottomRight),
+				new Vertex(new Vector3(-t,  t, -t), Vector3.Backward, Vector3.Left, Vector3.Up, Colour.White, UV.TopLeft),
+				new Vertex(new Vector3( t,  t, -t), Vector3.Backward, Vector3.Left, Vector3.Up, Colour.White, UV.TopRight),
+				new Vertex(new Vector3(-t, -t, -t), Vector3.Backward, Vector3.Left, Vector3.Up, Colour.White, UV.BottomLeft),
+				new Vertex(new Vector3( t, -t, -t), Vector3.Backward, Vector3.Left, Vector3.Up, Colour.White, UV.BottomRight),
 				// Back
 				new Vertex(new Vector3( t,  t,  t), Vector3.Forward, Colour.White, UV.TopLeft),
 				new Vertex(new Vector3(-t,  t,  t), Vector3.Forward, Colour.White, UV.TopRight),
 				new Vertex(new Vector3( t, -t,  t), Vector3.Forward, Colour.White, UV.BottomLeft),
 				new Vertex(new Vector3(-t, -t,  t), Vector3.Forward, Colour.White, UV.BottomRight),
 				// Top
-				new Vertex(new Vector3(-t,  t,  t), Vector3.Up, Colour.White, UV.TopLeft),
-				new Vertex(new Vector3( t,  t,  t), Vector3.Up, Colour.White, UV.TopRight),
-				new Vertex(new Vector3(-t,  t, -t), Vector3.Up, Colour.White, UV.BottomLeft),
-				new Vertex(new Vector3( t,  t, -t), Vector3.Up, Colour.White, UV.BottomRight),
+				new Vertex(new Vector3(-t,  t,  t), Vector3.Up, Vector3.Right, Vector3.Up, Colour.White, UV.TopLeft),
+				new Vertex(new Vector3( t,  t,  t), Vector3.Up, Vector3.Right, Vector3.Up, Colour.White, UV.TopRight),
+				new Vertex(new Vector3(-t,  t, -t), Vector3.Up, Vector3.Right, Vector3.Up, Colour.White, UV.BottomLeft),
+				new Vertex(new Vector3( t,  t, -t), Vector3.Up, Vector3.Right, Vector3.Up, Colour.White, UV.BottomRight),
 				// Bottom
 				new Vertex(new Vector3( t, -t,  t), Vector3.Down, Colour.White, UV.BottomRight),
 				new Vertex(new Vector3(-t, -t,  t), Vector3.Down, Colour.White, UV.BottomLeft),
@@ -130,6 +135,8 @@ namespace CKGL
 			List<UV> uvs = new List<UV>();
 			List<TriangleIndices> faces = new List<TriangleIndices>();
 			Vector3 normal = Vector3.Up;
+			Vector3 tangent = Vector3.Right;
+			Vector3 bitangent = Vector3.Forward;
 
 			// Vertices
 			for (int z = 0; z < tz + 1; z++)
@@ -146,12 +153,16 @@ namespace CKGL
 				for (int i = 0; i < vertices.Count; i++)
 					vertices[i] = new Vector3(vertices[i].X, vertices[i].Z, 0f);
 				normal = Vector3.Backward;
+				tangent = Vector3.Right;
+				bitangent = Vector3.Up;
 			}
 			else if (orientation == Orientation.ZY)
 			{
 				for (int i = 0; i < vertices.Count; i++)
 					vertices[i] = new Vector3(0f, vertices[i].Z, vertices[i].X);
 				normal = Vector3.Right;
+				tangent = Vector3.Forward;
+				bitangent = Vector3.Up;
 			}
 
 			// Faces
@@ -176,9 +187,9 @@ namespace CKGL
 				uint[] indices32 = new uint[faces.Count * 3];
 				for (int i = 0; i < faces.Count; i++)
 				{
-					assembledVertices[3 * i] = new Vertex(vertices[faces[i].i1], normal, Colour.White, uvs[faces[i].i1]);
-					assembledVertices[3 * i + 1] = new Vertex(vertices[faces[i].i2], normal, Colour.White, uvs[faces[i].i2]);
-					assembledVertices[3 * i + 2] = new Vertex(vertices[faces[i].i3], normal, Colour.White, uvs[faces[i].i3]);
+					assembledVertices[3 * i] = new Vertex(vertices[faces[i].i1], normal, tangent, bitangent, Colour.White, uvs[faces[i].i1]);
+					assembledVertices[3 * i + 1] = new Vertex(vertices[faces[i].i2], normal, tangent, bitangent, Colour.White, uvs[faces[i].i2]);
+					assembledVertices[3 * i + 2] = new Vertex(vertices[faces[i].i3], normal, tangent, bitangent, Colour.White, uvs[faces[i].i3]);
 
 					indices16[3 * i] = (ushort)(3 * i);
 					indices16[3 * i + 1] = (ushort)(3 * i + 1);
@@ -208,7 +219,7 @@ namespace CKGL
 				}
 
 				for (int i = 0; i < assembledVertices.Length; i++)
-					assembledVertices[i] = new Vertex(vertices[i], normal, Colour.White, uvs[i]);
+					assembledVertices[i] = new Vertex(vertices[i], normal, tangent, bitangent, Colour.White, uvs[i]);
 
 				return new Geometry(assembledVertices, indices16, indices32);
 			}
