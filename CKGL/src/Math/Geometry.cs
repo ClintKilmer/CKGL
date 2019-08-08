@@ -626,5 +626,23 @@ namespace CKGL
 			}
 		}
 		#endregion
+
+		public static (Vector3 Tangent, Vector3 Bitangent) CalculateTangents(Vector3 v1, Vector3 v2, Vector3 v3, Vector2 uv1, Vector2 uv2, Vector2 uv3)
+		{
+			Vector3 edge1 = v2 - v1;
+			Vector3 edge2 = v3 - v1;
+			Vector2 deltaUV1 = uv2 - uv1;
+			Vector2 deltaUV2 = uv3 - uv1;
+
+			float div = deltaUV1.X * deltaUV2.Y - deltaUV2.X * deltaUV1.Y;
+			float f = div == 0f ? 0f : 1f / div; // Check for division by 0
+
+			return (new Vector3(f * (deltaUV2.Y * edge1.X - deltaUV1.Y * edge2.X),
+								f * (deltaUV2.Y * edge1.Y - deltaUV1.Y * edge2.Y),
+								f * (deltaUV2.Y * edge1.Z - deltaUV1.Y * edge2.Z)).Normalized,
+					new Vector3(f * (-deltaUV2.X * edge1.X + deltaUV1.X * edge2.X),
+								f * (-deltaUV2.X * edge1.Y + deltaUV1.X * edge2.Y),
+								f * (-deltaUV2.X * edge1.Z + deltaUV1.X * edge2.Z)).Normalized);
+		}
 	}
 }
