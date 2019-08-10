@@ -10,6 +10,10 @@ namespace CKGL
 		private static double dt = 1.0 / updateHz;
 		public static float DeltaTime { get { return (float)dt; } }
 
+		private static ulong tickCurrentTime = 0L;
+		private static double accumulator = 0.0;
+		private static double maximumFPSAccumulator = 0.0;
+
 		public static bool UseMinimumUPS { get { return MinimumUPS > 0; } }
 		public static int MinimumUPS { get; private set; } = 0;
 		public static double MinimumSPU { get; private set; } = 0.0;
@@ -28,9 +32,13 @@ namespace CKGL
 		public static float FPSSmoothed { get; private set; } = (float)(1.0 / dt);
 		public static float SPFSmoothed { get; private set; } = (float)dt;
 
-		private static double accumulator = 0.0;
 		public static bool DoUpdate { get { return accumulator >= dt; } }
 		public static bool DoDraw { get; private set; } = false;
+
+		static Time()
+		{
+			tickCurrentTime = Platform.PerformanceCounter;
+		}
 
 		public static void SetUpdateHz(double updateHz)
 		{
@@ -80,8 +88,6 @@ namespace CKGL
 			}
 		}
 
-		private static ulong tickCurrentTime = Platform.PerformanceCounter;
-		private static double maximumFPSAccumulator = 0.0;
 		public static void Tick()
 		{
 			ulong newTime = Platform.PerformanceCounter;
