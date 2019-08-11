@@ -540,12 +540,7 @@ namespace CKGL
 		#region Implicit Convertion Operators
 		public static implicit operator Matrix2D(Matrix matrix)
 		{
-			return new Matrix2D
-			(
-				matrix.M11, matrix.M12,
-				matrix.M21, matrix.M22,
-				matrix.M41, matrix.M42
-			);
+			return matrix.ToMatrix2D();
 		}
 		#endregion
 	}

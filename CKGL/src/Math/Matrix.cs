@@ -172,6 +172,20 @@ namespace CKGL
 			return array;
 		}
 
+		public Matrix ToMatrix2D()
+		{
+			return new Matrix2D(M11, M12,
+								M21, M22,
+								M41, M42);
+		}
+
+		public Matrix ToMatrix3x3()
+		{
+			return new Matrix3x3(M11, M12, M13,
+								 M21, M22, M23,
+								 M31, M32, M33);
+		}
+
 		public float Determinant()
 		{
 			float num22 = M11;
@@ -197,6 +211,14 @@ namespace CKGL
 			float num14 = (num8 * num2) - (num6 * num4);
 			float num13 = (num8 * num3) - (num7 * num4);
 			return ((((num22 * (((num11 * num18) - (num10 * num17)) + (num9 * num16))) - (num21 * (((num12 * num18) - (num10 * num15)) + (num9 * num14)))) + (num20 * (((num12 * num17) - (num11 * num15)) + (num9 * num13)))) - (num19 * (((num12 * num16) - (num11 * num14)) + (num10 * num13))));
+		}
+
+		public Matrix Transpose()
+		{
+			return new Matrix(M11, M21, M31, M41,
+							  M12, M22, M32, M42,
+							  M13, M23, M33, M43,
+							  M14, M24, M34, M44);
 		}
 
 		public Matrix Inverse()
@@ -776,7 +798,7 @@ namespace CKGL
 			return a;
 		}
 
-		// Using matrix multiplication algorithm - see http://en.wikipedia.org/wiki/Matrix_multiplication.
+		// Using matrix multiplication algorithm - see http://en.wikipedia.org/wiki/Matrix_multiplication
 		public static Matrix operator *(Matrix a, Matrix b)
 		{
 			var m11 = (a.M11 * b.M11) + (a.M12 * b.M21) + (a.M13 * b.M31) + (a.M14 * b.M41);
@@ -904,6 +926,11 @@ namespace CKGL
 		public static implicit operator Matrix(Matrix2D matrix2D)
 		{
 			return matrix2D.ToMatrix();
+		}
+
+		public static implicit operator Matrix(Matrix3x3 matrix3x3)
+		{
+			return matrix3x3.ToMatrix();
 		}
 		#endregion
 	}
