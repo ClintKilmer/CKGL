@@ -1738,6 +1738,7 @@ namespace CKGL.OpenGLBindings
 		Vec3 = GL_FLOAT_VEC3,
 		Vec4 = GL_FLOAT_VEC4,
 		Mat3x2 = GL_FLOAT_MAT3x2,
+		Mat3 = GL_FLOAT_MAT3,
 		Mat4 = GL_FLOAT_MAT4,
 		Sampler2D = GL_SAMPLER_2D,
 		SamplerCube = GL_SAMPLER_CUBE

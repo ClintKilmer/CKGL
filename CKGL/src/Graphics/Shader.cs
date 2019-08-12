@@ -142,7 +142,7 @@ namespace CKGL
 						{
 							arrName = $"{name}[{n}]";
 							int loc = GL.GetUniformLocation(id, arrName);
-							//Output.WriteLine("index:{0} name:{1} type:{2} loc:{3} count:{4}", i, arrName, type, loc, count);
+							//Output.WriteLine($"index:{i} name:{arrName} type:{type} loc:{loc} count:{count}");
 							var uniform = new Uniform(i, arrName, type, loc);
 							uniforms.Add(arrName, uniform);
 						}
@@ -150,7 +150,7 @@ namespace CKGL
 					else
 					{
 						GLint loc = GL.GetUniformLocation(id, name);
-						//Output.WriteLine("index:{0} name:{1} type:{2} loc:{3} count:{4}", i, name, type, loc, count);
+						//Output.WriteLine($"index:{i} name:{name} type:{type} loc:{loc} count:{count}");
 						var uniform = new Uniform(i, name, type, loc);
 						uniforms.Add(name, uniform);
 					}
@@ -206,6 +206,7 @@ namespace CKGL
 			private Vector4 Vector4Value;
 			private Colour ColourValue;
 			private Matrix2D Matrix2DValue;
+			private Matrix3x3 Matrix3x3Value;
 			private Matrix MatrixValue;
 			private Texture TextureValue;
 			private GLuint GLuintValue;
@@ -348,6 +349,17 @@ namespace CKGL
 					Graphics.State.OnStateChanged.Invoke();
 				}
 			}
+			public void SetUniform(Matrix3x3 value)
+			{
+				if (Matrix3x3Value != value)
+				{
+					Graphics.State.OnStateChanging.Invoke();
+					GL.UniformMatrix3fv(Location, 1, false, value.ToArrayColumnMajor());
+					UniformSwaps++;
+					Matrix3x3Value = value;
+					Graphics.State.OnStateChanged.Invoke();
+				}
+			}
 			public void SetUniform(Matrix value)
 			{
 				if (MatrixValue != value)
@@ -460,6 +472,11 @@ namespace CKGL
 			GetUniform(name).SetUniform(value);
 		}
 		public void SetUniform(string name, Matrix2D value)
+		{
+			Bind();
+			GetUniform(name).SetUniform(value);
+		}
+		public void SetUniform(string name, Matrix3x3 value)
 		{
 			Bind();
 			GetUniform(name).SetUniform(value);
