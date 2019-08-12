@@ -135,7 +135,6 @@ void main()
 		public Matrix V { set { SetUniform("V", value); } }
 		public Matrix P { set { SetUniform("P", value); } }
 		public Matrix3x3 NormalMatrix { set { SetUniform("NormalMatrix", value); } }
-		public Vector3 CameraPosition { set { SetUniform("CameraPosition", value); } }
 		public Vector3 Light1Position { set { SetUniform("pointLights[0].position", value); } }
 		public Vector3 Light2Position { set { SetUniform("pointLights[1].position", value); } }
 		public Vector3 Light3Position { set { SetUniform("pointLights[2].position", value); } }
