@@ -172,14 +172,14 @@ namespace CKGL
 			return array;
 		}
 
-		public Matrix ToMatrix2D()
+		public Matrix2D ToMatrix2D()
 		{
 			return new Matrix2D(M11, M12,
 								M21, M22,
 								M41, M42);
 		}
 
-		public Matrix ToMatrix3x3()
+		public Matrix3x3 ToMatrix3x3()
 		{
 			return new Matrix3x3(M11, M12, M13,
 								 M21, M22, M23,
