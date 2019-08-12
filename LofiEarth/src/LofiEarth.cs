@@ -37,7 +37,7 @@ void main()
 {
 	gl_Position = vec4(position, 1.0) * M * V * P;
     vFragPosition = vec3(vec4(position, 1.0) * M * V);
-	vNormal = normalize(normal * mat3(transpose(inverse(M * V)))); // 3x3 Normal Matrix - TODO: move this to shader uniform for performnce
+	vNormal = normalize(normal * mat3(transpose(inverse(M * V)))); // 3x3 Normal Matrix - TODO: move this to shader uniform for performance
 	vColour = colour;
 	vUV = uv;
 	vTextured = textured;
