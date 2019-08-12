@@ -26,6 +26,7 @@ layout(location = 4) in float textured;
 uniform mat4 M;
 uniform mat4 V;
 uniform mat4 P;
+uniform mat3 NormalMatrix;
 
 out vec3 vFragPosition;
 out vec3 vNormal;
@@ -42,7 +43,8 @@ void main()
 	//				position.z + cos(float(gl_InstanceID)) * 0.1 * float(gl_InstanceID));
 	//gl_Position = vec4(pos, 1.0) * M * V * P;
     //vFragPosition = vec3(vec4(pos, 1.0) * M * V);
-	vNormal = normalize(normal * mat3(transpose(inverse(M * V)))); // 3x3 Normal Matrix - TODO: move this to shader uniform for performnce
+	//vNormal = normalize(normal * mat3(transpose(inverse(M * V)))); // 3x3 Normal Matrix - moved this to shader uniform for performance
+	vNormal = normalize(normal * NormalMatrix);
 	vColour = colour;
 	vUV = uv;
 	vTextured = textured;
@@ -132,6 +134,7 @@ void main()
 		public Matrix M { set { SetUniform("M", value); } }
 		public Matrix V { set { SetUniform("V", value); } }
 		public Matrix P { set { SetUniform("P", value); } }
+		public Matrix3x3 NormalMatrix { set { SetUniform("NormalMatrix", value); } }
 		public Vector3 CameraPosition { set { SetUniform("CameraPosition", value); } }
 		public Vector3 Light1Position { set { SetUniform("pointLights[0].position", value); } }
 		public Vector3 Light2Position { set { SetUniform("pointLights[1].position", value); } }
@@ -494,22 +497,27 @@ void main()
 			Shaders.PointLightShader.Light3Radius = 75f;
 
 			Shaders.PointLightShader.M = cubeTransform.Matrix;
+			Shaders.PointLightShader.NormalMatrix = (cubeTransform.Matrix * Camera.ViewMatrix).ToMatrix3x3().Inverse().Transpose();
 			cubeGeometryInput.Bind();
 			Graphics.DrawIndexedVertexArrays(PrimitiveTopology.TriangleList, 0, cubeIndexBuffer.Count, cubeIndexBuffer.IndexType);
 
 			Shaders.PointLightShader.M = cube2Transform.Matrix;
+			Shaders.PointLightShader.NormalMatrix = (cube2Transform.Matrix * Camera.ViewMatrix).ToMatrix3x3().Inverse().Transpose();
 			cubeGeometryInput.Bind(); // Redundant
 			Graphics.DrawIndexedVertexArrays(PrimitiveTopology.TriangleList, 0, cubeIndexBuffer.Count, cubeIndexBuffer.IndexType);
 
 			Shaders.PointLightShader.M = cube3Transform.Matrix;
+			Shaders.PointLightShader.NormalMatrix = (cube3Transform.Matrix * Camera.ViewMatrix).ToMatrix3x3().Inverse().Transpose();
 			cubeGeometryInput.Bind(); // Redundant
 			Graphics.DrawIndexedVertexArrays(PrimitiveTopology.TriangleList, 0, cubeIndexBuffer.Count, cubeIndexBuffer.IndexType);
 
 			Shaders.PointLightShader.M = icosphereTransform.Matrix;
+			Shaders.PointLightShader.NormalMatrix = (icosphereTransform.Matrix * Camera.ViewMatrix).ToMatrix3x3().Inverse().Transpose();
 			icosphereGeometryInput.Bind();
 			Graphics.DrawIndexedVertexArrays(PrimitiveTopology.TriangleList, 0, icosphereIndexBuffer.Count, icosphereIndexBuffer.IndexType);
 
 			Shaders.PointLightShader.M = planeTransform.Matrix;
+			Shaders.PointLightShader.NormalMatrix = (planeTransform.Matrix * Camera.ViewMatrix).ToMatrix3x3().Inverse().Transpose();
 			planeGeometryInput.Bind();
 			Graphics.DrawIndexedVertexArrays(PrimitiveTopology.TriangleList, 0, planeIndexBuffer.Count, planeIndexBuffer.IndexType);
 
