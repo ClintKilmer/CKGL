@@ -601,7 +601,9 @@ namespace CKGL
 					indices32[3 * i + 2] = (uint)(3 * i + 2);
 				}
 
-				return new Geometry(assembledVertices, indices16, indices32);
+				var result = new Geometry(assembledVertices, indices16, indices32);
+				result.CalculateTangents();
+				return result;
 			}
 			else
 			{
@@ -622,12 +624,43 @@ namespace CKGL
 				for (int i = 0; i < assembledVertices.Length; i++)
 					assembledVertices[i] = new Vertex(vertices[i], vertices[i].Normalized, Colour.White, uvs[i]);
 
-				return new Geometry(assembledVertices, indices16, indices32);
+				var result = new Geometry(assembledVertices, indices16, indices32);
+				result.CalculateTangents();
+				return result;
 			}
 		}
 		#endregion
 
-		public static (Vector3 Tangent, Vector3 Bitangent) CalculateTangents(Vector3 v1, Vector3 v2, Vector3 v3, Vector2 uv1, Vector2 uv2, Vector2 uv3)
+		public void CalculateTangents()
+		{
+			short[] vertexReferences = new short[Vertices.Length];
+
+			for (int i = 0; i < Indices32.Length; i += 3)
+			{
+				vertexReferences[Indices32[i]]++;
+				(Vector3 tangent, Vector3 bitangent) = CalculateTangent(Vertices[Indices32[i]].Position, Vertices[Indices32[i + 1]].Position, Vertices[Indices32[i + 2]].Position, Vertices[Indices32[i]].UV, Vertices[Indices32[i + 1]].UV, Vertices[Indices32[i + 2]].UV);
+				Vertices[Indices32[i]].Tangent += Vertices[Indices32[i + 1]].Tangent = Vertices[Indices32[i + 2]].Tangent = tangent;
+				Vertices[Indices32[i]].Bitangent += Vertices[Indices32[i + 1]].Bitangent = Vertices[Indices32[i + 2]].Bitangent = bitangent;
+			}
+
+			for (int i = 0; i < Vertices.Length; i++)
+			{
+				if (vertexReferences[i] > 1)
+				{
+					Vertices[i].Tangent /= vertexReferences[i];
+					Vertices[i].Bitangent /= vertexReferences[i];
+
+					Vertices[i].Tangent = Vertices[i].Tangent.Normalized;
+					Vertices[i].Bitangent = Vertices[i].Bitangent.Normalized;
+
+					// Gram-Schmidt re-orthogonalize
+					Vertices[i].Tangent = Vector3.Normalize(Vertices[i].Tangent - Vector3.Dot(Vertices[i].Tangent, Vertices[i].Normal) * Vertices[i].Normal);
+					Vertices[i].Bitangent = Vector3.Cross(Vertices[i].Tangent, Vertices[i].Normal);
+				}
+			}
+		}
+
+		public static (Vector3 Tangent, Vector3 Bitangent) CalculateTangent(Vector3 v1, Vector3 v2, Vector3 v3, Vector2 uv1, Vector2 uv2, Vector2 uv3)
 		{
 			Vector3 edge1 = v2 - v1;
 			Vector3 edge2 = v3 - v1;
