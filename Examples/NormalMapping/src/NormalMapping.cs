@@ -159,37 +159,20 @@ void main()
 
 layout(location = 0) in vec3 position;
 layout(location = 1) in vec3 normal;
-layout(location = 2) in vec4 colour;
-layout(location = 3) in vec2 uv;
-layout(location = 4) in float textured;
 layout(location = 5) in vec3 tangent;
 layout(location = 6) in vec3 bitangent;
-
-uniform mat4 M;
-uniform mat4 V;
-uniform mat4 P;
-uniform mat3 NormalMatrix;
 
 out vec3 vNormal;
 out vec3 vTangent;
 out vec3 vBitangent;
-//out vec4 vColour;
-//out vec2 vUV;
-//out float vTextured;
 
 void main()
 {
-	gl_Position = vec4(position, 1.0) * M * V * P;
-	//vNormal = normalize(vec3(vec4(normal * mat3(transpose(inverse(M * V))), 0.0) * P)); // 3x3 Normal Matrix - moved this to shader uniform for performance
-	//vTangent = normalize(vec3(vec4(tangent * mat3(transpose(inverse(M * V))), 0.0) * P)); // 3x3 Normal Matrix - moved this to shader uniform for performance
-	//vBitangent = normalize(vec3(vec4(bitangent * mat3(transpose(inverse(M * V))), 0.0) * P)); // 3x3 Normal Matrix - moved this to shader uniform for performance
-	vNormal = normalize(vec3(vec4(normal * NormalMatrix, 0.0) * P)); // 3x3 Normal Matrix
-	vTangent = normalize(vec3(vec4(tangent * NormalMatrix, 0.0) * P)); // 3x3 Normal Matrix
-	vBitangent = normalize(vec3(vec4(bitangent * NormalMatrix, 0.0) * P)); // 3x3 Normal Matrix
-	//vBitangent = normalize(vec3(vec4(cross(tangent, normal) * NormalMatrix, 0.0) * P));
-	//vColour = colour;
-	//vUV = uv;
-	//vTextured = textured;
+	gl_Position = vec4(position, 1.0);
+	vNormal = normalize(normal);
+	vTangent = normalize(tangent);
+	vBitangent = normalize(bitangent);
+	//vBitangent = normalize(cross(tangent, normal));
 }
 
 
@@ -202,53 +185,36 @@ in vec3 vNormal[];
 in vec3 vTangent[];
 in vec3 vBitangent[];
 
+uniform mat4 MVP;
+
 out vec4 gColour;
 
-const float MAGNITUDE = 0.4;
+const float MAGNITUDE = 0.1;
 
-void GenerateNormalLine(int index)
+void GenerateLine(vec4 p1, vec4 p2, vec4 colour)
 {
-	gColour = vec4(0.0, 0.0, 1.0, 1.0);
-	gl_Position = gl_in[index].gl_Position;
+	gColour = colour;
+	gl_Position = p1;
 	EmitVertex();
-	gl_Position = gl_in[index].gl_Position + vec4(vNormal[index], 0.0) * MAGNITUDE;
-	EmitVertex();
-	EndPrimitive();
-}
-
-void GenerateTangentLine(int index)
-{
-	gColour = vec4(1.0, 0.0, 0.0, 1.0);
-	gl_Position = gl_in[index].gl_Position;
-	EmitVertex();
-	gl_Position = gl_in[index].gl_Position + vec4(vTangent[index], 0.0) * MAGNITUDE;
-	EmitVertex();
-	EndPrimitive();
-}
-
-void GenerateBitangentLine(int index)
-{
-	gColour = vec4(0.0, 1.0, 0.0, 1.0);
-	gl_Position = gl_in[index].gl_Position;
-	EmitVertex();
-	gl_Position = gl_in[index].gl_Position + vec4(vBitangent[index], 0.0) * MAGNITUDE;
+	gl_Position = p2;
 	EmitVertex();
 	EndPrimitive();
 }
 
 void main()
 {
-	GenerateNormalLine(0); // first vertex normal
-	GenerateNormalLine(1); // second vertex normal
-	GenerateNormalLine(2); // third vertex normal
-
-	GenerateTangentLine(0); // first vertex normal
-	GenerateTangentLine(1); // second vertex normal
-	GenerateTangentLine(2); // third vertex normal
-
-	GenerateBitangentLine(0); // first vertex normal
-	GenerateBitangentLine(1); // second vertex normal
-	GenerateBitangentLine(2); // third vertex normal
+	int i;
+	for(i = 0; i < gl_in.length(); i++)
+	{
+		vec4 position  = vec4(gl_in[i].gl_Position.xyz, 1.0) * MVP;
+		vec4 normal    = vec4(gl_in[i].gl_Position.xyz + vNormal[i] * MAGNITUDE, 1.0) * MVP;
+		vec4 tangent   = vec4(gl_in[i].gl_Position.xyz + vTangent[i] * MAGNITUDE, 1.0) * MVP;
+		vec4 bitangent = vec4(gl_in[i].gl_Position.xyz + vBitangent[i] * MAGNITUDE, 1.0) * MVP;
+		
+		GenerateLine(position, normal,    vec4(0.0, 0.0, 1.0, 1.0));
+		GenerateLine(position, tangent,   vec4(1.0, 0.0, 0.0, 1.0));
+		GenerateLine(position, bitangent, vec4(0.0, 1.0, 0.0, 1.0));
+	}
 }
 
 
@@ -264,10 +230,7 @@ void main()
 }";
 		#endregion
 
-		public Matrix M { set { SetUniform("M", value); } }
-		public Matrix V { set { SetUniform("V", value); } }
-		public Matrix P { set { SetUniform("P", value); } }
-		public Matrix3x3 NormalMatrix { set { SetUniform("NormalMatrix", value); } }
+		public Matrix MVP { set { SetUniform("MVP", value); } }
 
 		public NormalTangentBitangentShader() : base(glsl) { }
 	}
@@ -445,10 +408,10 @@ void main()
 			Geometry cubeGeometry = Geometry.Cube();
 			cubeVertices = new Vertex[cubeGeometry.Vertices.Length];
 			for (int i = 0; i < cubeGeometry.Vertices.Length; i++)
-				cubeVertices[i] = new Vertex(cubeGeometry.Vertices[i].Position, cubeGeometry.Vertices[i].Normal, cubeGeometry.Vertices[i].Colour, cubeGeometry.Vertices[i].UV, false);
+				cubeVertices[i] = new Vertex(cubeGeometry.Vertices[i].Position, cubeGeometry.Vertices[i].Normal, cubeGeometry.Vertices[i].Colour, cubeGeometry.Vertices[i].UV, false, cubeGeometry.Vertices[i].Tangent, cubeGeometry.Vertices[i].Bitangent);
 			cubeIndices = cubeGeometry.Indices16;
 
-			Geometry icosphereGeometry = Geometry.Octahedron(0.5f, 5, false);
+			Geometry icosphereGeometry = Geometry.Octahedron(0.5f, 4, false);
 			//Geometry icosphereGeometry = Geometry.Plane(1f, Geometry.Orientation.XY, 1, 1, false);
 			icosphereVertices = new Vertex[icosphereGeometry.Vertices.Length];
 			for (int i = 0; i < icosphereGeometry.Vertices.Length; i++)
@@ -664,10 +627,20 @@ void main()
 
 			// Visualize Normals/Tangents/Bitangents
 			Shaders.NormalTangentBitangentShader.Bind();
-			Shaders.NormalTangentBitangentShader.M = icosphereTransform.Matrix;
-			Shaders.NormalTangentBitangentShader.V = Camera.ViewMatrix;
-			Shaders.NormalTangentBitangentShader.P = Camera.ProjectionMatrix;
-			Shaders.NormalTangentBitangentShader.NormalMatrix = (icosphereTransform.Matrix * Camera.ViewMatrix).ToMatrix3x3().Inverse().Transpose();
+
+			Shaders.NormalTangentBitangentShader.MVP = cubeTransform.Matrix * Camera.Matrix;
+			cubeGeometryInput.Bind();
+			Graphics.DrawIndexedVertexArrays(PrimitiveTopology.TriangleList, 0, cubeIndexBuffer.Count, cubeIndexBuffer.IndexType);
+
+			Shaders.NormalTangentBitangentShader.MVP = cube2Transform.Matrix * Camera.Matrix;
+			cubeGeometryInput.Bind(); // Redundant
+			Graphics.DrawIndexedVertexArrays(PrimitiveTopology.TriangleList, 0, cubeIndexBuffer.Count, cubeIndexBuffer.IndexType);
+
+			Shaders.NormalTangentBitangentShader.MVP = cube3Transform.Matrix * Camera.Matrix;
+			cubeGeometryInput.Bind(); // Redundant
+			Graphics.DrawIndexedVertexArrays(PrimitiveTopology.TriangleList, 0, cubeIndexBuffer.Count, cubeIndexBuffer.IndexType);
+
+			Shaders.NormalTangentBitangentShader.MVP = icosphereTransform.Matrix * Camera.Matrix;
 			icosphereGeometryInput.Bind();
 			Graphics.DrawIndexedVertexArrays(PrimitiveTopology.TriangleList, 0, icosphereIndexBuffer.Count, icosphereIndexBuffer.IndexType);
 
