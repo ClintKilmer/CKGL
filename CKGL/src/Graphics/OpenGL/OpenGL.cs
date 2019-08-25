@@ -2036,6 +2036,7 @@ namespace CKGL.OpenGLBindings
 		#region Error/Debug Functions
 		[Shared]
 		private static _glGetError glGetError;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate ErrorCode _glGetError();
 		[Conditional("DEBUG")]
 		private static void CheckError()
@@ -2050,13 +2051,16 @@ namespace CKGL.OpenGLBindings
 		}
 
 		private static _glDebugMessageCallback glDebugMessageCallback;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glDebugMessageCallback(IntPtr debugCallback, IntPtr userParam);
 
 		private static _glDebugMessageControl glDebugMessageControl;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glDebugMessageControl(DebugSource source, DebugType type, DebugSeverity severity, GLint count, IntPtr ids, bool enabled);
 
 		// ARB_debug_output/KHR_debug callback
 		private static DebugProc DebugCall = DebugCallback;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void DebugProc(DebugSource source, DebugType type, GLuint id, DebugSeverity severity, GLint length, IntPtr message, IntPtr userParam);
 		private static void DebugCallback(DebugSource source, DebugType type, uint id, DebugSeverity severity, int length, IntPtr message, IntPtr userParam)
 		{
@@ -2073,6 +2077,7 @@ namespace CKGL.OpenGLBindings
 		#region Get String/Integer Functions
 		[Shared]
 		private static _glGetString glGetString;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate IntPtr _glGetString(Strings name);
 		public unsafe static string GetString(Strings name)
 		{
@@ -2083,6 +2088,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glGetIntegerv glGetIntegerv;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private unsafe delegate void _glGetIntegerv(Integers name, GLint* data);
 		private unsafe static void GetIntegerv(Integers name, out int val)
 		{
@@ -2103,6 +2109,7 @@ namespace CKGL.OpenGLBindings
 		#region Enable/Disable Functions
 		[Shared]
 		private static _glEnable glEnable;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glEnable(EnableCap mode);
 		public static void Enable(EnableCap mode)
 		{
@@ -2112,6 +2119,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glDisable glDisable;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glDisable(EnableCap mode);
 		public static void Disable(EnableCap mode)
 		{
@@ -2123,6 +2131,7 @@ namespace CKGL.OpenGLBindings
 		#region Viewport/Scissor Functions
 		[Shared]
 		private static _glViewport glViewport;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glViewport(GLint x, GLint y, GLint width, GLint height);
 		public static void Viewport(int x, int y, int width, int height)
 		{
@@ -2132,6 +2141,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glScissor glScissor;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glScissor(GLint x, GLint y, GLint width, GLint height);
 		public static void Scissor(int x, int y, int width, int height)
 		{
@@ -2143,6 +2153,7 @@ namespace CKGL.OpenGLBindings
 		#region Colour Mask Functions
 		[Shared]
 		private static _glColorMask glColorMask;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glColorMask(bool red​, bool green​, bool blue​, bool alpha);
 		public static void ColourMask(bool red​, bool green​, bool blue​, bool alpha​)
 		{
@@ -2152,6 +2163,7 @@ namespace CKGL.OpenGLBindings
 
 		[OpenGL]
 		private static _glColorMaski glColorMaski;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glColorMaski(GLuint buf, bool red​, bool green​, bool blue​, bool alpha​);
 		public static void ColourMask(uint buf, bool red​, bool green​, bool blue​, bool alpha​)
 		{
@@ -2163,6 +2175,7 @@ namespace CKGL.OpenGLBindings
 		#region Blend State Functions
 		[Shared]
 		private static _glBlendColor glBlendColor;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glBlendColor(float red, float green, float blue, float alpha);
 		public static void BlendColour(float red, float green, float blue, float alpha)
 		{
@@ -2172,6 +2185,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glBlendEquation glBlendEquation;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glBlendEquation(BlendEquation eq);
 		public static void BlendEquation(BlendEquation eq)
 		{
@@ -2181,6 +2195,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glBlendEquationSeparate glBlendEquationSeparate;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glBlendEquationSeparate(BlendEquation modeRGB, BlendEquation modeAlpha);
 		public static void BlendEquationSeparate(BlendEquation modeRGB, BlendEquation modeAlpha)
 		{
@@ -2190,6 +2205,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glBlendFunc glBlendFunc;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glBlendFunc(BlendFactor sfactor, BlendFactor dfactor);
 		public static void BlendFunc(BlendFactor sFactor, BlendFactor dFactor)
 		{
@@ -2199,6 +2215,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glBlendFuncSeparate glBlendFuncSeparate;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glBlendFuncSeparate(BlendFactor srcRGB, BlendFactor dstRGB, BlendFactor srcAlpha, BlendFactor dstAlpha);
 		public static void BlendFuncSeparate(BlendFactor srcRGB, BlendFactor dstRGB, BlendFactor srcAlpha, BlendFactor dstAlpha)
 		{
@@ -2210,6 +2227,7 @@ namespace CKGL.OpenGLBindings
 		#region Depth State Functions
 		[Shared]
 		private static _glDepthMask glDepthMask;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glDepthMask(bool flag);
 		public static void DepthMask(bool flag)
 		{
@@ -2219,6 +2237,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glDepthFunc glDepthFunc;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glDepthFunc(DepthFunc func);
 		public static void DepthFunc(DepthFunc func)
 		{
@@ -2227,8 +2246,10 @@ namespace CKGL.OpenGLBindings
 		}
 
 		private static _glDepthRange glDepthRange;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glDepthRange(double nearVal, double farVal);
 		private static _glDepthRangef glDepthRangef;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glDepthRangef(float n, float f);
 		public static void DepthRange(double min, double max)
 		{
@@ -2240,6 +2261,7 @@ namespace CKGL.OpenGLBindings
 		#region Stencil State Functions
 		[Shared]
 		private static _glStencilMask glStencilMask;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glStencilMask(GLuint mask);
 		public static void StencilMask(uint mask)
 		{
@@ -2249,6 +2271,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glStencilMaskSeparate glStencilMaskSeparate;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glStencilMaskSeparate(Face face, GLuint mask);
 		public static void StencilMaskSeparate(Face face, uint mask)
 		{
@@ -2258,6 +2281,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glStencilFunc glStencilFunc;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glStencilFunc(StencilFunc func, GLint reference, GLuint mask);
 		public static void StencilFunc(StencilFunc func, int reference, uint mask)
 		{
@@ -2267,6 +2291,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glStencilFuncSeparate glStencilFuncSeparate;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glStencilFuncSeparate(Face face, StencilFunc func, GLint reference, GLuint mask);
 		public static void StencilFuncSeparate(Face face, StencilFunc func, int reference, uint mask)
 		{
@@ -2276,6 +2301,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glStencilOp glStencilOp;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glStencilOp(StencilOp sfail, StencilOp dpfail, StencilOp dppass);
 		public static void StencilOp(StencilOp sfail, StencilOp dpfail, StencilOp dppass)
 		{
@@ -2285,6 +2311,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glStencilOpSeparate glStencilOpSeparate;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glStencilOpSeparate(Face face, StencilOp sfail, StencilOp dpfail, StencilOp dppass);
 		public static void StencilOpSeparate(Face face, StencilOp sfail, StencilOp dpfail, StencilOp dppass)
 		{
@@ -2296,6 +2323,7 @@ namespace CKGL.OpenGLBindings
 		#region Rasterizer State Functions
 		[Shared]
 		private static _glFrontFace glFrontFace;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glFrontFace(FrontFace mode);
 		public static void FrontFace(FrontFace face)
 		{
@@ -2305,6 +2333,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glCullFace glCullFace;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glCullFace(Face mode);
 		public static void CullFace(Face face)
 		{
@@ -2314,6 +2343,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glPolygonOffset glPolygonOffset;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glPolygonOffset(float factor, float units);
 		public static void PolygonOffset(float factor, float units)
 		{
@@ -2323,6 +2353,7 @@ namespace CKGL.OpenGLBindings
 
 		[OpenGL, DesktopES]
 		private static _glPolygonMode glPolygonMode;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glPolygonMode(Face face, PolygonMode mode);
 		public static void PolygonMode(PolygonMode mode)
 		{
@@ -2343,6 +2374,7 @@ namespace CKGL.OpenGLBindings
 		#region Clear Functions
 		[Shared]
 		private static _glClear glClear;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glClear(BufferBit mask);
 		public static void Clear(BufferBit mask)
 		{
@@ -2352,6 +2384,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glClearColor glClearColor;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glClearColor(float red, float green, float blue, float alpha);
 		public static void ClearColour(float red, float green, float blue, float alpha)
 		{
@@ -2364,8 +2397,10 @@ namespace CKGL.OpenGLBindings
 		}
 
 		private static _glClearDepth glClearDepth;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glClearDepth(double depth);
 		private static _glClearDepthf glClearDepthf;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glClearDepthf(float depth);
 		public static void ClearDepth(double depth)
 		{
@@ -2377,6 +2412,7 @@ namespace CKGL.OpenGLBindings
 		#region Texture Functions
 		[Shared]
 		private static _glGenTextures glGenTextures;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private unsafe delegate void _glGenTextures(GLint n, GLuint* textures);
 		public unsafe static void GenTextures(int n, uint[] textures)
 		{
@@ -2393,6 +2429,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glDeleteTextures glDeleteTextures;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private unsafe delegate void _glDeleteTextures(GLint n, GLuint* textures);
 		public unsafe static void DeleteTextures(int n, uint[] textures)
 		{
@@ -2407,6 +2444,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glActiveTexture glActiveTexture;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glActiveTexture(GLuint textureImageUnit);
 		public static void ActiveTexture(uint textureImageUnit)
 		{
@@ -2419,6 +2457,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glBindTexture glBindTexture;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glBindTexture(TextureTarget target, GLuint texture);
 		public static void BindTexture(TextureTarget target, uint texture)
 		{
@@ -2428,6 +2467,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glTexImage2D glTexImage2D;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glTexImage2D(TexImageTarget target, GLint level, GLint internalFormat, GLint width, GLint height, GLint border, PixelFormat format, DataType type, IntPtr data);
 		public static void TexImage2D(TexImageTarget target, int level, TextureFormat internalFormat, int width, int height, int border, PixelFormat format, DataType type, IntPtr data)
 		{
@@ -2437,6 +2477,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glTexParameteri glTexParameteri;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glTexParameteri(TextureTarget target, TextureParam pname, GLint param);
 		public static void TexParameterI(TextureTarget target, TextureParam pname, int param)
 		{
@@ -2446,6 +2487,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glGetTexParameteriv glGetTexParameteriv;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glGetTexParameteriv(TextureTarget target, TextureParam pname, out GLint result);
 		public static void GetTexParameterI(TextureTarget target, TextureParam pname, out int result)
 		{
@@ -2456,6 +2498,7 @@ namespace CKGL.OpenGLBindings
 		[OpenGL]
 		[DesktopES]
 		private static _glGetTexImage glGetTexImage;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glGetTexImage(TexImageTarget target, GLint level, PixelFormat format, DataType type, IntPtr data);
 		public static void GetTexImage(TexImageTarget target, int level, PixelFormat format, DataType type, IntPtr data)
 		{
@@ -2475,6 +2518,7 @@ namespace CKGL.OpenGLBindings
 		#region Buffer Functions
 		[Shared]
 		private static _glGenBuffers glGenBuffers;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private unsafe delegate void _glGenBuffers(GLint n, GLuint* buffers);
 		public unsafe static void GenBuffers(int n, uint[] buffers)
 		{
@@ -2495,6 +2539,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glDeleteBuffers glDeleteBuffers;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private unsafe delegate void _glDeleteBuffers(GLint n, GLuint* buffers);
 		public unsafe static void DeleteBuffers(int n, uint[] buffers)
 		{
@@ -2513,6 +2558,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glBindBuffer glBindBuffer;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glBindBuffer(BufferTarget target, GLuint buffer);
 		public static void BindBuffer(BufferTarget target, uint buffer)
 		{
@@ -2522,6 +2568,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glBufferData glBufferData;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glBufferData(BufferTarget target, IntPtr size, IntPtr data, BufferUsage usage);
 		public static void BufferData(BufferTarget target, int size, IntPtr data, BufferUsage usage)
 		{
@@ -2536,6 +2583,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glBufferSubData glBufferSubData;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glBufferSubData(BufferTarget target, IntPtr offset, IntPtr size, IntPtr data);
 		public static void BufferSubData(BufferTarget target, int offset, int size, IntPtr data)
 		{
@@ -2546,6 +2594,7 @@ namespace CKGL.OpenGLBindings
 		[OpenGL]
 		[DesktopES]
 		private static _glGetBufferSubData glGetBufferSubData;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glGetBufferSubData(BufferTarget target, IntPtr offset, IntPtr size, IntPtr data);
 		public static void GetBufferSubData(BufferTarget target, int offset, int size, IntPtr data)
 		{
@@ -2565,6 +2614,7 @@ namespace CKGL.OpenGLBindings
 		#region Framebuffer Functions
 		[Shared]
 		private static _glGenFramebuffers glGenFramebuffers;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private unsafe delegate void _glGenFramebuffers(GLint n, GLuint* framebuffers);
 		public unsafe static void GenFramebuffers(int n, uint[] framebuffers)
 		{
@@ -2581,6 +2631,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glDeleteFramebuffers glDeleteFramebuffers;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private unsafe delegate void _glDeleteFramebuffers(GLint n, GLuint* framebuffers);
 		public unsafe static void DeleteFramebuffers(int n, uint[] framebuffers)
 		{
@@ -2595,6 +2646,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glBindFramebuffer glBindFramebuffer;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glBindFramebuffer(FramebufferTarget target, GLuint framebuffer);
 		public static void BindFramebuffer(FramebufferTarget target, uint framebuffer)
 		{
@@ -2604,6 +2656,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glFramebufferTexture2D glFramebufferTexture2D;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glFramebufferTexture2D(FramebufferTarget target, TextureAttachment attachment, TexImageTarget textarget, GLuint texture, GLint level);
 		public static void FramebufferTexture2D(FramebufferTarget target, TextureAttachment attachment, TexImageTarget textarget, uint texture, int level)
 		{
@@ -2619,6 +2672,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glCheckFramebufferStatus glCheckFramebufferStatus;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate FramebufferStatus _glCheckFramebufferStatus(FramebufferTarget target);
 		public static FramebufferStatus CheckFramebufferStatus(FramebufferTarget target)
 		{
@@ -2629,6 +2683,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glDrawBuffers glDrawBuffers;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private unsafe delegate void _glDrawBuffers(GLint n, DrawBuffer* bufs);
 		public unsafe static void DrawBuffers(int n, DrawBuffer[] bufs)
 		{
@@ -2643,6 +2698,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glReadBuffer glReadBuffer;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glReadBuffer(ReadBuffer buffer);
 		public static void ReadBuffer(ReadBuffer buffer)
 		{
@@ -2652,6 +2708,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glBlitFramebuffer glBlitFramebuffer;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glBlitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, BufferBit mask, BlitFilter filter);
 		public static void BlitFramebuffer(RectangleI src, RectangleI dst, BufferBit mask, BlitFilter filter)
 		{
@@ -2661,6 +2718,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glReadPixels glReadPixels;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private unsafe delegate void _glReadPixels(GLint x, GLint y, GLint w, GLint h, PixelFormat format, DataType type, byte* data);
 		public unsafe static void ReadPixels(RectangleI rect, PixelFormat format, byte[] data)
 		{
@@ -2674,6 +2732,7 @@ namespace CKGL.OpenGLBindings
 		#region Renderbuffer Functions
 		[Shared]
 		private static _glGenRenderbuffers glGenRenderbuffers;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private unsafe delegate void _glGenRenderbuffers(GLint n, GLuint* renderbuffers);
 		public unsafe static void GenRenderbuffers(int n, uint[] renderbuffers)
 		{
@@ -2690,6 +2749,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glDeleteRenderbuffers glDeleteRenderbuffers;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private unsafe delegate void _glDeleteRenderbuffers(GLint n, GLuint* renderbuffers);
 		public unsafe static void DeleteRenderbuffers(int n, uint[] renderbuffers)
 		{
@@ -2704,6 +2764,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glBindRenderbuffer glBindRenderbuffer;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glBindRenderbuffer(GLuint target, GLuint buffer);
 		public static void BindRenderbuffer(uint buffer)
 		{
@@ -2713,6 +2774,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glRenderbufferStorage glRenderbufferStorage;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glRenderbufferStorage(GLuint target, TextureFormat internalformat, GLint width, GLint height);
 		public static void RenderbufferStorage(TextureFormat internalformat, int width, int height)
 		{
@@ -2722,6 +2784,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glFramebufferRenderbuffer glFramebufferRenderbuffer;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glFramebufferRenderbuffer(FramebufferTarget target, TextureAttachment attachment, GLuint renderbufferTarget, GLuint renderbuffer);
 		public static void FramebufferRenderbuffer(FramebufferTarget target, TextureAttachment attachment, uint renderbuffer)
 		{
@@ -2733,6 +2796,7 @@ namespace CKGL.OpenGLBindings
 		#region Vertex Array Functions
 		[Shared]
 		private static _glGenVertexArrays glGenVertexArrays;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private unsafe delegate void _glGenVertexArrays(GLint n, GLuint* arrays);
 		public unsafe static void GenVertexArrays(int n, uint[] arrays)
 		{
@@ -2749,6 +2813,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glDeleteVertexArrays glDeleteVertexArrays;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private unsafe delegate void _glDeleteVertexArrays(GLint n, GLuint* arrays);
 		public unsafe static void DeleteVertexArrays(int n, uint[] arrays)
 		{
@@ -2763,6 +2828,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glBindVertexArray glBindVertexArray;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glBindVertexArray(uint array);
 		public static void BindVertexArray(uint array)
 		{
@@ -2774,6 +2840,7 @@ namespace CKGL.OpenGLBindings
 		#region Vertex Attribute Functions
 		[Shared]
 		private static _glVertexAttribPointer glVertexAttribPointer;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glVertexAttribPointer(GLuint index, GLint size, DataType type, bool normalized, GLint stride, IntPtr pointer);
 		public static void VertexAttribPointer(uint index, int size, DataType type, bool normalized, int stride, IntPtr pointer)
 		{
@@ -2787,6 +2854,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glVertexAttribDivisor glVertexAttribDivisor;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glVertexAttribDivisor(GLuint index, GLuint divisor);
 		public static void VertexAttribDivisor(uint index, uint divisor)
 		{
@@ -2796,6 +2864,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glEnableVertexAttribArray glEnableVertexAttribArray;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glEnableVertexAttribArray(GLuint index);
 		public static void EnableVertexAttribArray(uint index)
 		{
@@ -2805,6 +2874,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glDisableVertexAttribArray glDisableVertexAttribArray;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glDisableVertexAttribArray(GLuint index);
 		public static void DisableVertexAttribArray(uint index)
 		{
@@ -2816,6 +2886,7 @@ namespace CKGL.OpenGLBindings
 		#region Shader Functions
 		[Shared]
 		private static _glCreateShader glCreateShader;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate GLuint _glCreateShader(ShaderType type);
 		public static uint CreateShader(ShaderType type)
 		{
@@ -2826,6 +2897,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glDeleteShader glDeleteShader;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glDeleteShader(GLuint shader);
 		public static void DeleteShader(uint shader)
 		{
@@ -2835,6 +2907,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glAttachShader glAttachShader;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glAttachShader(GLuint program, GLuint shader);
 		public static void AttachShader(uint program, uint shader)
 		{
@@ -2844,6 +2917,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glDetachShader glDetachShader;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glDetachShader(GLuint program, GLuint shader);
 		public static void DetachShader(uint program, uint shader)
 		{
@@ -2853,6 +2927,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glShaderSource glShaderSource;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glShaderSource(GLuint shader, GLint count, string[] source, GLint[] length);
 		public static void ShaderSource(uint shader, string source)
 		{
@@ -2862,6 +2937,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glCompileShader glCompileShader;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glCompileShader(GLuint shader);
 		public static void CompileShader(uint shader)
 		{
@@ -2871,6 +2947,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glGetShaderiv glGetShaderiv;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glGetShaderiv(GLuint shader, ShaderParam pname, out GLint result);
 		public static void GetShader(uint shader, ShaderParam pname, out int result)
 		{
@@ -2880,6 +2957,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glGetShaderInfoLog glGetShaderInfoLog;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glGetShaderInfoLog(GLuint shader, GLint maxLength, out GLint length, byte[] infoLog);
 		public static string GetShaderInfoLog(uint shader)
 		{
@@ -2892,6 +2970,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glCreateProgram glCreateProgram;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate GLuint _glCreateProgram();
 		public static uint CreateProgram()
 		{
@@ -2902,6 +2981,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glDeleteProgram glDeleteProgram;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glDeleteProgram(GLuint program);
 		public static void DeleteProgram(uint program)
 		{
@@ -2911,6 +2991,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glLinkProgram glLinkProgram;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glLinkProgram(GLuint program);
 		public static void LinkProgram(uint program)
 		{
@@ -2920,6 +3001,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glValidateProgram glValidateProgram;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glValidateProgram(GLuint program);
 		public static void ValidateProgram(uint program)
 		{
@@ -2929,6 +3011,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glGetProgramiv glGetProgramiv;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glGetProgramiv(GLuint program, ProgramParam pname, out GLint result);
 		public static void GetProgram(uint program, ProgramParam pname, out int result)
 		{
@@ -2938,6 +3021,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glGetProgramInfoLog glGetProgramInfoLog;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glGetProgramInfoLog(GLuint program, GLint maxLength, out GLint length, byte[] infoLog);
 		public static string GetProgramInfoLog(uint program)
 		{
@@ -2950,6 +3034,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glUseProgram glUseProgram;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glUseProgram(GLuint program);
 		public static void UseProgram(uint program)
 		{
@@ -2959,6 +3044,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glGetAttribLocation glGetAttribLocation;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glGetAttribLocation(GLuint program, string name);
 		public static void GetAttribLocation(uint program, string name)
 		{
@@ -2968,6 +3054,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glBindAttribLocation glBindAttribLocation;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glBindAttribLocation(GLuint program, GLuint index, string name);
 		public static void BindAttribLocation(uint program, uint index, string name)
 		{
@@ -2979,6 +3066,7 @@ namespace CKGL.OpenGLBindings
 		#region Shader Uniform Functions
 		[Shared]
 		private static _glGetActiveUniform glGetActiveUniform;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private unsafe delegate void _glGetActiveUniform(GLuint program, GLuint index, GLint bufSize, out GLint length, out GLint size, out UniformType type, byte* name);
 		private static UniformType[] validUniformTypes = (UniformType[])Enum.GetValues(typeof(UniformType));
 		private static byte[] uniformName = new byte[32];
@@ -2996,6 +3084,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glGetUniformLocation glGetUniformLocation;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate GLint _glGetUniformLocation(GLuint program, string name);
 		public static int GetUniformLocation(uint program, string name)
 		{
@@ -3012,13 +3101,21 @@ namespace CKGL.OpenGLBindings
 		[Shared] private static _glUniform2fv glUniform2fv;
 		[Shared] private static _glUniform3fv glUniform3fv;
 		[Shared] private static _glUniform4fv glUniform4fv;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glUniform1f(GLint location, float v0);
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glUniform2f(GLint location, float v0, float v1);
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glUniform3f(GLint location, float v0, float v1, float v2);
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glUniform4f(GLint location, float v0, float v1, float v2, float v3);
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glUniform1fv(GLint location, GLint count, float[] value);
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glUniform2fv(GLint location, GLint count, float[] value);
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glUniform3fv(GLint location, GLint count, float[] value);
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glUniform4fv(GLint location, GLint count, float[] value);
 		public static void Uniform1f(int location, float v0)
 		{
@@ -3069,13 +3166,21 @@ namespace CKGL.OpenGLBindings
 		[Shared] private static _glUniform2iv glUniform2iv;
 		[Shared] private static _glUniform3iv glUniform3iv;
 		[Shared] private static _glUniform4iv glUniform4iv;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glUniform1i(GLint location, GLint v0);
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glUniform2i(GLint location, GLint v0, GLint v1);
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glUniform3i(GLint location, GLint v0, GLint v1, GLint v2);
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glUniform4i(GLint location, GLint v0, GLint v1, GLint v2, GLint v3);
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glUniform1iv(GLint location, GLint count, GLint[] value);
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glUniform2iv(GLint location, GLint count, GLint[] value);
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glUniform3iv(GLint location, GLint count, GLint[] value);
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glUniform4iv(GLint location, GLint count, GLint[] value);
 		public static void Uniform1i(int location, int v0)
 		{
@@ -3126,13 +3231,21 @@ namespace CKGL.OpenGLBindings
 		[Shared] private static _glUniform2uiv glUniform2uiv;
 		[Shared] private static _glUniform3uiv glUniform3uiv;
 		[Shared] private static _glUniform4uiv glUniform4uiv;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glUniform1ui(GLint location, GLuint v0);
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glUniform2ui(GLint location, GLuint v0, GLuint v1);
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glUniform3ui(GLint location, GLuint v0, GLuint v1, GLuint v2);
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glUniform4ui(GLint location, GLuint v0, GLuint v1, GLuint v2, GLuint v3);
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glUniform1uiv(GLint location, GLint count, GLuint[] value);
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glUniform2uiv(GLint location, GLint count, GLuint[] value);
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glUniform3uiv(GLint location, GLint count, GLuint[] value);
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glUniform4uiv(GLint location, GLint count, GLuint[] value);
 		public static void Uniform1ui(int location, uint v0)
 		{
@@ -3177,6 +3290,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glUniformMatrix2fv glUniformMatrix2fv;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glUniformMatrix2fv(GLint location, GLint count, bool transpose, float[] value);
 		public static void UniformMatrix2fv(int location, int count, bool transpose, float[] value)
 		{
@@ -3186,6 +3300,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glUniformMatrix3fv glUniformMatrix3fv;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glUniformMatrix3fv(GLint location, GLint count, bool transpose, float[] value);
 		public static void UniformMatrix3fv(int location, int count, bool transpose, float[] value)
 		{
@@ -3195,12 +3310,14 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glUniformMatrix4fv glUniformMatrix4fv;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private unsafe delegate void _glUniformMatrix4fv(GLint location, GLint count, bool transpose, float[] value);
 		public static void UniformMatrix4fv(int location, int count, bool transpose, float[] value)
 		{
 			glUniformMatrix4fv(location, count, transpose, value);
 			CheckError();
 		}
+		//[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		//private unsafe delegate void _glUniformMatrix4fv(GLint location, GLint count, bool transpose, float* value);
 		//public unsafe static void UniformMatrix4fv(int location, int count, bool transpose, float* value)
 		//{
@@ -3215,6 +3332,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glUniformMatrix2x3fv glUniformMatrix2x3fv;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glUniformMatrix2x3fv(GLint location, GLint count, bool transpose, float[] value);
 		public static void UniformMatrix2x3fv(int location, int count, bool transpose, float[] value)
 		{
@@ -3224,12 +3342,14 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glUniformMatrix3x2fv glUniformMatrix3x2fv;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private unsafe delegate void _glUniformMatrix3x2fv(GLint location, GLint count, bool transpose, float[] value);
 		public static void UniformMatrix3x2fv(int location, int count, bool transpose, float[] value)
 		{
 			glUniformMatrix3x2fv(location, count, transpose, value);
 			CheckError();
 		}
+		//[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		//private unsafe delegate void _glUniformMatrix3x2fv(GLint location, GLint count, bool transpose, float* value);
 		//public unsafe static void UniformMatrix3x2fv(int location, int count, bool transpose, float* value)
 		//{
@@ -3244,6 +3364,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glUniformMatrix2x4fv glUniformMatrix2x4fv;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glUniformMatrix2x4fv(GLint location, GLint count, bool transpose, float[] value);
 		public static void UniformMatrix2x4fv(int location, int count, bool transpose, float[] value)
 		{
@@ -3253,6 +3374,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glUniformMatrix4x2fv glUniformMatrix4x2fv;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glUniformMatrix4x2fv(GLint location, GLint count, bool transpose, float[] value);
 		public static void UniformMatrix4x2fv(int location, int count, bool transpose, float[] value)
 		{
@@ -3262,6 +3384,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glUniformMatrix3x4fv glUniformMatrix3x4fv;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glUniformMatrix3x4fv(GLint location, GLint count, bool transpose, float[] value);
 		public static void UniformMatrix3x4fv(int location, int count, bool transpose, float[] value)
 		{
@@ -3271,6 +3394,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glUniformMatrix4x3fv glUniformMatrix4x3fv;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glUniformMatrix4x3fv(GLint location, GLint count, bool transpose, float[] value);
 		public static void UniformMatrix4x3fv(int location, int count, bool transpose, float[] value)
 		{
@@ -3282,6 +3406,7 @@ namespace CKGL.OpenGLBindings
 		#region Drawing Functions
 		[Shared]
 		private static _glDrawArrays glDrawArrays;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glDrawArrays(PrimitiveMode mode, GLint first, GLint count);
 		public static void DrawArrays(PrimitiveMode mode, int start, int count)
 		{
@@ -3291,6 +3416,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glDrawElements glDrawElements;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glDrawElements(PrimitiveMode mode, GLint count, IndexType type, IntPtr indices);
 		public static void DrawElements(PrimitiveMode mode, int count, IndexType type, IntPtr offset)
 		{
@@ -3305,6 +3431,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glDrawArraysInstanced glDrawArraysInstanced;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glDrawArraysInstanced(PrimitiveMode mode, GLint first, GLint count, GLint primcount);
 		public static void DrawArraysInstanced(PrimitiveMode mode, int start, int count, int primcount)
 		{
@@ -3314,6 +3441,7 @@ namespace CKGL.OpenGLBindings
 
 		[Shared]
 		private static _glDrawElementsInstanced glDrawElementsInstanced;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glDrawElementsInstanced(PrimitiveMode mode, GLint count, IndexType type, IntPtr indices, GLint primcount);
 		public static void DrawElementsInstanced(PrimitiveMode mode, int count, IndexType type, IntPtr offset, int primcount)
 		{
