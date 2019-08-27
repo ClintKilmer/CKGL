@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{CEC96C5C-D0CF-48FE-824F-821DF573B850}</ProjectGuid>
+    <ProjectGuid>{D0E9D295-896E-46E5-8F74-AA6E0B2E70A7}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>CKGLTest</RootNamespace>
-    <AssemblyName>CKGLTest</AssemblyName>
+    <RootNamespace>LofiEarth</RootNamespace>
+    <AssemblyName>LofiEarth</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -45,37 +45,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Entities\Tri.cs" />
-    <Compile Include="shaders\Shaders.cs" />
-    <Compile Include="src\CKGLTest.cs" />
-    <Compile Include="src\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="src\LofiEarth.cs" />
+    <Compile Include="src\Program.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CKGL\CKGL.csproj">
+    <Content Include="textures\Earth128.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="textures\Earth128Specular.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\CKGL\CKGL.csproj">
       <Project>{185d708a-8291-480d-a4cd-c327b175c074}</Project>
       <Name>CKGL</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="snd\sndPop1.wav">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="snd\sndPop2.wav">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="textures\Character1.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="textures\Character2.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="textures\Character3.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="textures\font[5x7].png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{22A69C43-AEEA-4DB3-BB9E-731FFD6B8EEC}</ProjectGuid>
+    <ProjectGuid>{05F2A05D-9525-4739-8932-38842E6F1F39}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>CKGLTest2D</RootNamespace>
-    <AssemblyName>CKGLTest2D</AssemblyName>
+    <RootNamespace>CKGLExampleCube</RootNamespace>
+    <AssemblyName>CKGLExampleCube</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -45,32 +45,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Entities\Box.cs" />
-    <Compile Include="Entities\Player.cs" />
-    <Compile Include="Entities\Shadow.cs" />
-    <Compile Include="Entities\TransformTest.cs" />
-    <Compile Include="Entities\Tri.cs" />
-    <Compile Include="src\CKGLTest2D.cs" />
+    <Compile Include="src\CKGLExampleCube.cs" />
     <Compile Include="src\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CKGL\CKGL.csproj">
+    <ProjectReference Include="..\..\CKGL\CKGL.csproj">
       <Project>{185d708a-8291-480d-a4cd-c327b175c074}</Project>
       <Name>CKGL</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="textures\Character1.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="textures\Character2.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="textures\Character3.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="textures\font[5x7].png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="textures\UVTest.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{05F2A05D-9525-4739-8932-38842E6F1F39}</ProjectGuid>
+    <ProjectGuid>{CEC96C5C-D0CF-48FE-824F-821DF573B850}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>CKGLExampleCube</RootNamespace>
-    <AssemblyName>CKGLExampleCube</AssemblyName>
+    <RootNamespace>CKGLTest</RootNamespace>
+    <AssemblyName>CKGLTest</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -45,21 +45,35 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="src\CKGLExampleCube.cs" />
+    <Compile Include="Entities\Tri.cs" />
+    <Compile Include="shaders\Shaders.cs" />
+    <Compile Include="src\CKGLTest.cs" />
     <Compile Include="src\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CKGL\CKGL.csproj">
+    <ProjectReference Include="..\..\CKGL\CKGL.csproj">
       <Project>{185d708a-8291-480d-a4cd-c327b175c074}</Project>
       <Name>CKGL</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="textures\font[5x7].png">
+    <Content Include="snd\sndPop1.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="textures\UVTest.png">
+    <Content Include="snd\sndPop2.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="textures\Character1.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="textures\Character2.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="textures\Character3.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="textures\font[5x7].png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
