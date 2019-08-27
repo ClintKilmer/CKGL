@@ -247,7 +247,7 @@ namespace CKGL
 						spriteData[x, y] = new Colour(imageData[i], imageData[i + 1], imageData[i + 2], imageData[i + 3]);
 						break;
 					default:
-						throw new CKGLException("");
+						throw new IllegalValueException(typeof(PixelFormat), components);
 
 				}
 			}
