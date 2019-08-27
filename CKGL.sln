@@ -21,6 +21,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NETCoreTest", "Examples\NET
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NormalMapping", "Examples\NormalMapping\NormalMapping.csproj", "{D2C84CA6-E081-4BB4-AB81-32C07FCF151F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebGLTest", "Examples\WebGLTest\WebGLTest.csproj", "{57618FD0-372C-451A-83CB-7B5E0244A288}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +61,10 @@ Global
 		{D2C84CA6-E081-4BB4-AB81-32C07FCF151F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D2C84CA6-E081-4BB4-AB81-32C07FCF151F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D2C84CA6-E081-4BB4-AB81-32C07FCF151F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{57618FD0-372C-451A-83CB-7B5E0244A288}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{57618FD0-372C-451A-83CB-7B5E0244A288}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{57618FD0-372C-451A-83CB-7B5E0244A288}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{57618FD0-372C-451A-83CB-7B5E0244A288}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -70,6 +76,7 @@ Global
 		{D0E9D295-896E-46E5-8F74-AA6E0B2E70A7} = {02193257-C6B0-4E75-B470-6322A41DC5FD}
 		{D757DDBA-20DD-4E22-AD16-95D48BB072B9} = {02193257-C6B0-4E75-B470-6322A41DC5FD}
 		{D2C84CA6-E081-4BB4-AB81-32C07FCF151F} = {02193257-C6B0-4E75-B470-6322A41DC5FD}
+		{57618FD0-372C-451A-83CB-7B5E0244A288} = {02193257-C6B0-4E75-B470-6322A41DC5FD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7604F5E2-FBBA-4692-AB2E-0A50C88F1DE5}
