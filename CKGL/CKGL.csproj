@@ -9,11 +9,12 @@
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<DefineConstants>TRACE;OPENGL;OPENGLES;VULKAN</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<DefineConstants>DEBUG;TRACE</DefineConstants>
+		<DefineConstants>TRACE;DEBUG;OPENGL;OPENGLES;VULKAN</DefineConstants>
 	</PropertyGroup>
 
 	<ItemGroup>

@@ -66,7 +66,7 @@ namespace WebGLTest
 		public override void Draw()
 		{
 			// Clear the screen
-			//Graphics.Clear(Colour.Black);
+			Graphics.Clear(Colour.Black);
 		}
 
 		public override void Destroy()

@@ -10,18 +10,32 @@ namespace CKGL
 		{
 			switch (Platform.GraphicsBackend)
 			{
+#if VULKAN
 				case GraphicsBackend.Vulkan:
 					throw new NotImplementedException("Vulkan Graphics Backend not implemented yet.");
+#endif
+#if OPENGL
 				case GraphicsBackend.OpenGL:
+#endif
+#if OPENGLES
 				case GraphicsBackend.OpenGLES:
+#endif
+#if OPENGL || OPENGLES
 					graphics = new OpenGL.OpenGLGraphics();
 					break;
+#endif
+#if WEBGL
+				case GraphicsBackend.WebGL:
+					graphics = new WebGL.WebGLGraphics();
+					break;
+#endif
 				default:
 					throw new NotSupportedException($"GraphicsBackend {Platform.GraphicsBackend} not supported.");
 			}
 
 			graphics.Init();
 
+#if !WEBGL // Temporary
 			State.Init();
 
 			Platform.Events.OnWinResized += () =>
@@ -29,6 +43,7 @@ namespace CKGL
 				SetViewport();
 				SetScissorTest();
 			};
+#endif // Temporary
 
 			// Debug
 			Output.WriteLine($"Graphics Initialized");
@@ -39,9 +54,12 @@ namespace CKGL
 		public static void PreDraw()
 		{
 			DrawCalls = 0;
+#if !WEBGL // Temporary
 			State.PreDraw();
+#endif // Temporary
 		}
 
+#if !WEBGL // Temporary
 		#region Resources
 		internal static VertexBuffer CreateVertexBuffer(BufferUsage bufferUsage) => graphics.CreateVertexBuffer(bufferUsage);
 		internal static IndexBuffer CreateIndexBuffer(BufferUsage bufferUsage) => graphics.CreateIndexBuffer(bufferUsage);
@@ -67,6 +85,7 @@ namespace CKGL
 		#region DepthRange
 		public static void SetDepthRange(double near, double far) => graphics.SetDepthRange(near, far);
 		#endregion
+#endif // Temporary
 
 		#region Clear
 		public static void Clear(Colour colour) => graphics.Clear(colour);
@@ -74,6 +93,7 @@ namespace CKGL
 		public static void Clear(Colour colour, double depth) => graphics.Clear(colour, depth);
 		#endregion
 
+#if !WEBGL // Temporary
 		#region State Setters
 		internal static void SetFrontFace(FrontFaceState frontFaceState) => graphics.SetFrontFace(frontFaceState);
 		internal static void SetCullMode(CullModeState cullModeState) => graphics.SetCullMode(cullModeState);
@@ -142,5 +162,6 @@ namespace CKGL
 			DrawCalls++;
 		}
 		#endregion
+#endif
 	}
 }

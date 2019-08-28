@@ -9,6 +9,7 @@ namespace CKGL
 		iOS,
 		tvOS,
 		Android,
-		Emscripten
+		Emscripten,
+		HTML5
 	}
 }

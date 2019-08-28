@@ -4,6 +4,7 @@ namespace CKGL
 	{
 		internal abstract void Init();
 
+#if !WEBGL // Temporary
 		#region Resources
 		internal abstract VertexBuffer CreateVertexBuffer(BufferUsage bufferUsage);
 		internal abstract IndexBuffer CreateIndexBuffer(BufferUsage bufferUsage);
@@ -26,6 +27,7 @@ namespace CKGL
 		#region DepthRange
 		internal abstract void SetDepthRange(double near, double far);
 		#endregion
+#endif // Temporary
 
 		#region Clear
 		internal abstract void Clear(Colour colour);
@@ -33,6 +35,7 @@ namespace CKGL
 		internal abstract void Clear(Colour colour, double depth);
 		#endregion
 
+#if !WEBGL // Temporary
 		#region State Setters
 		internal abstract void SetFrontFace(FrontFaceState frontFaceState);
 		internal abstract void SetCullMode(CullModeState cullModeState);
@@ -49,5 +52,6 @@ namespace CKGL
 		internal abstract void DrawVertexArraysInstanced(PrimitiveTopology primitiveTopology, int offset, int count, int primitiveCount);
 		internal abstract void DrawIndexedVertexArraysInstanced(PrimitiveTopology primitiveTopology, int offset, int count, int primitiveCount, IndexType indexType);
 		#endregion
+#endif // Temporary
 	}
 }
