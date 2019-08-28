@@ -32,56 +32,6 @@ namespace CKGL
 
 	internal static class TextureFormatExt
 	{
-		internal static OpenGLBindings.TextureFormat ToOpenGL(this TextureFormat textureFormat)
-		{
-			switch (textureFormat)
-			{
-				// Depth textures
-				case TextureFormat.Depth:
-					return OpenGLBindings.TextureFormat.Depth;
-				case TextureFormat.Depth16:
-					return OpenGLBindings.TextureFormat.Depth16;
-				case TextureFormat.Depth24:
-					return OpenGLBindings.TextureFormat.Depth24;
-				case TextureFormat.Depth32:
-					return OpenGLBindings.TextureFormat.Depth32;
-				case TextureFormat.Depth32F:
-					return OpenGLBindings.TextureFormat.Depth32F;
-
-				// Depth/Stencil textures
-				case TextureFormat.DepthStencil:
-					return OpenGLBindings.TextureFormat.DepthStencil;
-				case TextureFormat.Depth24Stencil8:
-					return OpenGLBindings.TextureFormat.Depth24Stencil8;
-
-				// R textures
-				case TextureFormat.R:
-					return OpenGLBindings.TextureFormat.R;
-				case TextureFormat.R8:
-					return OpenGLBindings.TextureFormat.R8;
-
-				// RG textures
-				case TextureFormat.RG:
-					return OpenGLBindings.TextureFormat.RG;
-				case TextureFormat.RG8:
-					return OpenGLBindings.TextureFormat.RG8;
-
-				// RGB textures
-				case TextureFormat.RGB:
-					return OpenGLBindings.TextureFormat.RGB;
-				case TextureFormat.RGB8:
-					return OpenGLBindings.TextureFormat.RGB8;
-
-				// RGBA textures
-				case TextureFormat.RGBA:
-					return OpenGLBindings.TextureFormat.RGBA;
-				case TextureFormat.RGBA8:
-					return OpenGLBindings.TextureFormat.RGBA8;
-				default:
-					throw new IllegalValueException(typeof(TextureFormat), textureFormat);
-			}
-		}
-
 		public static int Size(this TextureFormat textureFormat)
 		{
 			switch (textureFormat)

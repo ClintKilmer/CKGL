@@ -10,29 +10,8 @@ namespace CKGL
 		RGBA
 	}
 
-	internal static class PixelFormatExt
+	public static class PixelFormatExt
 	{
-		internal static OpenGLBindings.PixelFormat ToOpenGL(this PixelFormat pixelFormat)
-		{
-			switch (pixelFormat)
-			{
-				case PixelFormat.Depth:
-					return OpenGLBindings.PixelFormat.Depth;
-				case PixelFormat.DepthStencil:
-					return OpenGLBindings.PixelFormat.DepthStencil;
-				case PixelFormat.R:
-					return OpenGLBindings.PixelFormat.R;
-				case PixelFormat.RG:
-					return OpenGLBindings.PixelFormat.RG;
-				case PixelFormat.RGB:
-					return OpenGLBindings.PixelFormat.RGB;
-				case PixelFormat.RGBA:
-					return OpenGLBindings.PixelFormat.RGBA;
-				default:
-					throw new IllegalValueException(typeof(PixelFormat), pixelFormat);
-			}
-		}
-
 		public static int Components(this PixelFormat pixelFormat)
 		{
 			switch (pixelFormat)
