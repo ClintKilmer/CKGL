@@ -196,13 +196,21 @@ namespace CKGL
 
 			switch (Platform.GraphicsBackend)
 			{
+#if VULKAN
 				case GraphicsBackend.Vulkan:
 					flags |= SDL_WindowFlags.SDL_WINDOW_VULKAN;
 					break;
+#endif
+#if OPENGL
 				case GraphicsBackend.OpenGL:
+#endif
+#if OPENGLES
 				case GraphicsBackend.OpenGLES:
+#endif
+#if OPENGL || OPENGLES
 					flags |= SDL_WindowFlags.SDL_WINDOW_OPENGL;
 					break;
+#endif
 				default:
 					throw new NotSupportedException($"GraphicsBackend {Platform.GraphicsBackend} not supported.");
 			}

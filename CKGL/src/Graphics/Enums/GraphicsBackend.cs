@@ -3,16 +3,16 @@ namespace CKGL
 	public enum GraphicsBackend : byte
 	{
 #if VULKAN
-		Vulkan, 
+		Vulkan,
 #endif
 #if OPENGL
-		OpenGL, 
+		OpenGL,
 #endif
 #if OPENGLES
-		OpenGLES, 
+		OpenGLES,
 #endif
 #if WEBGL
-		WebGL 
+		WebGL
 #endif
 	}
 }

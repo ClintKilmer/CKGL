@@ -10,12 +10,25 @@ namespace CKGL
 		{
 			switch (Platform.GraphicsBackend)
 			{
+#if VULKAN
 				case GraphicsBackend.Vulkan:
 					throw new NotImplementedException("Vulkan Backend not implemented yet.");
+#endif
+#if OPENGL
 				case GraphicsBackend.OpenGL:
+#endif
+#if OPENGLES
 				case GraphicsBackend.OpenGLES:
+#endif
+#if OPENGL || OPENGLES
 					renderer = new OpenGL.OpenGLRenderer();
 					break;
+#endif
+#if WEBGL
+				case GraphicsBackend.WebGL:
+					renderer = new WebGL.WebGLRenderer();
+					break;
+#endif
 				default:
 					throw new NotSupportedException($"GraphicsBackend {Platform.GraphicsBackend} not supported.");
 			}

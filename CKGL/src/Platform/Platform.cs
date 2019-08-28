@@ -422,10 +422,17 @@ namespace CKGL
 
 			switch (GraphicsBackend)
 			{
+#if VULKAN
 				case GraphicsBackend.Vulkan:
 					throw new NotImplementedException("Vulkan GraphicsBackend not implemented.");
+#endif
+#if OPENGL
 				case GraphicsBackend.OpenGL:
+#endif
+#if OPENGLES
 				case GraphicsBackend.OpenGLES:
+#endif
+#if OPENGL || OPENGLES
 					if (GraphicsBackend == GraphicsBackend.OpenGL)
 					{
 						SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_CONTEXT_MAJOR_VERSION, MaxOpenGLVersion.Major);
@@ -467,6 +474,7 @@ namespace CKGL
 					SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_MULTISAMPLEBUFFERS, msaa > 0 ? 1 : 0);
 					SDL_GL_SetAttribute(SDL_GLattr.SDL_GL_MULTISAMPLESAMPLES, msaa);
 					break;
+#endif
 				default:
 					throw new NotSupportedException($"GraphicsBackend {GraphicsBackend} not supported.");
 			}

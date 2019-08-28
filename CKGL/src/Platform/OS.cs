@@ -10,6 +10,8 @@ namespace CKGL
 		tvOS,
 		Android,
 		Emscripten,
+#if WEBGL
 		HTML5
+#endif
 	}
 }
