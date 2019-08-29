@@ -1,9 +1,9 @@
 using System;
-using Bridge;
-using Bridge.Html5;
-using Bridge.WebGL;
-
-using static CKGL.WebGL.WebGLGraphics;
+using Bridge.Html5; // HTML5 DOM Manipulation
+using static CKGL.WebGL.WebGLGraphics; // WebGL Context Methods
+using static Retyped.dom; // WebGL Types
+using static Retyped.webgl2; // WebGL Types - WebGL2RenderingContext
+using static Retyped.webgl2.WebGL2RenderingContext; // WebGL Enums
 
 namespace CKGL
 {
@@ -35,13 +35,13 @@ namespace CKGL
 
 		WebGLProgram shader;
 		WebGLBuffer buffer;
-		int positionAttrib;
-		int colourAttrib;
+		double positionAttrib;
+		double colourAttrib;
 		public void Run()
 		{
-			WebGLShader vs = GL.CreateShader(GL.VERTEX_SHADER);
-			WebGLShader fs = GL.CreateShader(GL.FRAGMENT_SHADER);
-			GL.ShaderSource(vs, @"
+			WebGLShader vs = GL.createShader(VERTEX_SHADER);
+			WebGLShader fs = GL.createShader(FRAGMENT_SHADER);
+			GL.shaderSource(vs, @"
 attribute vec3 position;
 attribute vec4 colour;
  
@@ -52,7 +52,7 @@ void main(void)
 	gl_Position = vec4(position, 1.0);
 	vColour = colour;
 }");
-			GL.ShaderSource(fs, @"
+			GL.shaderSource(fs, @"
 precision mediump float;
 
 varying vec4 vColour;
@@ -61,30 +61,30 @@ void main(void)
 {
 	gl_FragColor = vColour;
 }");
-			GL.CompileShader(vs);
-			GL.CompileShader(fs);
-			shader = (WebGLProgram)GL.CreateProgram();
-			GL.AttachShader(shader, vs);
-			GL.AttachShader(shader, fs);
-			GL.LinkProgram(shader);
-			GL.UseProgram(shader);
+			GL.compileShader(vs);
+			GL.compileShader(fs);
+			shader = (WebGLProgram)GL.createProgram();
+			GL.attachShader(shader, vs);
+			GL.attachShader(shader, fs);
+			GL.linkProgram(shader);
+			GL.useProgram(shader);
 
-			positionAttrib = GL.GetAttribLocation(shader, "position");
-			colourAttrib = GL.GetAttribLocation(shader, "colour");
+			positionAttrib = GL.getAttribLocation(shader, "position");
+			colourAttrib = GL.getAttribLocation(shader, "colour");
 
-			GL.EnableVertexAttribArray(positionAttrib);
-			GL.EnableVertexAttribArray(colourAttrib);
+			GL.enableVertexAttribArray(positionAttrib);
+			GL.enableVertexAttribArray(colourAttrib);
 
-			buffer = GL.CreateBuffer();
-			GL.BindBuffer(GL.ARRAY_BUFFER, buffer);
-			var vertexData = new Float32Array(new float[] {
+			buffer = GL.createBuffer();
+			GL.bindBuffer(ARRAY_BUFFER, buffer);
+			var vertexData = new Retyped.es5.Float32Array(new float[] {
 				// X    Y     Z     R     G     B     A
 				0.0f, 0.8f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
 				// X    Y     Z     R     G     B     A
 				-0.8f, -0.8f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
 				// X    Y     Z     R     G     B     A
 				0.8f, -0.8f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f});
-			GL.BufferData(GL.ARRAY_BUFFER, vertexData, GL.STATIC_DRAW);
+			GL.bufferData(ARRAY_BUFFER, vertexData, STATIC_DRAW);
 
 			GameLoop();
 		}
@@ -120,26 +120,26 @@ void main(void)
 
 
 			// Temporary
-			var vertexData = new Float32Array(new float[] {
+			var vertexData = new Retyped.es5.Float32Array(new float[] {
 				// X    Y     Z     R     G     B     A
 				Math.Sin((float)Date.Now() * 0.003f), 0.8f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
 				// X    Y     Z     R     G     B     A
 				-0.8f, Math.Sin((float)Date.Now() * 0.003f), 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
 				// X    Y     Z     R     G     B     A
 				0.8f, -Math.Sin((float)Date.Now() * 0.003f), 0.0f, 0.0f, 0.0f, 1.0f, 1.0f});
-			GL.BufferData(GL.ARRAY_BUFFER, vertexData, GL.STREAM_DRAW);
+			GL.bufferData(ARRAY_BUFFER, vertexData, STREAM_DRAW);
 
-			GL.BindBuffer(GL.ARRAY_BUFFER, buffer);
+			GL.bindBuffer(ARRAY_BUFFER, buffer);
 
 			var stride = 7 * Float32Array.BYTES_PER_ELEMENT;
 			// Set up position stream
-			GL.VertexAttribPointer(positionAttrib, 3, GL.FLOAT, false, stride, 0);
+			GL.vertexAttribPointer(positionAttrib, 3, FLOAT, false, stride, 0);
 			// Set up color stream
-			GL.VertexAttribPointer(colourAttrib, 4, GL.FLOAT, false, stride, 3 * Float32Array.BYTES_PER_ELEMENT);
+			GL.vertexAttribPointer(colourAttrib, 4, FLOAT, false, stride, 3 * Float32Array.BYTES_PER_ELEMENT);
 
-			GL.DrawArrays(GL.TRIANGLES, 0, 3);
+			GL.drawArrays(TRIANGLES, 0, 3);
 
-			Window.RequestAnimationFrame(GameLoop);
+			Bridge.Html5.Window.RequestAnimationFrame(GameLoop);
 			//Global.SetTimeout(GameLoop, 1000 / 60);
 
 			Destroy();

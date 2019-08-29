@@ -59,13 +59,15 @@ namespace CKGL
 #endif // Temporary
 		}
 
-#if !WEBGL // Temporary
 		#region Resources
 		internal static VertexBuffer CreateVertexBuffer(BufferUsage bufferUsage) => graphics.CreateVertexBuffer(bufferUsage);
+#if !WEBGL // Temporary
 		internal static IndexBuffer CreateIndexBuffer(BufferUsage bufferUsage) => graphics.CreateIndexBuffer(bufferUsage);
 		internal static GeometryInput CreateGeometryInput(IndexBuffer indexBuffer, VertexStream[] vertexStreams) => graphics.CreateGeometryInput(indexBuffer, vertexStreams);
+#endif // Temporary
 		#endregion
 
+#if !WEBGL // Temporary
 		// TODO - Move SetViewport() to own state
 		#region Viewport
 		public static void SetViewport() => graphics.SetViewport();

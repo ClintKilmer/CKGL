@@ -2,11 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
-using Bridge;
-using Bridge.Html5;
-using Bridge.WebGL;
-
-using static CKGL.WebGL.WebGLGraphics;
+using Bridge.Html5; // HTML5 DOM Manipulation
 
 namespace CKGL
 {
@@ -263,12 +259,25 @@ namespace CKGL
 
 			Document.AddEventListener(EventType.MouseMove, handleMouseMove);
 
+			Document.DocumentElement.Style.Overflow = Overflow.Hidden;
+			Document.DocumentElement.Style.SetProperty("margin", "0", "important");
+			Document.DocumentElement.Style.SetProperty("padding", "0", "important");
+			Document.Body.Style.Overflow = Overflow.Hidden;
+			Document.Body.Style.SetProperty("margin", "0", "important");
+			Document.Body.Style.SetProperty("padding", "0", "important");
+
 			Canvas = new HTMLCanvasElement
 			{
-				Width = windowWidth,
-				Height = windowHeight
+				Width = windowFullscreen ? Window.InnerWidth : windowWidth,
+				Height = windowFullscreen ? Window.InnerHeight : windowHeight
 			};
 			Document.Body.AppendChild(Canvas);
+
+			// Disable selection
+			Canvas.Style.SetProperty("user-select", "none");
+			Canvas.Style.SetProperty("-webkit-user-select", "none");
+			Canvas.Style.SetProperty("-moz-user-select", "none");
+			Canvas.Style.SetProperty("-ms-user-select", "none");
 
 			// Window
 			//Window.Init(windowTitle, windowWidth, windowHeight, windowVSync, windowFullscreen, windowResizable, windowBorderless);
@@ -279,7 +288,6 @@ namespace CKGL
 			//Window.Destroy();
 
 			Document.Body.RemoveChild(Canvas);
-
 		}
 		#endregion
 

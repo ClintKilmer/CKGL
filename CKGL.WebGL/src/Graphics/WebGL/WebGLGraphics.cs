@@ -1,26 +1,32 @@
 using System;
-using Bridge.Html5;
-using Bridge.WebGL;
+using Bridge.Html5; // HTML5 DOM Manipulation
+using static Retyped.webgl2; // WebGL Types - WebGL2RenderingContext
+using static Retyped.webgl2.WebGL2RenderingContext; // WebGL Enums
+using static CKGL.WebGL.Extensions; // WebGL Extensions
 
 namespace CKGL.WebGL
 {
+	#region Extensions
+	internal static class Extensions
+	{
+		// WEBGL_debug_renderer_info
+		internal static double UNMASKED_VENDOR_WEBGL = 0x9245;
+		internal static double UNMASKED_RENDERER_WEBGL = 0x9246;
+	}
+	#endregion
+
 	internal class WebGLGraphics : GraphicsBase
 	{
-		internal static WebGLRenderingContext GL = null;
-
-		internal enum WEBGL_debug_renderer_info
-		{
-			UNMASKED_VENDOR_WEBGL = 0x9245,
-			UNMASKED_RENDERER_WEBGL = 0x9246
-		}
+		internal static WebGL2RenderingContext GL = null;
 
 		internal override void Init()
-		{// Create 3D Context
+		{
+			// Create 3D Context
 			string[] names = new string[] {
 				"webgl2",
 				"experimental-webgl2",
-				"webgl",
-				"experimental-webgl",
+				//"webgl",
+				//"experimental-webgl",
 				//"webkit-3d",
 				//"moz-webgl"
 			};
@@ -29,8 +35,8 @@ namespace CKGL.WebGL
 			{
 				try
 				{
-					GL = Platform.Canvas.GetContext(name).As<WebGLRenderingContext>();
-					//gl = (WebGLRenderingContext)Platform.Canvas.GetContext(name);
+					GL = Platform.Canvas.GetContext(name).As<WebGL2RenderingContext>();
+					//gl = (WebGL2RenderingContext)Platform.Canvas.GetContext(name);
 				}
 				catch { }
 
@@ -39,32 +45,32 @@ namespace CKGL.WebGL
 			}
 
 			if (GL == null)
-				Platform.Canvas.ParentElement.ReplaceChild(new HTMLParagraphElement { InnerHTML = "<b>Either the browser doesn't support WebGL or it is disabled.<br>Please follow <a href=\"http://get.webgl.com\">Get WebGL</a>.</b>" }, Platform.Canvas);
+				Platform.Canvas.ParentElement.ReplaceChild(new HTMLParagraphElement { InnerHTML = "<b>Either the browser doesn't support WebGL 2.0 or it is disabled.<br>Please follow <a href=\"https://get.webgl.org/\">Get WebGL</a>.</b>" }, Platform.Canvas);
 
 			// Debug
 			Output.WriteLine($"Platform - HTML5 Initialized");
 			Output.WriteLine($"Window.Navigator - Platform: {Window.Navigator.Platform}");
 			Output.WriteLine($"Window.Navigator - UserAgent: {Window.Navigator.UserAgent}");
-			Output.WriteLine($"WebGL Context - GLSL Version: {GL.GetParameter(GL.SHADING_LANGUAGE_VERSION)}");
-			Output.WriteLine($"WebGL Context - VERSION: {GL.GetParameter(GL.VERSION)}");
-			Output.WriteLine($"WebGL Context - VENDOR: {GL.GetParameter(GL.VENDOR)}");
-			Output.WriteLine($"WebGL Context - RENDERER: {GL.GetParameter(GL.RENDERER)}");
-			var dbgRenderInfo = GL.GetExtension("WEBGL_debug_renderer_info");
+			Output.WriteLine($"WebGL Context - GLSL Version: {GL.getParameter(SHADING_LANGUAGE_VERSION)}");
+			Output.WriteLine($"WebGL Context - VERSION: {GL.getParameter(VERSION)}");
+			Output.WriteLine($"WebGL Context - VENDOR: {GL.getParameter(VENDOR)}");
+			Output.WriteLine($"WebGL Context - RENDERER: {GL.getParameter(RENDERER)}");
+			var dbgRenderInfo = GL.getExtension("WEBGL_debug_renderer_info");
 			if (dbgRenderInfo != null)
 			{
-				Output.WriteLine($"WebGL Context - WEBGL_debug_renderer_info.UNMASKED_VENDOR_WEBGL: {GL.GetParameter(WEBGL_debug_renderer_info.UNMASKED_VENDOR_WEBGL)}");
-				Output.WriteLine($"WebGL Context - WEBGL_debug_renderer_info.UNMASKED_RENDERER_WEBGL: {GL.GetParameter(WEBGL_debug_renderer_info.UNMASKED_RENDERER_WEBGL)}");
+				Output.WriteLine($"WebGL Context - WEBGL_debug_renderer_info.UNMASKED_VENDOR_WEBGL: {GL.getParameter(UNMASKED_VENDOR_WEBGL)}");
+				Output.WriteLine($"WebGL Context - WEBGL_debug_renderer_info.UNMASKED_RENDERER_WEBGL: {GL.getParameter(UNMASKED_RENDERER_WEBGL)}");
 			}
 			//Output.WriteLine($"WebGL - Extensions: \n{string.Join("\n", gl.GetSupportedExtensions())}");
 		}
 
-#if false
 		#region Resources
 		internal override VertexBuffer CreateVertexBuffer(BufferUsage bufferUsage)
 		{
-			return new OpenGLVertexBuffer(bufferUsage);
+			return new WebGLVertexBuffer(bufferUsage);
 		}
 
+#if false
 		internal override IndexBuffer CreateIndexBuffer(BufferUsage bufferUsage)
 		{
 			return new OpenGLIndexBuffer(bufferUsage);
@@ -74,8 +80,10 @@ namespace CKGL.WebGL
 		{
 			return new OpenGLGeometryInput(indexBuffer, vertexStreams);
 		}
+#endif
 		#endregion
 
+#if false
 		#region Viewport
 		internal override void SetViewport() => SetViewport(RenderTarget.Current);
 		internal override void SetViewport(RenderTarget renderTarget)
@@ -115,20 +123,20 @@ namespace CKGL.WebGL
 		internal override void Clear(Colour colour)
 		{
 			SetClearColour(colour);
-			GL.Clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT);
+			GL.clear((int)COLOR_BUFFER_BIT | (int)DEPTH_BUFFER_BIT);
 		}
 
 		internal override void Clear(double depth)
 		{
 			SetClearDepth(depth);
-			GL.Clear(GL.DEPTH_BUFFER_BIT);
+			GL.clear(DEPTH_BUFFER_BIT);
 		}
 
 		internal override void Clear(Colour colour, double depth)
 		{
 			SetClearColour(colour);
 			SetClearDepth(depth);
-			GL.Clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT);
+			GL.clear((int)COLOR_BUFFER_BIT | (int)DEPTH_BUFFER_BIT);
 		}
 
 		private Colour clearColour = new Colour(0, 0, 0, 0);
@@ -136,7 +144,7 @@ namespace CKGL.WebGL
 		{
 			if (clearColour != colour)
 			{
-				GL.ClearColor(colour.R, colour.G, colour.B, colour.A);
+				GL.clearColor(colour.R, colour.G, colour.B, colour.A);
 				clearColour = colour;
 			}
 		}
@@ -146,7 +154,7 @@ namespace CKGL.WebGL
 		{
 			if (clearDepth != depth)
 			{
-				GL.ClearDepth(depth);
+				GL.clearDepth(depth);
 				clearDepth = depth;
 			}
 		}

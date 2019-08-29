@@ -49,7 +49,7 @@ namespace WebGLTest
 				   windowWidth: width * scale,
 				   windowHeight: height * scale,
 				   windowVSync: true,
-				   windowFullscreen: false,
+				   windowFullscreen: true,
 				   windowResizable: true,
 				   windowBorderless: false,
 				   msaa: 0)
@@ -61,6 +61,8 @@ namespace WebGLTest
 
 		public override void Update()
 		{
+			//VertexBuffer vertexBuffer = VertexBuffer.Create(BufferUsage.Dynamic);
+			//vertexBuffer.Destroy();
 		}
 
 		public override void Draw()
