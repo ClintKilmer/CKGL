@@ -34,36 +34,36 @@ namespace CKGL.WebGL
 			}
 		}
 
-		//internal static WebGLBindings.DataType ToWebGL(this DataType dataType)
-		//{
-		//	switch (dataType)
-		//	{
-		//		case DataType.Byte:
-		//			return WebGLBindings.DataType.Byte;
-		//		case DataType.UnsignedByte:
-		//			return WebGLBindings.DataType.UnsignedByte;
-		//		case DataType.Short:
-		//			return WebGLBindings.DataType.Short;
-		//		case DataType.UnsignedShort:
-		//			return WebGLBindings.DataType.UnsignedShort;
-		//		case DataType.Int:
-		//			return WebGLBindings.DataType.Int;
-		//		case DataType.UnsignedInt:
-		//			return WebGLBindings.DataType.UnsignedInt;
-		//		case DataType.Float:
-		//			return WebGLBindings.DataType.Float;
-		//		case DataType.Double:
-		//			return WebGLBindings.DataType.Double;
-		//		case DataType.HalfFloat:
-		//			return WebGLBindings.DataType.HalfFloat;
-		//		case DataType.UnsignedInt_2_10_10_10_Rev:
-		//			return WebGLBindings.DataType.UnsignedInt_2_10_10_10_Rev;
-		//		case DataType.Int_2_10_10_10_Rev:
-		//			return WebGLBindings.DataType.Int_2_10_10_10_Rev;
-		//		default:
-		//			throw new IllegalValueException(typeof(DataType), dataType);
-		//	}
-		//}
+		internal static double ToWebGL(this DataType dataType)
+		{
+			switch (dataType)
+			{
+				case DataType.Byte:
+					return BYTE;
+				case DataType.UnsignedByte:
+					return UNSIGNED_BYTE;
+				case DataType.Short:
+					return SHORT;
+				case DataType.UnsignedShort:
+					return UNSIGNED_SHORT;
+				case DataType.Int:
+					return INT;
+				case DataType.UnsignedInt:
+					return UNSIGNED_INT;
+				case DataType.Float:
+					return FLOAT;
+				//case DataType.Double:
+				//	return DOUBLE;
+				case DataType.HalfFloat:
+					return HALF_FLOAT_Static;
+				case DataType.UnsignedInt_2_10_10_10_Rev:
+					return UNSIGNED_INT_2_10_10_10_REV_Static;
+				case DataType.Int_2_10_10_10_Rev:
+					return INT_2_10_10_10_REV_Static;
+				default:
+					throw new IllegalValueException(typeof(DataType), dataType);
+			}
+		}
 
 		//internal static WebGLBindings.IndexType ToWebGL(this IndexType indexType)
 		//{

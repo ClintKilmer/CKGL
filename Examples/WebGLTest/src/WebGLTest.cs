@@ -55,20 +55,45 @@ namespace WebGLTest
 				   msaa: 0)
 		{ }
 
+		VertexFormat vertexFormat = new VertexFormat(
+			new VertexAttribute(DataType.Float, 3, false),
+			new VertexAttribute(DataType.UnsignedByte, 4, true)
+		);
+		VertexBuffer vertexBuffer;
+		IndexBuffer indexBuffer;
+		GeometryInput geometryInput;
+
 		public override void Init()
 		{
+			vertexBuffer = VertexBuffer.Create(BufferUsage.Dynamic);
+			indexBuffer = IndexBuffer.Create(BufferUsage.Dynamic);
+			geometryInput = GeometryInput.Create(indexBuffer, new VertexStream(vertexBuffer, vertexFormat));
 		}
 
 		public override void Update()
 		{
-			//VertexBuffer vertexBuffer = VertexBuffer.Create(BufferUsage.Dynamic);
-			//vertexBuffer.Destroy();
+			float totalMilliseconds = (float)(System.DateTime.Now - new System.DateTime(1970, 1, 1)).TotalMilliseconds;
+
+			var vertexData = new Vertex[] {
+				new Vertex(new Vector3(Math.Sin(totalMilliseconds * 0.003f), 0.8f, 0f), Colour.Red),
+				new Vertex(new Vector3(-0.8f,  Math.Sin(totalMilliseconds * 0.003f), 0f), Colour.Blue),
+				new Vertex(new Vector3( 0.8f, -Math.Sin(totalMilliseconds * 0.003f), 0f), Colour.Green)};
+#if WEBGL
+			vertexBuffer.LoadData(vertexData, vertexFormat);
+#else
+			vertexBuffer.LoadData(vertexData);
+#endif
+
+			var indexData = new ushort[] { 0, 1, 2 };
+			indexBuffer.LoadData(indexData);
 		}
 
 		public override void Draw()
 		{
 			// Clear the screen
 			Graphics.Clear(Colour.Black);
+
+			geometryInput.Bind();
 		}
 
 		public override void Destroy()

@@ -10,8 +10,8 @@ namespace CKGL
 	{
 		public struct Vertex
 		{
-			Vector3 Position;
-			Colour Colour;
+			public Vector3 Position;
+			public Colour Colour;
 
 			public Vertex(Vector3 position, Colour colour)
 			{
@@ -45,12 +45,7 @@ namespace CKGL
 		}
 
 		WebGLProgram shader;
-		//WebGLBuffer buffer;
-		VertexFormat vertexFormat = new VertexFormat(
-			new VertexAttribute(DataType.Float, 3, false),
-			new VertexAttribute(DataType.UnsignedByte, 4, true)
-		);
-		VertexBuffer buffer;
+		
 		double positionAttrib;
 		double colourAttrib;
 		public void Run()
@@ -88,11 +83,6 @@ void main(void)
 			positionAttrib = GL.getAttribLocation(shader, "position");
 			colourAttrib = GL.getAttribLocation(shader, "colour");
 
-			GL.enableVertexAttribArray(positionAttrib);
-			GL.enableVertexAttribArray(colourAttrib);
-
-			buffer = VertexBuffer.Create(BufferUsage.Dynamic);
-
 			GameLoop();
 		}
 
@@ -127,20 +117,7 @@ void main(void)
 
 
 			// Temporary
-			buffer.Bind();
-			var vertexData = new Vertex[] {
-				new Vertex(new Vector3(Math.Sin((float)Date.Now() * 0.003f), 0.8f, 0f), Colour.Red),
-				new Vertex(new Vector3(-0.8f,  Math.Sin((float)Date.Now() * 0.003f), 0f), Colour.Blue),
-				new Vertex(new Vector3( 0.8f, -Math.Sin((float)Date.Now() * 0.003f), 0f), Colour.Green)};
-			buffer.LoadData(vertexData, vertexFormat);
-
-			var stride = 3 * 4 + 4 * 1;
-			// Set up position stream
-			GL.vertexAttribPointer(positionAttrib, 3, FLOAT, false, stride, 0);
-			// Set up color stream
-			GL.vertexAttribPointer(colourAttrib, 4, UNSIGNED_BYTE, true, stride, 3 * Float32Array.BYTES_PER_ELEMENT);
-
-			GL.drawArrays(TRIANGLES, 0, 3);
+			GL.drawElements(TRIANGLES, 3, UNSIGNED_SHORT, 0);
 
 			Bridge.Html5.Window.RequestAnimationFrame(GameLoop);
 			//Global.SetTimeout(GameLoop, 1000 / 60);

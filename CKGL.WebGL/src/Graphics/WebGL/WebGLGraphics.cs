@@ -1,6 +1,6 @@
 using System;
 using Bridge.Html5; // HTML5 DOM Manipulation
-using static Retyped.webgl2; // WebGL Types - WebGL2RenderingContext
+using static Retyped.webgl2; // WebGL Types - WebGL2RenderingContext, WebGLVertexArrayObject
 using static Retyped.webgl2.WebGL2RenderingContext; // WebGL Enums
 using static CKGL.WebGL.Extensions; // WebGL Extensions
 
@@ -70,17 +70,15 @@ namespace CKGL.WebGL
 			return new WebGLVertexBuffer(bufferUsage);
 		}
 
-#if false
 		internal override IndexBuffer CreateIndexBuffer(BufferUsage bufferUsage)
 		{
-			return new OpenGLIndexBuffer(bufferUsage);
+			return new WebGLIndexBuffer(bufferUsage);
 		}
 
 		internal override GeometryInput CreateGeometryInput(IndexBuffer indexBuffer, VertexStream[] vertexStreams)
 		{
-			return new OpenGLGeometryInput(indexBuffer, vertexStreams);
+			return new WebGLGeometryInput(indexBuffer, vertexStreams);
 		}
-#endif
 		#endregion
 
 #if false

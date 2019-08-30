@@ -61,10 +61,8 @@ namespace CKGL
 
 		#region Resources
 		internal static VertexBuffer CreateVertexBuffer(BufferUsage bufferUsage) => graphics.CreateVertexBuffer(bufferUsage);
-#if !WEBGL // Temporary
 		internal static IndexBuffer CreateIndexBuffer(BufferUsage bufferUsage) => graphics.CreateIndexBuffer(bufferUsage);
 		internal static GeometryInput CreateGeometryInput(IndexBuffer indexBuffer, VertexStream[] vertexStreams) => graphics.CreateGeometryInput(indexBuffer, vertexStreams);
-#endif // Temporary
 		#endregion
 
 #if !WEBGL // Temporary

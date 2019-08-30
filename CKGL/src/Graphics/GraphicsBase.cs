@@ -6,10 +6,8 @@ namespace CKGL
 
 		#region Resources
 		internal abstract VertexBuffer CreateVertexBuffer(BufferUsage bufferUsage);
-#if !WEBGL // Temporary
 		internal abstract IndexBuffer CreateIndexBuffer(BufferUsage bufferUsage);
 		internal abstract GeometryInput CreateGeometryInput(IndexBuffer indexBuffer, VertexStream[] vertexStreams);
-#endif // Temporary
 		#endregion
 
 #if !WEBGL // Temporary
