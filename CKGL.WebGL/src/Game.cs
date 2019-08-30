@@ -1,14 +1,25 @@
-using System;
+//using System.Runtime.InteropServices;
 using Bridge.Html5; // HTML5 DOM Manipulation
 using static CKGL.WebGL.WebGLGraphics; // WebGL Context Methods
 using static Retyped.dom; // WebGL Types
-using static Retyped.webgl2; // WebGL Types - WebGL2RenderingContext
 using static Retyped.webgl2.WebGL2RenderingContext; // WebGL Enums
 
 namespace CKGL
 {
 	public abstract class Game
 	{
+		public struct Vertex
+		{
+			Vector3 Position;
+			Colour Colour;
+
+			public Vertex(Vector3 position, Colour colour)
+			{
+				Position = position;
+				Colour = colour;
+			}
+		}
+
 		public static float RAM
 		{
 			get
@@ -34,7 +45,12 @@ namespace CKGL
 		}
 
 		WebGLProgram shader;
-		WebGLBuffer buffer;
+		//WebGLBuffer buffer;
+		VertexFormat vertexFormat = new VertexFormat(
+			new VertexAttribute(DataType.Float, 3, false),
+			new VertexAttribute(DataType.UnsignedByte, 4, true)
+		);
+		VertexBuffer buffer;
 		double positionAttrib;
 		double colourAttrib;
 		public void Run()
@@ -63,7 +79,7 @@ void main(void)
 }");
 			GL.compileShader(vs);
 			GL.compileShader(fs);
-			shader = (WebGLProgram)GL.createProgram();
+			shader = GL.createProgram();
 			GL.attachShader(shader, vs);
 			GL.attachShader(shader, fs);
 			GL.linkProgram(shader);
@@ -75,16 +91,7 @@ void main(void)
 			GL.enableVertexAttribArray(positionAttrib);
 			GL.enableVertexAttribArray(colourAttrib);
 
-			buffer = GL.createBuffer();
-			GL.bindBuffer(ARRAY_BUFFER, buffer);
-			var vertexData = new Retyped.es5.Float32Array(new float[] {
-				// X    Y     Z     R     G     B     A
-				0.0f, 0.8f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-				// X    Y     Z     R     G     B     A
-				-0.8f, -0.8f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-				// X    Y     Z     R     G     B     A
-				0.8f, -0.8f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f});
-			GL.bufferData(ARRAY_BUFFER, vertexData, STATIC_DRAW);
+			buffer = VertexBuffer.Create(BufferUsage.Dynamic);
 
 			GameLoop();
 		}
@@ -120,22 +127,18 @@ void main(void)
 
 
 			// Temporary
-			var vertexData = new Retyped.es5.Float32Array(new float[] {
-				// X    Y     Z     R     G     B     A
-				Math.Sin((float)Date.Now() * 0.003f), 0.8f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-				// X    Y     Z     R     G     B     A
-				-0.8f, Math.Sin((float)Date.Now() * 0.003f), 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-				// X    Y     Z     R     G     B     A
-				0.8f, -Math.Sin((float)Date.Now() * 0.003f), 0.0f, 0.0f, 0.0f, 1.0f, 1.0f});
-			GL.bufferData(ARRAY_BUFFER, vertexData, STREAM_DRAW);
+			buffer.Bind();
+			var vertexData = new Vertex[] {
+				new Vertex(new Vector3(Math.Sin((float)Date.Now() * 0.003f), 0.8f, 0f), Colour.Red),
+				new Vertex(new Vector3(-0.8f,  Math.Sin((float)Date.Now() * 0.003f), 0f), Colour.Blue),
+				new Vertex(new Vector3( 0.8f, -Math.Sin((float)Date.Now() * 0.003f), 0f), Colour.Green)};
+			buffer.LoadData(vertexData, vertexFormat);
 
-			GL.bindBuffer(ARRAY_BUFFER, buffer);
-
-			var stride = 7 * Float32Array.BYTES_PER_ELEMENT;
+			var stride = 3 * 4 + 4 * 1;
 			// Set up position stream
 			GL.vertexAttribPointer(positionAttrib, 3, FLOAT, false, stride, 0);
 			// Set up color stream
-			GL.vertexAttribPointer(colourAttrib, 4, FLOAT, false, stride, 3 * Float32Array.BYTES_PER_ELEMENT);
+			GL.vertexAttribPointer(colourAttrib, 4, UNSIGNED_BYTE, true, stride, 3 * Float32Array.BYTES_PER_ELEMENT);
 
 			GL.drawArrays(TRIANGLES, 0, 3);
 

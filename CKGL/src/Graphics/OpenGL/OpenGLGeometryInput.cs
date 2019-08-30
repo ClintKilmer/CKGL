@@ -24,15 +24,13 @@ namespace CKGL.OpenGL
 			{
 				vertexStream.VertexBuffer.Bind();
 
-				GLint offset = 0;
 				for (GLuint i = 0; i < vertexStream.VertexFormat.Attributes.Length; i++)
 				{
 					GL.EnableVertexAttribArray(i);
-					GL.VertexAttribPointer(i, vertexStream.VertexFormat.Attributes[(int)i].Count, vertexStream.VertexFormat.Attributes[(int)i].Type.ToOpenGL(), vertexStream.VertexFormat.Attributes[(int)i].Normalized, vertexStream.VertexFormat.Stride, offset);
+					GL.VertexAttribPointer(i, vertexStream.VertexFormat.Attributes[(int)i].Count, vertexStream.VertexFormat.Attributes[(int)i].Type.ToOpenGL(), vertexStream.VertexFormat.Attributes[(int)i].Normalized, vertexStream.VertexFormat.Stride, vertexStream.VertexFormat.Attributes[(int)i].Offset);
 					if (vertexStream.VertexFormat.Attributes[(int)i].Divisor > 0)
 						GL.VertexAttribDivisor(i, vertexStream.VertexFormat.Attributes[(int)i].Divisor);
-					//Output.WriteLine($"id: {i}, Count: {vertexStream.VertexFormat.Attributes[(int)i].Count}, Type: {vertexStream.VertexFormat.Attributes[(int)i].Type}, Normalized: {vertexStream.VertexFormat.Attributes[(int)i].Normalized}, Size/Stride: {vertexStream.VertexFormat.Attributes[(int)i].Size}/{vertexStream.VertexFormat.Stride}, offset: {offset}, divisor: {divisor}"); // Debug
-					offset += vertexStream.VertexFormat.Attributes[(int)i].Size;
+					//Output.WriteLine($"id: {i}, Count: {vertexStream.VertexFormat.Attributes[(int)i].Count}, Type: {vertexStream.VertexFormat.Attributes[(int)i].Type}, Normalized: {vertexStream.VertexFormat.Attributes[(int)i].Normalized}, Size/Stride: {vertexStream.VertexFormat.Attributes[(int)i].Size}/{vertexStream.VertexFormat.Stride}, offset: {vertexStream.VertexFormat.Attributes[(int)i].Offset}, divisor: {divisor}"); // Debug
 				}
 			}
 

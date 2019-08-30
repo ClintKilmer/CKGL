@@ -7,6 +7,7 @@ namespace CKGL
 		public readonly DataType Type;
 		public readonly int Count;
 		public readonly int Size;
+		public int Offset;
 		public readonly bool Normalized;
 		public readonly uint Divisor;
 
@@ -15,35 +16,44 @@ namespace CKGL
 		{
 			Type = type;
 			Count = count;
+			Offset = 0; // Calculated in VertexFormat constructor
 			Normalized = normalized;
 			Divisor = divisor;
 
 			switch (Type)
 			{
 				case DataType.UnsignedByte:
-					Size = count * sizeof(byte);
+					Size = count * 1; // sizeof(byte);
 					break;
 				case DataType.Byte:
-					Size = count * sizeof(sbyte);
+					Size = count * 1; // sizeof(sbyte);
 					break;
 				case DataType.UnsignedShort:
-					Size = count * sizeof(ushort);
+					Size = count * 2; // sizeof(ushort);
 					break;
 				case DataType.Short:
-					Size = count * sizeof(short);
+					Size = count * 2; // sizeof(short);
 					break;
 				case DataType.UnsignedInt:
-					Size = count * sizeof(uint);
+					Size = count * 4; // sizeof(uint);
 					break;
 				case DataType.Int:
-					Size = count * sizeof(int);
+					Size = count * 4; // sizeof(int);
 					break;
 				case DataType.Float:
-					Size = count * sizeof(float);
+					Size = count * 4; // sizeof(float);
 					break;
+				//case DataType.Double:
+				//	Size = count * 8; // sizeof(double);
+				//	break;
 				default:
-					throw new NotImplementedException("Unknown VertexType");
+					throw new IllegalValueException(typeof(DataType), Type);
 			}
+		}
+
+		internal void SetOffset(int offset)
+		{
+			Offset = offset;
 		}
 
 		#region Overrides
@@ -104,6 +114,13 @@ namespace CKGL
 				throw new ArgumentNullException("attributes", "At least 1 attribute is required");
 
 			Attributes = attributes;
+
+			int offset = 0;
+			for (int i = 0; i < attributes.Length; i++)
+			{
+				attributes[i].Offset = offset;
+				offset += attributes[i].Size;
+			}
 
 			Stride = 0;
 			if (stride > 0)

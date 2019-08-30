@@ -452,7 +452,8 @@ namespace CKGL
 		private static int mouseRelativeY = 0;
 		private static void handleMouseMove(Event e)
 		{
-			Output.WriteLine($"MouseMove: Type: {e.As<MouseEvent>().Type}, RelX: {e.As<MouseEvent>().MovementX}, RelY: {e.As<MouseEvent>().MovementY}");
+			//Output.WriteLine($"MouseMove: Type: {e.As<MouseEvent>().Type}, RelX: {e.As<MouseEvent>().MovementX}, RelY: {e.As<MouseEvent>().MovementY}");
+			Output.WriteLine($"Event: MouseMove");
 			mouseX = e.As<MouseEvent>().LayerX;
 			mouseY = e.As<MouseEvent>().LayerY;
 			mouseScreenX = e.As<MouseEvent>().ScreenX;

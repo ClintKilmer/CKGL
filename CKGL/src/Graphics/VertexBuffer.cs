@@ -15,6 +15,10 @@ namespace CKGL
 
 		public abstract void LoadData(byte[] data);
 
+#if WEBGL
+		public abstract void LoadData<T>(T[] data, VertexFormat vertexFormat) where T : struct; 
+#else
 		public abstract void LoadData<T>(T[] data) where T : struct;
+#endif
 	}
 }

@@ -109,6 +109,9 @@
     <Compile Include="..\CKGL\src\Graphics\VertexBuffer.cs">
       <Link>src\Graphics\VertexBuffer.cs</Link>
     </Compile>
+    <Compile Include="..\CKGL\src\Graphics\VertexFormat.cs">
+      <Link>src\Graphics\VertexFormat.cs</Link>
+    </Compile>
     <Compile Include="..\CKGL\src\Math\Colour.cs">
       <Link>src\Math\Colour.cs</Link>
     </Compile>
