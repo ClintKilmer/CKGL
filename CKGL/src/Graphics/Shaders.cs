@@ -47,11 +47,42 @@ float LinearizeDepth(const float depth, const float zNear, const float zFar)
 		#endregion
 	}
 
+	public abstract class ShaderWrapper
+	{
+		public Shader Shader;
+
+		public ShaderWrapper(string source) => Shader = Shader.Create(source);
+
+		public void Destroy() => Shader.Destroy();
+		public void Bind() => Shader.Bind();
+
+		public void SetUniform(string name, bool value) => Shader.SetUniform(name, value);
+		public void SetUniform(string name, int value) => Shader.SetUniform(name, value);
+		public void SetUniform(string name, float value) => Shader.SetUniform(name, value);
+		public void SetUniform(string name, float x, float y) => Shader.SetUniform(name, x, y);
+		public void SetUniform(string name, float x, float y, float z) => Shader.SetUniform(name, x, y, z);
+		public void SetUniform(string name, float x, float y, float z, float w) => Shader.SetUniform(name, x, y, z, w);
+		public void SetUniform(string name, Vector2 value) => Shader.SetUniform(name, value);
+		public void SetUniform(string name, Vector3 value) => Shader.SetUniform(name, value);
+		public void SetUniform(string name, Vector4 value) => Shader.SetUniform(name, value);
+		public void SetUniform(string name, Colour value) => Shader.SetUniform(name, value);
+		public void SetUniform(string name, Matrix2D value) => Shader.SetUniform(name, value);
+		public void SetUniform(string name, Matrix3x3 value) => Shader.SetUniform(name, value);
+		public void SetUniform(string name, Matrix value) => Shader.SetUniform(name, value);
+		public void SetUniform(string name, Texture value, uint textureSlot) => Shader.SetUniform(name, value, textureSlot);
+		//public void SetUniform(string name, UniformSampler2D value) => Shader.SetUniform(name, value);
+		//public void SetUniform(string name, UniformSamplerCube value) => Shader.SetUniform(name, value);
+	}
+
 	public static class InternalShaders
 	{
 		#region Renderer
-		public class RendererShader : Shader
+		public class RendererShader : ShaderWrapper
 		{
+			public RendererShader() : base(glsl) { }
+
+			public Matrix MVP { set { SetUniform("MVP", value); } }
+
 			#region GLSL
 			private static string glsl = @"
 #vertex
@@ -91,10 +122,6 @@ void main()
 	colour = mix(vColour, texture(Texture, vUV) * vColour, vTextured);
 }";
 			#endregion
-
-			public Matrix MVP { set { SetUniform("MVP", value); } }
-
-			public RendererShader() : base(glsl) { }
 		}
 		#endregion
 
@@ -107,8 +134,18 @@ void main()
 			Exponential2
 		}
 
-		public class RendererFogShader : Shader
+		public class RendererFogShader : ShaderWrapper
 		{
+			public RendererFogShader() : base(glsl) { }
+
+			public Matrix MVP { set { SetUniform("MVP", value); } }
+			public Matrix MV { set { SetUniform("MV", value); } }
+			public FogType FogType { set { SetUniform("FogType", (int)value); } }
+			public Colour FogColour { set { SetUniform("FogColour", value); } }
+			public float FogDensity { set { SetUniform("FogDensity", value); } }
+			public float FogStart { set { SetUniform("FogStart", value); } }
+			public float FogEnd { set { SetUniform("FogEnd", value); } }
+
 			#region GLSL
 			private static string glsl = @"
 #vertex
@@ -171,22 +208,18 @@ void main()
 		colour.rgb = mix(colour.rgb, FogColour.rgb, fog_exp2(length(vViewSpace), FogDensity));
 }";
 			#endregion
-
-			public Matrix MVP { set { SetUniform("MVP", value); } }
-			public Matrix MV { set { SetUniform("MV", value); } }
-			public FogType FogType { set { SetUniform("FogType", (int)value); } }
-			public Colour FogColour { set { SetUniform("FogColour", value); } }
-			public float FogDensity { set { SetUniform("FogDensity", value); } }
-			public float FogStart { set { SetUniform("FogStart", value); } }
-			public float FogEnd { set { SetUniform("FogEnd", value); } }
-
-			public RendererFogShader() : base(glsl) { }
 		}
 		#endregion
 
 		#region LinearizeDepth
-		public class LinearizeDepthShader : Shader
+		public class LinearizeDepthShader : ShaderWrapper
 		{
+			public LinearizeDepthShader() : base(glsl) { }
+
+			public Matrix MVP { set { SetUniform("MVP", value); } }
+			public float zNear { set { SetUniform("zNear", value); } }
+			public float zFar { set { SetUniform("zFar", value); } }
+
 			#region GLSL
 			private static string glsl = @"
 #vertex
@@ -225,12 +258,6 @@ void main()
 	colour = vec4(c, c, c, 1.0) * vColour;
 }";
 			#endregion
-
-			public Matrix MVP { set { SetUniform("MVP", value); } }
-			public float zNear { set { SetUniform("zNear", value); } }
-			public float zFar { set { SetUniform("zFar", value); } }
-
-			public LinearizeDepthShader() : base(glsl) { }
 		}
 		#endregion
 	}

@@ -3,8 +3,12 @@ using CKGL;
 namespace CKGLTest
 {
 	#region GeometryTestShader
-	public class GeometryTestShader : Shader
+	public class GeometryTestShader : ShaderWrapper
 	{
+		public GeometryTestShader() : base(glsl) { }
+
+		public Matrix MVP { set { SetUniform("MVP", value); } }
+
 		#region GLSL
 		private static string glsl = @"
 #vertex
@@ -117,10 +121,6 @@ void main()
 	colour = mix(i.colour, texture(Texture, i.uv) * i.colour, i.textured);
 }";
 		#endregion
-
-		public Matrix MVP { set { SetUniform("MVP", value); } }
-
-		public GeometryTestShader() : base(glsl) { }
 	}
 	#endregion
 }

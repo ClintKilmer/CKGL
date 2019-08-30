@@ -24,6 +24,16 @@ namespace CKGL.OpenGL
 		{
 			return new OpenGLGeometryInput(indexBuffer, vertexStreams);
 		}
+
+		internal override Shader CreateShader(string source)
+		{
+			return new OpenGLShader(source);
+		}
+
+		internal override Shader CreateShaderFromFile(string file)
+		{
+			return new OpenGLShader(file);
+		}
 		#endregion
 
 		#region Viewport

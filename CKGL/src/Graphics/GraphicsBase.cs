@@ -8,6 +8,10 @@ namespace CKGL
 		internal abstract VertexBuffer CreateVertexBuffer(BufferUsage bufferUsage);
 		internal abstract IndexBuffer CreateIndexBuffer(BufferUsage bufferUsage);
 		internal abstract GeometryInput CreateGeometryInput(IndexBuffer indexBuffer, VertexStream[] vertexStreams);
+#if !WEBGL
+		internal abstract Shader CreateShader(string source);
+		internal abstract Shader CreateShaderFromFile(string file); 
+#endif
 		#endregion
 
 #if !WEBGL // Temporary

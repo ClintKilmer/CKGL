@@ -12,8 +12,24 @@ namespace NormalMapping
 	}
 
 	#region PointLightShader
-	public class PointLightShader : Shader
+	public class PointLightShader : ShaderWrapper
 	{
+		public PointLightShader() : base(glsl) { }
+
+		public Matrix M { set { SetUniform("M", value); } }
+		public Matrix V { set { SetUniform("V", value); } }
+		public Matrix P { set { SetUniform("P", value); } }
+		public Matrix3x3 NormalMatrix { set { SetUniform("NormalMatrix", value); } }
+		public Vector3 Light1Position { set { SetUniform("pointLights[0].position", value); } }
+		public Vector3 Light2Position { set { SetUniform("pointLights[1].position", value); } }
+		public Vector3 Light3Position { set { SetUniform("pointLights[2].position", value); } }
+		public Colour Light1Colour { set { SetUniform("pointLights[0].colour", value); } }
+		public Colour Light2Colour { set { SetUniform("pointLights[1].colour", value); } }
+		public Colour Light3Colour { set { SetUniform("pointLights[2].colour", value); } }
+		public float Light1Radius { set { SetUniform("pointLights[0].radius", value); } }
+		public float Light2Radius { set { SetUniform("pointLights[1].radius", value); } }
+		public float Light3Radius { set { SetUniform("pointLights[2].radius", value); } }
+
 		#region GLSL
 		private static string glsl = @"
 #vertex
@@ -131,28 +147,16 @@ void main()
 	//colour.rgb = pow(colour.rgb, vec3(1.0 / gamma));
 }";
 		#endregion
-
-		public Matrix M { set { SetUniform("M", value); } }
-		public Matrix V { set { SetUniform("V", value); } }
-		public Matrix P { set { SetUniform("P", value); } }
-		public Matrix3x3 NormalMatrix { set { SetUniform("NormalMatrix", value); } }
-		public Vector3 Light1Position { set { SetUniform("pointLights[0].position", value); } }
-		public Vector3 Light2Position { set { SetUniform("pointLights[1].position", value); } }
-		public Vector3 Light3Position { set { SetUniform("pointLights[2].position", value); } }
-		public Colour Light1Colour { set { SetUniform("pointLights[0].colour", value); } }
-		public Colour Light2Colour { set { SetUniform("pointLights[1].colour", value); } }
-		public Colour Light3Colour { set { SetUniform("pointLights[2].colour", value); } }
-		public float Light1Radius { set { SetUniform("pointLights[0].radius", value); } }
-		public float Light2Radius { set { SetUniform("pointLights[1].radius", value); } }
-		public float Light3Radius { set { SetUniform("pointLights[2].radius", value); } }
-
-		public PointLightShader() : base(glsl) { }
 	}
 	#endregion
 
 	#region NormalTangentBitangentShader
-	public class NormalTangentBitangentShader : Shader
+	public class NormalTangentBitangentShader : ShaderWrapper
 	{
+		public NormalTangentBitangentShader() : base(glsl) { }
+
+		public Matrix MVP { set { SetUniform("MVP", value); } }
+
 		#region GLSL
 		private static string glsl = @"
 #vertex
@@ -229,13 +233,8 @@ void main()
 	colour = gColour;
 }";
 		#endregion
-
-		public Matrix MVP { set { SetUniform("MVP", value); } }
-
-		public NormalTangentBitangentShader() : base(glsl) { }
 	}
 	#endregion
-
 	#endregion
 
 	#region Sprites
