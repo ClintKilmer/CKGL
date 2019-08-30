@@ -136,6 +136,7 @@ namespace CKGL
 			}
 		}
 		#endregion
+#endif
 
 		#region Draw
 		public static void DrawVertexArrays(PrimitiveTopology primitiveTopology, int offset, int count)
@@ -162,6 +163,5 @@ namespace CKGL
 			DrawCalls++;
 		}
 		#endregion
-#endif
 	}
 }

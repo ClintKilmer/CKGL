@@ -62,6 +62,7 @@ namespace WebGLTest
 		VertexBuffer vertexBuffer;
 		IndexBuffer indexBuffer;
 		GeometryInput geometryInput;
+		Vertex[] vertexData;
 
 		public override void Init()
 		{
@@ -74,7 +75,7 @@ namespace WebGLTest
 		{
 			float totalMilliseconds = (float)(System.DateTime.Now - new System.DateTime(1970, 1, 1)).TotalMilliseconds;
 
-			var vertexData = new Vertex[] {
+			vertexData = new Vertex[] {
 				new Vertex(new Vector3(Math.Sin(totalMilliseconds * 0.003f), 0.8f, 0f), Colour.Red),
 				new Vertex(new Vector3(-0.8f,  Math.Sin(totalMilliseconds * 0.003f), 0f), Colour.Blue),
 				new Vertex(new Vector3( 0.8f, -Math.Sin(totalMilliseconds * 0.003f), 0f), Colour.Green)};
@@ -94,6 +95,8 @@ namespace WebGLTest
 			Graphics.Clear(Colour.Black);
 
 			geometryInput.Bind();
+
+			Graphics.DrawIndexedVertexArrays(PrimitiveTopology.TriangleList, 0, vertexData.Length, geometryInput.IndexBuffer.IndexType);
 		}
 
 		public override void Destroy()

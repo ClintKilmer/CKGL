@@ -218,28 +218,28 @@ namespace CKGL.WebGL
 				GL.BlendEquationSeparate(blendState.ColourEquation.ToOpenGL(), blendState.AlphaEquation.ToOpenGL());
 		}
 		#endregion
+#endif
 
 		#region Draw
 		internal override void DrawVertexArrays(PrimitiveTopology primitiveTopology, int offset, int count)
 		{
-			GL.DrawArrays(primitiveTopology.ToOpenGL(), offset, count);
+			GL.drawArrays(primitiveTopology.ToWebGL(), offset, count);
 		}
 
 		internal override void DrawIndexedVertexArrays(PrimitiveTopology primitiveTopology, int offset, int count, IndexType indexType)
 		{
-			GL.DrawElements(primitiveTopology.ToOpenGL(), count, indexType.ToOpenGL(), offset);
+			GL.drawElements(primitiveTopology.ToWebGL(), count, indexType.ToWebGL(), offset);
 		}
 
 		internal override void DrawVertexArraysInstanced(PrimitiveTopology primitiveTopology, int offset, int count, int primitiveCount)
 		{
-			GL.DrawArraysInstanced(primitiveTopology.ToOpenGL(), offset, count, primitiveCount);
+			GL.drawArraysInstanced(primitiveTopology.ToWebGL(), offset, count, primitiveCount);
 		}
 
 		internal override void DrawIndexedVertexArraysInstanced(PrimitiveTopology primitiveTopology, int offset, int count, int primitiveCount, IndexType indexType)
 		{
-			GL.DrawElementsInstanced(primitiveTopology.ToOpenGL(), count, indexType.ToOpenGL(), offset, primitiveCount);
+			GL.drawElementsInstanced(primitiveTopology.ToWebGL(), count, indexType.ToWebGL(), offset, primitiveCount);
 		}
 		#endregion
-#endif
 	}
 }

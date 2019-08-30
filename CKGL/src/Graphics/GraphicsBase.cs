@@ -45,6 +45,7 @@ namespace CKGL
 		internal abstract void SetDepth(DepthState depthState);
 		internal abstract void SetBlend(BlendState blendState);
 		#endregion
+#endif // Temporary
 
 		#region Draw
 		internal abstract void DrawVertexArrays(PrimitiveTopology primitiveTopology, int offset, int count);
@@ -52,6 +53,5 @@ namespace CKGL
 		internal abstract void DrawVertexArraysInstanced(PrimitiveTopology primitiveTopology, int offset, int count, int primitiveCount);
 		internal abstract void DrawIndexedVertexArraysInstanced(PrimitiveTopology primitiveTopology, int offset, int count, int primitiveCount, IndexType indexType);
 		#endregion
-#endif // Temporary
 	}
 }

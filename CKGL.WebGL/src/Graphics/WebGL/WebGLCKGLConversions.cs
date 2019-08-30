@@ -65,20 +65,20 @@ namespace CKGL.WebGL
 			}
 		}
 
-		//internal static WebGLBindings.IndexType ToWebGL(this IndexType indexType)
-		//{
-		//	switch (indexType)
-		//	{
-		//		//case IndexType.UnsignedByte:
-		//		//	return WebGLBindings.IndexType.UnsignedByte;
-		//		case IndexType.UnsignedShort:
-		//			return WebGLBindings.IndexType.UnsignedShort;
-		//		case IndexType.UnsignedInt:
-		//			return WebGLBindings.IndexType.UnsignedInt;
-		//		default:
-		//			throw new IllegalValueException(typeof(IndexType), indexType);
-		//	}
-		//}
+		internal static double ToWebGL(this IndexType indexType)
+		{
+			switch (indexType)
+			{
+				//case IndexType.UnsignedByte:
+				//	return UNSIGNED_BYTE;
+				case IndexType.UnsignedShort:
+					return UNSIGNED_SHORT;
+				case IndexType.UnsignedInt:
+					return UNSIGNED_INT;
+				default:
+					throw new IllegalValueException(typeof(IndexType), indexType);
+			}
+		}
 
 		//internal static WebGLBindings.PixelFormat ToWebGL(this PixelFormat pixelFormat)
 		//{
@@ -101,28 +101,28 @@ namespace CKGL.WebGL
 		//	}
 		//}
 
-		//internal static WebGLBindings.PrimitiveMode ToWebGL(this PrimitiveTopology primitiveTopology)
-		//{
-		//	switch (primitiveTopology)
-		//	{
-		//		case PrimitiveTopology.PointList:
-		//			return WebGLBindings.PrimitiveMode.Points;
-		//		case PrimitiveTopology.LineList:
-		//			return WebGLBindings.PrimitiveMode.Lines;
-		//		case PrimitiveTopology.LineLoop:
-		//			return WebGLBindings.PrimitiveMode.LineLoop;
-		//		case PrimitiveTopology.LineStrip:
-		//			return WebGLBindings.PrimitiveMode.LineStrip;
-		//		case PrimitiveTopology.TriangleList:
-		//			return WebGLBindings.PrimitiveMode.Triangles;
-		//		case PrimitiveTopology.TriangleStrip:
-		//			return WebGLBindings.PrimitiveMode.TriangleStrip;
-		//		case PrimitiveTopology.TriangleFan:
-		//			return WebGLBindings.PrimitiveMode.TriangleFan;
-		//		default:
-		//			throw new IllegalValueException(typeof(PrimitiveTopology), primitiveTopology);
-		//	}
-		//}
+		internal static double ToWebGL(this PrimitiveTopology primitiveTopology)
+		{
+			switch (primitiveTopology)
+			{
+				case PrimitiveTopology.PointList:
+					return POINTS;
+				case PrimitiveTopology.LineList:
+					return LINES;
+				case PrimitiveTopology.LineLoop:
+					return LINE_LOOP;
+				case PrimitiveTopology.LineStrip:
+					return LINE_STRIP;
+				case PrimitiveTopology.TriangleList:
+					return TRIANGLES;
+				case PrimitiveTopology.TriangleStrip:
+					return TRIANGLE_STRIP;
+				case PrimitiveTopology.TriangleFan:
+					return TRIANGLE_FAN;
+				default:
+					throw new IllegalValueException(typeof(PrimitiveTopology), primitiveTopology);
+			}
+		}
 
 		//internal static WebGLBindings.TexImageTarget ToWebGL(this TexImageTarget texImageTarget)
 		//{
