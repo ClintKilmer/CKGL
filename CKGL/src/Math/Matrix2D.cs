@@ -135,6 +135,7 @@ namespace CKGL
 		#endregion
 
 		#region Methods
+#if !WEBGL
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public float[] ToArrayRowMajor()
 		{
@@ -155,6 +156,28 @@ namespace CKGL
 			};
 			return array;
 		}
+#elif WEBGL
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public double[] ToArrayRowMajor()
+		{
+			double[] array = {
+				M11, M21, M31,
+				M12, M22, M32
+			};
+			return array;
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public double[] ToArrayColumnMajor()
+		{
+			double[] array = {
+				M11, M12,
+				M21, M22,
+				M31, M32
+			};
+			return array;
+		}
+#endif
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public float Determinant()

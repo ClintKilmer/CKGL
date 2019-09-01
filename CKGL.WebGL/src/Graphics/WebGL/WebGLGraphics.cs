@@ -80,7 +80,6 @@ namespace CKGL.WebGL
 			return new WebGLGeometryInput(indexBuffer, vertexStreams);
 		}
 
-#if false
 		internal override Shader CreateShader(string source)
 		{
 			return new WebGLShader(source);
@@ -89,8 +88,7 @@ namespace CKGL.WebGL
 		internal override Shader CreateShaderFromFile(string file)
 		{
 			return new WebGLShader(file);
-		} 
-#endif
+		}
 		#endregion
 
 #if false

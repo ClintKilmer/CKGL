@@ -13,9 +13,13 @@ namespace CKGL
 		}
 		public static Shader CreateFromFile(string file)
 		{
+#if !WEBGL
 			if (!File.Exists(file))
 				throw new FileNotFoundException("Shader file not found.", file);
 			return Graphics.CreateShader(File.ReadAllText(file));
+#elif WEBGL
+			throw new CKGLException("WebGL doesn't support creating shaders from file.");
+#endif
 		}
 
 		public static void PreDraw()

@@ -34,6 +34,7 @@ namespace CKGL
 		#endregion
 
 		#region Methods
+#if !WEBGL
 		public float[] ToArrayRowMajor()
 		{
 			float[] array = {
@@ -52,6 +53,26 @@ namespace CKGL
 			};
 			return array;
 		}
+#elif WEBGL
+		public double[] ToArrayRowMajor()
+		{
+			double[] array = {
+				M11, M12, M13,
+				M21, M22, M23,
+				M31, M32, M33
+			};
+			return array;
+		}
+		public double[] ToArrayColumnMajor()
+		{
+			double[] array = {
+				M11, M21, M31,
+				M12, M22, M32,
+				M13, M23, M33
+			};
+			return array;
+		}
+#endif
 
 		public Matrix ToMatrix()
 		{

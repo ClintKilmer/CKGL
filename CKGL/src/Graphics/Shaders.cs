@@ -10,7 +10,7 @@ precision mediump float;
 //#extension GL_EXT_geometry_shader: require
 //#extension GL_OES_geometry_shader: require";
 
-		private static readonly string Common = (Platform.GraphicsBackend == GraphicsBackend.OpenGLES ? OpenGLES : OpenGL) + @"
+		private static readonly string Common = (Platform.GraphicsBackend == GraphicsBackend.OpenGLES || Platform.GraphicsBackend == GraphicsBackend.WebGL ? OpenGLES : OpenGL) + @"
 
 float fog_linear(const float dist, const float start, const float end)
 {

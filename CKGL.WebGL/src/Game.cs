@@ -1,4 +1,3 @@
-//using System.Runtime.InteropServices;
 using static CKGL.WebGL.WebGLGraphics; // WebGL Context Methods
 using static Retyped.dom; // WebGL Types
 using static Retyped.webgl2.WebGL2RenderingContext; // WebGL Enums
@@ -43,42 +42,8 @@ namespace CKGL
 			//Platform.Events.OnWinResized += () => { OnWindowResized(); };
 		}
 
-		WebGLProgram shader;
-		
 		public void Run()
 		{
-			WebGLShader vs = GL.createShader(VERTEX_SHADER);
-			WebGLShader fs = GL.createShader(FRAGMENT_SHADER);
-			GL.shaderSource(vs, @"#version 300 es
-layout(location = 0) in vec3 position;
-layout(location = 1) in vec4 colour;
- 
-out vec4 vColour;
- 
-void main(void)
-{
-	gl_Position = vec4(position, 1.0);
-	vColour = colour;
-}");
-			GL.shaderSource(fs, @"#version 300 es
-precision mediump float;
-
-in vec4 vColour;
-
-layout(location = 0) out vec4 colour;
-
-void main(void)
-{
-	colour = vColour;
-}");
-			GL.compileShader(vs);
-			GL.compileShader(fs);
-			shader = GL.createProgram();
-			GL.attachShader(shader, vs);
-			GL.attachShader(shader, fs);
-			GL.linkProgram(shader);
-			GL.useProgram(shader);
-
 			GameLoop();
 		}
 
