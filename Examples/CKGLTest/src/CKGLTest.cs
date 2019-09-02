@@ -14,9 +14,9 @@ namespace CKGLTest
 	}
 	#endregion
 
-	{
 	#region Shaders
 	public static class Shaders
+	{
 		public static InternalShaders.RendererShader Renderer = new InternalShaders.RendererShader();
 		public static InternalShaders.RendererFogShader RendererFog = new InternalShaders.RendererFogShader();
 		public static InternalShaders.LinearizeDepthShader LinearizeDepth = new InternalShaders.LinearizeDepthShader();
