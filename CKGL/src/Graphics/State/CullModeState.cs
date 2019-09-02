@@ -1,34 +1,5 @@
-using System;
-
 namespace CKGL
 {
-	#region Enums
-	public enum Face : byte
-	{
-		Front,
-		Back,
-		FrontAndBack
-	}
-
-	internal static class FaceExt
-	{
-		internal static OpenGLBindings.Face ToOpenGL(this Face face)
-		{
-			switch (face)
-			{
-				case Face.Front:
-					return OpenGLBindings.Face.Front;
-				case Face.Back:
-					return OpenGLBindings.Face.Back;
-				case Face.FrontAndBack:
-					return OpenGLBindings.Face.FrontAndBack;
-				default:
-					throw new NotImplementedException();
-			}
-		}
-	}
-	#endregion
-
 	public struct CullModeState
 	{
 		public readonly bool Enabled;

@@ -64,6 +64,12 @@
     <Compile Include="..\CKGL\src\Graphics\Camera2D.cs">
       <Link>src\Graphics\Camera2D.cs</Link>
     </Compile>
+    <Compile Include="..\CKGL\src\Graphics\Enums\BlendEquation.cs">
+      <Link>src\Graphics\Enums\BlendEquation.cs</Link>
+    </Compile>
+    <Compile Include="..\CKGL\src\Graphics\Enums\BlendFactor.cs">
+      <Link>src\Graphics\Enums\BlendFactor.cs</Link>
+    </Compile>
     <Compile Include="..\CKGL\src\Graphics\Enums\BlitFilter.cs">
       <Link>src\Graphics\Enums\BlitFilter.cs</Link>
     </Compile>
@@ -73,6 +79,15 @@
     <Compile Include="..\CKGL\src\Graphics\Enums\DataType.cs">
       <Link>src\Graphics\Enums\DataType.cs</Link>
     </Compile>
+    <Compile Include="..\CKGL\src\Graphics\Enums\DepthFunction.cs">
+      <Link>src\Graphics\Enums\DepthFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\CKGL\src\Graphics\Enums\Face.cs">
+      <Link>src\Graphics\Enums\Face.cs</Link>
+    </Compile>
+    <Compile Include="..\CKGL\src\Graphics\Enums\FrontFace.cs">
+      <Link>src\Graphics\Enums\FrontFace.cs</Link>
+    </Compile>
     <Compile Include="..\CKGL\src\Graphics\Enums\GraphicsBackend.cs">
       <Link>src\Graphics\Enums\GraphicsBackend.cs</Link>
     </Compile>
@@ -81,6 +96,9 @@
     </Compile>
     <Compile Include="..\CKGL\src\Graphics\Enums\PixelFormat.cs">
       <Link>src\Graphics\Enums\PixelFormat.cs</Link>
+    </Compile>
+    <Compile Include="..\CKGL\src\Graphics\Enums\PolygonMode.cs">
+      <Link>src\Graphics\Enums\PolygonMode.cs</Link>
     </Compile>
     <Compile Include="..\CKGL\src\Graphics\Enums\PrimitiveTopology.cs">
       <Link>src\Graphics\Enums\PrimitiveTopology.cs</Link>
@@ -123,6 +141,27 @@
     </Compile>
     <Compile Include="..\CKGL\src\Graphics\Shaders.cs">
       <Link>src\Graphics\Shaders.cs</Link>
+    </Compile>
+    <Compile Include="..\CKGL\src\Graphics\State\BlendState.cs">
+      <Link>src\Graphics\State\BlendState.cs</Link>
+    </Compile>
+    <Compile Include="..\CKGL\src\Graphics\State\ColourMaskState.cs">
+      <Link>src\Graphics\State\ColourMaskState.cs</Link>
+    </Compile>
+    <Compile Include="..\CKGL\src\Graphics\State\CullModeState.cs">
+      <Link>src\Graphics\State\CullModeState.cs</Link>
+    </Compile>
+    <Compile Include="..\CKGL\src\Graphics\State\DepthMaskState.cs">
+      <Link>src\Graphics\State\DepthMaskState.cs</Link>
+    </Compile>
+    <Compile Include="..\CKGL\src\Graphics\State\DepthState.cs">
+      <Link>src\Graphics\State\DepthState.cs</Link>
+    </Compile>
+    <Compile Include="..\CKGL\src\Graphics\State\FrontFaceState.cs">
+      <Link>src\Graphics\State\FrontFaceState.cs</Link>
+    </Compile>
+    <Compile Include="..\CKGL\src\Graphics\State\PolygonModeState.cs">
+      <Link>src\Graphics\State\PolygonModeState.cs</Link>
     </Compile>
     <Compile Include="..\CKGL\src\Graphics\VertexBuffer.cs">
       <Link>src\Graphics\VertexBuffer.cs</Link>

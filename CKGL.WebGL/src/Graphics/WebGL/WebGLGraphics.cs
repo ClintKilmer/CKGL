@@ -1,8 +1,8 @@
 using System;
 using Bridge.Html5; // HTML5 DOM Manipulation
+using static CKGL.WebGL.Extensions; // WebGL Extensions
 using static Retyped.webgl2; // WebGL Types - WebGL2RenderingContext, WebGLVertexArrayObject
 using static Retyped.webgl2.WebGL2RenderingContext; // WebGL Enums
-using static CKGL.WebGL.Extensions; // WebGL Extensions
 
 namespace CKGL.WebGL
 {
@@ -12,6 +12,10 @@ namespace CKGL.WebGL
 		// WEBGL_debug_renderer_info
 		internal static double UNMASKED_VENDOR_WEBGL = 0x9245;
 		internal static double UNMASKED_RENDERER_WEBGL = 0x9246;
+
+		// WebGL 2 BlendFunc Min/Max
+		internal static double MIN = 0x8007;
+		internal static double MAX = 0x8008;
 	}
 	#endregion
 
@@ -87,7 +91,7 @@ namespace CKGL.WebGL
 
 		internal override Shader CreateShaderFromFile(string file)
 		{
-			return new WebGLShader(file);
+			throw new CKGLException("WebGL doesn't support creating shaders from file.");
 		}
 		#endregion
 
@@ -168,67 +172,66 @@ namespace CKGL.WebGL
 		}
 		#endregion
 
-#if false
 		#region State Setters
 		internal override void SetFrontFace(FrontFaceState frontFaceState)
 		{
-			GL.FrontFace(frontFaceState.FrontFace.ToOpenGL());
+			GL.frontFace(frontFaceState.FrontFace.ToWebGL());
 		}
 
 		internal override void SetCullMode(CullModeState cullModeState)
 		{
 			if (cullModeState.Enabled)
-				GL.Enable(EnableCap.CullFace);
+				GL.enable(CULL_FACE);
 			else
-				GL.Disable(EnableCap.CullFace);
+				GL.disable(CULL_FACE);
 
-			GL.CullFace(cullModeState.Face.ToOpenGL());
+			GL.cullFace(cullModeState.Face.ToWebGL());
 		}
 
 		internal override void SetPolygonMode(PolygonModeState polygonModeState)
 		{
-			GL.PolygonMode(polygonModeState.PolygonMode.ToOpenGL());
+			//GL.polygonMode(polygonModeState.PolygonMode.ToWebGL());
+			throw new CKGLException("glPolygonMode is not available in WebGL.");
 		}
 
 		internal override void SetColourMask(ColourMaskState colourMaskState)
 		{
-			GL.ColourMask(colourMaskState.R, colourMaskState.G, colourMaskState.B, colourMaskState.A);
+			GL.colorMask(colourMaskState.R, colourMaskState.G, colourMaskState.B, colourMaskState.A);
 		}
 
 		internal override void SetDepthMask(DepthMaskState depthMaskState)
 		{
-			GL.DepthMask(depthMaskState.Depth);
+			GL.depthMask(depthMaskState.Depth);
 		}
 
 		internal override void SetDepth(DepthState depthState)
 		{
 			if (depthState.Enabled)
-				GL.Enable(EnableCap.DepthTest);
+				GL.enable(DEPTH_TEST);
 			else
-				GL.Disable(EnableCap.DepthTest);
+				GL.disable(DEPTH_TEST);
 
-			GL.DepthFunc(depthState.DepthFunction.ToOpenGL());
+			GL.depthFunc(depthState.DepthFunction.ToWebGL());
 		}
 
 		internal override void SetBlend(BlendState blendState)
 		{
 			if (blendState.Enabled)
-				GL.Enable(EnableCap.Blend);
+				GL.enable(BLEND);
 			else
-				GL.Disable(EnableCap.Blend);
+				GL.disable(BLEND);
 
 			if (blendState.ColourSource == blendState.AlphaSource && blendState.ColourDestination == blendState.AlphaDestination)
-				GL.BlendFunc(blendState.ColourSource.ToOpenGL(), blendState.ColourDestination.ToOpenGL());
+				GL.blendFunc(blendState.ColourSource.ToWebGL(), blendState.ColourDestination.ToWebGL());
 			else
-				GL.BlendFuncSeparate(blendState.ColourSource.ToOpenGL(), blendState.ColourDestination.ToOpenGL(), blendState.AlphaSource.ToOpenGL(), blendState.AlphaDestination.ToOpenGL());
+				GL.blendFuncSeparate(blendState.ColourSource.ToWebGL(), blendState.ColourDestination.ToWebGL(), blendState.AlphaSource.ToWebGL(), blendState.AlphaDestination.ToWebGL());
 
 			if (blendState.ColourEquation == blendState.AlphaEquation)
-				GL.BlendEquation(blendState.ColourEquation.ToOpenGL());
+				GL.blendEquation(blendState.ColourEquation.ToWebGL());
 			else
-				GL.BlendEquationSeparate(blendState.ColourEquation.ToOpenGL(), blendState.AlphaEquation.ToOpenGL());
+				GL.blendEquationSeparate(blendState.ColourEquation.ToWebGL(), blendState.AlphaEquation.ToWebGL());
 		}
 		#endregion
-#endif
 
 		#region Draw
 		internal override void DrawVertexArrays(PrimitiveTopology primitiveTopology, int offset, int count)

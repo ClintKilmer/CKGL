@@ -1,9 +1,140 @@
+using static CKGL.WebGL.Extensions; // WebGL Extensions
 using static Retyped.webgl2.WebGL2RenderingContext; // WebGL Enums
 
 namespace CKGL.WebGL
 {
 	internal static class WebGLCKGLConversions
 	{
+		#region State
+		internal static double ToWebGL(this BlendEquation blendEquation)
+		{
+			switch (blendEquation)
+			{
+				case BlendEquation.Add:
+					return FUNC_ADD;
+				case BlendEquation.Subtract:
+					return FUNC_SUBTRACT;
+				case BlendEquation.ReverseSubtract:
+					return FUNC_REVERSE_SUBTRACT;
+				case BlendEquation.Max:
+					return MAX;
+				case BlendEquation.Min:
+					return MIN;
+				default:
+					throw new IllegalValueException(typeof(BlendEquation), blendEquation);
+			}
+		}
+
+		internal static double ToWebGL(this BlendFactor blendFactor)
+		{
+			switch (blendFactor)
+			{
+				case BlendFactor.Zero:
+					return ZERO;
+				case BlendFactor.One:
+					return ONE;
+				case BlendFactor.SrcColour:
+					return SRC_COLOR;
+				case BlendFactor.OneMinusSrcColour:
+					return ONE_MINUS_SRC_COLOR;
+				case BlendFactor.SrcAlpha:
+					return SRC_ALPHA;
+				case BlendFactor.OneMinusSrcAlpha:
+					return ONE_MINUS_SRC_ALPHA;
+				case BlendFactor.DstAlpha:
+					return DST_ALPHA;
+				case BlendFactor.OneMinusDstAlpha:
+					return ONE_MINUS_DST_ALPHA;
+				case BlendFactor.DstColour:
+					return DST_COLOR;
+				case BlendFactor.OneMinusDstcolour:
+					return ONE_MINUS_DST_COLOR;
+				case BlendFactor.SrcAlphaSaturate:
+					return SRC_ALPHA_SATURATE;
+				case BlendFactor.ConstantColour:
+					return CONSTANT_COLOR;
+				case BlendFactor.OneMinusConstantColour:
+					return ONE_MINUS_CONSTANT_COLOR;
+				case BlendFactor.ConstantAlpha:
+					return CONSTANT_ALPHA;
+				case BlendFactor.OneMinusConstantAlpha:
+					return ONE_MINUS_CONSTANT_ALPHA;
+				default:
+					throw new IllegalValueException(typeof(BlendFactor), blendFactor);
+			}
+		}
+
+		internal static double ToWebGL(this Face face)
+		{
+			switch (face)
+			{
+				case Face.Front:
+					return FRONT;
+				case Face.Back:
+					return BACK;
+				case Face.FrontAndBack:
+					return FRONT_AND_BACK;
+				default:
+					throw new IllegalValueException(typeof(Face), face);
+			}
+		}
+
+		internal static double ToWebGL(this DepthFunction depthFunction)
+		{
+			switch (depthFunction)
+			{
+				case DepthFunction.Never:
+					return NEVER;
+				case DepthFunction.Less:
+					return LESS;
+				case DepthFunction.Equal:
+					return EQUAL;
+				case DepthFunction.LessEqual:
+					return LEQUAL;
+				case DepthFunction.Greater:
+					return GREATER;
+				case DepthFunction.NotEqual:
+					return NOTEQUAL;
+				case DepthFunction.GreaterEqual:
+					return GEQUAL;
+				case DepthFunction.Always:
+					return ALWAYS;
+				default:
+					throw new IllegalValueException(typeof(DepthFunction), depthFunction);
+			}
+		}
+
+		internal static double ToWebGL(this FrontFace frontFace)
+		{
+			switch (frontFace)
+			{
+				case FrontFace.Clockwise:
+					return CW;
+				case FrontFace.CounterClockwise:
+					return CCW;
+				default:
+					throw new IllegalValueException(typeof(FrontFace), frontFace);
+			}
+		}
+
+		internal static double ToWebGL(this PolygonMode polygonMode)
+		{
+			switch (polygonMode)
+			{
+				//case PolygonMode.Fill:
+				//	return FILL;
+				//case PolygonMode.Line:
+				//	return LINE;
+				//case PolygonMode.Point:
+				//	return POINT;
+				//default:
+				//	throw new IllegalValueException(typeof(PolygonMode), polygonMode);
+				default:
+					throw new CKGLException("glPolygonMode is not available in WebGL.");
+			}
+		}
+		#endregion
+
 		//internal static WebGLBindings.BlitFilter ToWebGL(this BlitFilter blitFilter)
 		//{
 		//	switch (blitFilter)

@@ -168,11 +168,11 @@ namespace CKGL.WebGL
 		{
 			if (shader != currentlyBoundShader)
 			{
-				//Graphics.State.OnStateChanging?.Invoke();
+				Graphics.State.OnStateChanging?.Invoke();
 				GL.useProgram(shader);
 				Swaps++;
 				currentlyBoundShader = shader;
-				//Graphics.State.OnStateChanged?.Invoke();
+				Graphics.State.OnStateChanged?.Invoke();
 			}
 		}
 
@@ -216,186 +216,186 @@ namespace CKGL.WebGL
 			{
 				if (boolValue != value)
 				{
-					//Graphics.State.OnStateChanging.Invoke();
+					Graphics.State.OnStateChanging.Invoke();
 					GL.uniform1i(Location, value ? 1 : 0);
 					UniformSwaps++;
 					boolValue = value;
-					//Graphics.State.OnStateChanged.Invoke();
+					Graphics.State.OnStateChanged.Invoke();
 				}
 			}
 			public void SetUniform(int value)
 			{
 				if (intValue != value)
 				{
-					//Graphics.State.OnStateChanging.Invoke();
+					Graphics.State.OnStateChanging.Invoke();
 					GL.uniform1i(Location, value);
 					UniformSwaps++;
 					intValue = value;
-					//Graphics.State.OnStateChanged.Invoke();
+					Graphics.State.OnStateChanged.Invoke();
 				}
 			}
 			public void SetUniform(float value)
 			{
 				if (floatValue != value)
 				{
-					//Graphics.State.OnStateChanging.Invoke();
+					Graphics.State.OnStateChanging.Invoke();
 					GL.uniform1f(Location, value);
 					UniformSwaps++;
 					floatValue = value;
-					//Graphics.State.OnStateChanged.Invoke();
+					Graphics.State.OnStateChanged.Invoke();
 				}
 			}
 			public void SetUniform(float x, float y)
 			{
 				if (floatValueX != x && floatValueY != y)
 				{
-					//Graphics.State.OnStateChanging.Invoke();
+					Graphics.State.OnStateChanging.Invoke();
 					GL.uniform2f(Location, x, y);
 					UniformSwaps++;
 					floatValueX = x;
 					floatValueY = y;
-					//Graphics.State.OnStateChanged.Invoke();
+					Graphics.State.OnStateChanged.Invoke();
 				}
 			}
 			public void SetUniform(float x, float y, float z)
 			{
 				if (floatValueX != x && floatValueY != y && floatValueZ != z)
 				{
-					//Graphics.State.OnStateChanging.Invoke();
+					Graphics.State.OnStateChanging.Invoke();
 					GL.uniform3f(Location, x, y, z);
 					UniformSwaps++;
 					floatValueX = x;
 					floatValueY = y;
 					floatValueZ = z;
-					//Graphics.State.OnStateChanged.Invoke();
+					Graphics.State.OnStateChanged.Invoke();
 				}
 			}
 			public void SetUniform(float x, float y, float z, float w)
 			{
 				if (floatValueX != x && floatValueY != y && floatValueZ != z && floatValueW != w)
 				{
-					//Graphics.State.OnStateChanging.Invoke();
+					Graphics.State.OnStateChanging.Invoke();
 					GL.uniform4f(Location, x, y, z, w);
 					UniformSwaps++;
 					floatValueX = x;
 					floatValueY = y;
 					floatValueZ = z;
 					floatValueW = w;
-					//Graphics.State.OnStateChanged.Invoke();
+					Graphics.State.OnStateChanged.Invoke();
 				}
 			}
 			public void SetUniform(Vector2 value)
 			{
 				if (Vector2Value != value)
 				{
-					//Graphics.State.OnStateChanging.Invoke();
+					Graphics.State.OnStateChanging.Invoke();
 					GL.uniform2f(Location, value.X, value.Y);
 					UniformSwaps++;
 					Vector2Value = value;
-					//Graphics.State.OnStateChanged.Invoke();
+					Graphics.State.OnStateChanged.Invoke();
 				}
 			}
 			public void SetUniform(Vector3 value)
 			{
 				if (Vector3Value != value)
 				{
-					//Graphics.State.OnStateChanging.Invoke();
+					Graphics.State.OnStateChanging.Invoke();
 					GL.uniform3f(Location, value.X, value.Y, value.Z);
 					UniformSwaps++;
 					Vector3Value = value;
-					//Graphics.State.OnStateChanged.Invoke();
+					Graphics.State.OnStateChanged.Invoke();
 				}
 			}
 			public void SetUniform(Vector4 value)
 			{
 				if (Vector4Value != value)
 				{
-					//Graphics.State.OnStateChanging.Invoke();
+					Graphics.State.OnStateChanging.Invoke();
 					GL.uniform4f(Location, value.X, value.Y, value.Z, value.W);
 					UniformSwaps++;
 					Vector4Value = value;
-					//Graphics.State.OnStateChanged.Invoke();
+					Graphics.State.OnStateChanged.Invoke();
 				}
 			}
 			public void SetUniform(Colour value)
 			{
 				if (ColourValue != value)
 				{
-					//Graphics.State.OnStateChanging.Invoke();
+					Graphics.State.OnStateChanging.Invoke();
 					GL.uniform4f(Location, value.R, value.G, value.B, value.A);
 					UniformSwaps++;
 					ColourValue = value;
-					//Graphics.State.OnStateChanged.Invoke();
+					Graphics.State.OnStateChanged.Invoke();
 				}
 			}
 			public void SetUniform(Matrix2D value)
 			{
 				if (Matrix2DValue != value)
 				{
-					//Graphics.State.OnStateChanging.Invoke();
+					Graphics.State.OnStateChanging.Invoke();
 					GL.uniformMatrix3x2fv(Location, false, value.ToArrayColumnMajor());
 					UniformSwaps++;
 					Matrix2DValue = value;
-					//Graphics.State.OnStateChanged.Invoke();
+					Graphics.State.OnStateChanged.Invoke();
 				}
 			}
 			public void SetUniform(Matrix3x3 value)
 			{
 				if (Matrix3x3Value != value)
 				{
-					//Graphics.State.OnStateChanging.Invoke();
+					Graphics.State.OnStateChanging.Invoke();
 					GL.uniformMatrix3fv(Location, false, value.ToArrayColumnMajor());
 					UniformSwaps++;
 					Matrix3x3Value = value;
-					//Graphics.State.OnStateChanged.Invoke();
+					Graphics.State.OnStateChanged.Invoke();
 				}
 			}
 			public void SetUniform(Matrix value)
 			{
 				if (MatrixValue != value)
 				{
-					//Graphics.State.OnStateChanging.Invoke();
+					Graphics.State.OnStateChanging.Invoke();
 					GL.uniformMatrix4fv(Location, false, value.ToArrayColumnMajor());
 					UniformSwaps++;
 					MatrixValue = value;
-					//Graphics.State.OnStateChanged.Invoke();
+					Graphics.State.OnStateChanged.Invoke();
 				}
 			}
 			public void SetUniform(Texture value, uint textureSlot)
 			{
 				if ((TextureValue == null || TextureValue != value) && uintValue != textureSlot)
 				{
-					//Graphics.State.OnStateChanging.Invoke();
+					Graphics.State.OnStateChanging.Invoke();
 					value.Bind(textureSlot);
 					GL.uniform1i(Location, (int)textureSlot);
 					UniformSwaps++;
 					TextureValue = value;
 					uintValue = textureSlot;
-					//Graphics.State.OnStateChanged.Invoke();
+					Graphics.State.OnStateChanged.Invoke();
 				}
 			}
 			//public void SetUniform(UniformSampler2D value)
 			//{
 			//	if (UniformSampler2DValue == null || UniformSampler2DValue != value)
 			//	{
-			//		//Graphics.State.OnStateChanging.Invoke();
+			//		Graphics.State.OnStateChanging.Invoke();
 			//		int slot = Texture.Bind(value.ID, value.BindTarget);
 			//		GL.uniform1i(Location, slot);
 			//		UniformSwaps++;
 			//		UniformSampler2DValue = value;
-			//		//Graphics.State.OnStateChanged.Invoke();
+			//		Graphics.State.OnStateChanged.Invoke();
 			//	}
 			//}
 			//public void SetUniform(UniformSamplerCube value)
 			//{
 			//	if (UniformSamplerCubeValue == null || UniformSamplerCubeValue != value)
 			//	{
-			//		//Graphics.State.OnStateChanging.Invoke();
+			//		Graphics.State.OnStateChanging.Invoke();
 			//		int slot = Texture.Bind(value.ID, TextureTarget.TextureCubeMap);
 			//		GL.uniform1i(Location, slot);
 			//		UniformSwaps++;
 			//		UniformSamplerCubeValue = value;
-			//		//Graphics.State.OnStateChanged.Invoke();
+			//		Graphics.State.OnStateChanged.Invoke();
 			//	}
 			//}
 			#endregion

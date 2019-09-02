@@ -163,6 +163,8 @@ void main(void)
 			// Clear the screen
 			Graphics.Clear(Colour.Black);
 
+			//ColourMaskState._GBA.Set();
+
 			geometryInput.Bind();
 
 			Shaders.Basic.Bind();

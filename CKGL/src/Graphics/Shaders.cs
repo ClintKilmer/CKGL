@@ -53,6 +53,8 @@ float LinearizeDepth(const float depth, const float zNear, const float zFar)
 
 		public ShaderWrapper(string source) => Shader = Shader.Create(source);
 
+		public ShaderWrapper(bool fromFile, string file) => Shader = Shader.CreateFromFile(file);
+
 		public void Destroy() => Shader.Destroy();
 		public void Bind() => Shader.Bind();
 

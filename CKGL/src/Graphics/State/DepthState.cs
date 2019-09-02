@@ -1,49 +1,5 @@
-using System;
-
 namespace CKGL
 {
-	#region Enums
-	public enum DepthFunction : byte
-	{
-		Never,
-		Less,
-		Equal,
-		LessEqual,
-		Greater,
-		NotEqual,
-		GreaterEqual,
-		Always
-	}
-
-	internal static class DepthFunctionExt
-	{
-		internal static OpenGLBindings.DepthFunc ToOpenGL(this DepthFunction depthFunction)
-		{
-			switch (depthFunction)
-			{
-				case DepthFunction.Never:
-					return OpenGLBindings.DepthFunc.Never;
-				case DepthFunction.Less:
-					return OpenGLBindings.DepthFunc.Less;
-				case DepthFunction.Equal:
-					return OpenGLBindings.DepthFunc.Equal;
-				case DepthFunction.LessEqual:
-					return OpenGLBindings.DepthFunc.LessEqual;
-				case DepthFunction.Greater:
-					return OpenGLBindings.DepthFunc.Greater;
-				case DepthFunction.NotEqual:
-					return OpenGLBindings.DepthFunc.NotEqual;
-				case DepthFunction.GreaterEqual:
-					return OpenGLBindings.DepthFunc.GreaterEqual;
-				case DepthFunction.Always:
-					return OpenGLBindings.DepthFunc.Always;
-				default:
-					throw new NotImplementedException();
-			}
-		}
-	}
-	#endregion
-
 	public struct DepthState
 	{
 		public readonly bool Enabled;

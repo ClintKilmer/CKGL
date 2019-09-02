@@ -37,7 +37,6 @@ namespace CKGL
 		internal abstract void Clear(Colour colour, double depth);
 		#endregion
 
-#if !WEBGL // Temporary
 		#region State Setters
 		internal abstract void SetFrontFace(FrontFaceState frontFaceState);
 		internal abstract void SetCullMode(CullModeState cullModeState);
@@ -47,7 +46,6 @@ namespace CKGL
 		internal abstract void SetDepth(DepthState depthState);
 		internal abstract void SetBlend(BlendState blendState);
 		#endregion
-#endif // Temporary
 
 		#region Draw
 		internal abstract void DrawVertexArrays(PrimitiveTopology primitiveTopology, int offset, int count);

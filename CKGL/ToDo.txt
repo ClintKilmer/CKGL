@@ -1,7 +1,6 @@
 CKGL TODO List:
 
 Bugs:
-- WebGL shader has all state changes commented out
 - WebGL - VertexBuffer.LoadData<T> requires VertexFormat, using #if WEBGL to make this work
 - Property ( get; internal set; ) version of VertexAttribute.Offset breaks Bridge.NET
 

@@ -35,9 +35,9 @@ namespace CKGL
 
 			graphics.Init();
 
-#if !WEBGL // Temporary
 			State.Init();
 
+#if !WEBGL // Temporary
 			Platform.Events.OnWinResized += () =>
 			{
 				SetViewport();
@@ -95,7 +95,6 @@ namespace CKGL
 		public static void Clear(Colour colour, double depth) => graphics.Clear(colour, depth);
 		#endregion
 
-#if !WEBGL // Temporary
 		#region State Setters
 		internal static void SetFrontFace(FrontFaceState frontFaceState) => graphics.SetFrontFace(frontFaceState);
 		internal static void SetCullMode(CullModeState cullModeState) => graphics.SetCullMode(cullModeState);
@@ -138,7 +137,6 @@ namespace CKGL
 			}
 		}
 		#endregion
-#endif
 
 		#region Draw
 		public static void DrawVertexArrays(PrimitiveTopology primitiveTopology, int offset, int count)

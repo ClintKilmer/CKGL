@@ -1,34 +1,5 @@
-using System;
-
 namespace CKGL
 {
-	#region Enums
-	public enum PolygonMode : byte
-	{
-		Fill,
-		Line,
-		Point
-	}
-
-	internal static class PolygonModeExt
-	{
-		internal static OpenGLBindings.PolygonMode ToOpenGL(this PolygonMode frontFace)
-		{
-			switch (frontFace)
-			{
-				case PolygonMode.Fill:
-					return OpenGLBindings.PolygonMode.Fill;
-				case PolygonMode.Line:
-					return OpenGLBindings.PolygonMode.Line;
-				case PolygonMode.Point:
-					return OpenGLBindings.PolygonMode.Point;
-				default:
-					throw new NotImplementedException();
-			}
-		}
-	}
-	#endregion
-
 	public struct PolygonModeState
 	{
 		public readonly PolygonMode PolygonMode;

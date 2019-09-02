@@ -1,4 +1,5 @@
 using CKGL.OpenGLBindings;
+using System.IO;
 
 namespace CKGL.OpenGL
 {
@@ -32,7 +33,9 @@ namespace CKGL.OpenGL
 
 		internal override Shader CreateShaderFromFile(string file)
 		{
-			return new OpenGLShader(file);
+			if (!File.Exists(file))
+				throw new FileNotFoundException("Shader file not found.", file);
+			return new OpenGLShader(File.ReadAllText(file));
 		}
 		#endregion
 
