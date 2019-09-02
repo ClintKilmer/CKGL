@@ -32,8 +32,8 @@ namespace CKGL.OpenGL
 		// Adaptive vertex buffer size
 		//private int bufferSize = 16384; // Performant on Laptop
 		private int bufferSize = 1024;
-		private readonly int maxBufferSize = OpenGLBindings.GL.MaxElementVertices; // TODO - Move into Graphics.Init
-																				   //private const int bufferSize = 1998; // Divisible by 3 and 2 for no vertex wrapping per batch
+		private readonly int maxBufferSize = int.MaxValue;
+		//private const int bufferSize = 1998; // Divisible by 3 and 2 for no vertex wrapping per batch
 		private Vertex[] vertices;
 		private int vertexCount = 0;
 
@@ -51,7 +51,7 @@ namespace CKGL.OpenGL
 
 			vertices = new Vertex[bufferSize];
 
-			Graphics.State.OnStateChanging += () => { Flush(); };
+			Graphics.State.OnStateChanging += Flush;
 
 			// Debug
 			Output.WriteLine($"Renderer Initialized");
@@ -64,6 +64,8 @@ namespace CKGL.OpenGL
 
 			geometryInput = null;
 			vertexBuffer = null;
+
+			Graphics.State.OnStateChanging -= Flush;
 		}
 
 		internal override void Flush()
