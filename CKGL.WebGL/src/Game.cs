@@ -36,6 +36,7 @@ namespace CKGL
 			Graphics.Init();
 			//Audio.Init();
 			//Renderer.Init();
+			Graphics.State.OnStateChanging += () => { }; // Temporary until Renderer inits this
 
 			//Platform.Events.OnWinFocusGained += () => { focused = true; OnFocusGained(); };
 			//Platform.Events.OnWinFocusLost += () => { focused = false; OnFocusLost(); };

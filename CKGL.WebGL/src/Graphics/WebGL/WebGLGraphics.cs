@@ -95,13 +95,12 @@ namespace CKGL.WebGL
 		}
 		#endregion
 
-#if false
 		#region Viewport
 		internal override void SetViewport() => SetViewport(RenderTarget.Current);
 		internal override void SetViewport(RenderTarget renderTarget)
 			=> SetViewport(0, 0, (renderTarget ?? RenderTarget.Default).Width, (renderTarget ?? RenderTarget.Default).Height);
 		internal override void SetViewport(int x, int y, int width, int height)
-			=> GL.Viewport(x, y, width, height);
+			=> GL.viewport(x, y, width, height);
 		#endregion
 
 		#region ScissorTest
@@ -110,26 +109,25 @@ namespace CKGL.WebGL
 			=> SetScissorTest(0, 0, (renderTarget ?? RenderTarget.Default).Width, (renderTarget ?? RenderTarget.Default).Height);
 		internal override void SetScissorTest(int x, int y, int width, int height)
 		{
-			GL.Enable(EnableCap.ScissorTest);
-			GL.Scissor(x, y, width, height);
+			GL.enable(SCISSOR_TEST);
+			GL.scissor(x, y, width, height);
 		}
 
 		internal override void SetScissorTest(bool enabled)
 		{
 			if (enabled)
-				GL.Enable(EnableCap.ScissorTest);
+				GL.enable(SCISSOR_TEST);
 			else
-				GL.Disable(EnableCap.ScissorTest);
+				GL.disable(SCISSOR_TEST);
 		}
 		#endregion
 
 		#region DepthRange
 		internal override void SetDepthRange(double near, double far)
 		{
-			GL.DepthRange(near.Clamp(0d, 1d), far.Clamp(0d, 1d));
+			GL.depthRange(near.Clamp(0d, 1d), far.Clamp(0d, 1d));
 		}
 		#endregion
-#endif
 
 		#region Clear
 		internal override void Clear(Colour colour)

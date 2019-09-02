@@ -54,9 +54,7 @@ namespace CKGL
 		public static void PreDraw()
 		{
 			DrawCalls = 0;
-#if !WEBGL // Temporary
 			State.PreDraw();
-#endif // Temporary
 		}
 
 		#region Resources
@@ -67,7 +65,6 @@ namespace CKGL
 		internal static Shader CreateShaderFromFile(string file) => graphics.CreateShaderFromFile(file);
 		#endregion
 
-#if !WEBGL // Temporary
 		// TODO - Move SetViewport() to own state
 		#region Viewport
 		public static void SetViewport() => graphics.SetViewport();
@@ -87,7 +84,6 @@ namespace CKGL
 		#region DepthRange
 		public static void SetDepthRange(double near, double far) => graphics.SetDepthRange(near, far);
 		#endregion
-#endif // Temporary
 
 		#region Clear
 		public static void Clear(Colour colour) => graphics.Clear(colour);

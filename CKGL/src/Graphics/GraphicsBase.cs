@@ -12,7 +12,6 @@ namespace CKGL
 		internal abstract Shader CreateShaderFromFile(string file);
 		#endregion
 
-#if !WEBGL // Temporary
 		#region Viewport
 		internal abstract void SetViewport();
 		internal abstract void SetViewport(RenderTarget renderTarget);
@@ -29,7 +28,6 @@ namespace CKGL
 		#region DepthRange
 		internal abstract void SetDepthRange(double near, double far);
 		#endregion
-#endif // Temporary
 
 		#region Clear
 		internal abstract void Clear(Colour colour);
