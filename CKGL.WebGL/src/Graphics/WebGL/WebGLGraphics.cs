@@ -1,6 +1,6 @@
 using System;
 using Bridge.Html5; // HTML5 DOM Manipulation
-using static CKGL.WebGL.Extensions; // WebGL Extensions
+using static Retyped.dom.Literals; // WebGL Extensions
 using static Retyped.webgl2; // WebGL Types - WebGL2RenderingContext, WebGLVertexArrayObject
 using static Retyped.webgl2.WebGL2RenderingContext; // WebGL Enums
 
@@ -9,10 +9,6 @@ namespace CKGL.WebGL
 	#region Extensions
 	internal static class Extensions
 	{
-		// WEBGL_debug_renderer_info
-		internal static double UNMASKED_VENDOR_WEBGL = 0x9245;
-		internal static double UNMASKED_RENDERER_WEBGL = 0x9246;
-
 		// WebGL 2 BlendFunc Min/Max
 		internal static double MIN = 0x8007;
 		internal static double MAX = 0x8008;
@@ -49,7 +45,7 @@ namespace CKGL.WebGL
 			}
 
 			if (GL == null)
-				Platform.Canvas.ParentElement.ReplaceChild(new HTMLParagraphElement { InnerHTML = "<b>Either the browser doesn't support WebGL 2.0 or it is disabled.<br>Please follow <a href=\"https://get.webgl.org/\">Get WebGL</a>.</b>" }, Platform.Canvas);
+				Platform.Canvas.ParentElement.ReplaceChild(new HTMLParagraphElement { InnerHTML = "<b>Either the browser doesn't support WebGL 2.0 or it is disabled.<br>Please follow the instructions at: <a href=\"https://get.webgl.org/webgl2/\" > get.webgl.org</a>.</b>" }, Platform.Canvas);
 
 			// Debug
 			Output.WriteLine($"Platform - HTML5 Initialized");
@@ -59,11 +55,11 @@ namespace CKGL.WebGL
 			Output.WriteLine($"WebGL Context - VERSION: {GL.getParameter(VERSION)}");
 			Output.WriteLine($"WebGL Context - VENDOR: {GL.getParameter(VENDOR)}");
 			Output.WriteLine($"WebGL Context - RENDERER: {GL.getParameter(RENDERER)}");
-			var dbgRenderInfo = GL.getExtension("WEBGL_debug_renderer_info");
+			var dbgRenderInfo = GL.getExtension(WEBGL_debug_renderer_info);
 			if (dbgRenderInfo != null)
 			{
-				Output.WriteLine($"WebGL Context - WEBGL_debug_renderer_info.UNMASKED_VENDOR_WEBGL: {GL.getParameter(UNMASKED_VENDOR_WEBGL)}");
-				Output.WriteLine($"WebGL Context - WEBGL_debug_renderer_info.UNMASKED_RENDERER_WEBGL: {GL.getParameter(UNMASKED_RENDERER_WEBGL)}");
+				Output.WriteLine($"WebGL Context - WEBGL_debug_renderer_info.UNMASKED_VENDOR_WEBGL: {GL.getParameter(dbgRenderInfo.UNMASKED_VENDOR_WEBGL)}");
+				Output.WriteLine($"WebGL Context - WEBGL_debug_renderer_info.UNMASKED_RENDERER_WEBGL: {GL.getParameter(dbgRenderInfo.UNMASKED_RENDERER_WEBGL)}");
 			}
 			//Output.WriteLine($"WebGL - Extensions: \n{string.Join("\n", gl.GetSupportedExtensions())}");
 		}

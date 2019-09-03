@@ -269,7 +269,8 @@ namespace CKGL
 			Canvas = new HTMLCanvasElement
 			{
 				Width = windowFullscreen ? Window.InnerWidth : windowWidth,
-				Height = windowFullscreen ? Window.InnerHeight : windowHeight
+				Height = windowFullscreen ? Window.InnerHeight : windowHeight,
+				TextContent = "<b>Either the browser doesn't support WebGL 2.0 or it is disabled.<br>Please follow the instructions at: <a href=\"https://get.webgl.org/webgl2/\" > get.webgl.org</a>.</b>"
 			};
 			Document.Body.AppendChild(Canvas);
 
