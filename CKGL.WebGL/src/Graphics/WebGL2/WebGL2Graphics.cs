@@ -25,6 +25,7 @@ namespace CKGL.WebGL2
 					if (_WEBGL_debug_renderer_info == null)
 					{
 						_WEBGL_debug_renderer_info = GL.getExtension(WebGL2_EXT.WEBGL_debug_renderer_info);
+						Output.WriteLine("WebGL 2.0 Extension \"WEBGL_debug_renderer_info\" acquired.");
 
 						if (_WEBGL_debug_renderer_info == null)
 							throw new CKGLException("WebGL 2.0 \"WEBGL_debug_renderer_info\" extension was requested, but is not supported in this browser.");

@@ -203,7 +203,7 @@ namespace CKGL.WebGL
 				//	return GL.UNSIGNED_BYTE;
 				case IndexType.UnsignedShort:
 					return GL.UNSIGNED_SHORT;
-				case IndexType.UnsignedInt:
+				case IndexType.UnsignedInt when Extensions.OES_element_index_uint != null:
 					return GL.UNSIGNED_INT;
 				default:
 					throw new IllegalValueException(typeof(IndexType), indexType);

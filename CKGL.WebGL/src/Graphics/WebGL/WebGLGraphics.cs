@@ -17,6 +17,7 @@ namespace CKGL.WebGL
 					if (_WEBGL_debug_renderer_info == null)
 					{
 						_WEBGL_debug_renderer_info = GL.getExtension(WebGL_EXT.WEBGL_debug_renderer_info);
+						Output.WriteLine("WebGL 1.0 Extension \"WEBGL_debug_renderer_info\" acquired.");
 
 						if (_WEBGL_debug_renderer_info == null)
 							throw new CKGLException("WebGL 1.0 \"WEBGL_debug_renderer_info\" extension was requested, but is not supported in this browser.");
@@ -34,6 +35,7 @@ namespace CKGL.WebGL
 					if (_OES_vertex_array_object == null)
 					{
 						_OES_vertex_array_object = GL.getExtension(WebGL_EXT.OES_vertex_array_object);
+						Output.WriteLine("WebGL 1.0 Extension \"OES_vertex_array_object\" acquired.");
 
 						if (_OES_vertex_array_object == null)
 							throw new CKGLException("WebGL 1.0 \"OES_vertex_array_object\" extension was requested, but is not supported in this browser.");
@@ -51,6 +53,7 @@ namespace CKGL.WebGL
 					if (_EXT_blend_minmax == null)
 					{
 						_EXT_blend_minmax = GL.getExtension(WebGL_EXT.EXT_blend_minmax);
+						Output.WriteLine("WebGL 1.0 Extension \"EXT_blend_minmax\" acquired.");
 
 						if (_EXT_blend_minmax == null)
 							throw new CKGLException("WebGL 1.0 \"EXT_blend_minmax\" extension was requested, but is not supported in this browser.");
@@ -68,12 +71,31 @@ namespace CKGL.WebGL
 					if (_ANGLE_instanced_arrays == null)
 					{
 						_ANGLE_instanced_arrays = GL.getExtension(WebGL_EXT.ANGLE_instanced_arrays);
+						Output.WriteLine("WebGL 1.0 Extension \"ANGLE_instanced_arrays\" acquired.");
 
 						if (_ANGLE_instanced_arrays == null)
 							throw new CKGLException("WebGL 1.0 \"ANGLE_instanced_arrays\" extension was requested, but is not supported in this browser.");
 					}
 
 					return _ANGLE_instanced_arrays;
+				}
+			}
+
+			private static OES_element_index_uint _OES_element_index_uint;
+			internal static OES_element_index_uint OES_element_index_uint
+			{
+				get
+				{
+					if (_OES_element_index_uint == null)
+					{
+						_OES_element_index_uint = GL.getExtension(WebGL_EXT.OES_element_index_uint);
+						Output.WriteLine("WebGL 1.0 Extension \"OES_element_index_uint\" acquired.");
+
+						if (_ANGLE_instanced_arrays == null)
+							throw new CKGLException("WebGL 1.0 \"OES_element_index_uint\" extension was requested, but is not supported in this browser.");
+					}
+
+					return _OES_element_index_uint;
 				}
 			}
 		}
