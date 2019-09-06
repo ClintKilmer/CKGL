@@ -15,10 +15,10 @@ namespace CKGL.WebGL
 					return GL.FUNC_SUBTRACT;
 				case BlendEquation.ReverseSubtract:
 					return GL.FUNC_REVERSE_SUBTRACT;
-				//case BlendEquation.Max:
-				//	return MAX;
-				//case BlendEquation.Min:
-				//	return MIN;
+				case BlendEquation.Max:
+					return Extensions.EXT_blend_minmax.MAX_EXT;
+				case BlendEquation.Min:
+					return Extensions.EXT_blend_minmax.MIN_EXT;
 				default:
 					throw new IllegalValueException(typeof(BlendEquation), blendEquation);
 			}

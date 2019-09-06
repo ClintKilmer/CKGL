@@ -1,4 +1,3 @@
-using static CKGL.WebGL2.Extensions; // WebGL 2.0 Extensions
 using static Retyped.webgl2.WebGL2RenderingContext; // WebGL 2.0 Enums
 
 namespace CKGL.WebGL2
@@ -17,9 +16,9 @@ namespace CKGL.WebGL2
 				case BlendEquation.ReverseSubtract:
 					return FUNC_REVERSE_SUBTRACT;
 				case BlendEquation.Max:
-					return MAX;
+					return WebGL2Graphics.MAX;
 				case BlendEquation.Min:
-					return MIN;
+					return WebGL2Graphics.MIN;
 				default:
 					throw new IllegalValueException(typeof(BlendEquation), blendEquation);
 			}

@@ -27,8 +27,7 @@ namespace CKGL.WebGL
 					GL.enableVertexAttribArray(i);
 					GL.vertexAttribPointer(i, vertexStream.VertexFormat.Attributes[(int)i].Count, vertexStream.VertexFormat.Attributes[(int)i].Type.ToWebGL(), vertexStream.VertexFormat.Attributes[(int)i].Normalized, vertexStream.VertexFormat.Stride, vertexStream.VertexFormat.Attributes[(int)i].Offset);
 					if (vertexStream.VertexFormat.Attributes[(int)i].Divisor > 0)
-						throw new CKGLException("TODO - vertexAttribDivisor");
-						//GL.vertexAttribDivisor(i, vertexStream.VertexFormat.Attributes[(int)i].Divisor);
+						Extensions.ANGLE_instanced_arrays.vertexAttribDivisorANGLE(i, vertexStream.VertexFormat.Attributes[(int)i].Divisor);
 					//Output.WriteLine($"id: {i}, Count: {vertexStream.VertexFormat.Attributes[(int)i].Count}, Type: {vertexStream.VertexFormat.Attributes[(int)i].Type}, Normalized: {vertexStream.VertexFormat.Attributes[(int)i].Normalized}, Size/Stride: {vertexStream.VertexFormat.Attributes[(int)i].Size}/{vertexStream.VertexFormat.Stride}, offset: {vertexStream.VertexFormat.Attributes[(int)i].Offset}, divisor: {vertexStream.VertexFormat.Attributes[(int)i].Divisor}"); // Debug
 				}
 			}

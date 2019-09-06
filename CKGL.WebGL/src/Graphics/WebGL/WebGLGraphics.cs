@@ -1,11 +1,84 @@
 using System;
 using static Retyped.dom; // DOM / WebGL Types
-using WebGLEXT = Retyped.dom.Literals; // WebGL Extensions
+using WebGL_EXT = Retyped.dom.Literals; // WebGL Extensions
 
 namespace CKGL.WebGL
 {
 	internal class WebGLGraphics : GraphicsBase
 	{
+		#region Extensions
+		internal static class Extensions
+		{
+			private static WEBGL_debug_renderer_info _WEBGL_debug_renderer_info;
+			internal static WEBGL_debug_renderer_info WEBGL_debug_renderer_info
+			{
+				get
+				{
+					if (_WEBGL_debug_renderer_info == null)
+					{
+						_WEBGL_debug_renderer_info = GL.getExtension(WebGL_EXT.WEBGL_debug_renderer_info);
+
+						if (_WEBGL_debug_renderer_info == null)
+							throw new CKGLException("WebGL 1.0 \"WEBGL_debug_renderer_info\" extension was requested, but is not supported in this browser.");
+					}
+
+					return _WEBGL_debug_renderer_info;
+				}
+			}
+
+			private static OES_vertex_array_object _OES_vertex_array_object;
+			internal static OES_vertex_array_object OES_vertex_array_object
+			{
+				get
+				{
+					if (_OES_vertex_array_object == null)
+					{
+						_OES_vertex_array_object = GL.getExtension(WebGL_EXT.OES_vertex_array_object);
+
+						if (_OES_vertex_array_object == null)
+							throw new CKGLException("WebGL 1.0 \"OES_vertex_array_object\" extension was requested, but is not supported in this browser.");
+					}
+
+					return _OES_vertex_array_object;
+				}
+			}
+
+			private static EXT_blend_minmax _EXT_blend_minmax;
+			internal static EXT_blend_minmax EXT_blend_minmax
+			{
+				get
+				{
+					if (_EXT_blend_minmax == null)
+					{
+						_EXT_blend_minmax = GL.getExtension(WebGL_EXT.EXT_blend_minmax);
+
+						if (_EXT_blend_minmax == null)
+							throw new CKGLException("WebGL 1.0 \"EXT_blend_minmax\" extension was requested, but is not supported in this browser.");
+					}
+
+					return _EXT_blend_minmax;
+				}
+			}
+
+			private static ANGLE_instanced_arrays _ANGLE_instanced_arrays;
+			internal static ANGLE_instanced_arrays ANGLE_instanced_arrays
+			{
+				get
+				{
+					if (_ANGLE_instanced_arrays == null)
+					{
+						_ANGLE_instanced_arrays = GL.getExtension(WebGL_EXT.ANGLE_instanced_arrays);
+
+						if (_ANGLE_instanced_arrays == null)
+							throw new CKGLException("WebGL 1.0 \"ANGLE_instanced_arrays\" extension was requested, but is not supported in this browser.");
+					}
+
+					return _ANGLE_instanced_arrays;
+				}
+			}
+		}
+		#endregion
+
 		internal static WebGLRenderingContext GL = null;
 
 		internal override void Init()
@@ -38,12 +111,12 @@ namespace CKGL.WebGL
 			Output.WriteLine($"WebGL Context - VERSION: {GL.getParameter(GL.VERSION)}");
 			Output.WriteLine($"WebGL Context - VENDOR: {GL.getParameter(GL.VENDOR)}");
 			Output.WriteLine($"WebGL Context - RENDERER: {GL.getParameter(GL.RENDERER)}");
-			var debugRendererInfo = GL.getExtension(WebGLEXT.WEBGL_debug_renderer_info);
-			if (debugRendererInfo != null)
+			try
 			{
-				Output.WriteLine($"WebGL Context - WEBGL_debug_renderer_info.UNMASKED_VENDOR_WEBGL: {GL.getParameter(debugRendererInfo.UNMASKED_VENDOR_WEBGL)}");
-				Output.WriteLine($"WebGL Context - WEBGL_debug_renderer_info.UNMASKED_RENDERER_WEBGL: {GL.getParameter(debugRendererInfo.UNMASKED_RENDERER_WEBGL)}");
+				Output.WriteLine($"WebGL Context - WEBGL_debug_renderer_info.UNMASKED_VENDOR_WEBGL: {GL.getParameter(Extensions.WEBGL_debug_renderer_info.UNMASKED_VENDOR_WEBGL)}");
+				Output.WriteLine($"WebGL Context - WEBGL_debug_renderer_info.UNMASKED_RENDERER_WEBGL: {GL.getParameter(Extensions.WEBGL_debug_renderer_info.UNMASKED_RENDERER_WEBGL)}");
 			}
+			catch { }
 			//Output.WriteLine($"WebGL - Extensions: \n{string.Join("\n", gl.GetSupportedExtensions())}");
 		}
 
@@ -223,14 +296,12 @@ namespace CKGL.WebGL
 
 		internal override void DrawVertexArraysInstanced(PrimitiveTopology primitiveTopology, int offset, int count, int primitiveCount)
 		{
-			//GL.drawArraysInstanced(primitiveTopology.ToWebGL(), offset, count, primitiveCount);
-			throw new CKGLException("TODO - drawArraysInstanced");
+			Extensions.ANGLE_instanced_arrays.drawArraysInstancedANGLE(primitiveTopology.ToWebGL(), offset, count, primitiveCount);
 		}
 
 		internal override void DrawIndexedVertexArraysInstanced(PrimitiveTopology primitiveTopology, int offset, int count, int primitiveCount, IndexType indexType)
 		{
-			//GL.drawElementsInstanced(primitiveTopology.ToWebGL(), count, indexType.ToWebGL(), offset, primitiveCount);
-			throw new CKGLException("TODO - DrawElementsInstanced");
+			Extensions.ANGLE_instanced_arrays.drawElementsInstancedANGLE(primitiveTopology.ToWebGL(), count, indexType.ToWebGL(), offset, primitiveCount);
 		}
 		#endregion
 	}
