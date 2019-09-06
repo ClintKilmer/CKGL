@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
-using static Retyped.dom;
+using static Retyped.dom; // DOM / WebGL Types
 
 namespace CKGL
 {

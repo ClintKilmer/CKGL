@@ -1,18 +1,9 @@
 using System;
-using static Retyped.dom;
+using static Retyped.dom; // DOM / WebGL Types
 using WebGLEXT = Retyped.dom.Literals; // WebGL Extensions
 
 namespace CKGL.WebGL
 {
-	#region Extensions
-	internal static class Extensions
-	{
-		// WebGL 2 BlendFunc Min/Max
-		internal static double MIN = 0x8007;
-		internal static double MAX = 0x8008;
-	}
-	#endregion
-
 	internal class WebGLGraphics : GraphicsBase
 	{
 		internal static WebGLRenderingContext GL = null;

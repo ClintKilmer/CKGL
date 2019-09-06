@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using static CKGL.WebGL.WebGLGraphics; // WebGL Context Methods
-using static Retyped.dom; // WebGL Types
+using static Retyped.dom; // DOM / WebGL Types
 
 namespace CKGL.WebGL
 {

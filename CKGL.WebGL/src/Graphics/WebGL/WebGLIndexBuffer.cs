@@ -1,5 +1,5 @@
 using static CKGL.WebGL.WebGLGraphics; // WebGL Context Methods
-using static Retyped.dom; // WebGL Types
+using static Retyped.dom; // DOM / WebGL Types
 using static Retyped.es5; // JS TypedArrays
 
 namespace CKGL.WebGL

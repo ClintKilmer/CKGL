@@ -1,5 +1,5 @@
-using static CKGL.WebGL2.WebGL2Graphics; // WebGL Context Methods
-using static Retyped.webgl2; // WebGL Types - WebGL2RenderingContext, WebGLVertexArrayObject
+using static CKGL.WebGL2.WebGL2Graphics; // WebGL 2.0 Context Methods
+using static Retyped.webgl2; // WebGL 2.0 Types - WebGL2RenderingContext, WebGLVertexArrayObject
 
 namespace CKGL.WebGL2
 {

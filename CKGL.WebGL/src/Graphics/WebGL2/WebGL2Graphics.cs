@@ -1,7 +1,7 @@
 using System;
 using WebGLEXT = Retyped.dom.Literals; // WebGL Extensions
-using static Retyped.webgl2; // WebGL Types - WebGL2RenderingContext, WebGLVertexArrayObject
-using static Retyped.webgl2.WebGL2RenderingContext; // WebGL Enums
+using static Retyped.webgl2; // WebGL 2.0 Types - WebGL2RenderingContext, WebGLVertexArrayObject
+using static Retyped.webgl2.WebGL2RenderingContext; // WebGL 2.0 Enums
 
 namespace CKGL.WebGL2
 {

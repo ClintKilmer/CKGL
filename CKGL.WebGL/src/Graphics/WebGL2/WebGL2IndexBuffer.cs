@@ -1,7 +1,7 @@
-using static CKGL.WebGL2.WebGL2Graphics; // WebGL Context Methods
-using static Retyped.dom; // WebGL Types
+using static CKGL.WebGL2.WebGL2Graphics; // WebGL 2.0 Context Methods
+using static Retyped.dom; // DOM / WebGL Types
 using static Retyped.es5; // JS TypedArrays
-using static Retyped.webgl2.WebGL2RenderingContext; // WebGL Enums
+using static Retyped.webgl2.WebGL2RenderingContext; // WebGL 2.0 Enums
 
 namespace CKGL.WebGL2
 {

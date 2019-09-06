@@ -1,4 +1,4 @@
-﻿using static CKGL.WebGL2.WebGL2Graphics; // WebGL Context Methods
+﻿using static CKGL.WebGL2.WebGL2Graphics; // WebGL 2.0 Context Methods
 
 namespace CKGL.WebGL2
 {

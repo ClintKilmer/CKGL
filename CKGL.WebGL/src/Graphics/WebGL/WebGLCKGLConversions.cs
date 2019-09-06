@@ -1,4 +1,3 @@
-using static CKGL.WebGL.Extensions; // WebGL Extensions
 using static CKGL.WebGL.WebGLGraphics; // WebGL Context Methods
 
 namespace CKGL.WebGL

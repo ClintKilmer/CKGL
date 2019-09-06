@@ -1,5 +1,5 @@
 using static CKGL.WebGL.WebGLGraphics; // WebGL Context Methods
-using static Retyped.dom;
+using static Retyped.dom; // DOM / WebGL Types
 using WebGL_EXT = Retyped.dom.Literals; // WebGL Extensions
 
 namespace CKGL.WebGL

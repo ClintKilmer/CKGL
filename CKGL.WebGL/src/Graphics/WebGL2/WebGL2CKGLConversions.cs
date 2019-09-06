@@ -1,5 +1,5 @@
-using static CKGL.WebGL2.Extensions; // WebGL Extensions
-using static Retyped.webgl2.WebGL2RenderingContext; // WebGL Enums
+using static CKGL.WebGL2.Extensions; // WebGL 2.0 Extensions
+using static Retyped.webgl2.WebGL2RenderingContext; // WebGL 2.0 Enums
 
 namespace CKGL.WebGL2
 {
