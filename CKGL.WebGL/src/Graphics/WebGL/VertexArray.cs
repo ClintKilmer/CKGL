@@ -1,24 +1,34 @@
 using static CKGL.WebGL.WebGLGraphics; // WebGL Context Methods
-using static Retyped.webgl2; // WebGL Types - WebGL2RenderingContext, WebGLVertexArrayObject
+using static Retyped.dom;
+using WebGL_EXT = Retyped.dom.Literals; // WebGL Extensions
 
 namespace CKGL.WebGL
 {
 	internal class VertexArray
 	{
-		private static WebGLVertexArrayObject currentlyBoundVertexArray;
+		private static WebGLVertexArrayObjectOES currentlyBoundVertexArray;
 
-		private WebGLVertexArrayObject vao;
+		private static OES_vertex_array_object OES_vertex_array_object;
+		private WebGLVertexArrayObjectOES vao;
 
 		internal VertexArray()
 		{
-			vao = GL.createVertexArray();
+			if (OES_vertex_array_object == null)
+			{
+				OES_vertex_array_object = GL.getExtension(WebGL_EXT.OES_vertex_array_object);
+
+				if (OES_vertex_array_object == null)
+					throw new CKGLException("WebGL 1.0 does not support Vertex Array Objects.");
+			}
+
+			vao = OES_vertex_array_object.createVertexArrayOES();
 		}
 
 		internal void Destroy()
 		{
 			if (vao != null)
 			{
-				GL.deleteVertexArray(vao);
+				OES_vertex_array_object.deleteVertexArrayOES(vao);
 				vao = null;
 			}
 		}
@@ -27,7 +37,7 @@ namespace CKGL.WebGL
 		{
 			if (vao != currentlyBoundVertexArray)
 			{
-				GL.bindVertexArray(vao);
+				OES_vertex_array_object.bindVertexArrayOES(vao);
 				currentlyBoundVertexArray = vao;
 			}
 		}

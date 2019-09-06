@@ -1,132 +1,132 @@
-using static CKGL.WebGL.Extensions; // WebGL Extensions
-using static CKGL.WebGL.WebGLGraphics; // WebGL Context Methods
+using static CKGL.WebGL2.Extensions; // WebGL Extensions
+using static Retyped.webgl2.WebGL2RenderingContext; // WebGL Enums
 
-namespace CKGL.WebGL
+namespace CKGL.WebGL2
 {
-	internal static class WebGLCKGLConversions
+	internal static class WebGL2CKGLConversions
 	{
 		#region State
-		internal static double ToWebGL(this BlendEquation blendEquation)
+		internal static double ToWebGL2(this BlendEquation blendEquation)
 		{
 			switch (blendEquation)
 			{
 				case BlendEquation.Add:
-					return GL.FUNC_ADD;
+					return FUNC_ADD;
 				case BlendEquation.Subtract:
-					return GL.FUNC_SUBTRACT;
+					return FUNC_SUBTRACT;
 				case BlendEquation.ReverseSubtract:
-					return GL.FUNC_REVERSE_SUBTRACT;
-				//case BlendEquation.Max:
-				//	return MAX;
-				//case BlendEquation.Min:
-				//	return MIN;
+					return FUNC_REVERSE_SUBTRACT;
+				case BlendEquation.Max:
+					return MAX;
+				case BlendEquation.Min:
+					return MIN;
 				default:
 					throw new IllegalValueException(typeof(BlendEquation), blendEquation);
 			}
 		}
 
-		internal static double ToWebGL(this BlendFactor blendFactor)
+		internal static double ToWebGL2(this BlendFactor blendFactor)
 		{
 			switch (blendFactor)
 			{
 				case BlendFactor.Zero:
-					return GL.ZERO;
+					return ZERO;
 				case BlendFactor.One:
-					return GL.ONE;
+					return ONE;
 				case BlendFactor.SrcColour:
-					return GL.SRC_COLOR;
+					return SRC_COLOR;
 				case BlendFactor.OneMinusSrcColour:
-					return GL.ONE_MINUS_SRC_COLOR;
+					return ONE_MINUS_SRC_COLOR;
 				case BlendFactor.SrcAlpha:
-					return GL.SRC_ALPHA;
+					return SRC_ALPHA;
 				case BlendFactor.OneMinusSrcAlpha:
-					return GL.ONE_MINUS_SRC_ALPHA;
+					return ONE_MINUS_SRC_ALPHA;
 				case BlendFactor.DstAlpha:
-					return GL.DST_ALPHA;
+					return DST_ALPHA;
 				case BlendFactor.OneMinusDstAlpha:
-					return GL.ONE_MINUS_DST_ALPHA;
+					return ONE_MINUS_DST_ALPHA;
 				case BlendFactor.DstColour:
-					return GL.DST_COLOR;
+					return DST_COLOR;
 				case BlendFactor.OneMinusDstcolour:
-					return GL.ONE_MINUS_DST_COLOR;
+					return ONE_MINUS_DST_COLOR;
 				case BlendFactor.SrcAlphaSaturate:
-					return GL.SRC_ALPHA_SATURATE;
+					return SRC_ALPHA_SATURATE;
 				case BlendFactor.ConstantColour:
-					return GL.CONSTANT_COLOR;
+					return CONSTANT_COLOR;
 				case BlendFactor.OneMinusConstantColour:
-					return GL.ONE_MINUS_CONSTANT_COLOR;
+					return ONE_MINUS_CONSTANT_COLOR;
 				case BlendFactor.ConstantAlpha:
-					return GL.CONSTANT_ALPHA;
+					return CONSTANT_ALPHA;
 				case BlendFactor.OneMinusConstantAlpha:
-					return GL.ONE_MINUS_CONSTANT_ALPHA;
+					return ONE_MINUS_CONSTANT_ALPHA;
 				default:
 					throw new IllegalValueException(typeof(BlendFactor), blendFactor);
 			}
 		}
 
-		internal static double ToWebGL(this Face face)
+		internal static double ToWebGL2(this Face face)
 		{
 			switch (face)
 			{
 				case Face.Front:
-					return GL.FRONT;
+					return FRONT;
 				case Face.Back:
-					return GL.BACK;
+					return BACK;
 				case Face.FrontAndBack:
-					return GL.FRONT_AND_BACK;
+					return FRONT_AND_BACK;
 				default:
 					throw new IllegalValueException(typeof(Face), face);
 			}
 		}
 
-		internal static double ToWebGL(this DepthFunction depthFunction)
+		internal static double ToWebGL2(this DepthFunction depthFunction)
 		{
 			switch (depthFunction)
 			{
 				case DepthFunction.Never:
-					return GL.NEVER;
+					return NEVER;
 				case DepthFunction.Less:
-					return GL.LESS;
+					return LESS;
 				case DepthFunction.Equal:
-					return GL.EQUAL;
+					return EQUAL;
 				case DepthFunction.LessEqual:
-					return GL.LEQUAL;
+					return LEQUAL;
 				case DepthFunction.Greater:
-					return GL.GREATER;
+					return GREATER;
 				case DepthFunction.NotEqual:
-					return GL.NOTEQUAL;
+					return NOTEQUAL;
 				case DepthFunction.GreaterEqual:
-					return GL.GEQUAL;
+					return GEQUAL;
 				case DepthFunction.Always:
-					return GL.ALWAYS;
+					return ALWAYS;
 				default:
 					throw new IllegalValueException(typeof(DepthFunction), depthFunction);
 			}
 		}
 
-		internal static double ToWebGL(this FrontFace frontFace)
+		internal static double ToWebGL2(this FrontFace frontFace)
 		{
 			switch (frontFace)
 			{
 				case FrontFace.Clockwise:
-					return GL.CW;
+					return CW;
 				case FrontFace.CounterClockwise:
-					return GL.CCW;
+					return CCW;
 				default:
 					throw new IllegalValueException(typeof(FrontFace), frontFace);
 			}
 		}
 
-		internal static double ToWebGL(this PolygonMode polygonMode)
+		internal static double ToWebGL2(this PolygonMode polygonMode)
 		{
 			switch (polygonMode)
 			{
 				//case PolygonMode.Fill:
-				//	return GL.FILL;
+				//	return FILL;
 				//case PolygonMode.Line:
-				//	return GL.LINE;
+				//	return LINE;
 				//case PolygonMode.Point:
-				//	return GL.POINT;
+				//	return POINT;
 				//default:
 				//	throw new IllegalValueException(typeof(PolygonMode), polygonMode);
 				default:
@@ -135,7 +135,7 @@ namespace CKGL.WebGL
 		}
 		#endregion
 
-		//internal static WebGLBindings.BlitFilter ToWebGL(this BlitFilter blitFilter)
+		//internal static WebGLBindings.BlitFilter ToWebGL2(this BlitFilter blitFilter)
 		//{
 		//	switch (blitFilter)
 		//	{
@@ -148,70 +148,70 @@ namespace CKGL.WebGL
 		//	}
 		//}
 
-		internal static double ToWebGL(this BufferUsage bufferUsage)
+		internal static double ToWebGL2(this BufferUsage bufferUsage)
 		{
 			switch (bufferUsage)
 			{
 				case BufferUsage.Static:
-					return GL.STATIC_DRAW;
+					return STATIC_DRAW;
 				case BufferUsage.Default:
-					return GL.DYNAMIC_DRAW;
+					return DYNAMIC_DRAW;
 				case BufferUsage.Dynamic:
-					return GL.STREAM_DRAW;
-				//case BufferUsage.Copy:
-				//	return GL.DYNAMIC_READ;
+					return STREAM_DRAW;
+				case BufferUsage.Copy:
+					return DYNAMIC_READ_Static;
 				default:
 					throw new IllegalValueException(typeof(BufferUsage), bufferUsage);
 			}
 		}
 
-		internal static double ToWebGL(this DataType dataType)
+		internal static double ToWebGL2(this DataType dataType)
 		{
 			switch (dataType)
 			{
 				case DataType.Byte:
-					return GL.BYTE;
+					return BYTE;
 				case DataType.UnsignedByte:
-					return GL.UNSIGNED_BYTE;
+					return UNSIGNED_BYTE;
 				case DataType.Short:
-					return GL.SHORT;
+					return SHORT;
 				case DataType.UnsignedShort:
-					return GL.UNSIGNED_SHORT;
+					return UNSIGNED_SHORT;
 				case DataType.Int:
-					return GL.INT;
+					return INT;
 				case DataType.UnsignedInt:
-					return GL.UNSIGNED_INT;
+					return UNSIGNED_INT;
 				case DataType.Float:
-					return GL.FLOAT;
+					return FLOAT;
 				//case DataType.Double:
-				//	return GL.DOUBLE;
-				//case DataType.HalfFloat:
-				//	return GL.HALF_FLOAT;
-				//case DataType.UnsignedInt_2_10_10_10_Rev:
-				//	return GL.UNSIGNED_INT_2_10_10_10_REV;
-				//case DataType.Int_2_10_10_10_Rev:
-				//	return GL.INT_2_10_10_10_REV;
+				//	return DOUBLE;
+				case DataType.HalfFloat:
+					return HALF_FLOAT_Static;
+				case DataType.UnsignedInt_2_10_10_10_Rev:
+					return UNSIGNED_INT_2_10_10_10_REV_Static;
+				case DataType.Int_2_10_10_10_Rev:
+					return INT_2_10_10_10_REV_Static;
 				default:
 					throw new IllegalValueException(typeof(DataType), dataType);
 			}
 		}
 
-		internal static double ToWebGL(this IndexType indexType)
+		internal static double ToWebGL2(this IndexType indexType)
 		{
 			switch (indexType)
 			{
 				//case IndexType.UnsignedByte:
-				//	return GL.UNSIGNED_BYTE;
+				//	return UNSIGNED_BYTE;
 				case IndexType.UnsignedShort:
-					return GL.UNSIGNED_SHORT;
+					return UNSIGNED_SHORT;
 				case IndexType.UnsignedInt:
-					return GL.UNSIGNED_INT;
+					return UNSIGNED_INT;
 				default:
 					throw new IllegalValueException(typeof(IndexType), indexType);
 			}
 		}
 
-		//internal static WebGLBindings.PixelFormat ToWebGL(this PixelFormat pixelFormat)
+		//internal static WebGLBindings.PixelFormat ToWebGL2(this PixelFormat pixelFormat)
 		//{
 		//	switch (pixelFormat)
 		//	{
@@ -232,30 +232,30 @@ namespace CKGL.WebGL
 		//	}
 		//}
 
-		internal static double ToWebGL(this PrimitiveTopology primitiveTopology)
+		internal static double ToWebGL2(this PrimitiveTopology primitiveTopology)
 		{
 			switch (primitiveTopology)
 			{
 				case PrimitiveTopology.PointList:
-					return GL.POINTS;
+					return POINTS;
 				case PrimitiveTopology.LineList:
-					return GL.LINES;
+					return LINES;
 				case PrimitiveTopology.LineLoop:
-					return GL.LINE_LOOP;
+					return LINE_LOOP;
 				case PrimitiveTopology.LineStrip:
-					return GL.LINE_STRIP;
+					return LINE_STRIP;
 				case PrimitiveTopology.TriangleList:
-					return GL.TRIANGLES;
+					return TRIANGLES;
 				case PrimitiveTopology.TriangleStrip:
-					return GL.TRIANGLE_STRIP;
+					return TRIANGLE_STRIP;
 				case PrimitiveTopology.TriangleFan:
-					return GL.TRIANGLE_FAN;
+					return TRIANGLE_FAN;
 				default:
 					throw new IllegalValueException(typeof(PrimitiveTopology), primitiveTopology);
 			}
 		}
 
-		//internal static WebGLBindings.TexImageTarget ToWebGL(this TexImageTarget texImageTarget)
+		//internal static WebGLBindings.TexImageTarget ToWebGL2(this TexImageTarget texImageTarget)
 		//{
 		//	switch (texImageTarget)
 		//	{
@@ -278,7 +278,7 @@ namespace CKGL.WebGL
 		//	}
 		//}
 
-		//internal static WebGLBindings.TextureAttachment ToWebGL(this TextureAttachment textureAttachment)
+		//internal static WebGLBindings.TextureAttachment ToWebGL2(this TextureAttachment textureAttachment)
 		//{
 		//	switch (textureAttachment)
 		//	{
@@ -323,7 +323,7 @@ namespace CKGL.WebGL
 		//	}
 		//}
 
-		//internal static WebGLBindings.TextureFilter ToWebGL(this TextureFilter textureFilter)
+		//internal static WebGLBindings.TextureFilter ToWebGL2(this TextureFilter textureFilter)
 		//{
 		//	switch (textureFilter)
 		//	{
@@ -344,7 +344,7 @@ namespace CKGL.WebGL
 		//	}
 		//}
 
-		//internal static WebGLBindings.TextureFormat ToWebGL(this TextureFormat textureFormat)
+		//internal static WebGLBindings.TextureFormat ToWebGL2(this TextureFormat textureFormat)
 		//{
 		//	switch (textureFormat)
 		//	{
@@ -394,7 +394,7 @@ namespace CKGL.WebGL
 		//	}
 		//}
 
-		//internal static WebGLBindings.TextureParam ToWebGL(this TextureParam textureParam)
+		//internal static WebGLBindings.TextureParam ToWebGL2(this TextureParam textureParam)
 		//{
 		//	switch (textureParam)
 		//	{
@@ -435,7 +435,7 @@ namespace CKGL.WebGL
 		//	}
 		//}
 
-		//internal static WebGLBindings.TextureTarget ToWebGL(this TextureTarget textureTarget)
+		//internal static WebGLBindings.TextureTarget ToWebGL2(this TextureTarget textureTarget)
 		//{
 		//	switch (textureTarget)
 		//	{
@@ -458,7 +458,7 @@ namespace CKGL.WebGL
 		//	}
 		//}
 
-		//internal static WebGLBindings.TextureWrap ToWebGL(this TextureWrap textureWrap)
+		//internal static WebGLBindings.TextureWrap ToWebGL2(this TextureWrap textureWrap)
 		//{
 		//	switch (textureWrap)
 		//	{

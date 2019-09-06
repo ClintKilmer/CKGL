@@ -31,9 +31,9 @@ layout(location = 1) in vec4 colour;
 
 uniform mat4 MVP;
 uniform vec2 offset;
- 
+
 out vec4 vColour;
- 
+
 void main(void)
 {
 	gl_Position = vec4(position + vec3(offset, 0.0), 1.0) * MVP;
@@ -62,9 +62,9 @@ attribute vec4 colour;
 
 uniform mat4 MVP;
 uniform vec2 offset;
- 
+
 varying vec4 vColour;
- 
+
 void main(void)
 {
 	gl_Position = vec4(position + vec3(offset, 0.0), 1.0) * MVP;

@@ -38,9 +38,6 @@
     <Reference Include="Bridge, Version=17.9.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Bridge.Core.17.9.0\lib\net40\Bridge.dll</HintPath>
     </Reference>
-    <Reference Include="Bridge.Html5, Version=17.9.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bridge.Html5.17.9.0\lib\net40\Bridge.Html5.dll</HintPath>
-    </Reference>
     <Reference Include="Retyped.Core, Version=1.6.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Retyped.Core.1.6.6733\lib\net40\Retyped.Core.dll</HintPath>
     </Reference>
@@ -236,13 +233,20 @@
     <Compile Include="src\Game.cs" />
     <Compile Include="src\Graphics\RenderTarget-Dummy.cs" />
     <Compile Include="src\Graphics\Texture-Dummy.cs" />
-    <Compile Include="src\Graphics\WebGL\WebGLShader.cs" />
+    <Compile Include="src\Graphics\WebGL2\VertexArray.cs" />
+    <Compile Include="src\Graphics\WebGL2\WebGL2CKGLConversions.cs" />
+    <Compile Include="src\Graphics\WebGL2\WebGL2GeometryInput.cs" />
+    <Compile Include="src\Graphics\WebGL2\WebGL2Graphics.cs" />
+    <Compile Include="src\Graphics\WebGL2\WebGL2IndexBuffer.cs" />
+    <Compile Include="src\Graphics\WebGL2\WebGL2Shader.cs" />
+    <Compile Include="src\Graphics\WebGL2\WebGL2VertexBuffer.cs" />
     <Compile Include="src\Graphics\WebGL\VertexArray.cs" />
-    <Compile Include="src\Graphics\WebGL\WebGLGeometryInput.cs" />
     <Compile Include="src\Graphics\WebGL\WebGLCKGLConversions.cs" />
-    <Compile Include="src\Graphics\WebGL\WebGLIndexBuffer.cs" />
-    <Compile Include="src\Graphics\WebGL\WebGLVertexBuffer.cs" />
+    <Compile Include="src\Graphics\WebGL\WebGLGeometryInput.cs" />
     <Compile Include="src\Graphics\WebGL\WebGLGraphics.cs" />
+    <Compile Include="src\Graphics\WebGL\WebGLIndexBuffer.cs" />
+    <Compile Include="src\Graphics\WebGL\WebGLShader.cs" />
+    <Compile Include="src\Graphics\WebGL\WebGLVertexBuffer.cs" />
     <Compile Include="src\Platform\Platform.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,16 +1,16 @@
 namespace CKGL
 {
-	public static class ShaderIncludes
+	internal static class ShaderIncludes
 	{
 		#region Common
-		private static readonly string OpenGL = "#version 330 core";
-		private static readonly string OpenGLES = @"#version 300 es
+		internal static readonly string OpenGL = "#version 330 core";
+		internal static readonly string OpenGLES = @"#version 300 es
 precision mediump float;
 
 //#extension GL_EXT_geometry_shader: require
 //#extension GL_OES_geometry_shader: require";
 
-		private static readonly string Common = (Platform.GraphicsBackend == GraphicsBackend.OpenGLES || Platform.GraphicsBackend == GraphicsBackend.WebGL ? OpenGLES : OpenGL) + @"
+		private static readonly string Common = (Platform.GraphicsBackend == GraphicsBackend.OpenGLES || Platform.GraphicsBackend == GraphicsBackend.WebGL2 || Platform.GraphicsBackend == GraphicsBackend.WebGL ? OpenGLES : OpenGL) + @"
 
 float fog_linear(const float dist, const float start, const float end)
 {
@@ -19,15 +19,15 @@ float fog_linear(const float dist, const float start, const float end)
 		#endregion
 
 		#region Vertex
-		public static readonly string Vertex = Common + @"";
+		internal static readonly string Vertex = Common + @"";
 		#endregion
 
 		#region Geometry
-		public static readonly string Geometry = Common + @"";
+		internal static readonly string Geometry = Common + @"";
 		#endregion
 
 		#region Fragment
-		public static readonly string Fragment = Common + @"
+		internal static readonly string Fragment = Common + @"
 float fog_exp(const float dist, const float density)
 {
 	return 1.0 - clamp(exp(-density * dist), 0.0, 1.0);

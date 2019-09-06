@@ -1,12 +1,12 @@
-﻿using static CKGL.WebGL.WebGLGraphics; // WebGL Context Methods
+﻿using static CKGL.WebGL2.WebGL2Graphics; // WebGL Context Methods
 
-namespace CKGL.WebGL
+namespace CKGL.WebGL2
 {
-	public class WebGLGeometryInput : GeometryInput
+	public class WebGL2GeometryInput : GeometryInput
 	{
 		private readonly VertexArray vao;
 
-		internal WebGLGeometryInput(IndexBuffer indexBuffer, VertexStream[] vertexStreams)
+		internal WebGL2GeometryInput(IndexBuffer indexBuffer, VertexStream[] vertexStreams)
 		{
 			if (vertexStreams.Length < 1)
 				throw new CKGLException("GeometryInput constructor requires at least 1 VertexStream");
@@ -25,10 +25,9 @@ namespace CKGL.WebGL
 				for (uint i = 0; i < vertexStream.VertexFormat.Attributes.Length; i++)
 				{
 					GL.enableVertexAttribArray(i);
-					GL.vertexAttribPointer(i, vertexStream.VertexFormat.Attributes[(int)i].Count, vertexStream.VertexFormat.Attributes[(int)i].Type.ToWebGL(), vertexStream.VertexFormat.Attributes[(int)i].Normalized, vertexStream.VertexFormat.Stride, vertexStream.VertexFormat.Attributes[(int)i].Offset);
+					GL.vertexAttribPointer(i, vertexStream.VertexFormat.Attributes[(int)i].Count, vertexStream.VertexFormat.Attributes[(int)i].Type.ToWebGL2(), vertexStream.VertexFormat.Attributes[(int)i].Normalized, vertexStream.VertexFormat.Stride, vertexStream.VertexFormat.Attributes[(int)i].Offset);
 					if (vertexStream.VertexFormat.Attributes[(int)i].Divisor > 0)
-						throw new CKGLException("TODO - vertexAttribDivisor");
-						//GL.vertexAttribDivisor(i, vertexStream.VertexFormat.Attributes[(int)i].Divisor);
+						GL.vertexAttribDivisor(i, vertexStream.VertexFormat.Attributes[(int)i].Divisor);
 					//Output.WriteLine($"id: {i}, Count: {vertexStream.VertexFormat.Attributes[(int)i].Count}, Type: {vertexStream.VertexFormat.Attributes[(int)i].Type}, Normalized: {vertexStream.VertexFormat.Attributes[(int)i].Normalized}, Size/Stride: {vertexStream.VertexFormat.Attributes[(int)i].Size}/{vertexStream.VertexFormat.Stride}, offset: {vertexStream.VertexFormat.Attributes[(int)i].Offset}, divisor: {vertexStream.VertexFormat.Attributes[(int)i].Divisor}"); // Debug
 				}
 			}

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
-using Bridge.Html5; // HTML5 DOM Manipulation
+using static Retyped.dom;
 
 namespace CKGL
 {
@@ -62,7 +62,7 @@ namespace CKGL
 		#endregion
 #endif // Temporary
 
-		public static GraphicsBackend GraphicsBackend { get; } = GraphicsBackend.WebGL;
+		public static GraphicsBackend GraphicsBackend { get; private set; } = GraphicsBackend.WebGL2;
 
 		public static bool Running { get; private set; } = false;
 
@@ -219,11 +219,6 @@ namespace CKGL
 
 		public static OS OS => OS.HTML5;
 
-		public static GraphicsBackend GetPlatformDefaultGraphicsBackend()
-		{
-			return GraphicsBackend.WebGL;
-		}
-
 		////public static uint TotalMilliseconds { get { return SDL_GetTicks(); } }
 		//public static ulong PerformanceCounter { get { return SDL_GetPerformanceCounter(); } }
 		//public static ulong PerformanceFrequency { get { return SDL_GetPerformanceFrequency(); } }
@@ -255,40 +250,118 @@ namespace CKGL
 
 			Running = true;
 
-			Document.Title = windowTitle;
+			document.title = windowTitle;
 
-			Document.AddEventListener(EventType.MouseMove, handleMouseMove);
+			//document.addEventListenerFn<MouseEvent>(handleMouseMove);
 
-			Document.DocumentElement.Style.Overflow = Overflow.Hidden;
-			Document.DocumentElement.Style.SetProperty("margin", "0", "important");
-			Document.DocumentElement.Style.SetProperty("padding", "0", "important");
-			Document.Body.Style.Overflow = Overflow.Hidden;
-			Document.Body.Style.SetProperty("margin", "0", "important");
-			Document.Body.Style.SetProperty("padding", "0", "important");
+			document.documentElement.style.overflow = "hidden";
+			document.documentElement.style.setProperty("margin", "0", "important");
+			document.documentElement.style.setProperty("padding", "0", "important");
+			document.body.style.overflow = "hidden";
+			document.body.style.setProperty("margin", "0", "important");
+			document.body.style.setProperty("padding", "0", "important");
 
 			Canvas = new HTMLCanvasElement
 			{
-				Width = windowFullscreen ? Window.InnerWidth : windowWidth,
-				Height = windowFullscreen ? Window.InnerHeight : windowHeight,
-				TextContent = "<b>Either the browser doesn't support WebGL 2.0 or it is disabled.<br>Please follow the instructions at: <a href=\"https://get.webgl.org/webgl2/\" > get.webgl.org</a>.</b>"
+				width = windowFullscreen ? (uint)window.innerWidth : (uint)windowWidth,
+				height = windowFullscreen ? (uint)window.innerHeight : (uint)windowHeight,
+				textContent = "<b>Either the browser doesn't support WebGL 2.0 or it is disabled.<br>Please follow the instructions at: <a href=\"https://get.webgl.org/webgl2/\" > get.webgl.org</a>.</b>"
 			};
-			Document.Body.AppendChild(Canvas);
+			document.body.appendChild(Canvas);
 
 			// Disable selection
-			Canvas.Style.SetProperty("user-select", "none");
-			Canvas.Style.SetProperty("-webkit-user-select", "none");
-			Canvas.Style.SetProperty("-moz-user-select", "none");
-			Canvas.Style.SetProperty("-ms-user-select", "none");
+			Canvas.style.setProperty("user-select", "none");
+			Canvas.style.setProperty("-webkit-user-select", "none");
+			Canvas.style.setProperty("-moz-user-select", "none");
+			Canvas.style.setProperty("-ms-user-select", "none");
 
 			// Window
 			//Window.Init(windowTitle, windowWidth, windowHeight, windowVSync, windowFullscreen, windowResizable, windowBorderless);
+
+			// Debug
+			Output.WriteLine($"Platform - HTML5 Initialized");
+			Output.WriteLine($"Platform - window.navigator.platform: {window.navigator.platform}");
+			Output.WriteLine($"Platform - window.navigator.userAgent: {window.navigator.userAgent}");
+
+			// Check WegGL 2.0 Support
+			bool supportsWebGL2 = false;
+			try
+			{
+				Retyped.webgl2.WebGL2RenderingContext GL = null;
+
+				string[] contextIDs = new string[] {
+					"webgl2",
+					"experimental-webgl2"
+				};
+
+				foreach (string contextID in contextIDs)
+				{
+
+					try
+					{
+						GL = Canvas.getContext(contextID).As<Retyped.webgl2.WebGL2RenderingContext>();
+					}
+					catch { }
+
+					if (GL != null)
+					{
+						GL = null;
+						supportsWebGL2 = true;
+						GraphicsBackend = GraphicsBackend.WebGL2;
+						Output.WriteLine("WebGL 2.0 Supported");
+						break;
+					}
+				}
+			}
+			catch { }
+
+			// Check WegGL 1.0 Support
+			bool supportsWebGL = false;
+			if (!supportsWebGL2)
+			{
+				Output.WriteLine("WebGL 2.0 is not supported, falling back to WebGL 1.0");
+				try
+				{
+					WebGLRenderingContext GL = null;
+
+					string[] contextIDs = new string[] {
+						"webgl",
+						"experimental-webgl"
+					};
+
+					foreach (string contextID in contextIDs)
+					{
+						try
+						{
+							GL = Canvas.getContext(contextID).As<WebGLRenderingContext>();
+						}
+						catch { }
+
+						if (GL != null)
+						{
+							GL = null;
+							supportsWebGL = true;
+							GraphicsBackend = GraphicsBackend.WebGL;
+							Output.WriteLine("WebGL 1.0 Supported");
+							break;
+						}
+					}
+				}
+				catch { }
+			}
+
+			if (!supportsWebGL2 && !supportsWebGL)
+			{
+				Output.WriteLine("WebGL 1.0 not supported");
+				Canvas.parentElement.replaceChild(new HTMLParagraphElement { innerHTML = "<b>Either the browser doesn't support WebGL or it is disabled.<br>Please follow the instructions at: <a href=\"https://get.webgl.org/\" > get.webgl.org</a>.</b>" }, Canvas);
+			}
 		}
 
 		public static void Destroy()
 		{
 			//Window.Destroy();
 
-			Document.Body.RemoveChild(Canvas);
+			document.body.removeChild(Canvas);
 		}
 		#endregion
 
@@ -434,6 +507,12 @@ namespace CKGL
 		#endregion
 #endif // Temporary
 
+		// WebGL Specific
+		public static void DisplayException(Exception e)
+		{
+			Canvas.parentElement.replaceChild(new HTMLParagraphElement { innerHTML = $"Exception:<br />{e.Message}<br /><br />InnerException:<br />{e.InnerException}<br /><br />StackTrace:<br />{e.StackTrace}" }, Canvas);
+		}
+
 		public static void Quit()
 		{
 			Running = false;
@@ -442,7 +521,7 @@ namespace CKGL
 		public static bool RelativeMouseMode // Default true
 		{
 			get { return false; } // todo
-			set { if (value) Canvas.SetCapture(); else Document.ReleaseCapture(); }
+			set { if (value) Canvas.setPointerCapture(0); else Canvas.releasePointerCapture(0); }
 		}
 
 		private static int mouseX = 0;
@@ -455,12 +534,12 @@ namespace CKGL
 		{
 			//Output.WriteLine($"MouseMove: Type: {e.As<MouseEvent>().Type}, RelX: {e.As<MouseEvent>().MovementX}, RelY: {e.As<MouseEvent>().MovementY}");
 			Output.WriteLine($"Event: MouseMove");
-			mouseX = e.As<MouseEvent>().LayerX;
-			mouseY = e.As<MouseEvent>().LayerY;
-			mouseScreenX = e.As<MouseEvent>().ScreenX;
-			mouseScreenY = e.As<MouseEvent>().ScreenY;
-			mouseRelativeX = e.As<MouseEvent>().MovementX;
-			mouseRelativeY = e.As<MouseEvent>().MovementY;
+			mouseX = (int)e.As<MouseEvent>().layerX;
+			mouseY = (int)e.As<MouseEvent>().layerY;
+			mouseScreenX = (int)e.As<MouseEvent>().screenX;
+			mouseScreenY = (int)e.As<MouseEvent>().screenY;
+			mouseRelativeX = (int)e.As<MouseEvent>().movementX;
+			mouseRelativeY = (int)e.As<MouseEvent>().movementY;
 		}
 
 		public static void GetGlobalMousePosition(out int x, out int y)

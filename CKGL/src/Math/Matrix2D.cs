@@ -177,6 +177,30 @@ namespace CKGL
 			};
 			return array;
 		}
+
+		// WebGL 1.0 - must support uniformMatrix3fv instead of uniformMatrix3x2fv
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public double[] ToArrayRowMajor3x3()
+		{
+			double[] array = {
+				M11, M21, M31,
+				M12, M22, M32,
+				  0,   0,   1
+			};
+			return array;
+		}
+
+		// WebGL 1.0 - must support uniformMatrix3fv instead of uniformMatrix3x2fv
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public double[] ToArrayColumnMajor3x3()
+		{
+			double[] array = {
+				M11, M12, 0,
+				M21, M22, 0,
+				M31, M32, 1
+			};
+			return array;
+		}
 #endif
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]

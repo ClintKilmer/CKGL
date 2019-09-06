@@ -1,64 +1,32 @@
 using System;
 using System.Collections.Generic;
-using static CKGL.WebGL.WebGLGraphics; // WebGL Context Methods
+using static CKGL.WebGL2.WebGL2Graphics; // WebGL Context Methods
 using static Retyped.dom; // WebGL Types
+using static Retyped.webgl2.WebGL2RenderingContext; // WebGL Enums
 
-namespace CKGL.WebGL
+namespace CKGL.WebGL2
 {
-	public class WebGLShader : Shader
+	public class WebGL2Shader : Shader
 	{
 		private static WebGLProgram currentlyBoundShader;
 
 		private WebGLProgram shader;
 		private Dictionary<string, Uniform> uniforms = new Dictionary<string, Uniform>(StringComparer.Ordinal);
 
-		internal WebGLShader(string source)
+		internal WebGL2Shader(string source)
 		{
 			Compile(source);
 		}
 
-		#region Convert
-		private static string ConvertVertex(string source)
-		{
-			source = source.Replace("#version 300 es", "");
-
-			for (int i = 0; i < 32; i++)
-				source = source.Replace($"layout(location = {i}) ", "");
-
-			source = source.Replace("in ", "attribute ");
-
-			source = source.Replace("out ", "varying ");
-
-			return source;
-		}
-
-		//private static string ConvertGeometry(string source)
-		//{
-		//	return source;
-		//}
-
-		private static string ConvertFragment(string source)
-		{
-			source = source.Replace("#version 300 es", "");
-
-			source = source.Replace("in ", "varying ");
-
-			source = source.Replace("layout(location = 0) out vec4 colour;", "");
-			source = source.Replace("colour = vColour;", "gl_FragColor = vColour;");
-
-			return source;
-		}
-		#endregion
-
 		#region Compile
-		private void CompileShader(Retyped.dom.WebGLShader shader, string source)
+		private void CompileShader(WebGLShader shader, string source)
 		{
 			// Populate the shader and compile it
 			GL.shaderSource(shader, source);
 			GL.compileShader(shader);
 
 			// Check for shader compile errors
-			bool status = (bool)GL.getShaderParameter(shader, GL.COMPILE_STATUS);
+			bool status = (bool)GL.getShaderParameter(shader, COMPILE_STATUS);
 			if (!status)
 				throw new CKGLException("Shader compile error: " + GL.getShaderInfoLog(shader));
 		}
@@ -98,24 +66,24 @@ namespace CKGL.WebGL
 			//Output.WriteLine($"\nFragment Shader:\n{fragSource}");
 
 			// Create the shaders and compile them
-			Retyped.dom.WebGLShader vertID = GL.createShader(GL.VERTEX_SHADER);
+			WebGLShader vertID = GL.createShader(VERTEX_SHADER);
 			//Output.WriteLine(vertSource.Replace("#vertex", ShaderIncludes.Vertex));
-			CompileShader(vertID, ConvertVertex(vertSource.Replace("#vertex", ShaderIncludes.Vertex)));
+			CompileShader(vertID, vertSource.Replace("#vertex", ShaderIncludes.Vertex));
 
-			//Retyped.dom.WebGLShader geomID = null;
+			//WebGLShader geomID = null;
 			//if (hasGeometryDefinition)
 			//{
-			//	geomID = GL.createShader(GL.GEOMETRY_SHADER);
+			//	geomID = GL.createShader(GEOMETRY_SHADER);
 			//	//Output.WriteLine(geomSource.Replace("#geometry", ShaderIncludes.Geometry));
-			//	CompileShader(geomID, ConvertGeometry(geomSource.Replace("#geometry", ShaderIncludes.Geometry)));
+			//	CompileShader(geomID, geomSource.Replace("#geometry", ShaderIncludes.Geometry));
 			//}
 
-			Retyped.dom.WebGLShader fragID = null;
+			WebGLShader fragID = null;
 			if (hasFragmentDefinition)
 			{
-				fragID = GL.createShader(GL.FRAGMENT_SHADER);
+				fragID = GL.createShader(FRAGMENT_SHADER);
 				//Output.WriteLine(fragSource.Replace("#fragment", ShaderIncludes.Fragment));
-				CompileShader(fragID, ConvertFragment(fragSource.Replace("#fragment", ShaderIncludes.Fragment)));
+				CompileShader(fragID, fragSource.Replace("#fragment", ShaderIncludes.Fragment));
 			}
 
 			// Create the program and attach the shaders to it
@@ -128,13 +96,13 @@ namespace CKGL.WebGL
 
 			// Link the program and check for errors
 			GL.linkProgram(shader);
-			bool linkStatus = (bool)GL.getProgramParameter(shader, GL.LINK_STATUS);
+			bool linkStatus = (bool)GL.getProgramParameter(shader, LINK_STATUS);
 			if (!linkStatus)
 				throw new CKGLException("Program link error: " + GL.getProgramInfoLog(shader));
 
 			// Validate the program and check for errors
 			GL.validateProgram(shader);
-			bool validateStatus = (bool)GL.getProgramParameter(shader, GL.VALIDATE_STATUS);
+			bool validateStatus = (bool)GL.getProgramParameter(shader, VALIDATE_STATUS);
 			if (!validateStatus)
 				throw new CKGLException("Program validate error: " + GL.getProgramInfoLog(shader));
 
@@ -153,7 +121,7 @@ namespace CKGL.WebGL
 			}
 
 			// Get all the uniforms the shader has and store their information
-			int numUniforms = (int)GL.getProgramParameter(shader, GL.ACTIVE_UNIFORMS);
+			int numUniforms = (int)GL.getProgramParameter(shader, ACTIVE_UNIFORMS);
 			for (int i = 0; i < numUniforms; ++i)
 			{
 				var uniformInfo = GL.getActiveUniform(shader, i);
@@ -365,7 +333,7 @@ namespace CKGL.WebGL
 				if (Matrix2DValue != value)
 				{
 					Graphics.State.OnStateChanging.Invoke();
-					GL.uniformMatrix3fv(Location, false, value.ToArrayColumnMajor3x3());
+					GL.uniformMatrix3x2fv(Location, false, value.ToArrayColumnMajor());
 					UniformSwaps++;
 					Matrix2DValue = value;
 					Graphics.State.OnStateChanged.Invoke();
@@ -533,11 +501,11 @@ namespace CKGL.WebGL
 
 		public override bool Equals(object obj)
 		{
-			return obj is WebGLShader && Equals((WebGLShader)obj);
+			return obj is WebGL2Shader && Equals((WebGL2Shader)obj);
 		}
 		public override bool Equals(Shader shader)
 		{
-			return this == (WebGLShader)shader;
+			return this == (WebGL2Shader)shader;
 		}
 
 		public override int GetHashCode()
@@ -552,12 +520,12 @@ namespace CKGL.WebGL
 		#endregion
 
 		#region Operators
-		public static bool operator ==(WebGLShader a, WebGLShader b)
+		public static bool operator ==(WebGL2Shader a, WebGL2Shader b)
 		{
 			return (a?.shader ?? null) == (b?.shader ?? null);
 		}
 
-		public static bool operator !=(WebGLShader a, WebGLShader b)
+		public static bool operator !=(WebGL2Shader a, WebGL2Shader b)
 		{
 			return (a?.shader ?? null) != (b?.shader ?? null);
 		}

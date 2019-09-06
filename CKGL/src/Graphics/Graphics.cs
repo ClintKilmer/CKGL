@@ -25,6 +25,10 @@ namespace CKGL
 					break;
 #endif
 #if WEBGL
+				case GraphicsBackend.WebGL2:
+					graphics = new WebGL2.WebGL2Graphics();
+					break;
+
 				case GraphicsBackend.WebGL:
 					graphics = new WebGL.WebGLGraphics();
 					break;

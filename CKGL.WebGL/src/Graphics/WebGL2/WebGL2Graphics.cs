@@ -1,8 +1,9 @@
 using System;
-using static Retyped.dom;
 using WebGLEXT = Retyped.dom.Literals; // WebGL Extensions
+using static Retyped.webgl2; // WebGL Types - WebGL2RenderingContext, WebGLVertexArrayObject
+using static Retyped.webgl2.WebGL2RenderingContext; // WebGL Enums
 
-namespace CKGL.WebGL
+namespace CKGL.WebGL2
 {
 	#region Extensions
 	internal static class Extensions
@@ -13,24 +14,22 @@ namespace CKGL.WebGL
 	}
 	#endregion
 
-	internal class WebGLGraphics : GraphicsBase
+	internal class WebGL2Graphics : GraphicsBase
 	{
-		internal static WebGLRenderingContext GL = null;
+		internal static WebGL2RenderingContext GL = null;
 
 		internal override void Init()
 		{
 			string[] contextIDs = new string[] {
-					"webgl",
-					"experimental-webgl",
-					//"webkit-3d",
-					//"moz-webgl"
-				};
+				"webgl2",
+				"experimental-webgl2"
+			};
 
 			foreach (string contextID in contextIDs)
 			{
 				try
 				{
-					GL = Platform.Canvas.getContext(contextID).As<WebGLRenderingContext>();
+					GL = Platform.Canvas.getContext(contextID).As<WebGL2RenderingContext>();
 				}
 				catch { }
 
@@ -39,14 +38,14 @@ namespace CKGL.WebGL
 			}
 
 			if (GL == null)
-				throw new CKGLException("Couldn't create WebGL 1.0 context");
+				throw new CKGLException("Couldn't create WebGL 2.0 context");
 
 			// Debug
-			Output.WriteLine($"GraphicsBackend - WebGL 1.0 Initialized");
-			Output.WriteLine($"WebGL Context - GLSL Version: {GL.getParameter(GL.SHADING_LANGUAGE_VERSION)}");
-			Output.WriteLine($"WebGL Context - VERSION: {GL.getParameter(GL.VERSION)}");
-			Output.WriteLine($"WebGL Context - VENDOR: {GL.getParameter(GL.VENDOR)}");
-			Output.WriteLine($"WebGL Context - RENDERER: {GL.getParameter(GL.RENDERER)}");
+			Output.WriteLine("GraphicsBackend - WebGL 2.0 Initialized");
+			Output.WriteLine($"WebGL Context - GLSL Version: {GL.getParameter(SHADING_LANGUAGE_VERSION)}");
+			Output.WriteLine($"WebGL Context - VERSION: {GL.getParameter(VERSION)}");
+			Output.WriteLine($"WebGL Context - VENDOR: {GL.getParameter(VENDOR)}");
+			Output.WriteLine($"WebGL Context - RENDERER: {GL.getParameter(RENDERER)}");
 			var debugRendererInfo = GL.getExtension(WebGLEXT.WEBGL_debug_renderer_info);
 			if (debugRendererInfo != null)
 			{
@@ -59,22 +58,22 @@ namespace CKGL.WebGL
 		#region Resources
 		internal override VertexBuffer CreateVertexBuffer(BufferUsage bufferUsage)
 		{
-			return new WebGLVertexBuffer(bufferUsage);
+			return new WebGL2VertexBuffer(bufferUsage);
 		}
 
 		internal override IndexBuffer CreateIndexBuffer(BufferUsage bufferUsage)
 		{
-			return new WebGLIndexBuffer(bufferUsage);
+			return new WebGL2IndexBuffer(bufferUsage);
 		}
 
 		internal override GeometryInput CreateGeometryInput(IndexBuffer indexBuffer, VertexStream[] vertexStreams)
 		{
-			return new WebGLGeometryInput(indexBuffer, vertexStreams);
+			return new WebGL2GeometryInput(indexBuffer, vertexStreams);
 		}
 
 		internal override Shader CreateShader(string source)
 		{
-			return new WebGLShader(source);
+			return new WebGL2Shader(source);
 		}
 
 		internal override Shader CreateShaderFromFile(string file)
@@ -97,16 +96,16 @@ namespace CKGL.WebGL
 			=> SetScissorTest(0, 0, (renderTarget ?? RenderTarget.Default).Width, (renderTarget ?? RenderTarget.Default).Height);
 		internal override void SetScissorTest(int x, int y, int width, int height)
 		{
-			GL.enable(GL.SCISSOR_TEST);
+			GL.enable(SCISSOR_TEST);
 			GL.scissor(x, y, width, height);
 		}
 
 		internal override void SetScissorTest(bool enabled)
 		{
 			if (enabled)
-				GL.enable(GL.SCISSOR_TEST);
+				GL.enable(SCISSOR_TEST);
 			else
-				GL.disable(GL.SCISSOR_TEST);
+				GL.disable(SCISSOR_TEST);
 		}
 		#endregion
 
@@ -121,20 +120,20 @@ namespace CKGL.WebGL
 		internal override void Clear(Colour colour)
 		{
 			SetClearColour(colour);
-			GL.clear((int)GL.COLOR_BUFFER_BIT | (int)GL.DEPTH_BUFFER_BIT);
+			GL.clear((int)COLOR_BUFFER_BIT | (int)DEPTH_BUFFER_BIT);
 		}
 
 		internal override void Clear(double depth)
 		{
 			SetClearDepth(depth);
-			GL.clear(GL.DEPTH_BUFFER_BIT);
+			GL.clear(DEPTH_BUFFER_BIT);
 		}
 
 		internal override void Clear(Colour colour, double depth)
 		{
 			SetClearColour(colour);
 			SetClearDepth(depth);
-			GL.clear((int)GL.COLOR_BUFFER_BIT | (int)GL.DEPTH_BUFFER_BIT);
+			GL.clear((int)COLOR_BUFFER_BIT | (int)DEPTH_BUFFER_BIT);
 		}
 
 		private Colour clearColour = new Colour(0, 0, 0, 0);
@@ -161,22 +160,22 @@ namespace CKGL.WebGL
 		#region State Setters
 		internal override void SetFrontFace(FrontFaceState frontFaceState)
 		{
-			GL.frontFace(frontFaceState.FrontFace.ToWebGL());
+			GL.frontFace(frontFaceState.FrontFace.ToWebGL2());
 		}
 
 		internal override void SetCullMode(CullModeState cullModeState)
 		{
 			if (cullModeState.Enabled)
-				GL.enable(GL.CULL_FACE);
+				GL.enable(CULL_FACE);
 			else
-				GL.disable(GL.CULL_FACE);
+				GL.disable(CULL_FACE);
 
-			GL.cullFace(cullModeState.Face.ToWebGL());
+			GL.cullFace(cullModeState.Face.ToWebGL2());
 		}
 
 		internal override void SetPolygonMode(PolygonModeState polygonModeState)
 		{
-			//GL.polygonMode(polygonModeState.PolygonMode.ToWebGL());
+			//GL.polygonMode(polygonModeState.PolygonMode.ToWebGL2());
 			throw new CKGLException("glPolygonMode is not available in WebGL.");
 		}
 
@@ -193,53 +192,51 @@ namespace CKGL.WebGL
 		internal override void SetDepth(DepthState depthState)
 		{
 			if (depthState.Enabled)
-				GL.enable(GL.DEPTH_TEST);
+				GL.enable(DEPTH_TEST);
 			else
-				GL.disable(GL.DEPTH_TEST);
+				GL.disable(DEPTH_TEST);
 
-			GL.depthFunc(depthState.DepthFunction.ToWebGL());
+			GL.depthFunc(depthState.DepthFunction.ToWebGL2());
 		}
 
 		internal override void SetBlend(BlendState blendState)
 		{
 			if (blendState.Enabled)
-				GL.enable(GL.BLEND);
+				GL.enable(BLEND);
 			else
-				GL.disable(GL.BLEND);
+				GL.disable(BLEND);
 
 			if (blendState.ColourSource == blendState.AlphaSource && blendState.ColourDestination == blendState.AlphaDestination)
-				GL.blendFunc(blendState.ColourSource.ToWebGL(), blendState.ColourDestination.ToWebGL());
+				GL.blendFunc(blendState.ColourSource.ToWebGL2(), blendState.ColourDestination.ToWebGL2());
 			else
-				GL.blendFuncSeparate(blendState.ColourSource.ToWebGL(), blendState.ColourDestination.ToWebGL(), blendState.AlphaSource.ToWebGL(), blendState.AlphaDestination.ToWebGL());
+				GL.blendFuncSeparate(blendState.ColourSource.ToWebGL2(), blendState.ColourDestination.ToWebGL2(), blendState.AlphaSource.ToWebGL2(), blendState.AlphaDestination.ToWebGL2());
 
 			if (blendState.ColourEquation == blendState.AlphaEquation)
-				GL.blendEquation(blendState.ColourEquation.ToWebGL());
+				GL.blendEquation(blendState.ColourEquation.ToWebGL2());
 			else
-				GL.blendEquationSeparate(blendState.ColourEquation.ToWebGL(), blendState.AlphaEquation.ToWebGL());
+				GL.blendEquationSeparate(blendState.ColourEquation.ToWebGL2(), blendState.AlphaEquation.ToWebGL2());
 		}
 		#endregion
 
 		#region Draw
 		internal override void DrawVertexArrays(PrimitiveTopology primitiveTopology, int offset, int count)
 		{
-			GL.drawArrays(primitiveTopology.ToWebGL(), offset, count);
+			GL.drawArrays(primitiveTopology.ToWebGL2(), offset, count);
 		}
 
 		internal override void DrawIndexedVertexArrays(PrimitiveTopology primitiveTopology, int offset, int count, IndexType indexType)
 		{
-			GL.drawElements(primitiveTopology.ToWebGL(), count, indexType.ToWebGL(), offset);
+			GL.drawElements(primitiveTopology.ToWebGL2(), count, indexType.ToWebGL2(), offset);
 		}
 
 		internal override void DrawVertexArraysInstanced(PrimitiveTopology primitiveTopology, int offset, int count, int primitiveCount)
 		{
-			//GL.drawArraysInstanced(primitiveTopology.ToWebGL(), offset, count, primitiveCount);
-			throw new CKGLException("TODO - drawArraysInstanced");
+			GL.drawArraysInstanced(primitiveTopology.ToWebGL2(), offset, count, primitiveCount);
 		}
 
 		internal override void DrawIndexedVertexArraysInstanced(PrimitiveTopology primitiveTopology, int offset, int count, int primitiveCount, IndexType indexType)
 		{
-			//GL.drawElementsInstanced(primitiveTopology.ToWebGL(), count, indexType.ToWebGL(), offset, primitiveCount);
-			throw new CKGLException("TODO - DrawElementsInstanced");
+			GL.drawElementsInstanced(primitiveTopology.ToWebGL2(), count, indexType.ToWebGL2(), offset, primitiveCount);
 		}
 		#endregion
 	}

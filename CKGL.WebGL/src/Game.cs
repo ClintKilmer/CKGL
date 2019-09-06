@@ -1,6 +1,4 @@
-using static CKGL.WebGL.WebGLGraphics; // WebGL Context Methods
-using static Retyped.dom; // WebGL Types
-using static Retyped.webgl2.WebGL2RenderingContext; // WebGL Enums
+using System;
 
 namespace CKGL
 {
@@ -32,23 +30,37 @@ namespace CKGL
 
 		public Game(string windowTitle, int windowWidth, int windowHeight, bool windowVSync, bool windowFullscreen, bool windowResizable, bool windowBorderless, int msaa)
 		{
-			Platform.Init(windowTitle, windowWidth, windowHeight, windowVSync, windowFullscreen, windowResizable, windowBorderless, msaa);
-			Graphics.Init();
-			//Audio.Init();
-			//Renderer.Init();
-			Graphics.State.OnStateChanging += () => { }; // Temporary until Renderer inits this
+			try
+			{
+				Platform.Init(windowTitle, windowWidth, windowHeight, windowVSync, windowFullscreen, windowResizable, windowBorderless, msaa);
+				Graphics.Init();
+				//Audio.Init();
+				//Renderer.Init();
+				Graphics.State.OnStateChanging += () => { }; // Temporary until Renderer inits this
 
-			//Platform.Events.OnWinFocusGained += () => { focused = true; OnFocusGained(); };
-			//Platform.Events.OnWinFocusLost += () => { focused = false; OnFocusLost(); };
-			//Platform.Events.OnWinResized += () => { OnWindowResized(); };
+				//Platform.Events.OnWinFocusGained += () => { focused = true; OnFocusGained(); };
+				//Platform.Events.OnWinFocusLost += () => { focused = false; OnFocusLost(); };
+				//Platform.Events.OnWinResized += () => { OnWindowResized(); };
+			}
+			catch (Exception e)
+			{
+				Platform.DisplayException(e);
+			}
 		}
 
 		public void Run()
 		{
-			GameLoop();
+			try
+			{
+				GameLoop(0);
+			}
+			catch (Exception e)
+			{
+				Platform.DisplayException(e);
+			}
 		}
 
-		public void GameLoop()
+		public void GameLoop(double timestamp)
 		{
 			Init();
 			//Window.Visible = true;
@@ -79,18 +91,19 @@ namespace CKGL
 
 
 			// Temporary
-			Bridge.Html5.Window.RequestAnimationFrame(GameLoop);
+			Retyped.dom.window.requestAnimationFrame(GameLoop);
 			//Global.SetTimeout(GameLoop, 1000 / 60);
 
-			Destroy();
-			PostDestroy();
+			// Temporary
+			//Destroy();
+			//PostDestroy();
 		}
 
 		public abstract void Init();
 
 		private void PreUpdate()
 		{
-			//Platform.Update();
+			Platform.Update();
 			//Audio.Update();
 		}
 
@@ -120,7 +133,7 @@ namespace CKGL
 
 			//Renderer.Destroy();
 			//Audio.Destroy();
-			//Platform.Destroy();
+			Platform.Destroy();
 		}
 	}
 }

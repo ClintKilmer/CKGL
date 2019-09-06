@@ -5,6 +5,7 @@ namespace CKGL
 		Vulkan,
 		OpenGL,
 		OpenGLES,
+		WebGL2,
 		WebGL
 	}
 }

@@ -1,16 +1,17 @@
-using static CKGL.WebGL.WebGLGraphics; // WebGL Context Methods
+using static CKGL.WebGL2.WebGL2Graphics; // WebGL Context Methods
 using static Retyped.dom; // WebGL Types
 using static Retyped.es5; // JS TypedArrays
+using static Retyped.webgl2.WebGL2RenderingContext; // WebGL Enums
 
-namespace CKGL.WebGL
+namespace CKGL.WebGL2
 {
-	internal class WebGLIndexBuffer : IndexBuffer
+	internal class WebGL2IndexBuffer : IndexBuffer
 	{
 		private static WebGLBuffer currentlyBoundIndexBuffer;
 
 		private WebGLBuffer buffer;
 
-		internal WebGLIndexBuffer(BufferUsage bufferUsage)
+		internal WebGL2IndexBuffer(BufferUsage bufferUsage)
 		{
 			buffer = GL.createBuffer();
 			BufferUsage = bufferUsage;
@@ -29,7 +30,7 @@ namespace CKGL.WebGL
 		{
 			if (buffer != currentlyBoundIndexBuffer)
 			{
-				GL.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, buffer);
+				GL.bindBuffer(ELEMENT_ARRAY_BUFFER, buffer);
 				currentlyBoundIndexBuffer = buffer;
 			}
 		}
@@ -37,7 +38,7 @@ namespace CKGL.WebGL
 		public override void LoadData(ushort[] indices)
 		{
 			Bind();
-			GL.bufferData(GL.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), BufferUsage.ToWebGL());
+			GL.bufferData(ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), BufferUsage.ToWebGL2());
 			IndexType = IndexType.UnsignedShort;
 			Count = indices.Length;
 		}
@@ -45,7 +46,7 @@ namespace CKGL.WebGL
 		public override void LoadData(uint[] indices)
 		{
 			Bind();
-			GL.bufferData(GL.ELEMENT_ARRAY_BUFFER, new Uint32Array(indices), BufferUsage.ToWebGL());
+			GL.bufferData(ELEMENT_ARRAY_BUFFER, new Uint32Array(indices), BufferUsage.ToWebGL2());
 			IndexType = IndexType.UnsignedInt;
 			Count = indices.Length;
 		}

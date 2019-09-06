@@ -1,17 +1,18 @@
 using System.Linq;
-using static CKGL.WebGL.WebGLGraphics; // WebGL Context Methods
+using static CKGL.WebGL2.WebGL2Graphics; // WebGL Context Methods
 using static Retyped.dom; // WebGL Types
 using static Retyped.es5; // JS TypedArrays
+using static Retyped.webgl2.WebGL2RenderingContext; // WebGL Enums
 
-namespace CKGL.WebGL
+namespace CKGL.WebGL2
 {
-	internal class WebGLVertexBuffer : VertexBuffer
+	internal class WebGL2VertexBuffer : VertexBuffer
 	{
 		private static WebGLBuffer currentlyBoundVertexBuffer;
 
 		private WebGLBuffer buffer;
 
-		internal WebGLVertexBuffer(BufferUsage bufferUsage)
+		internal WebGL2VertexBuffer(BufferUsage bufferUsage)
 		{
 			buffer = GL.createBuffer();
 			BufferUsage = bufferUsage;
@@ -30,7 +31,7 @@ namespace CKGL.WebGL
 		{
 			if (buffer != currentlyBoundVertexBuffer)
 			{
-				GL.bindBuffer(GL.ARRAY_BUFFER, buffer);
+				GL.bindBuffer(ARRAY_BUFFER, buffer);
 				currentlyBoundVertexBuffer = buffer;
 			}
 		}
@@ -38,13 +39,13 @@ namespace CKGL.WebGL
 		public override void LoadData(byte[] data)
 		{
 			Bind();
-			GL.bufferData(GL.ARRAY_BUFFER, new Uint8Array(data), BufferUsage.ToWebGL());
+			GL.bufferData(ARRAY_BUFFER, new Uint8Array(data), BufferUsage.ToWebGL2());
 		}
 
 		public override void LoadData<T>(T[] data, VertexFormat vertexFormat)// where T : struct // TODO - add this back in .NET Core 3.0
 		{
 			Bind();
-			GL.bufferData(GL.ARRAY_BUFFER, ConvertVertices(data, vertexFormat), BufferUsage.ToWebGL());
+			GL.bufferData(ARRAY_BUFFER, ConvertVertices(data, vertexFormat), BufferUsage.ToWebGL2());
 		}
 
 		private ArrayBuffer ConvertVertices<T>(T[] data, VertexFormat vertexFormat)
