@@ -1,6 +1,6 @@
 namespace CKGL
 {
-	public static partial class Extensions
+	public static partial class MathExtensions
 	{
 		public static float DegreesToRadians(this float degrees)
 		{

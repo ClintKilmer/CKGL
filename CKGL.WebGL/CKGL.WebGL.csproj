@@ -169,8 +169,8 @@
     <Compile Include="..\CKGL\src\Math\Colour.cs">
       <Link>src\Math\Colour.cs</Link>
     </Compile>
-    <Compile Include="..\CKGL\src\Math\Extensions.cs">
-      <Link>src\Math\Extensions.cs</Link>
+    <Compile Include="..\CKGL\src\Math\MathExtensions.cs">
+      <Link>src\Math\MathExtensions.cs</Link>
     </Compile>
     <Compile Include="..\CKGL\src\Math\Geometry.cs">
       <Link>src\Math\Geometry.cs</Link>
