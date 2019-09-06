@@ -238,7 +238,7 @@
     <Compile Include="src\Graphics\Texture-Dummy.cs" />
     <Compile Include="src\Graphics\WebGL\WebGLShader.cs" />
     <Compile Include="src\Graphics\WebGL\VertexArray.cs" />
-    <Compile Include="src\Graphics\WebGL\WebGLGLGeometryInput.cs" />
+    <Compile Include="src\Graphics\WebGL\WebGLGeometryInput.cs" />
     <Compile Include="src\Graphics\WebGL\WebGLCKGLConversions.cs" />
     <Compile Include="src\Graphics\WebGL\WebGLIndexBuffer.cs" />
     <Compile Include="src\Graphics\WebGL\WebGLVertexBuffer.cs" />
