@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace CKGL
+﻿namespace CKGL
 {
 	public struct VertexAttribute
 	{
@@ -16,39 +14,10 @@ namespace CKGL
 		{
 			Type = type;
 			Count = count;
+			Size = count * type.Size();
 			Offset = 0; // Calculated in VertexFormat constructor
 			Normalized = normalized;
 			Divisor = divisor;
-
-			switch (Type)
-			{
-				case DataType.UnsignedByte:
-					Size = count * 1; // sizeof(byte);
-					break;
-				case DataType.Byte:
-					Size = count * 1; // sizeof(sbyte);
-					break;
-				case DataType.UnsignedShort:
-					Size = count * 2; // sizeof(ushort);
-					break;
-				case DataType.Short:
-					Size = count * 2; // sizeof(short);
-					break;
-				case DataType.UnsignedInt:
-					Size = count * 4; // sizeof(uint);
-					break;
-				case DataType.Int:
-					Size = count * 4; // sizeof(int);
-					break;
-				case DataType.Float:
-					Size = count * 4; // sizeof(float);
-					break;
-				//case DataType.Double:
-				//	Size = count * 8; // sizeof(double);
-				//	break;
-				default:
-					throw new IllegalValueException(typeof(DataType), Type);
-			}
 		}
 
 		internal void SetOffset(int offset)
@@ -59,7 +28,7 @@ namespace CKGL
 		#region Overrides
 		public override string ToString()
 		{
-			return $"VertexAttribute: [Type: {Type}, Count: {Count}, Size: {Size}, Normalized: {Normalized}]";
+			return $"VertexAttribute: [Type: {Type}, Count: {Count}, Size: {Size}, Offset: {Offset}, Normalized: {Normalized}, Divisor: {Divisor}]";
 		}
 
 		public override bool Equals(object obj)
@@ -79,6 +48,7 @@ namespace CKGL
 				hash = hash * 23 + Type.GetHashCode();
 				hash = hash * 23 + Count.GetHashCode();
 				hash = hash * 23 + Normalized.GetHashCode();
+				hash = hash * 23 + Divisor.GetHashCode();
 				return hash;
 			}
 		}
@@ -107,27 +77,24 @@ namespace CKGL
 		public readonly int Stride;
 
 		#region Constructors
-		public VertexFormat(params VertexAttribute[] attributes) : this(0, attributes) { }
-		public VertexFormat(int stride, params VertexAttribute[] attributes)
+		public VertexFormat(params VertexAttribute[] attributes) : this(4, attributes) { }
+		public VertexFormat(int pack = 4, params VertexAttribute[] attributes)
 		{
 			if (attributes == null || attributes.Length == 0)
-				throw new ArgumentNullException("attributes", "At least 1 attribute is required");
+				throw new CKGLException("At least 1 VertexAttribute is required for a VertexFormat.");
 
 			Attributes = attributes;
+			Stride = 0;
 
-			int offset = 0;
 			for (int i = 0; i < attributes.Length; i++)
 			{
-				attributes[i].Offset = offset;
-				offset += attributes[i].Size;
-			}
+				attributes[i].Offset = Stride;
+				Stride += attributes[i].Size;
 
-			Stride = 0;
-			if (stride > 0)
-				Stride = stride;
-			else
-				foreach (VertexAttribute attribute in attributes)
-					Stride += attribute.Size;
+				// Pad bytes to pack length
+				if (Stride % pack > 0)
+					Stride += pack - Stride % pack;
+			}
 		}
 		#endregion
 

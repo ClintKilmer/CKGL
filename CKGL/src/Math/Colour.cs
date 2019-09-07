@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace CKGL
 {
-	[StructLayout(LayoutKind.Sequential, Pack = 1)]
+	[StructLayout(LayoutKind.Sequential, Pack = 4)]
 	public struct Colour
 	{
 		private byte r;

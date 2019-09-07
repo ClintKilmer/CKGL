@@ -210,7 +210,7 @@ void main()
 		CullModeState cullModeState = CullModeState.Back;
 		PolygonModeState polygonModeState = PolygonModeState.Fill;
 
-		[StructLayout(LayoutKind.Sequential, Pack = 1)]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 		public struct Vertex
 		{
 			public Vector3 Position;
@@ -298,7 +298,7 @@ void main()
 			surface = new RenderTarget(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth);
 
 			vertexFormat = new VertexFormat(
-				Marshal.SizeOf(typeof(Vertex)),                       // Dynamic Stride - For larger StructLayout Pack sizes
+				4,                                                    // Pack
 				new VertexAttribute(DataType.Float, 3, false),        // Position
 				new VertexAttribute(DataType.Float, 3, false),        // Normal
 				new VertexAttribute(DataType.UnsignedByte, 4, true),  // Colour
