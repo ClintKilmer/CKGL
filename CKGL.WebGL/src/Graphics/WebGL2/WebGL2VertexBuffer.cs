@@ -51,6 +51,7 @@ namespace CKGL.WebGL2
 		private ArrayBuffer ConvertVertices<T>(T[] data, VertexFormat vertexFormat)
 		{
 			ArrayBuffer buffer = new ArrayBuffer(data.Length * vertexFormat.Stride);
+			//DataView dataView = new DataView(buffer);
 
 			var attributeNames = GetOwnPropertyNames(data[0]).Where(p => p[0] != '$').ToArray();
 
@@ -127,6 +128,62 @@ namespace CKGL.WebGL2
 					//			dataView[j] = (double)data[i][attributeName][attributeElementNames[j]];
 					//	}
 					//	break;
+					//case DataType.UnsignedByte:
+					//	for (var i = 0; i < data.Length; i++)
+					//	{
+					//		for (uint j = 0; j < vertexAttribute.Count; j++)
+					//			dataView.setUint8((uint)(vertexFormat.Stride * i + vertexAttribute.Offset + vertexAttribute.Type.Size() * j), (byte)data[i][attributeName][attributeElementNames[j]]);
+					//	}
+					//	break;
+					//case DataType.Byte:
+					//	for (var i = 0; i < data.Length; i++)
+					//	{
+					//		for (uint j = 0; j < vertexAttribute.Count; j++)
+					//			dataView.setInt8((uint)(vertexFormat.Stride * i + vertexAttribute.Offset + vertexAttribute.Type.Size() * j), (sbyte)data[i][attributeName][attributeElementNames[j]]);
+					//	}
+					//	break;
+					//case DataType.UnsignedShort:
+					//	for (var i = 0; i < data.Length; i++)
+					//	{
+					//		for (uint j = 0; j < vertexAttribute.Count; j++)
+					//			dataView.setUint16((uint)(vertexFormat.Stride * i + vertexAttribute.Offset + vertexAttribute.Type.Size() * j), (ushort)data[i][attributeName][attributeElementNames[j]], IsLittleEndian);
+					//	}
+					//	break;
+					//case DataType.Short:
+					//	for (var i = 0; i < data.Length; i++)
+					//	{
+					//		for (uint j = 0; j < vertexAttribute.Count; j++)
+					//			dataView.setInt16((uint)(vertexFormat.Stride * i + vertexAttribute.Offset + vertexAttribute.Type.Size() * j), (short)data[i][attributeName][attributeElementNames[j]], IsLittleEndian);
+					//	}
+					//	break;
+					//case DataType.UnsignedInt:
+					//	for (var i = 0; i < data.Length; i++)
+					//	{
+					//		for (uint j = 0; j < vertexAttribute.Count; j++)
+					//			dataView.setUint32((uint)(vertexFormat.Stride * i + vertexAttribute.Offset + vertexAttribute.Type.Size() * j), (uint)data[i][attributeName][attributeElementNames[j]], IsLittleEndian);
+					//	}
+					//	break;
+					//case DataType.Int:
+					//	for (var i = 0; i < data.Length; i++)
+					//	{
+					//		for (uint j = 0; j < vertexAttribute.Count; j++)
+					//			dataView.setInt32((uint)(vertexFormat.Stride * i + vertexAttribute.Offset + vertexAttribute.Type.Size() * j), (int)data[i][attributeName][attributeElementNames[j]], IsLittleEndian);
+					//	}
+					//	break;
+					//case DataType.Float:
+					//	for (var i = 0; i < data.Length; i++)
+					//	{
+					//		for (uint j = 0; j < vertexAttribute.Count; j++)
+					//			dataView.setFloat32((uint)(vertexFormat.Stride * i + vertexAttribute.Offset + vertexAttribute.Type.Size() * j), (float)data[i][attributeName][attributeElementNames[j]], IsLittleEndian);
+					//	}
+					//	break;
+					////case DataType.Double:
+					////	for (var i = 0; i < data.Length; i++)
+					////	{
+					////		for (uint j = 0; j < vertexAttribute.Count; j++)
+					////			dataView.setFloat64((uint)(vertexFormat.Stride * i + vertexAttribute.Offset + vertexAttribute.Type.Size() * j), (double)data[i][attributeName][attributeElementNames[j]], IsLittleEndian);
+					////	}
+					////	break;
 					default:
 						throw new IllegalValueException(typeof(DataType), vertexAttribute.Type);
 				}

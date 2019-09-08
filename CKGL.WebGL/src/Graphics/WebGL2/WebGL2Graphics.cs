@@ -39,6 +39,8 @@ namespace CKGL.WebGL2
 
 		internal static WebGL2RenderingContext GL = null;
 
+		internal static bool IsLittleEndian = new Retyped.es5.Uint8Array(new Retyped.es5.Uint32Array(new uint[] { 0x12345678 }).buffer)[0] == 0x78;
+
 		internal override void Init()
 		{
 			string[] contextIDs = new string[] {
