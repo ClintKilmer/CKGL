@@ -52,7 +52,7 @@ namespace CKGL
 		{
 			try
 			{
-				GameLoop(0);
+				GameLoop();
 			}
 			catch (Exception e)
 			{
@@ -60,10 +60,19 @@ namespace CKGL
 			}
 		}
 
-		public void GameLoop(double timestamp)
+		public void GameLoop()
 		{
 			Init();
+
 			//Window.Visible = true;
+			InnerGameLoop(0);
+
+			//Destroy();
+			//PostDestroy();
+		}
+
+		public void InnerGameLoop(double timestamp)
+		{
 			//while (Platform.Running)
 			//{
 			//	Time.Tick();
@@ -89,14 +98,9 @@ namespace CKGL
 			Update();
 			Draw();
 
-
 			// Temporary
-			Retyped.dom.window.requestAnimationFrame(GameLoop);
-			//Global.SetTimeout(GameLoop, 1000 / 60);
-
-			// Temporary
-			//Destroy();
-			//PostDestroy();
+			Retyped.dom.window.requestAnimationFrame(InnerGameLoop);
+			//Global.SetTimeout(InnerGameLoop, 1000 / 60);
 		}
 
 		public abstract void Init();
