@@ -47,10 +47,18 @@ namespace CKGL.WebGL
 			GL.bufferData(GL.ARRAY_BUFFER, ConvertVertices(data, vertexFormat), BufferUsage.ToWebGL());
 		}
 
+		[Bridge.Rules(Integer = Bridge.IntegerRule.Plain)]
 		private ArrayBuffer ConvertVertices<T>(T[] data, VertexFormat vertexFormat)
 		{
 			ArrayBuffer buffer = new ArrayBuffer(data.Length * vertexFormat.Stride);
-			//DataView dataView = new DataView(buffer);
+			Int8Array byteView = new Int8Array(buffer);
+			Uint8Array ubyteView = new Uint8Array(buffer);
+			Int16Array shortView = new Int16Array(buffer);
+			Uint16Array ushortView = new Uint16Array(buffer);
+			Int32Array intView = new Int32Array(buffer);
+			Uint32Array uintView = new Uint32Array(buffer);
+			Float32Array floatView = new Float32Array(buffer);
+			//Float64Array doubleView = new Float64Array(buffer);
 
 			var attributeNames = GetOwnPropertyNames(data[0]).Where(p => p[0] != '$').ToArray();
 
@@ -61,130 +69,41 @@ namespace CKGL.WebGL
 				var attributeElementNames = GetOwnPropertyNames(data[0][attributeName]).Where(p => p[0] != '$').ToArray();
 				//Output.WriteLine($"attributeName: {attributeName} | attributeElementNames: {string.Join(", ", attributeElementNames)}"); // Debug
 
-				switch (vertexAttribute.Type)
+				for (uint i = 0; i < data.Length; i++)
 				{
-					case DataType.UnsignedByte:
-						for (var i = 0; i < data.Length; i++)
+					uint offset = (uint)(vertexAttribute.Offset + i * vertexFormat.Stride);
+					for (uint j = 0; j < vertexAttribute.Count; j++)
+					{
+						switch (vertexAttribute.Type)
 						{
-							var dataView = new Uint8Array(buffer, (uint)(vertexAttribute.Offset + i * vertexFormat.Stride));
-							for (uint j = 0; j < vertexAttribute.Count; j++)
-								dataView[j] = (byte)data[i][attributeName][attributeElementNames[j]];
+							case DataType.Byte:
+								byteView[offset / (uint)vertexAttribute.Type.Size() + j] = (sbyte)data[i][attributeName][attributeElementNames[j]];
+								break;
+							case DataType.UnsignedByte:
+								ubyteView[offset / (uint)vertexAttribute.Type.Size() + j] = (byte)data[i][attributeName][attributeElementNames[j]];
+								break;
+							case DataType.Short:
+								shortView[offset / (uint)vertexAttribute.Type.Size() + j] = (short)data[i][attributeName][attributeElementNames[j]];
+								break;
+							case DataType.UnsignedShort:
+								ushortView[offset / (uint)vertexAttribute.Type.Size() + j] = (ushort)data[i][attributeName][attributeElementNames[j]];
+								break;
+							case DataType.Int:
+								intView[offset / (uint)vertexAttribute.Type.Size() + j] = (int)data[i][attributeName][attributeElementNames[j]];
+								break;
+							case DataType.UnsignedInt:
+								uintView[offset / (uint)vertexAttribute.Type.Size() + j] = (uint)data[i][attributeName][attributeElementNames[j]];
+								break;
+							case DataType.Float:
+								floatView[offset / (uint)vertexAttribute.Type.Size() + j] = (float)data[i][attributeName][attributeElementNames[j]];
+								break;
+							//case DataType.Double:
+							//	doubleView[offset / (uint)vertexAttribute.Type.Size() + j] = (double)data[i][attributeName][attributeElementNames[j]];
+							//	break;
+							default:
+								throw new IllegalValueException(typeof(DataType), vertexAttribute.Type);
 						}
-						break;
-					case DataType.Byte:
-						for (var i = 0; i < data.Length; i++)
-						{
-							var dataView = new Int8Array(buffer, (uint)(vertexAttribute.Offset + i * vertexFormat.Stride));
-							for (uint j = 0; j < vertexAttribute.Count; j++)
-								dataView[j] = (sbyte)data[i][attributeName][attributeElementNames[j]];
-						}
-						break;
-					case DataType.UnsignedShort:
-						for (var i = 0; i < data.Length; i++)
-						{
-							var dataView = new Uint16Array(buffer, (uint)(vertexAttribute.Offset + i * vertexFormat.Stride));
-							for (uint j = 0; j < vertexAttribute.Count; j++)
-								dataView[j] = (ushort)data[i][attributeName][attributeElementNames[j]];
-						}
-						break;
-					case DataType.Short:
-						for (var i = 0; i < data.Length; i++)
-						{
-							var dataView = new Int16Array(buffer, (uint)(vertexAttribute.Offset + i * vertexFormat.Stride));
-							for (uint j = 0; j < vertexAttribute.Count; j++)
-								dataView[j] = (short)data[i][attributeName][attributeElementNames[j]];
-						}
-						break;
-					case DataType.UnsignedInt:
-						for (var i = 0; i < data.Length; i++)
-						{
-							var dataView = new Uint32Array(buffer, (uint)(vertexAttribute.Offset + i * vertexFormat.Stride));
-							for (uint j = 0; j < vertexAttribute.Count; j++)
-								dataView[j] = (uint)data[i][attributeName][attributeElementNames[j]];
-						}
-						break;
-					case DataType.Int:
-						for (var i = 0; i < data.Length; i++)
-						{
-							var dataView = new Int32Array(buffer, (uint)(vertexAttribute.Offset + i * vertexFormat.Stride));
-							for (uint j = 0; j < vertexAttribute.Count; j++)
-								dataView[j] = (int)data[i][attributeName][attributeElementNames[j]];
-						}
-						break;
-					case DataType.Float:
-						for (var i = 0; i < data.Length; i++)
-						{
-							var dataView = new Float32Array(buffer, (uint)(vertexAttribute.Offset + i * vertexFormat.Stride));
-							for (uint j = 0; j < vertexAttribute.Count; j++)
-								dataView[j] = (float)data[i][attributeName][attributeElementNames[j]];
-						}
-						break;
-					//case DataType.Double:
-					//	for (var i = 0; i < data.Length; i++)
-					//	{
-					//		var dataView = new Float64Array(buffer, (uint)(vertexAttribute.Offset + i * vertexFormat.Stride));
-					//		for (uint j = 0; j < vertexAttribute.Count; j++)
-					//			dataView[j] = (double)data[i][attributeName][attributeElementNames[j]];
-					//	}
-					//	break;
-					//case DataType.UnsignedByte:
-					//	for (var i = 0; i < data.Length; i++)
-					//	{
-					//		for (uint j = 0; j < vertexAttribute.Count; j++)
-					//			dataView.setUint8((uint)(vertexFormat.Stride * i + vertexAttribute.Offset + vertexAttribute.Type.Size() * j), (byte)data[i][attributeName][attributeElementNames[j]]);
-					//	}
-					//	break;
-					//case DataType.Byte:
-					//	for (var i = 0; i < data.Length; i++)
-					//	{
-					//		for (uint j = 0; j < vertexAttribute.Count; j++)
-					//			dataView.setInt8((uint)(vertexFormat.Stride * i + vertexAttribute.Offset + vertexAttribute.Type.Size() * j), (sbyte)data[i][attributeName][attributeElementNames[j]]);
-					//	}
-					//	break;
-					//case DataType.UnsignedShort:
-					//	for (var i = 0; i < data.Length; i++)
-					//	{
-					//		for (uint j = 0; j < vertexAttribute.Count; j++)
-					//			dataView.setUint16((uint)(vertexFormat.Stride * i + vertexAttribute.Offset + vertexAttribute.Type.Size() * j), (ushort)data[i][attributeName][attributeElementNames[j]], IsLittleEndian);
-					//	}
-					//	break;
-					//case DataType.Short:
-					//	for (var i = 0; i < data.Length; i++)
-					//	{
-					//		for (uint j = 0; j < vertexAttribute.Count; j++)
-					//			dataView.setInt16((uint)(vertexFormat.Stride * i + vertexAttribute.Offset + vertexAttribute.Type.Size() * j), (short)data[i][attributeName][attributeElementNames[j]], IsLittleEndian);
-					//	}
-					//	break;
-					//case DataType.UnsignedInt:
-					//	for (var i = 0; i < data.Length; i++)
-					//	{
-					//		for (uint j = 0; j < vertexAttribute.Count; j++)
-					//			dataView.setUint32((uint)(vertexFormat.Stride * i + vertexAttribute.Offset + vertexAttribute.Type.Size() * j), (uint)data[i][attributeName][attributeElementNames[j]], IsLittleEndian);
-					//	}
-					//	break;
-					//case DataType.Int:
-					//	for (var i = 0; i < data.Length; i++)
-					//	{
-					//		for (uint j = 0; j < vertexAttribute.Count; j++)
-					//			dataView.setInt32((uint)(vertexFormat.Stride * i + vertexAttribute.Offset + vertexAttribute.Type.Size() * j), (int)data[i][attributeName][attributeElementNames[j]], IsLittleEndian);
-					//	}
-					//	break;
-					//case DataType.Float:
-					//	for (var i = 0; i < data.Length; i++)
-					//	{
-					//		for (uint j = 0; j < vertexAttribute.Count; j++)
-					//			dataView.setFloat32((uint)(vertexFormat.Stride * i + vertexAttribute.Offset + vertexAttribute.Type.Size() * j), (float)data[i][attributeName][attributeElementNames[j]], IsLittleEndian);
-					//	}
-					//	break;
-					////case DataType.Double:
-					////	for (var i = 0; i < data.Length; i++)
-					////	{
-					////		for (uint j = 0; j < vertexAttribute.Count; j++)
-					////			dataView.setFloat64((uint)(vertexFormat.Stride * i + vertexAttribute.Offset + vertexAttribute.Type.Size() * j), (double)data[i][attributeName][attributeElementNames[j]], IsLittleEndian);
-					////	}
-					////	break;
-					default:
-						throw new IllegalValueException(typeof(DataType), vertexAttribute.Type);
+					}
 				}
 			}
 

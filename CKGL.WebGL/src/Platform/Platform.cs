@@ -285,35 +285,39 @@ namespace CKGL
 
 			// Check WegGL 2.0 Support
 			bool supportsWebGL2 = false;
-			try
-			{
-				Retyped.webgl2.WebGL2RenderingContext GL = null;
 
-				string[] contextIDs = new string[] {
+			if (!document.location.search.ToLower().Contains("forcewebgl1=true"))
+			{
+				try
+				{
+					Retyped.webgl2.WebGL2RenderingContext GL = null;
+
+					string[] contextIDs = new string[] {
 					"webgl2",
 					"experimental-webgl2"
 				};
 
-				foreach (string contextID in contextIDs)
-				{
-
-					try
+					foreach (string contextID in contextIDs)
 					{
-						GL = Canvas.getContext(contextID).As<Retyped.webgl2.WebGL2RenderingContext>();
-					}
-					catch { }
 
-					if (GL != null)
-					{
-						GL = null;
-						supportsWebGL2 = true;
-						GraphicsBackend = GraphicsBackend.WebGL2;
-						Output.WriteLine("WebGL 2.0 Supported");
-						break;
+						try
+						{
+							GL = Canvas.getContext(contextID).As<Retyped.webgl2.WebGL2RenderingContext>();
+						}
+						catch { }
+
+						if (GL != null)
+						{
+							GL = null;
+							supportsWebGL2 = true;
+							GraphicsBackend = GraphicsBackend.WebGL2;
+							Output.WriteLine("WebGL 2.0 Supported");
+							break;
+						}
 					}
 				}
+				catch { }
 			}
-			catch { }
 
 			// Check WegGL 1.0 Support
 			bool supportsWebGL = false;
@@ -511,6 +515,7 @@ namespace CKGL
 		public static void DisplayException(Exception e)
 		{
 			Canvas.parentElement.replaceChild(new HTMLParagraphElement { innerHTML = $"Exception:<br />{e.Message}<br /><br />InnerException:<br />{e.InnerException}<br /><br />StackTrace:<br />{e.StackTrace}" }, Canvas);
+			throw e;
 		}
 
 		public static void Quit()
