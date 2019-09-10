@@ -249,7 +249,7 @@ namespace CKGL
 			}
 		}
 
-		public static GraphicsBackend GetPlatformDefaultGraphicsBackend()
+		internal static GraphicsBackend GetPlatformDefaultGraphicsBackend()
 		{
 			switch (OS)
 			{
