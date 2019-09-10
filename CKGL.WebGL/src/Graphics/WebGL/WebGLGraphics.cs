@@ -118,7 +118,17 @@ namespace CKGL.WebGL
 			{
 				try
 				{
-					GL = Platform.Canvas.getContext(contextID).As<WebGLRenderingContext>();
+					var attributes = new WebGLContextAttributes
+					{
+						alpha = true,
+						premultipliedAlpha = false,
+						depth = true,
+						stencil = true,
+						antialias = false,
+						preserveDrawingBuffer = false,
+						failIfMajorPerformanceCaveat = false
+					};
+					GL = Platform.Canvas.getContext(contextID, attributes).As<WebGLRenderingContext>();
 				}
 				catch { }
 
