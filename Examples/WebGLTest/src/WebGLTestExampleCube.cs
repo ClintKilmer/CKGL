@@ -463,7 +463,7 @@ void main()
 		{
 			Camera.FoV = 75f;
 			Camera.AspectRatio = width / (float)height;
-			Camera.Position = new Vector3(0f, 2f, -5f);
+			Camera.Position = new Vector3(0f, 2f, -10f);
 			Camera.zNear = 0.1f;
 			Camera.zFar = 150f;
 
