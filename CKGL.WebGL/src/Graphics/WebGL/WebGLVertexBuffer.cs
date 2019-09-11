@@ -77,28 +77,28 @@ namespace CKGL.WebGL
 						switch (vertexAttribute.Type)
 						{
 							case DataType.Byte:
-								byteView[offset / (uint)vertexAttribute.Type.Size() + j] = (sbyte)data[i][attributeName][attributeElementNames[j]];
+								byteView[offset / (uint)vertexAttribute.Type.Size() + j] = (sbyte)(attributeElementNames.Length == 0 ? data[i][attributeName] : data[i][attributeName][attributeElementNames[j]]);
 								break;
 							case DataType.UnsignedByte:
-								ubyteView[offset / (uint)vertexAttribute.Type.Size() + j] = (byte)data[i][attributeName][attributeElementNames[j]];
+								ubyteView[offset / (uint)vertexAttribute.Type.Size() + j] = (byte)(attributeElementNames.Length == 0 ? data[i][attributeName] : data[i][attributeName][attributeElementNames[j]]);
 								break;
 							case DataType.Short:
-								shortView[offset / (uint)vertexAttribute.Type.Size() + j] = (short)data[i][attributeName][attributeElementNames[j]];
+								shortView[offset / (uint)vertexAttribute.Type.Size() + j] = (short)(attributeElementNames.Length == 0 ? data[i][attributeName] : data[i][attributeName][attributeElementNames[j]]);
 								break;
 							case DataType.UnsignedShort:
-								ushortView[offset / (uint)vertexAttribute.Type.Size() + j] = (ushort)data[i][attributeName][attributeElementNames[j]];
+								ushortView[offset / (uint)vertexAttribute.Type.Size() + j] = (ushort)(attributeElementNames.Length == 0 ? data[i][attributeName] : data[i][attributeName][attributeElementNames[j]]);
 								break;
 							case DataType.Int:
-								intView[offset / (uint)vertexAttribute.Type.Size() + j] = (int)data[i][attributeName][attributeElementNames[j]];
+								intView[offset / (uint)vertexAttribute.Type.Size() + j] = (int)(attributeElementNames.Length == 0 ? data[i][attributeName] : data[i][attributeName][attributeElementNames[j]]);
 								break;
 							case DataType.UnsignedInt:
-								uintView[offset / (uint)vertexAttribute.Type.Size() + j] = (uint)data[i][attributeName][attributeElementNames[j]];
+								uintView[offset / (uint)vertexAttribute.Type.Size() + j] = (uint)(attributeElementNames.Length == 0 ? data[i][attributeName] : data[i][attributeName][attributeElementNames[j]]);
 								break;
 							case DataType.Float:
-								floatView[offset / (uint)vertexAttribute.Type.Size() + j] = (float)data[i][attributeName][attributeElementNames[j]];
+								floatView[offset / (uint)vertexAttribute.Type.Size() + j] = (float)(attributeElementNames.Length == 0 ? data[i][attributeName] : data[i][attributeName][attributeElementNames[j]]);
 								break;
 							//case DataType.Double:
-							//	doubleView[offset / (uint)vertexAttribute.Type.Size() + j] = (double)data[i][attributeName][attributeElementNames[j]];
+							//	doubleView[offset / (uint)vertexAttribute.Type.Size() + j] = (double)(attributeElementNames.Length == 0 ? data[i][attributeName] : data[i][attributeName][attributeElementNames[j]]);
 							//	break;
 							default:
 								throw new IllegalValueException(typeof(DataType), vertexAttribute.Type);
