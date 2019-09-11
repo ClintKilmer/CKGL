@@ -10,9 +10,8 @@ namespace CKGL
 		private Vector3 scale = Vector3.One;
 		private Shear3D shear = Shear3D.Identity;
 		private Matrix matrix;
+		private Vector3 globalPosition;
 		private bool dirty = true;
-
-		public Vector3 GlobalPosition { get; private set; } = Vector3.Zero;
 
 		public Transform Parent
 		{
@@ -231,16 +230,27 @@ namespace CKGL
 				if (dirty)
 				{
 					matrix = Matrix.CreateTransform(origin, position, rotation, scale, shear);
-					GlobalPosition = position;
+
 					if (parent != null)
-					{
 						matrix *= parent.Matrix;
-						GlobalPosition *= parent.Matrix;
-					}
+
 					dirty = false;
 				}
 
 				return matrix;
+			}
+		}
+
+		public Vector3 GlobalPosition
+		{
+			get
+			{
+				if (dirty)
+				{
+					globalPosition = position * Matrix;
+				}
+
+				return globalPosition;
 			}
 		}
 

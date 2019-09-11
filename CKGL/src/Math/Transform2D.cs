@@ -10,9 +10,8 @@ namespace CKGL
 		private Vector2 scale = Vector2.One;
 		private Vector2 shear = Vector2.Zero;
 		private Matrix2D matrix;
+		private Vector2 globalPosition;
 		private bool dirty = true;
-
-		public Vector2 GlobalPosition { get; private set; } = Vector2.Zero;
 
 		public Transform2D Parent
 		{
@@ -218,16 +217,27 @@ namespace CKGL
 				if (dirty)
 				{
 					matrix = Matrix2D.CreateTransform(origin, position, rotation, scale, shear);
-					GlobalPosition = position;
+
 					if (parent != null)
-					{
 						matrix *= parent.Matrix;
-						GlobalPosition *= parent.Matrix;
-					}
+
 					dirty = false;
 				}
 
 				return matrix;
+			}
+		}
+
+		public Vector3 GlobalPosition
+		{
+			get
+			{
+				if (dirty)
+				{
+					globalPosition = position * Matrix;
+				}
+
+				return globalPosition;
 			}
 		}
 
