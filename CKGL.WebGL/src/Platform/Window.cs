@@ -5,9 +5,11 @@ namespace CKGL
 {
 	public static class Window
 	{
-		public static uint ID => 0;
+		internal static uint ID => 0;
 
 		public static string Title { get => document.title; set => document.title = value; }
+
+		public static bool HighDPI { get; set; } = true; // WebGL only - can be toggled at runtime
 
 		//public static void SetIcon(string file)
 		//{
@@ -200,8 +202,16 @@ namespace CKGL
 		{
 			if (Platform.Canvas.width != Platform.Canvas.clientWidth || Platform.Canvas.height != Platform.Canvas.clientHeight)
 			{
-				Platform.Canvas.width = (uint)Math.FloorToInt(Platform.Canvas.clientWidth * (float)window.devicePixelRatio);
-				Platform.Canvas.height = (uint)Math.FloorToInt(Platform.Canvas.clientHeight * (float)window.devicePixelRatio);
+				if (HighDPI)
+				{
+					Platform.Canvas.width = (uint)Math.FloorToInt(Platform.Canvas.clientWidth * (float)window.devicePixelRatio);
+					Platform.Canvas.height = (uint)Math.FloorToInt(Platform.Canvas.clientHeight * (float)window.devicePixelRatio);
+				}
+				else
+				{
+					Platform.Canvas.width = (uint)Math.FloorToInt(Platform.Canvas.clientWidth);
+					Platform.Canvas.height = (uint)Math.FloorToInt(Platform.Canvas.clientHeight);
+				}
 			}
 		}
 	}

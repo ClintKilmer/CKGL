@@ -9,7 +9,7 @@ namespace CKGL
 		private static IntPtr IntPtr;
 		private static IntPtr GL_Context;
 
-		public static uint ID => SDL_GetWindowID(IntPtr);
+		internal static uint ID => SDL_GetWindowID(IntPtr);
 
 		public static string Title { get => SDL_GetWindowTitle(IntPtr); set => SDL_SetWindowTitle(IntPtr, value); }
 
