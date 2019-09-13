@@ -1,5 +1,8 @@
 CKGL TODO List:
 
+Notes:
+- WebGL - HighDPI needs mouse scaling to match css pixel size
+
 Bugs:
 - WebGL - VertexBuffer.LoadData<T> requires VertexFormat, using #if WEBGL to make this work
 - Property ( get; internal set; ) version of VertexAttribute.Offset breaks Bridge.NET
