@@ -4,18 +4,6 @@ namespace CKGL
 {
 	public abstract class Game
 	{
-		public struct Vertex
-		{
-			public Vector3 Position;
-			public Colour Colour;
-
-			public Vertex(Vector3 position, Colour colour)
-			{
-				Position = position;
-				Colour = colour;
-			}
-		}
-
 		public static float RAM
 		{
 			get
@@ -79,24 +67,21 @@ namespace CKGL
 
 			//	while (Time.DoUpdate)
 			//	{
-			//		PreUpdate();
-			//		Update();
+			PreUpdate();
+			Update();
 			//		Time.Update();
 			//	}
 
 			//	if (Window.VSync || Time.DoDraw)
 			//	{
-			//		PreDraw();
-			//		Draw();
+			PreDraw();
+			Draw();
 			//		Window.SwapBuffers();
 			//		Time.Draw();
 			//		if (UnfocusedFrameLimiter && !focused)
 			//			Platform.Delay(UnfocusedFrameLimiterSleep);
 			//	}
 			//}
-
-			Update();
-			Draw();
 
 			// Temporary
 			Retyped.dom.window.requestAnimationFrame(InnerGameLoop);
@@ -119,6 +104,7 @@ namespace CKGL
 			//RenderTarget.PreDraw();
 			//Texture.PreDraw();
 			//Shader.PreDraw();
+			Window.Resize(); //  WebGL specific
 		}
 
 		public abstract void Draw();

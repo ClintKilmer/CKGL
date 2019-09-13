@@ -138,7 +138,6 @@ namespace CKGL
 					return VSyncModeEnum.On;
 				default:
 					throw new NotImplementedException("Unknown VSync Mode");
-
 			}
 		}
 		#endregion

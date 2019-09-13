@@ -8,6 +8,8 @@ namespace CKGL
 {
 	public static class Platform
 	{
+		internal static HTMLCanvasElement Canvas;
+
 #if false // Temporary
 		#region Events
 		public static class Events
@@ -243,45 +245,21 @@ namespace CKGL
 		}
 
 		#region Init/Exit Methods
-		internal static HTMLCanvasElement Canvas;
 		public static void Init(string windowTitle, int windowWidth, int windowHeight, bool windowVSync, bool windowFullscreen, bool windowResizable, bool windowBorderless, int msaa)
 		{
 			//Input.Init();
 
 			Running = true;
 
-			document.title = windowTitle;
-
 			//document.addEventListenerFn<MouseEvent>(handleMouseMove);
-
-			document.documentElement.style.overflow = "hidden";
-			document.documentElement.style.setProperty("margin", "0", "important");
-			document.documentElement.style.setProperty("padding", "0", "important");
-			document.body.style.overflow = "hidden";
-			document.body.style.setProperty("margin", "0", "important");
-			document.body.style.setProperty("padding", "0", "important");
-
-			Canvas = new HTMLCanvasElement
-			{
-				width = windowFullscreen ? (uint)window.innerWidth : (uint)windowWidth,
-				height = windowFullscreen ? (uint)window.innerHeight : (uint)windowHeight,
-				textContent = "<b>Either the browser doesn't support WebGL 2.0 or it is disabled.<br>Please follow the instructions at: <a href=\"https://get.webgl.org/webgl2/\" > get.webgl.org</a>.</b>"
-			};
-			document.body.appendChild(Canvas);
-
-			// Disable selection
-			Canvas.style.setProperty("user-select", "none");
-			Canvas.style.setProperty("-webkit-user-select", "none");
-			Canvas.style.setProperty("-moz-user-select", "none");
-			Canvas.style.setProperty("-ms-user-select", "none");
-
-			// Window
-			//Window.Init(windowTitle, windowWidth, windowHeight, windowVSync, windowFullscreen, windowResizable, windowBorderless);
 
 			// Debug
 			Output.WriteLine($"Platform - HTML5 Initialized");
 			Output.WriteLine($"Platform - window.navigator.platform: {window.navigator.platform}");
 			Output.WriteLine($"Platform - window.navigator.userAgent: {window.navigator.userAgent}");
+
+			// Window
+			Window.Init(windowTitle, windowWidth, windowHeight, windowVSync, windowFullscreen, windowResizable, windowBorderless);
 
 			// Check WegGL 2.0 Support
 			bool supportsWebGL2 = false;
@@ -363,9 +341,7 @@ namespace CKGL
 
 		public static void Destroy()
 		{
-			//Window.Destroy();
-
-			document.body.removeChild(Canvas);
+			Window.Destroy();
 		}
 		#endregion
 

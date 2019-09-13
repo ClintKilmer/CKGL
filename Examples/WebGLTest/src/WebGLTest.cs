@@ -1,7 +1,5 @@
 using CKGL;
-using System.IO;
-using System.Reflection;
-using System.Text;
+using System.Runtime.InteropServices;
 
 namespace WebGLTest
 {
@@ -132,7 +130,22 @@ void main(void)
 		{ }
 
 		Camera Camera = new Camera();
+
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		public struct Vertex
+		{
+			public Vector3 Position;
+			public Colour Colour;
+
+			public Vertex(Vector3 position, Colour colour)
+			{
+				Position = position;
+				Colour = colour;
+			}
+		}
+
 		VertexFormat vertexFormat = new VertexFormat(
+			4,
 			new VertexAttribute(DataType.Float, 3, false),
 			new VertexAttribute(DataType.UnsignedByte, 4, true)
 		);
@@ -167,9 +180,9 @@ void main(void)
 			//	new Vertex(new Vector3(-0.8f,  Math.Sin(totalMilliseconds * 0.003f), 0f), Colour.Blue),
 			//	new Vertex(new Vector3( 0.8f, -Math.Sin(totalMilliseconds * 0.003f), 0f), Colour.Green)};
 			vertexData = new Vertex[] {
-				new Vertex(new Vector3( 0f   ,  0.5f, 0f), Colour.Red),
-				new Vertex(new Vector3(-0.25f, -0.5f, 0f), Colour.Blue),
-				new Vertex(new Vector3( 0.25f, -0.5f, 0f), Colour.Green)};
+				new Vertex(new Vector3( 0f  ,  0.45f, 0f), Colour.Red),
+				new Vertex(new Vector3(-0.5f, -0.45f, 0f), Colour.Blue),
+				new Vertex(new Vector3( 0.5f, -0.45f, 0f), Colour.Green)};
 
 			for (int i = 0; i < vertexData.Length; i++)
 			{
@@ -189,6 +202,38 @@ void main(void)
 
 		public override void Draw()
 		{
+			Graphics.SetViewport(0, 0, Window.Width, Window.Height);
+			Graphics.SetScissorTest(0, 0, Window.Width, Window.Height);
+			Graphics.Clear(new Colour(0.1f, 0.1f, 0.1f, 1f));
+
+			//// Pixel Perfect Scaling
+			//int scale = Math.Max(1, Math.Min(Window.Width / width, Window.Height / height));
+			//Graphics.SetViewport((Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, width * scale, height * scale);
+			//Graphics.SetScissorTest((Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, width * scale, height * scale);
+
+			//// Dynamic Viewport - Maintain Aspect Ratio
+			//float aspectRatio = 16f / 9f;
+			//if (Window.Width <= Window.Height * aspectRatio)
+			//{
+			//	width = Window.Width;
+			//	height = Math.FloorToInt(Window.Width / aspectRatio);
+			//}
+			//else
+			//{
+			//	width = Math.FloorToInt(Window.Height * aspectRatio);
+			//	height = Window.Height;
+			//}
+			//Graphics.SetViewport((Window.Width - width) / 2, (Window.Height - height) / 2, width, height);
+			//Graphics.SetScissorTest((Window.Width - width) / 2, (Window.Height - height) / 2, width, height);
+
+			// Dynamic Viewport
+			width = Window.Width;
+			height = Window.Height;
+			Camera.AspectRatio = Window.AspectRatio;
+			int scale = Math.Max(1, Math.Min(Window.Width / width, Window.Height / height));
+			Graphics.SetViewport((Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, width * scale, height * scale);
+			Graphics.SetScissorTest((Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, width * scale, height * scale);
+
 			// Clear the screen
 			Graphics.Clear(Colour.Black);
 

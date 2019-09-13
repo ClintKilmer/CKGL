@@ -1,8 +1,5 @@
 using CKGL;
-using System.IO;
-using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Text;
 
 namespace WebGLTestExampleCube
 {
@@ -538,6 +535,38 @@ void main()
 
 		public override void Draw()
 		{
+			Graphics.SetViewport(0, 0, Window.Width, Window.Height);
+			Graphics.SetScissorTest(0, 0, Window.Width, Window.Height);
+			Graphics.Clear(new Colour(0.1f, 0.1f, 0.1f, 1f));
+
+			//// Pixel Perfect Scaling
+			//int scale = Math.Max(1, Math.Min(Window.Width / width, Window.Height / height));
+			//Graphics.SetViewport((Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, width * scale, height * scale);
+			//Graphics.SetScissorTest((Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, width * scale, height * scale);
+
+			// Dynamic Viewport - Maintain Aspect Ratio
+			float aspectRatio = 16f / 9f;
+			if (Window.Width <= Window.Height * aspectRatio)
+			{
+				width = Window.Width;
+				height = Math.FloorToInt(Window.Width / aspectRatio);
+			}
+			else
+			{
+				width = Math.FloorToInt(Window.Height * aspectRatio);
+				height = Window.Height;
+			}
+			Graphics.SetViewport((Window.Width - width) / 2, (Window.Height - height) / 2, width, height);
+			Graphics.SetScissorTest((Window.Width - width) / 2, (Window.Height - height) / 2, width, height);
+
+			//// Dynamic Viewport
+			//width = Window.Width;
+			//height = Window.Height;
+			//Camera.AspectRatio = Window.AspectRatio;
+			//int scale = Math.Max(1, Math.Min(Window.Width / width, Window.Height / height));
+			//Graphics.SetViewport((Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, width * scale, height * scale);
+			//Graphics.SetScissorTest((Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, width * scale, height * scale);
+
 			// Clear the screen
 			//if (Input.Keyboard.Down(KeyCode.Space))
 			//	Graphics.Clear(1d);

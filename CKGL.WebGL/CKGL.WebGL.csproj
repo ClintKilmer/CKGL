@@ -248,6 +248,7 @@
     <Compile Include="src\Graphics\WebGL\WebGLShader.cs" />
     <Compile Include="src\Graphics\WebGL\WebGLVertexBuffer.cs" />
     <Compile Include="src\Platform\Platform.cs" />
+    <Compile Include="src\Platform\Window.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="bridge.json" />
