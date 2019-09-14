@@ -9,7 +9,7 @@ namespace CKGL
 
 		public static string Title { get => document.title; set => document.title = value; }
 
-		public static bool HighDPI { get; set; } = true; // WebGL only - can be toggled at runtime
+		public static bool HighDPI { get; set; } = false; // WebGL only - can be toggled at runtime
 
 		//public static void SetIcon(string file)
 		//{
