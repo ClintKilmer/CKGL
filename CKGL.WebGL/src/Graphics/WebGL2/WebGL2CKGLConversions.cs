@@ -210,27 +210,6 @@ namespace CKGL.WebGL2
 			}
 		}
 
-		//internal static WebGLBindings.PixelFormat ToWebGL2(this PixelFormat pixelFormat)
-		//{
-		//	switch (pixelFormat)
-		//	{
-		//		case PixelFormat.Depth:
-		//			return WebGLBindings.PixelFormat.Depth;
-		//		case PixelFormat.DepthStencil:
-		//			return WebGLBindings.PixelFormat.DepthStencil;
-		//		case PixelFormat.R:
-		//			return WebGLBindings.PixelFormat.R;
-		//		case PixelFormat.RG:
-		//			return WebGLBindings.PixelFormat.RG;
-		//		case PixelFormat.RGB:
-		//			return WebGLBindings.PixelFormat.RGB;
-		//		case PixelFormat.RGBA:
-		//			return WebGLBindings.PixelFormat.RGBA;
-		//		default:
-		//			throw new IllegalValueException(typeof(PixelFormat), pixelFormat);
-		//	}
-		//}
-
 		internal static double ToWebGL2(this PrimitiveTopology primitiveTopology)
 		{
 			switch (primitiveTopology)
@@ -253,29 +232,6 @@ namespace CKGL.WebGL2
 					throw new IllegalValueException(typeof(PrimitiveTopology), primitiveTopology);
 			}
 		}
-
-		//internal static WebGLBindings.TexImageTarget ToWebGL2(this TexImageTarget texImageTarget)
-		//{
-		//	switch (texImageTarget)
-		//	{
-		//		case TexImageTarget.Texture2D:
-		//			return WebGLBindings.TexImageTarget.Texture2D;
-		//		case TexImageTarget.TextureCubeMapPosX:
-		//			return WebGLBindings.TexImageTarget.TextureCubeMapPosX;
-		//		case TexImageTarget.TextureCubeMapNegX:
-		//			return WebGLBindings.TexImageTarget.TextureCubeMapNegX;
-		//		case TexImageTarget.TextureCubeMapPosY:
-		//			return WebGLBindings.TexImageTarget.TextureCubeMapPosY;
-		//		case TexImageTarget.TextureCubeMapNegY:
-		//			return WebGLBindings.TexImageTarget.TextureCubeMapNegY;
-		//		case TexImageTarget.TextureCubeMapPosZ:
-		//			return WebGLBindings.TexImageTarget.TextureCubeMapPosZ;
-		//		case TexImageTarget.TextureCubeMapNegZ:
-		//			return WebGLBindings.TexImageTarget.TextureCubeMapNegZ;
-		//		default:
-		//			throw new IllegalValueException(typeof(TexImageTarget), texImageTarget);
-		//	}
-		//}
 
 		//internal static WebGLBindings.TextureAttachment ToWebGL2(this TextureAttachment textureAttachment)
 		//{
@@ -347,113 +303,26 @@ namespace CKGL.WebGL2
 		//{
 		//	switch (textureFormat)
 		//	{
-		//		// Depth textures
-		//		case TextureFormat.Depth:
-		//			return WebGLBindings.TextureFormat.Depth;
+		//		case TextureFormat.R8:
+		//			return WebGLBindings.TextureFormat.R8;
+		//		case TextureFormat.RG8:
+		//			return WebGLBindings.TextureFormat.RG8;
+		//		case TextureFormat.RGB8:
+		//			return WebGLBindings.TextureFormat.RGB8;
+		//		case TextureFormat.RGBA8:
+		//			return WebGLBindings.TextureFormat.RGBA8;
 		//		case TextureFormat.Depth16:
 		//			return WebGLBindings.TextureFormat.Depth16;
 		//		case TextureFormat.Depth24:
 		//			return WebGLBindings.TextureFormat.Depth24;
-		//		case TextureFormat.Depth32:
-		//			return WebGLBindings.TextureFormat.Depth32;
 		//		case TextureFormat.Depth32F:
 		//			return WebGLBindings.TextureFormat.Depth32F;
-
-		//		// Depth/Stencil textures
-		//		case TextureFormat.DepthStencil:
-		//			return WebGLBindings.TextureFormat.DepthStencil;
 		//		case TextureFormat.Depth24Stencil8:
 		//			return WebGLBindings.TextureFormat.Depth24Stencil8;
-
-		//		// R textures
-		//		case TextureFormat.R:
-		//			return WebGLBindings.TextureFormat.R;
-		//		case TextureFormat.R8:
-		//			return WebGLBindings.TextureFormat.R8;
-
-		//		// RG textures
-		//		case TextureFormat.RG:
-		//			return WebGLBindings.TextureFormat.RG;
-		//		case TextureFormat.RG8:
-		//			return WebGLBindings.TextureFormat.RG8;
-
-		//		// RGB textures
-		//		case TextureFormat.RGB:
-		//			return WebGLBindings.TextureFormat.RGB;
-		//		case TextureFormat.RGB8:
-		//			return WebGLBindings.TextureFormat.RGB8;
-
-		//		// RGBA textures
-		//		case TextureFormat.RGBA:
-		//			return WebGLBindings.TextureFormat.RGBA;
-		//		case TextureFormat.RGBA8:
-		//			return WebGLBindings.TextureFormat.RGBA8;
+		//		case TextureFormat.Depth32FStencil8:
+		//			return WebGLBindings.TextureFormat.Depth32FStencil8;
 		//		default:
 		//			throw new IllegalValueException(typeof(TextureFormat), textureFormat);
-		//	}
-		//}
-
-		//internal static WebGLBindings.TextureParam ToWebGL2(this TextureParam textureParam)
-		//{
-		//	switch (textureParam)
-		//	{
-		//		case TextureParam.BaseLevel:
-		//			return WebGLBindings.TextureParam.BaseLevel;
-		//		case TextureParam.CompareFunc:
-		//			return WebGLBindings.TextureParam.CompareFunc;
-		//		case TextureParam.CompareMode:
-		//			return WebGLBindings.TextureParam.CompareMode;
-		//		case TextureParam.MinFilter:
-		//			return WebGLBindings.TextureParam.MinFilter;
-		//		case TextureParam.MagFilter:
-		//			return WebGLBindings.TextureParam.MagFilter;
-		//		case TextureParam.MinLOD:
-		//			return WebGLBindings.TextureParam.MinLOD;
-		//		case TextureParam.MaxLOD:
-		//			return WebGLBindings.TextureParam.MaxLOD;
-		//		case TextureParam.MaxLevel:
-		//			return WebGLBindings.TextureParam.MaxLevel;
-		//		case TextureParam.SwizzleR:
-		//			return WebGLBindings.TextureParam.SwizzleR;
-		//		case TextureParam.SwizzleG:
-		//			return WebGLBindings.TextureParam.SwizzleG;
-		//		case TextureParam.SwizzleB:
-		//			return WebGLBindings.TextureParam.SwizzleB;
-		//		case TextureParam.SwizzleA:
-		//			return WebGLBindings.TextureParam.SwizzleA;
-		//		case TextureParam.WrapS:
-		//			return WebGLBindings.TextureParam.WrapS;
-		//		case TextureParam.WrapT:
-		//			return WebGLBindings.TextureParam.WrapT;
-		//		case TextureParam.WrapR:
-		//			return WebGLBindings.TextureParam.WrapR;
-		//		//case TextureParam.DepthTextureMode:
-		//		//	return WebGLBindings.TextureParam.DepthTextureMode;
-		//		default:
-		//			throw new IllegalValueException(typeof(TextureParam), textureParam);
-		//	}
-		//}
-
-		//internal static WebGLBindings.TextureTarget ToWebGL2(this TextureTarget textureTarget)
-		//{
-		//	switch (textureTarget)
-		//	{
-		//		//case TextureTarget.Texture1D:
-		//		//	return WebGLBindings.TextureTarget.Texture1D;
-		//		case TextureTarget.Texture2D:
-		//			return WebGLBindings.TextureTarget.Texture2D;
-		//		case TextureTarget.Texture2DMultisample:
-		//			return WebGLBindings.TextureTarget.Texture2DMultisample;
-		//		case TextureTarget.Texture3D:
-		//			return WebGLBindings.TextureTarget.Texture3D;
-		//		//case TextureTarget.Texture1DArray:
-		//		//	return WebGLBindings.TextureTarget.Texture1DArray;
-		//		case TextureTarget.Texture2DArray:
-		//			return WebGLBindings.TextureTarget.Texture2DArray;
-		//		case TextureTarget.TextureCubeMap:
-		//			return WebGLBindings.TextureTarget.TextureCubeMap;
-		//		default:
-		//			throw new IllegalValueException(typeof(TextureTarget), textureTarget);
 		//	}
 		//}
 

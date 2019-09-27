@@ -50,7 +50,7 @@ namespace CKGLTest2D
 
 	public static class Textures
 	{
-		public static Texture2D Test = Texture2D.CreateFromFile("textures/Character1.png");
+		public static Texture Test = Texture.Create2DFromFile("textures/Character1.png");
 	}
 	#endregion
 
@@ -111,7 +111,7 @@ namespace CKGLTest2D
 
 			TransformTest transformTest = new TransformTest();
 
-			surface = new RenderTarget(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth);
+			surface = new RenderTarget(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth24);
 		}
 
 		public override void Update()

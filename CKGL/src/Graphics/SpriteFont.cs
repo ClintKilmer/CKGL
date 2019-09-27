@@ -40,7 +40,7 @@ namespace CKGL
 			glyphs = new Sprite[end + 1];
 
 			Platform.LoadImage(file, out int width, out int height, out byte[] imageData);
-			Colour[,] spriteData = Colour.ConvertBytesToColour2DArray(imageData, width, height);
+			Bitmap spriteData = new Bitmap(imageData, width, height);
 
 			for (int i = start; i <= end; i++)
 			{

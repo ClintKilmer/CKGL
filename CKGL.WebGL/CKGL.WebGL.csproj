@@ -91,17 +91,11 @@
     <Compile Include="..\CKGL\src\Graphics\Enums\IndexType.cs">
       <Link>src\Graphics\Enums\IndexType.cs</Link>
     </Compile>
-    <Compile Include="..\CKGL\src\Graphics\Enums\PixelFormat.cs">
-      <Link>src\Graphics\Enums\PixelFormat.cs</Link>
-    </Compile>
     <Compile Include="..\CKGL\src\Graphics\Enums\PolygonMode.cs">
       <Link>src\Graphics\Enums\PolygonMode.cs</Link>
     </Compile>
     <Compile Include="..\CKGL\src\Graphics\Enums\PrimitiveTopology.cs">
       <Link>src\Graphics\Enums\PrimitiveTopology.cs</Link>
-    </Compile>
-    <Compile Include="..\CKGL\src\Graphics\Enums\TexImageTarget.cs">
-      <Link>src\Graphics\Enums\TexImageTarget.cs</Link>
     </Compile>
     <Compile Include="..\CKGL\src\Graphics\Enums\TextureAttachment.cs">
       <Link>src\Graphics\Enums\TextureAttachment.cs</Link>
@@ -112,11 +106,8 @@
     <Compile Include="..\CKGL\src\Graphics\Enums\TextureFormat.cs">
       <Link>src\Graphics\Enums\TextureFormat.cs</Link>
     </Compile>
-    <Compile Include="..\CKGL\src\Graphics\Enums\TextureParam.cs">
-      <Link>src\Graphics\Enums\TextureParam.cs</Link>
-    </Compile>
-    <Compile Include="..\CKGL\src\Graphics\Enums\TextureTarget.cs">
-      <Link>src\Graphics\Enums\TextureTarget.cs</Link>
+    <Compile Include="..\CKGL\src\Graphics\Enums\TextureType.cs">
+      <Link>src\Graphics\Enums\TextureType.cs</Link>
     </Compile>
     <Compile Include="..\CKGL\src\Graphics\Enums\TextureWrap.cs">
       <Link>src\Graphics\Enums\TextureWrap.cs</Link>

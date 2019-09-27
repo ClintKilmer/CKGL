@@ -206,27 +206,6 @@ namespace CKGL.OpenGL
 			}
 		}
 
-		internal static OpenGLBindings.PixelFormat ToOpenGL(this PixelFormat pixelFormat)
-		{
-			switch (pixelFormat)
-			{
-				case PixelFormat.Depth:
-					return OpenGLBindings.PixelFormat.Depth;
-				case PixelFormat.DepthStencil:
-					return OpenGLBindings.PixelFormat.DepthStencil;
-				case PixelFormat.R:
-					return OpenGLBindings.PixelFormat.R;
-				case PixelFormat.RG:
-					return OpenGLBindings.PixelFormat.RG;
-				case PixelFormat.RGB:
-					return OpenGLBindings.PixelFormat.RGB;
-				case PixelFormat.RGBA:
-					return OpenGLBindings.PixelFormat.RGBA;
-				default:
-					throw new IllegalValueException(typeof(PixelFormat), pixelFormat);
-			}
-		}
-
 		internal static OpenGLBindings.PrimitiveMode ToOpenGL(this PrimitiveTopology primitiveTopology)
 		{
 			switch (primitiveTopology)
@@ -247,29 +226,6 @@ namespace CKGL.OpenGL
 					return OpenGLBindings.PrimitiveMode.TriangleFan;
 				default:
 					throw new IllegalValueException(typeof(PrimitiveTopology), primitiveTopology);
-			}
-		}
-
-		internal static OpenGLBindings.TexImageTarget ToOpenGL(this TexImageTarget texImageTarget)
-		{
-			switch (texImageTarget)
-			{
-				case TexImageTarget.Texture2D:
-					return OpenGLBindings.TexImageTarget.Texture2D;
-				case TexImageTarget.TextureCubeMapPosX:
-					return OpenGLBindings.TexImageTarget.TextureCubeMapPosX;
-				case TexImageTarget.TextureCubeMapNegX:
-					return OpenGLBindings.TexImageTarget.TextureCubeMapNegX;
-				case TexImageTarget.TextureCubeMapPosY:
-					return OpenGLBindings.TexImageTarget.TextureCubeMapPosY;
-				case TexImageTarget.TextureCubeMapNegY:
-					return OpenGLBindings.TexImageTarget.TextureCubeMapNegY;
-				case TexImageTarget.TextureCubeMapPosZ:
-					return OpenGLBindings.TexImageTarget.TextureCubeMapPosZ;
-				case TexImageTarget.TextureCubeMapNegZ:
-					return OpenGLBindings.TexImageTarget.TextureCubeMapNegZ;
-				default:
-					throw new IllegalValueException(typeof(TexImageTarget), texImageTarget);
 			}
 		}
 
@@ -343,113 +299,26 @@ namespace CKGL.OpenGL
 		{
 			switch (textureFormat)
 			{
-				// Depth textures
-				case TextureFormat.Depth:
-					return OpenGLBindings.TextureFormat.Depth;
+				case TextureFormat.R8:
+					return OpenGLBindings.TextureFormat.R8;
+				case TextureFormat.RG8:
+					return OpenGLBindings.TextureFormat.RG8;
+				case TextureFormat.RGB8:
+					return OpenGLBindings.TextureFormat.RGB8;
+				case TextureFormat.RGBA8:
+					return OpenGLBindings.TextureFormat.RGBA8;
 				case TextureFormat.Depth16:
 					return OpenGLBindings.TextureFormat.Depth16;
 				case TextureFormat.Depth24:
 					return OpenGLBindings.TextureFormat.Depth24;
-				case TextureFormat.Depth32:
-					return OpenGLBindings.TextureFormat.Depth32;
 				case TextureFormat.Depth32F:
 					return OpenGLBindings.TextureFormat.Depth32F;
-
-				// Depth/Stencil textures
-				case TextureFormat.DepthStencil:
-					return OpenGLBindings.TextureFormat.DepthStencil;
 				case TextureFormat.Depth24Stencil8:
 					return OpenGLBindings.TextureFormat.Depth24Stencil8;
-
-				// R textures
-				case TextureFormat.R:
-					return OpenGLBindings.TextureFormat.R;
-				case TextureFormat.R8:
-					return OpenGLBindings.TextureFormat.R8;
-
-				// RG textures
-				case TextureFormat.RG:
-					return OpenGLBindings.TextureFormat.RG;
-				case TextureFormat.RG8:
-					return OpenGLBindings.TextureFormat.RG8;
-
-				// RGB textures
-				case TextureFormat.RGB:
-					return OpenGLBindings.TextureFormat.RGB;
-				case TextureFormat.RGB8:
-					return OpenGLBindings.TextureFormat.RGB8;
-
-				// RGBA textures
-				case TextureFormat.RGBA:
-					return OpenGLBindings.TextureFormat.RGBA;
-				case TextureFormat.RGBA8:
-					return OpenGLBindings.TextureFormat.RGBA8;
+				case TextureFormat.Depth32FStencil8:
+					return OpenGLBindings.TextureFormat.Depth32FStencil8;
 				default:
 					throw new IllegalValueException(typeof(TextureFormat), textureFormat);
-			}
-		}
-
-		internal static OpenGLBindings.TextureParam ToOpenGL(this TextureParam textureParam)
-		{
-			switch (textureParam)
-			{
-				case TextureParam.BaseLevel:
-					return OpenGLBindings.TextureParam.BaseLevel;
-				case TextureParam.CompareFunc:
-					return OpenGLBindings.TextureParam.CompareFunc;
-				case TextureParam.CompareMode:
-					return OpenGLBindings.TextureParam.CompareMode;
-				case TextureParam.MinFilter:
-					return OpenGLBindings.TextureParam.MinFilter;
-				case TextureParam.MagFilter:
-					return OpenGLBindings.TextureParam.MagFilter;
-				case TextureParam.MinLOD:
-					return OpenGLBindings.TextureParam.MinLOD;
-				case TextureParam.MaxLOD:
-					return OpenGLBindings.TextureParam.MaxLOD;
-				case TextureParam.MaxLevel:
-					return OpenGLBindings.TextureParam.MaxLevel;
-				case TextureParam.SwizzleR:
-					return OpenGLBindings.TextureParam.SwizzleR;
-				case TextureParam.SwizzleG:
-					return OpenGLBindings.TextureParam.SwizzleG;
-				case TextureParam.SwizzleB:
-					return OpenGLBindings.TextureParam.SwizzleB;
-				case TextureParam.SwizzleA:
-					return OpenGLBindings.TextureParam.SwizzleA;
-				case TextureParam.WrapS:
-					return OpenGLBindings.TextureParam.WrapS;
-				case TextureParam.WrapT:
-					return OpenGLBindings.TextureParam.WrapT;
-				case TextureParam.WrapR:
-					return OpenGLBindings.TextureParam.WrapR;
-				//case TextureParam.DepthTextureMode:
-				//	return OpenGLBindings.TextureParam.DepthTextureMode;
-				default:
-					throw new IllegalValueException(typeof(TextureParam), textureParam);
-			}
-		}
-
-		internal static OpenGLBindings.TextureTarget ToOpenGL(this TextureTarget textureTarget)
-		{
-			switch (textureTarget)
-			{
-				//case TextureTarget.Texture1D:
-				//	return OpenGLBindings.TextureTarget.Texture1D;
-				case TextureTarget.Texture2D:
-					return OpenGLBindings.TextureTarget.Texture2D;
-				case TextureTarget.Texture2DMultisample:
-					return OpenGLBindings.TextureTarget.Texture2DMultisample;
-				case TextureTarget.Texture3D:
-					return OpenGLBindings.TextureTarget.Texture3D;
-				//case TextureTarget.Texture1DArray:
-				//	return OpenGLBindings.TextureTarget.Texture1DArray;
-				case TextureTarget.Texture2DArray:
-					return OpenGLBindings.TextureTarget.Texture2DArray;
-				case TextureTarget.TextureCubeMap:
-					return OpenGLBindings.TextureTarget.TextureCubeMap;
-				default:
-					throw new IllegalValueException(typeof(TextureTarget), textureTarget);
 			}
 		}
 

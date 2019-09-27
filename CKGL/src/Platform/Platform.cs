@@ -719,7 +719,7 @@ namespace CKGL
 				SDL_Surface* surface = (SDL_Surface*)surfaceID;
 				width = surface->w;
 				height = surface->h;
-				data = new byte[width * height * PixelFormat.RGBA.Components()];
+				data = new byte[width * height * 4];
 				Marshal.Copy(surface->pixels, data, 0, data.Length);
 			}
 
@@ -736,7 +736,7 @@ namespace CKGL
 				}
 			}
 
-			data = FlipImageData(width, height, PixelFormat.RGBA, data);
+			data = FlipImageData(width, height, 4, data);
 		}
 
 		private static unsafe IntPtr ConvertSurfaceFormat(IntPtr surface)
@@ -760,14 +760,14 @@ namespace CKGL
 
 		public static void SavePNG(string file, int destinationWidth, int destinationHeight, int sourceWidth, int sourceHeight, byte[] data)
 		{
-			IntPtr surface = GetScaledSurface(FlipImageData(sourceWidth, sourceHeight, PixelFormat.RGBA, data), sourceWidth, sourceHeight, destinationWidth, destinationHeight);
+			IntPtr surface = GetScaledSurface(FlipImageData(sourceWidth, sourceHeight, 4, data), sourceWidth, sourceHeight, destinationWidth, destinationHeight);
 			SDL_image.IMG_SavePNG(surface, file);
 			SDL_FreeSurface(surface);
 		}
 
 		public static void SaveJPG(string file, int destinationWidth, int destinationHeight, int sourceWidth, int sourceHeight, byte[] data)
 		{
-			IntPtr surface = GetScaledSurface(FlipImageData(sourceWidth, sourceHeight, PixelFormat.RGBA, data), sourceWidth, sourceHeight, destinationWidth, destinationHeight);
+			IntPtr surface = GetScaledSurface(FlipImageData(sourceWidth, sourceHeight, 4, data), sourceWidth, sourceHeight, destinationWidth, destinationHeight);
 
 			//FIXME: Hack for Bugzilla #3972
 			IntPtr temp = SDL_ConvertSurfaceFormat(surface, SDL_PIXELFORMAT_RGB24, 0);
@@ -778,20 +778,25 @@ namespace CKGL
 			SDL_FreeSurface(surface);
 		}
 
-		private static byte[] FlipImageData(int width, int height, PixelFormat pixelFormat, byte[] data)
+		private static byte[] FlipImageData(int width, int height, int components, byte[] data)
 		{
-			byte[] result = new byte[data.Length];
-
-			int stride = width * pixelFormat.Components();
-			for (int y = 0; y < height; y++)
+			if (GraphicsBackend == GraphicsBackend.OpenGL || GraphicsBackend == GraphicsBackend.OpenGLES || GraphicsBackend == GraphicsBackend.WebGL || GraphicsBackend == GraphicsBackend.WebGL2)
 			{
-				for (int x = 0; x < stride; x++)
+				byte[] result = new byte[data.Length];
+
+				int stride = width * components;
+				for (int y = 0; y < height; y++)
 				{
-					result[x + y * stride] = data[x + (height - y - 1) * stride];
+					for (int x = 0; x < stride; x++)
+					{
+						result[x + y * stride] = data[x + (height - y - 1) * stride];
+					}
 				}
+
+				return result;
 			}
 
-			return result;
+			return data;
 		}
 
 		private static IntPtr GetScaledSurface(byte[] data, int srcW, int srcH, int dstW, int dstH)

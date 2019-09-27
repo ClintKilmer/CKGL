@@ -377,7 +377,7 @@ void main()
 
 	public static class Textures
 	{
-		public static Texture2D Test = Texture2D.CreateFromFile("textures/Character1.png");
+		public static Texture Test = Texture.Create2DFromFile("textures/Character1.png");
 	}
 	#endregion
 
@@ -449,7 +449,7 @@ void main()
 			//SpriteSheets.SpriteSheet.Texture.SavePNG($@"{System.IO.Directory.GetCurrentDirectory()}/SpriteSheet.png");
 			//SpriteSheets.SpriteSheet.Texture.SavePNG("SpriteSheet.png");
 
-			surface = new RenderTarget(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth);
+			surface = new RenderTarget(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth24);
 		}
 
 		public override void Update()

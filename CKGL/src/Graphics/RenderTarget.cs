@@ -101,8 +101,8 @@ namespace CKGL
 		{
 			get { return Width / (float)Height; }
 		}
-		public Texture2D[] textures;
-		public Texture2D depthTexture;
+		public Texture[] textures;
+		public Texture depthTexture;
 
 		private GLuint id;
 
@@ -114,13 +114,13 @@ namespace CKGL
 
 		public RenderTarget(int width, int height, GLint colourTextures, TextureFormat textureColourFormat, TextureFormat textureDepthFormat) : this(width, height, colourTextures, textureColourFormat)
 		{
-			if (!(textureDepthFormat.PixelFormat() == PixelFormat.Depth || textureDepthFormat.PixelFormat() == PixelFormat.DepthStencil))
+			if (!(textureDepthFormat.ToOpenGL().PixelFormat() == PixelFormat.Depth || textureDepthFormat.ToOpenGL().PixelFormat() == PixelFormat.DepthStencil))
 				throw new Exception("textureDepthFormat is not a depth(stencil) texture.");
 
 			Bind();
 
-			depthTexture = new Texture2D(Width, Height, textureDepthFormat);
-			GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, textureDepthFormat.ToOpenGL().TextureAttachment(), depthTexture.DataTarget.ToOpenGL(), depthTexture.ID, 0);
+			depthTexture = Texture.Create2D(Width, Height, textureDepthFormat);
+			GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, textureDepthFormat.ToOpenGL().TextureAttachment(), (depthTexture as OpenGLTexture).TextureTarget, (depthTexture as OpenGLTexture).ID, 0);
 			CheckStatus();
 		}
 		public RenderTarget(int width, int height, GLint colourTextures, TextureFormat textureColourFormat)
@@ -129,7 +129,7 @@ namespace CKGL
 				throw new Exception("Must have at least 1 colour texture.");
 			if (colourTextures > GL.MaxColourAttachments || colourTextures > GL.MaxDrawBuffers)
 				throw new Exception("Too many colour textures.");
-			if (textureColourFormat.PixelFormat() == PixelFormat.Depth || textureColourFormat.PixelFormat() == PixelFormat.DepthStencil)
+			if (textureColourFormat.ToOpenGL().PixelFormat() == PixelFormat.Depth || textureColourFormat.ToOpenGL().PixelFormat() == PixelFormat.DepthStencil)
 				throw new Exception("textureColourFormat cannot be a depth(stencil) texture.");
 
 			this.width = width;
@@ -142,13 +142,13 @@ namespace CKGL
 
 			Bind();
 
-			textures = new Texture2D[colourTextures];
+			textures = new Texture[colourTextures];
 			DrawBuffer[] drawBuffers = new DrawBuffer[colourTextures];
 			for (int i = 0; i < colourTextures; i++)
 			{
-				textures[i] = new Texture2D(Width, Height, textureColourFormat);
+				textures[i] = Texture.Create2D(Width, Height, textureColourFormat);
 				drawBuffers[i] = (DrawBuffer)((GLuint)DrawBuffer.Colour0 + i);
-				GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, ((TextureAttachment)((uint)TextureAttachment.Colour0 + i)).ToOpenGL(), textures[i].DataTarget.ToOpenGL(), textures[i].ID, 0);
+				GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, ((TextureAttachment)((uint)TextureAttachment.Colour0 + i)).ToOpenGL(), (textures[i] as OpenGLTexture).TextureTarget, (textures[i] as OpenGLTexture).ID, 0);
 				CheckStatus();
 			}
 			GL.DrawBuffers(colourTextures, drawBuffers);

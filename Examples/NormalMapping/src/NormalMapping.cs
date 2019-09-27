@@ -250,7 +250,7 @@ void main()
 
 	public static class Textures
 	{
-		//public static Texture2D UVTest = Texture2D.CreateFromFile("textures/UVTest.png", TextureFilter.Nearest, TextureWrap.Repeat);
+		//public static Texture UVTest = Texture.Create2DFromFile("textures/UVTest.png", TextureFormat.RGBA8, TextureFilter.Nearest, TextureWrap.Repeat);
 	}
 	#endregion
 
@@ -391,7 +391,7 @@ void main()
 			Camera.zNear = 0.1f;
 			Camera.zFar = 150f;
 
-			surface = new RenderTarget(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth);
+			surface = new RenderTarget(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth24);
 
 			vertexFormat = new VertexFormat(
 				4,                                                    // Pack
@@ -700,7 +700,7 @@ void main()
 			surface.Destroy();
 			width = Window.Width;
 			height = Window.Height;
-			surface = new RenderTarget(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth);
+			surface = new RenderTarget(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth24);
 
 			Camera.AspectRatio = surface.AspectRatio;
 			//Camera.AspectRatio = Window.AspectRatio;

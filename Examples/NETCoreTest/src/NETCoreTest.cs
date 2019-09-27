@@ -88,7 +88,7 @@ namespace NETCoreTest
 			Camera.zNear = 0.1f;
 			Camera.zFar = 150f;
 
-			surface = new RenderTarget(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth);
+			surface = new RenderTarget(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth24);
 		}
 
 		public override void Update()

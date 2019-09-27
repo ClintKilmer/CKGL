@@ -1278,18 +1278,13 @@ namespace CKGL.OpenGLBindings
 
 	public enum TextureTarget : GLuint
 	{
-		//Texture1D = GL_TEXTURE_1D, // Not available in ES
+		Texture1D = GL_TEXTURE_1D, // Not available in ES
 		Texture2D = GL_TEXTURE_2D,
 		Texture2DMultisample = GL_TEXTURE_2D_MULTISAMPLE,
 		Texture3D = GL_TEXTURE_3D,
-		//Texture1DArray = GL_TEXTURE_1D_ARRAY, // Not available in ES
+		Texture1DArray = GL_TEXTURE_1D_ARRAY, // Not available in ES
 		Texture2DArray = GL_TEXTURE_2D_ARRAY,
-		TextureCubeMap = GL_TEXTURE_CUBE_MAP
-	}
-
-	public enum TexImageTarget : GLuint
-	{
-		Texture2D = GL_TEXTURE_2D,
+		TextureCubeMap = GL_TEXTURE_CUBE_MAP,
 		TextureCubeMapPosX = GL_TEXTURE_CUBE_MAP_POSITIVE_X,
 		TextureCubeMapNegX = GL_TEXTURE_CUBE_MAP_NEGATIVE_X,
 		TextureCubeMapPosY = GL_TEXTURE_CUBE_MAP_POSITIVE_Y,
@@ -1300,17 +1295,6 @@ namespace CKGL.OpenGLBindings
 
 	public enum TextureFormat : GLuint
 	{
-		// Depth textures
-		Depth = GL_DEPTH_COMPONENT,
-		Depth16 = GL_DEPTH_COMPONENT16,
-		Depth24 = GL_DEPTH_COMPONENT24,
-		Depth32 = GL_DEPTH_COMPONENT32,
-		Depth32F = GL_DEPTH_COMPONENT32F,
-
-		// Depth/Stencil textures
-		DepthStencil = GL_DEPTH_STENCIL,
-		Depth24Stencil8 = GL_DEPTH24_STENCIL8,
-
 		// Red textures
 		R = GL_RED,
 		R8 = GL_R8,
@@ -1369,93 +1353,122 @@ namespace CKGL.OpenGLBindings
 		RGBA4 = GL_RGBA4,
 		RGB5A1 = GL_RGB5_A1,
 		RGB10A2 = GL_RGB10_A2,
-		RGB10A2UI = GL_RGB10_A2UI
+		RGB10A2UI = GL_RGB10_A2UI,
+
+		// Depth textures
+		Depth = GL_DEPTH_COMPONENT,
+		Depth16 = GL_DEPTH_COMPONENT16,
+		Depth24 = GL_DEPTH_COMPONENT24,
+		Depth32 = GL_DEPTH_COMPONENT32,
+		Depth32F = GL_DEPTH_COMPONENT32F,
+
+		// Depth/Stencil textures
+		DepthStencil = GL_DEPTH_STENCIL,
+		Depth24Stencil8 = GL_DEPTH24_STENCIL8,
+		Depth32FStencil8 = GL_DEPTH32F_STENCIL8
 	}
 	#region TextureFormat Extensions
 	public static class TextureFormatExt
 	{
-		public static int Size(this TextureFormat textureFormat)
-		{
-			switch (textureFormat)
-			{
-				case TextureFormat.RGBA8:
-					return 8;
-				default:
-					throw new NotImplementedException("Unexpected value from TextureFormat");
-			}
-		}
-
 		public static PixelFormat PixelFormat(this TextureFormat textureFormat)
 		{
 			switch (textureFormat)
 			{
-				case TextureFormat.Depth:
+				//case TextureFormat.R:
+				case TextureFormat.R8:
+					//case TextureFormat.R8SNorm:
+					//case TextureFormat.R8I:
+					//case TextureFormat.R8UI:
+					//case TextureFormat.R16I:
+					//case TextureFormat.R16UI:
+					//case TextureFormat.R16F:
+					//case TextureFormat.R32I:
+					//case TextureFormat.R32UI:
+					//case TextureFormat.R32F:
+					return OpenGLBindings.PixelFormat.R;
+				//case TextureFormat.RG:
+				case TextureFormat.RG8:
+					//case TextureFormat.RG8SNorm:
+					//case TextureFormat.RG8I:
+					//case TextureFormat.RG8UI:
+					//case TextureFormat.RG16I:
+					//case TextureFormat.RG16UI:
+					//case TextureFormat.RG16F:
+					//case TextureFormat.RG32I:
+					//case TextureFormat.RG32UI:
+					//case TextureFormat.RG32F:
+					return OpenGLBindings.PixelFormat.RG;
+				//case TextureFormat.RGB:
+				case TextureFormat.RGB8:
+					//case TextureFormat.RGB8SNorm:
+					//case TextureFormat.RGB8I:
+					//case TextureFormat.RGB8UI:
+					//case TextureFormat.RGB16I:
+					//case TextureFormat.RGB16UI:
+					//case TextureFormat.RGB16F:
+					//case TextureFormat.RGB32I:
+					//case TextureFormat.RGB32UI:
+					//case TextureFormat.RGB32F:
+					//case TextureFormat.R3G3B2:
+					//case TextureFormat.R5G6B5:
+					//case TextureFormat.R11G11B10F:
+					return OpenGLBindings.PixelFormat.RGB;
+				//case TextureFormat.RGBA:
+				case TextureFormat.RGBA8:
+					//case TextureFormat.RGBA8SNorm:
+					//case TextureFormat.RGBA16F:
+					//case TextureFormat.RGBA32F:
+					//case TextureFormat.RGBA8I:
+					//case TextureFormat.RGBA8UI:
+					//case TextureFormat.RGBA16I:
+					//case TextureFormat.RGBA16UI:
+					//case TextureFormat.RGBA32I:
+					//case TextureFormat.RGBA32UI:
+					//case TextureFormat.RGBA2:
+					//case TextureFormat.RGBA4:
+					//case TextureFormat.RGB5A1:
+					//case TextureFormat.RGB10A2:
+					//case TextureFormat.RGB10A2UI:
+					return OpenGLBindings.PixelFormat.RGBA;
+				//case TextureFormat.Depth:
 				case TextureFormat.Depth16:
 				case TextureFormat.Depth24:
-				case TextureFormat.Depth32:
+				//case TextureFormat.Depth32:
 				case TextureFormat.Depth32F:
 					return OpenGLBindings.PixelFormat.Depth;
-				case TextureFormat.DepthStencil:
+				//case TextureFormat.DepthStencil:
 				case TextureFormat.Depth24Stencil8:
+				case TextureFormat.Depth32FStencil8:
 					return OpenGLBindings.PixelFormat.DepthStencil;
-				case TextureFormat.R:
-				case TextureFormat.R8:
-				case TextureFormat.R8SNorm:
-				case TextureFormat.R8I:
-				case TextureFormat.R8UI:
-				case TextureFormat.R16I:
-				case TextureFormat.R16UI:
-				case TextureFormat.R16F:
-				case TextureFormat.R32I:
-				case TextureFormat.R32UI:
-				case TextureFormat.R32F:
-					return OpenGLBindings.PixelFormat.R;
-				case TextureFormat.RG:
-				case TextureFormat.RG8:
-				case TextureFormat.RG8SNorm:
-				case TextureFormat.RG8I:
-				case TextureFormat.RG8UI:
-				case TextureFormat.RG16I:
-				case TextureFormat.RG16UI:
-				case TextureFormat.RG16F:
-				case TextureFormat.RG32I:
-				case TextureFormat.RG32UI:
-				case TextureFormat.RG32F:
-					return OpenGLBindings.PixelFormat.RG;
-				case TextureFormat.RGB:
-				case TextureFormat.RGB8:
-				case TextureFormat.RGB8SNorm:
-				case TextureFormat.RGB8I:
-				case TextureFormat.RGB8UI:
-				case TextureFormat.RGB16I:
-				case TextureFormat.RGB16UI:
-				case TextureFormat.RGB16F:
-				case TextureFormat.RGB32I:
-				case TextureFormat.RGB32UI:
-				case TextureFormat.RGB32F:
-				case TextureFormat.R3G3B2:
-				case TextureFormat.R5G6B5:
-				case TextureFormat.R11G11B10F:
-					return OpenGLBindings.PixelFormat.RGB;
-				case TextureFormat.RGBA:
-				case TextureFormat.RGBA8:
-				case TextureFormat.RGBA8SNorm:
-				case TextureFormat.RGBA16F:
-				case TextureFormat.RGBA32F:
-				case TextureFormat.RGBA8I:
-				case TextureFormat.RGBA8UI:
-				case TextureFormat.RGBA16I:
-				case TextureFormat.RGBA16UI:
-				case TextureFormat.RGBA32I:
-				case TextureFormat.RGBA32UI:
-				case TextureFormat.RGBA2:
-				case TextureFormat.RGBA4:
-				case TextureFormat.RGB5A1:
-				case TextureFormat.RGB10A2:
-				case TextureFormat.RGB10A2UI:
-					return OpenGLBindings.PixelFormat.RGBA;
 				default:
-					throw new Exception("Unexpected pixel format.");
+					throw new IllegalValueException(typeof(TextureFormat), textureFormat);
+			}
+		}
+
+		public static PixelType PixelType(this TextureFormat textureFormat)
+		{
+			switch (textureFormat)
+			{
+				case TextureFormat.R8:
+					return OpenGLBindings.PixelType.UnsignedByte;
+				case TextureFormat.RG8:
+					return OpenGLBindings.PixelType.UnsignedByte;
+				case TextureFormat.RGB8:
+					return OpenGLBindings.PixelType.UnsignedByte;
+				case TextureFormat.RGBA8:
+					return OpenGLBindings.PixelType.UnsignedByte;
+				case TextureFormat.Depth16:
+					return OpenGLBindings.PixelType.UnsignedShort;
+				case TextureFormat.Depth24:
+					return OpenGLBindings.PixelType.UnsignedInt;
+				case TextureFormat.Depth32F:
+					return OpenGLBindings.PixelType.Float;
+				case TextureFormat.Depth24Stencil8:
+					return OpenGLBindings.PixelType.UnsignedInt_24_8;
+				case TextureFormat.Depth32FStencil8:
+					return OpenGLBindings.PixelType.Float_32_UnsignedInt_24_8_REV;
+				default:
+					throw new IllegalValueException(typeof(TextureFormat), textureFormat);
 			}
 		}
 
@@ -1463,17 +1476,18 @@ namespace CKGL.OpenGLBindings
 		{
 			switch (textureFormat)
 			{
-				case TextureFormat.Depth:
+				//case TextureFormat.Depth:
 				case TextureFormat.Depth16:
 				case TextureFormat.Depth24:
-				case TextureFormat.Depth32:
+				//case TextureFormat.Depth32:
 				case TextureFormat.Depth32F:
 					return OpenGLBindings.TextureAttachment.Depth;
-				case TextureFormat.DepthStencil:
+				//case TextureFormat.DepthStencil:
 				case TextureFormat.Depth24Stencil8:
+				case TextureFormat.Depth32FStencil8:
 					return OpenGLBindings.TextureAttachment.DepthStencil;
 				default:
-					throw new Exception("Unexpected texture attachment format.");
+					throw new IllegalValueException(typeof(TextureFormat), textureFormat);
 			}
 		}
 	}
@@ -1481,12 +1495,12 @@ namespace CKGL.OpenGLBindings
 
 	public enum PixelFormat : GLuint
 	{
-		Depth = GL_DEPTH_COMPONENT,
-		DepthStencil = GL_DEPTH_STENCIL,
 		R = GL_RED,
 		RG = GL_RG,
 		RGB = GL_RGB,
-		RGBA = GL_RGBA
+		RGBA = GL_RGBA,
+		Depth = GL_DEPTH_COMPONENT,
+		DepthStencil = GL_DEPTH_STENCIL
 	}
 	#region PixelFormat Extensions
 	public static class PixelFormatExt
@@ -1495,10 +1509,6 @@ namespace CKGL.OpenGLBindings
 		{
 			switch (pixelFormat)
 			{
-				case PixelFormat.Depth:
-					return 1;
-				case PixelFormat.DepthStencil:
-					return 2;
 				case PixelFormat.R:
 					return 1;
 				case PixelFormat.RG:
@@ -1507,8 +1517,57 @@ namespace CKGL.OpenGLBindings
 					return 3;
 				case PixelFormat.RGBA:
 					return 4;
+				case PixelFormat.Depth:
+					return 1;
+				case PixelFormat.DepthStencil:
+					return 2;
 				default:
-					throw new NotImplementedException();
+					throw new IllegalValueException(typeof(PixelFormat), pixelFormat);
+			}
+		}
+	}
+	#endregion
+
+	public enum PixelType : GLuint
+	{
+		//Byte = GL_BYTE,
+		UnsignedByte = GL_UNSIGNED_BYTE,
+		//Short = GL_SHORT,
+		UnsignedShort = GL_UNSIGNED_SHORT,
+		//Int = GL_INT,
+		UnsignedInt = GL_UNSIGNED_INT,
+		//HalfFloat = GL_HALF_FLOAT,
+		Float = GL_FLOAT,
+		//UnsignedShort_5_6_5 = GL_UNSIGNED_SHORT_5_6_5,
+		//UnsignedShort_4_4_4_4 = GL_UNSIGNED_SHORT_4_4_4_4,
+		//UnsignedShort_5_5_5_1 = GL_UNSIGNED_SHORT_5_5_5_1,
+		//UnsignedInt_2_10_10_10_REV = GL_UNSIGNED_INT_2_10_10_10_REV,
+		//UnsignedInt_10F_11F_11F_REV = GL_UNSIGNED_INT_10F_11F_11F_REV,
+		//UnsignedInt_5_9_9_9_REV = GL_UNSIGNED_INT_5_9_9_9_REV,
+		UnsignedInt_24_8 = GL_UNSIGNED_INT_24_8,
+		Float_32_UnsignedInt_24_8_REV = GL_FLOAT_32_UNSIGNED_INT_24_8_REV
+	}
+	#region PixelType Extensions
+	public static class PixelTypeExt
+	{
+		public static int Size(this PixelType PixelType)
+		{
+			switch (PixelType)
+			{
+				case PixelType.UnsignedByte:
+					return 1;
+				case PixelType.UnsignedShort:
+					return 2;
+				case PixelType.UnsignedInt:
+					return 4;
+				case PixelType.Float:
+					return 4;
+				case PixelType.UnsignedInt_24_8:
+					return 4;
+				case PixelType.Float_32_UnsignedInt_24_8_REV:
+					return 5;
+				default:
+					throw new IllegalValueException(typeof(PixelType), PixelType);
 			}
 		}
 	}
@@ -2468,8 +2527,8 @@ namespace CKGL.OpenGLBindings
 		[Shared]
 		private static _glTexImage2D glTexImage2D;
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-		private delegate void _glTexImage2D(TexImageTarget target, GLint level, GLint internalFormat, GLint width, GLint height, GLint border, PixelFormat format, DataType type, IntPtr data);
-		public static void TexImage2D(TexImageTarget target, int level, TextureFormat internalFormat, int width, int height, int border, PixelFormat format, DataType type, IntPtr data)
+		private unsafe delegate void _glTexImage2D(TextureTarget target, GLint level, GLint internalFormat, GLint width, GLint height, GLint border, PixelFormat format, PixelType type, void* data);
+		public unsafe static void TexImage2D(TextureTarget target, int level, TextureFormat internalFormat, int width, int height, int border, PixelFormat format, PixelType type, void* data)
 		{
 			glTexImage2D(target, level, (int)internalFormat, width, height, border, format, type, data);
 			CheckError();
@@ -2499,8 +2558,8 @@ namespace CKGL.OpenGLBindings
 		[DesktopES]
 		private static _glGetTexImage glGetTexImage;
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-		private delegate void _glGetTexImage(TexImageTarget target, GLint level, PixelFormat format, DataType type, IntPtr data);
-		public static void GetTexImage(TexImageTarget target, int level, PixelFormat format, DataType type, IntPtr data)
+		private unsafe delegate void _glGetTexImage(TextureTarget target, GLint level, PixelFormat format, PixelType type, void* data);
+		public unsafe static void GetTexImage(TextureTarget target, int level, PixelFormat format, PixelType type, void* data)
 		{
 			if (glGetTexImage != null)
 			{
@@ -2657,10 +2716,10 @@ namespace CKGL.OpenGLBindings
 		[Shared]
 		private static _glFramebufferTexture2D glFramebufferTexture2D;
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-		private delegate void _glFramebufferTexture2D(FramebufferTarget target, TextureAttachment attachment, TexImageTarget textarget, GLuint texture, GLint level);
-		public static void FramebufferTexture2D(FramebufferTarget target, TextureAttachment attachment, TexImageTarget textarget, uint texture, int level)
+		private delegate void _glFramebufferTexture2D(FramebufferTarget target, TextureAttachment attachment, TextureTarget textarget, GLuint texture, GLint level);
+		public static void FramebufferTexture2D(FramebufferTarget target, TextureAttachment attachment, TextureTarget textarget, uint texture, int level)
 		{
-			if (attachment != TextureAttachment.Depth)
+			if (attachment != TextureAttachment.Depth && attachment != TextureAttachment.DepthStencil)
 			{
 				uint texn = (uint)attachment - (uint)TextureAttachment.Colour0;
 				if (texn >= MaxColourAttachments)
