@@ -10,7 +10,6 @@ namespace CKGL
 		private Vector2 scale = Vector2.One;
 		private Vector2 shear = Vector2.Zero;
 		private Matrix2D matrix;
-		private Vector2 globalPosition;
 		private bool dirty = true;
 
 		public Transform2D Parent
@@ -228,18 +227,7 @@ namespace CKGL
 			}
 		}
 
-		public Vector3 GlobalPosition
-		{
-			get
-			{
-				if (dirty)
-				{
-					globalPosition = position * Matrix;
-				}
-
-				return globalPosition;
-			}
-		}
+		public Vector3 GlobalPosition => position * Matrix;
 
 		public bool IsAncestorOf(Transform2D t)
 		{

@@ -10,7 +10,6 @@ namespace CKGL
 		private Vector3 scale = Vector3.One;
 		private Shear3D shear = Shear3D.Identity;
 		private Matrix matrix;
-		private Vector3 globalPosition;
 		private bool dirty = true;
 
 		public Transform Parent
@@ -241,18 +240,7 @@ namespace CKGL
 			}
 		}
 
-		public Vector3 GlobalPosition
-		{
-			get
-			{
-				if (dirty)
-				{
-					globalPosition = position * Matrix;
-				}
-
-				return globalPosition;
-			}
-		}
+		public Vector3 GlobalPosition => position * Matrix;
 
 		public bool IsAncestorOf(Transform t)
 		{
