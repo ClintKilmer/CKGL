@@ -9,6 +9,8 @@ namespace CKGL
 	public static class Platform
 	{
 		internal static HTMLCanvasElement Canvas;
+		internal static WebGLRenderingContext WebGLContext;
+		internal static Retyped.webgl2.WebGL2RenderingContext WebGL2Context;
 
 #if false // Temporary
 		#region Events
@@ -261,15 +263,28 @@ namespace CKGL
 			// Window
 			Window.Init(windowTitle, windowWidth, windowHeight, windowVSync, windowFullscreen, windowResizable, windowBorderless);
 
+			// MSAA
+			if (msaa < 0)
+				throw new ArgumentOutOfRangeException($"msaa out of range, must be >= 0.");//: (0 - {OpenGLBindings.GL.MaxSamples})");
+
 			// Check WegGL 2.0 Support
 			bool supportsWebGL2 = false;
+
+			WebGLContextAttributes contextAttributes = new WebGLContextAttributes()
+			{
+				alpha = true,
+				premultipliedAlpha = false,
+				depth = true,
+				stencil = true,
+				antialias = msaa > 0,
+				preserveDrawingBuffer = true,
+				failIfMajorPerformanceCaveat = false
+			};
 
 			if (!document.location.search.ToLower().Contains("forcewebgl1=true"))
 			{
 				try
 				{
-					Retyped.webgl2.WebGL2RenderingContext GL = null;
-
 					string[] contextIDs = new string[] {
 					"webgl2",
 					"experimental-webgl2"
@@ -277,16 +292,14 @@ namespace CKGL
 
 					foreach (string contextID in contextIDs)
 					{
-
 						try
 						{
-							GL = Canvas.getContext(contextID).As<Retyped.webgl2.WebGL2RenderingContext>();
+							WebGL2Context = Canvas.getContext(contextID, contextAttributes).As<Retyped.webgl2.WebGL2RenderingContext>();
 						}
 						catch { }
 
-						if (GL != null)
+						if (WebGL2Context != null)
 						{
-							GL = null;
 							supportsWebGL2 = true;
 							GraphicsBackend = GraphicsBackend.WebGL2;
 							Output.WriteLine("WebGL 2.0 Supported");
@@ -304,8 +317,6 @@ namespace CKGL
 				Output.WriteLine("WebGL 2.0 is not supported, falling back to WebGL 1.0");
 				try
 				{
-					WebGLRenderingContext GL = null;
-
 					string[] contextIDs = new string[] {
 						"webgl",
 						"experimental-webgl"
@@ -315,13 +326,12 @@ namespace CKGL
 					{
 						try
 						{
-							GL = Canvas.getContext(contextID).As<WebGLRenderingContext>();
+							WebGLContext = Canvas.getContext(contextID, contextAttributes).As<WebGLRenderingContext>();
 						}
 						catch { }
 
-						if (GL != null)
+						if (WebGLContext != null)
 						{
-							GL = null;
 							supportsWebGL = true;
 							GraphicsBackend = GraphicsBackend.WebGL;
 							Output.WriteLine("WebGL 1.0 Supported");

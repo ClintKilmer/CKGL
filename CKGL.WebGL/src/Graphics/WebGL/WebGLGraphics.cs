@@ -107,40 +107,15 @@ namespace CKGL.WebGL
 
 		internal override void Init()
 		{
-			string[] contextIDs = new string[] {
-					"webgl",
-					"experimental-webgl",
-					//"webkit-3d",
-					//"moz-webgl"
-				};
-
-			foreach (string contextID in contextIDs)
-			{
-				try
-				{
-					var attributes = new WebGLContextAttributes
-					{
-						alpha = true,
-						premultipliedAlpha = false,
-						depth = true,
-						stencil = true,
-						antialias = false,
-						preserveDrawingBuffer = false,
-						failIfMajorPerformanceCaveat = false
-					};
-					GL = Platform.Canvas.getContext(contextID, attributes).As<WebGLRenderingContext>();
-				}
-				catch { }
-
-				if (GL != null)
-					break;
-			}
+			GL = Platform.WebGLContext;
 
 			if (GL == null)
 				throw new CKGLException("Couldn't create WebGL 1.0 context");
 
 			// Debug
 			Output.WriteLine($"GraphicsBackend - WebGL 1.0 Initialized");
+			var attributes = GL.getContextAttributes();
+			Output.WriteLine($"WebGL Context - Attributes: alpha[{attributes.alpha}] premultipliedAlpha[{attributes.premultipliedAlpha}] depth[{attributes.depth}] stencil[{attributes.stencil}] antialias[{attributes.antialias}] preserveDrawingBuffer[{attributes.preserveDrawingBuffer}] failIfMajorPerformanceCaveat[{attributes.failIfMajorPerformanceCaveat}]");
 			Output.WriteLine($"WebGL Context - GLSL Version: {GL.getParameter(GL.SHADING_LANGUAGE_VERSION)}");
 			Output.WriteLine($"WebGL Context - VERSION: {GL.getParameter(GL.VERSION)}");
 			Output.WriteLine($"WebGL Context - VENDOR: {GL.getParameter(GL.VENDOR)}");

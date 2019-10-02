@@ -43,38 +43,15 @@ namespace CKGL.WebGL2
 
 		internal override void Init()
 		{
-			string[] contextIDs = new string[] {
-				"webgl2",
-				"experimental-webgl2"
-			};
-
-			foreach (string contextID in contextIDs)
-			{
-				try
-				{
-					var attributes = new WebGLContextAttributes
-					{
-						alpha = true,
-						premultipliedAlpha = false,
-						depth = true,
-						stencil = true,
-						antialias = false,
-						preserveDrawingBuffer = false,
-						failIfMajorPerformanceCaveat = false
-					};
-					GL = Platform.Canvas.getContext(contextID, attributes).As<WebGL2RenderingContext>();
-				}
-				catch { }
-
-				if (GL != null)
-					break;
-			}
+			GL = Platform.WebGL2Context;
 
 			if (GL == null)
 				throw new CKGLException("Couldn't create WebGL 2.0 context");
 
 			// Debug
 			Output.WriteLine("GraphicsBackend - WebGL 2.0 Initialized");
+			var attributes = GL.getContextAttributes();
+			Output.WriteLine($"WebGL Context - Attributes: alpha[{attributes.alpha}] premultipliedAlpha[{attributes.premultipliedAlpha}] depth[{attributes.depth}] stencil[{attributes.stencil}] antialias[{attributes.antialias}] preserveDrawingBuffer[{attributes.preserveDrawingBuffer}] failIfMajorPerformanceCaveat[{attributes.failIfMajorPerformanceCaveat}]");
 			Output.WriteLine($"WebGL Context - GLSL Version: {GL.getParameter(SHADING_LANGUAGE_VERSION)}");
 			Output.WriteLine($"WebGL Context - VERSION: {GL.getParameter(VERSION)}");
 			Output.WriteLine($"WebGL Context - VENDOR: {GL.getParameter(VENDOR)}");
