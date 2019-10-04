@@ -7,13 +7,13 @@ namespace CKGLTest2D
 		public Colour ShadowColourNear = Colour.Black;
 		public Colour ShadowColourFar = Colour.Black;//.Alpha(0);
 
-		private RenderTarget _surface;
-		private RenderTarget Surface
+		private Framebuffer _surface;
+		private Framebuffer Surface
 		{
 			get
 			{
 				if (_surface == null || _surface.Width != CKGLTest2D.Camera.Width || _surface.Height != CKGLTest2D.Camera.Height)
-					_surface = new RenderTarget(CKGLTest2D.Camera.Width, CKGLTest2D.Camera.Height, 1, TextureFormat.RGBA8);
+					_surface = new Framebuffer(CKGLTest2D.Camera.Width, CKGLTest2D.Camera.Height, 1, TextureFormat.RGBA8);
 
 				return _surface;
 			}
@@ -30,7 +30,7 @@ namespace CKGLTest2D
 
 		public override void Draw()
 		{
-			RenderTarget originalRenderTarget = RenderTarget.Current;
+			Framebuffer originalFramebuffer = Framebuffer.Current;
 			Surface.Bind();
 			Graphics.Clear(Colour.Black);
 
@@ -62,9 +62,9 @@ namespace CKGLTest2D
 				if (caster.X < block_r)
 					DrawShadow(new Vector2(block_r, block_t), new Vector2(block_r, block_b), caster, 700);
 			}
-			originalRenderTarget.Bind();
+			originalFramebuffer.Bind();
 			//Graphics.State.SetBlendState(BlendState.Additive);
-			Renderer.Draw.RenderTarget(Surface, TextureSlot.Colour0, CKGLTest2D.Camera.Position.X, CKGLTest2D.Camera.Position.Y, Colour.White);
+			Renderer.Draw.Framebuffer(Surface, TextureSlot.Colour0, CKGLTest2D.Camera.Position.X, CKGLTest2D.Camera.Position.Y, Colour.White);
 			//Renderer.ResetBlendState();
 		}
 

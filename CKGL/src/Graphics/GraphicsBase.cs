@@ -17,13 +17,13 @@ namespace CKGL
 
 		#region Viewport
 		internal abstract void SetViewport();
-		internal abstract void SetViewport(RenderTarget renderTarget);
+		internal abstract void SetViewport(Framebuffer framebuffer);
 		internal abstract void SetViewport(int x, int y, int width, int height);
 		#endregion
 
 		#region ScissorTest
 		internal abstract void SetScissorTest();
-		internal abstract void SetScissorTest(RenderTarget renderTarget);
+		internal abstract void SetScissorTest(Framebuffer framebuffer);
 		internal abstract void SetScissorTest(int x, int y, int width, int height);
 		internal abstract void SetScissorTest(bool enabled);
 		#endregion

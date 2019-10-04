@@ -209,7 +209,7 @@ void main()
 		Vector3 cameraLookat = Vector3.Forward;
 		Vector3 cameraLookatNoVertical = Vector3.Forward;
 
-		RenderTarget surface;
+		Framebuffer surface;
 
 		CullModeState cullModeState = CullModeState.Back;
 		PolygonModeState polygonModeState = PolygonModeState.Fill;
@@ -290,7 +290,7 @@ void main()
 			Camera.zNear = 0.1f;
 			Camera.zFar = 150f;
 
-			surface = new RenderTarget(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth24);
+			surface = new Framebuffer(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth24);
 
 			vertexFormat = new VertexFormat(
 				4,                                                    // Pack
@@ -443,7 +443,7 @@ void main()
 			light2Transform.Y = 2.25f + Math.Sin(Time.TotalSeconds * 0.8f) * 2f;
 			light3Transform.Y = 2.25f + Math.Sin(Time.TotalSeconds * 0.95f) * 2f;
 
-			debugString = $"|:outline=1,0.01,0,0,0,1:|Cam Pos: {Camera.Position.X:n1}, {Camera.Position.Y:n1}, {Camera.Position.Z:n1}\nCam Rot: {Camera.Rotation.Euler.X:n2}, {Camera.Rotation.Euler.Y:n2}, {Camera.Rotation.Euler.Z:n2}\nMem: {RAM:n1}MB\nVSync: {Window.GetVSyncMode()}\n{Time.UPS:n0}ups | {Time.FPSSmoothed:n0}fps\nDraw Calls: {Graphics.DrawCalls}\nState Changes: {Graphics.State.Changes}\nRenderTarget Swaps/Blits: {RenderTarget.Swaps}/{RenderTarget.Blits}\nTexture Swaps: {Texture.Swaps}\nShader/Uniform Swaps: {Shader.Swaps}/{Shader.UniformSwaps}\nWinPos: [{Window.X}, {Window.Y}]\nSize: [{Window.Size}]\nMouse Global: [{Input.Mouse.PositionDisplay}]\nMouse: [{Input.Mouse.Position}]\nMouse Relative: [{Input.Mouse.PositionRelative}]";
+			debugString = $"|:outline=1,0.01,0,0,0,1:|Cam Pos: {Camera.Position.X:n1}, {Camera.Position.Y:n1}, {Camera.Position.Z:n1}\nCam Rot: {Camera.Rotation.Euler.X:n2}, {Camera.Rotation.Euler.Y:n2}, {Camera.Rotation.Euler.Z:n2}\nMem: {RAM:n1}MB\nVSync: {Window.GetVSyncMode()}\n{Time.UPS:n0}ups | {Time.FPSSmoothed:n0}fps\nDraw Calls: {Graphics.DrawCalls}\nState Changes: {Graphics.State.Changes}\nFramebuffer Swaps/Blits: {Framebuffer.Swaps}/{Framebuffer.Blits}\nTexture Swaps: {Texture.Swaps}\nShader/Uniform Swaps: {Shader.Swaps}/{Shader.UniformSwaps}\nWinPos: [{Window.X}, {Window.Y}]\nSize: [{Window.Size}]\nMouse Global: [{Input.Mouse.PositionDisplay}]\nMouse: [{Input.Mouse.Position}]\nMouse Relative: [{Input.Mouse.PositionRelative}]";
 		}
 
 		public override void Draw()
@@ -521,19 +521,19 @@ void main()
 			Graphics.DrawIndexedVertexArrays(PrimitiveTopology.TriangleList, 0, planeIndexBuffer.Count, planeIndexBuffer.IndexType);
 
 			// Draw to Screen
-			RenderTarget.Default.Bind();
+			Framebuffer.Default.Bind();
 			Graphics.Clear(new Colour(0.1f, 0.1f, 0.1f, 1f));
 			Graphics.State.Reset();
 
-			// Render RenderTarget
+			// Render Framebuffer
 			Shaders.Renderer.Bind();
-			Shaders.Renderer.MVP = RenderTarget.Default.Matrix;
+			Shaders.Renderer.MVP = Framebuffer.Default.Matrix;
 			scale = Math.Max(1, Math.Min(Window.Width / width, Window.Height / height));
-			Renderer.Draw.RenderTarget(surface, TextureSlot.Colour0, (Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, scale, Colour.White);
+			Renderer.Draw.Framebuffer(surface, TextureSlot.Colour0, (Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, scale, Colour.White);
 
 			//Renderer.Draw.Text(SpriteFonts.Font,
 			//				   debugString,
-			//				   new Vector2(2, RenderTarget.Current.Height - 1),
+			//				   new Vector2(2, Framebuffer.Current.Height - 1),
 			//				   Vector2.One * 3f,
 			//				   Colour.White,
 			//				   HAlign.Left,
@@ -577,7 +577,7 @@ void main()
 			//surface.Destroy();
 			//width = Window.Width;
 			//height = Window.Height;
-			//surface = new RenderTarget(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth);
+			//surface = new Framebuffer(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth);
 
 			Camera.AspectRatio = surface.AspectRatio;
 			//Camera.AspectRatio = Window.AspectRatio;

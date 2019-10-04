@@ -29,10 +29,10 @@ namespace CKGL
 	}
 	#endregion
 
-	public class RenderTarget
+	public class Framebuffer
 	{
-		public static readonly RenderTarget Default = new RenderTarget();
-		public static RenderTarget Current { get; private set; } = Default;
+		public static readonly Framebuffer Default = new Framebuffer();
+		public static Framebuffer Current { get; private set; } = Default;
 
 		public static int Swaps { get; private set; }
 		public static int Blits { get; private set; }
@@ -107,12 +107,12 @@ namespace CKGL
 		private GLuint id;
 
 		// Default Framebuffer
-		private RenderTarget()
+		private Framebuffer()
 		{
 			id = 0;
 		}
 
-		public RenderTarget(int width, int height, GLint colourTextures, TextureFormat textureColourFormat, TextureFormat textureDepthFormat) : this(width, height, colourTextures, textureColourFormat)
+		public Framebuffer(int width, int height, GLint colourTextures, TextureFormat textureColourFormat, TextureFormat textureDepthFormat) : this(width, height, colourTextures, textureColourFormat)
 		{
 			if (!(textureDepthFormat.ToOpenGL().PixelFormat() == PixelFormat.Depth || textureDepthFormat.ToOpenGL().PixelFormat() == PixelFormat.DepthStencil))
 				throw new Exception("textureDepthFormat is not a depth(stencil) texture.");
@@ -123,7 +123,7 @@ namespace CKGL
 			GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, textureDepthFormat.ToOpenGL().TextureAttachment(), (depthTexture as OpenGLTexture).TextureTarget, (depthTexture as OpenGLTexture).ID, 0);
 			CheckStatus();
 		}
-		public RenderTarget(int width, int height, GLint colourTextures, TextureFormat textureColourFormat)
+		public Framebuffer(int width, int height, GLint colourTextures, TextureFormat textureColourFormat)
 		{
 			if (colourTextures < 1)
 				throw new Exception("Must have at least 1 colour texture.");
@@ -207,22 +207,22 @@ namespace CKGL
 				result = textures[(int)textureSlot];
 
 			if (result == null)
-				throw new ArgumentOutOfRangeException($"No suitable texture found in RenderTarget texture slot {textureSlot}.");
+				throw new ArgumentOutOfRangeException($"No suitable texture found in Framebuffer texture slot {textureSlot}.");
 
 			return result;
 		}
 
 		// TODO - Figure out Depth Texture Blitting
-		public void BlitTextureTo(RenderTarget target, TextureSlot textureSlot, BlitFilter filter) => BlitTextureTo(target, textureSlot, filter, new RectangleI(Width, Height));
-		public void BlitTextureTo(RenderTarget target, TextureSlot textureSlot, BlitFilter filter, int x, int y) => BlitTextureTo(target, textureSlot, filter, new RectangleI(x, y, Width, Height));
-		public void BlitTextureTo(RenderTarget target, TextureSlot textureSlot, BlitFilter filter, RectangleI rect)
+		public void BlitTextureTo(Framebuffer target, TextureSlot textureSlot, BlitFilter filter) => BlitTextureTo(target, textureSlot, filter, new RectangleI(Width, Height));
+		public void BlitTextureTo(Framebuffer target, TextureSlot textureSlot, BlitFilter filter, int x, int y) => BlitTextureTo(target, textureSlot, filter, new RectangleI(x, y, Width, Height));
+		public void BlitTextureTo(Framebuffer target, TextureSlot textureSlot, BlitFilter filter, RectangleI rect)
 		{
 			if (textureSlot < 0)
 				throw new ArgumentOutOfRangeException($"Can't blit a depth texture.");
 
 			Graphics.State.OnStateChanging.Invoke();
 
-			RenderTarget originalRenderTarget = Current;
+			Framebuffer originalFramebuffer = Current;
 
 			GL.BindFramebuffer(FramebufferTarget.Read, id);
 			Swaps++;
@@ -236,7 +236,7 @@ namespace CKGL
 			//GL.BlitFramebuffer(new RectangleI(Width, Height), rect, textureSlot >= 0 ? BufferBit.Colour : BufferBit.Depth, filter.ToOpenGL());
 
 			// Reset Framebuffer
-			GL.BindFramebuffer(FramebufferTarget.Framebuffer, (originalRenderTarget ?? Default).id);
+			GL.BindFramebuffer(FramebufferTarget.Framebuffer, (originalFramebuffer ?? Default).id);
 
 			Blits++;
 
@@ -247,7 +247,7 @@ namespace CKGL
 		{
 			FramebufferStatus status = GL.CheckFramebufferStatus(FramebufferTarget.Framebuffer);
 			if (status != FramebufferStatus.Complete)
-				throw new Exception("Invalid RenderTarget: " + status);
+				throw new Exception("Invalid Framebuffer: " + status);
 		}
 
 		#region Overrides

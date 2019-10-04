@@ -419,7 +419,7 @@ void main()
 		Vector3 cameraLookat = Vector3.Forward;
 		Vector3 cameraLookatNoVertical = Vector3.Forward;
 
-		RenderTarget surface;
+		Framebuffer surface;
 
 		CullModeState cullModeState = CullModeState.Off;
 		PolygonModeState polygonModeState = PolygonModeState.Fill;
@@ -449,7 +449,7 @@ void main()
 			//SpriteSheets.SpriteSheet.Texture.SavePNG($@"{System.IO.Directory.GetCurrentDirectory()}/SpriteSheet.png");
 			//SpriteSheets.SpriteSheet.Texture.SavePNG("SpriteSheet.png");
 
-			surface = new RenderTarget(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth24);
+			surface = new Framebuffer(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth24);
 		}
 
 		public override void Update()
@@ -570,7 +570,7 @@ void main()
 			test3 = test2.Clone();
 			test3.Position -= new Vector3(8f, 0f, 0f);
 
-			debugString = $"|:outline=1,0.01,0,0,0,1:|Cam Pos: {Camera.Position.X:n1}, {Camera.Position.Y:n1}, {Camera.Position.Z:n1}\nCam Rot: {Camera.Rotation.Euler.X:n2}, {Camera.Rotation.Euler.Y:n2}, {Camera.Rotation.Euler.Z:n2}\nMem: {RAM:n1}MB\nVSync: {Window.GetVSyncMode()}\n{Time.UPS:n0}ups | {Time.FPSSmoothed:n0}fps\nDraw Calls: {Graphics.DrawCalls}\nState Changes: {Graphics.State.Changes}\nRenderTarget Swaps/Blits: {RenderTarget.Swaps}/{RenderTarget.Blits}\nTexture Swaps: {Texture.Swaps}\nShader/Uniform Swaps: {Shader.Swaps}/{Shader.UniformSwaps}\nWinPos: [{Window.X}, {Window.Y}]\nSize: [{Window.Size}]\nMouse Global: [{Input.Mouse.PositionDisplay}]\nMouse: [{Input.Mouse.Position}]\nMouse Relative: [{Input.Mouse.PositionRelative}]";
+			debugString = $"|:outline=1,0.01,0,0,0,1:|Cam Pos: {Camera.Position.X:n1}, {Camera.Position.Y:n1}, {Camera.Position.Z:n1}\nCam Rot: {Camera.Rotation.Euler.X:n2}, {Camera.Rotation.Euler.Y:n2}, {Camera.Rotation.Euler.Z:n2}\nMem: {RAM:n1}MB\nVSync: {Window.GetVSyncMode()}\n{Time.UPS:n0}ups | {Time.FPSSmoothed:n0}fps\nDraw Calls: {Graphics.DrawCalls}\nState Changes: {Graphics.State.Changes}\nFramebuffer Swaps/Blits: {Framebuffer.Swaps}/{Framebuffer.Blits}\nTexture Swaps: {Texture.Swaps}\nShader/Uniform Swaps: {Shader.Swaps}/{Shader.UniformSwaps}\nWinPos: [{Window.X}, {Window.Y}]\nSize: [{Window.Size}]\nMouse Global: [{Input.Mouse.PositionDisplay}]\nMouse: [{Input.Mouse.Position}]\nMouse Relative: [{Input.Mouse.PositionRelative}]";
 
 			Scene.Current?.BeforeUpdate();
 			Scene.Current?.Update();
@@ -925,8 +925,8 @@ void main()
 			DepthState.Off.Set();
 			Scene.Current?.Draw();
 
-			Camera2D.Width = RenderTarget.Current.Width;
-			Camera2D.Height = RenderTarget.Current.Height;
+			Camera2D.Width = Framebuffer.Current.Width;
+			Camera2D.Height = Framebuffer.Current.Height;
 			Shaders.Renderer.Bind();
 			Shaders.Renderer.MVP = Camera2D.Matrix;
 
@@ -1006,14 +1006,14 @@ void main()
 			//	Renderer.Draw.PolyPoint(new Vector2(Random.Range(0, width), Random.Range(0, height)),
 			//							new Colour(Random.Range(1f), Random.Range(1f), Random.Range(1f), 1f));
 
-			//RenderTarget.Bind(null);
-			//Renderer.Draw.RenderTarget(surface, 0,
+			//Framebuffer.Bind(null);
+			//Renderer.Draw.Framebuffer(surface, 0,
 			//						   -5f, 5f, 0.1f,
 			//						   Colour.White);
 
 			//Renderer.Draw.Text(SpriteFonts.Font,
 			//				   debugString,
-			//				   new Vector2(2, RenderTarget.Current.Height - 1),
+			//				   new Vector2(2, Framebuffer.Current.Height - 1),
 			//				   Vector2.One,
 			//				   Colour.White,
 			//				   HAlign.Left,
@@ -1027,31 +1027,31 @@ void main()
 				Shaders.LinearizeDepth.MVP = surface.Matrix;
 				Shaders.LinearizeDepth.zNear = Camera.zNear;
 				Shaders.LinearizeDepth.zFar = Camera.zFar;
-				Renderer.Draw.RenderTarget(surface, TextureSlot.Depth, 0, 0, Colour.White);
+				Renderer.Draw.Framebuffer(surface, TextureSlot.Depth, 0, 0, Colour.White);
 
 				Shaders.Renderer.Bind();
-				Shaders.Renderer.MVP = RenderTarget.Default.Matrix;
+				Shaders.Renderer.MVP = Framebuffer.Default.Matrix;
 			}
 
 			// Draw to Screen
-			RenderTarget.Default.Bind();
+			Framebuffer.Default.Bind();
 			Graphics.Clear(new Colour(0.1f, 0.1f, 0.1f, 1f));
 			Graphics.State.Reset();
 
 			scale = Math.Max(1, Math.Min(Window.Width / width, Window.Height / height));
 
-			// Render RenderTarget
+			// Render Framebuffer
 			Shaders.Renderer.Bind();
-			Shaders.Renderer.MVP = RenderTarget.Default.Matrix;
-			Renderer.Draw.RenderTarget(surface, TextureSlot.Colour0, (Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, scale, Colour.White);
-			//Renderer.Draw.RenderTarget(surface, TextureSlot.Colour0, (Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, scale, Math.Sin(Time.TotalSeconds) * 0.03f, new Vector2(Window.Width / 2f, Window.Height / 2f), Colour.White);
+			Shaders.Renderer.MVP = Framebuffer.Default.Matrix;
+			Renderer.Draw.Framebuffer(surface, TextureSlot.Colour0, (Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, scale, Colour.White);
+			//Renderer.Draw.Framebuffer(surface, TextureSlot.Colour0, (Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, scale, Math.Sin(Time.TotalSeconds) * 0.03f, new Vector2(Window.Width / 2f, Window.Height / 2f), Colour.White);
 
-			// Blit RenderTarget
-			//surface.BlitTextureTo(RenderTarget.Default, TextureSlot.Colour0, BlitFilter.Nearest, new RectangleI((Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, width * scale, height * scale));
+			// Blit Framebuffer
+			//surface.BlitTextureTo(Framebuffer.Default, TextureSlot.Colour0, BlitFilter.Nearest, new RectangleI((Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, width * scale, height * scale));
 
 			Renderer.Draw.Text(SpriteFonts.Font,
 							   debugString,
-							   new Vector2(2, RenderTarget.Current.Height - 1),
+							   new Vector2(2, Framebuffer.Current.Height - 1),
 							   Vector2.One * 3f,
 							   Colour.White,
 							   HAlign.Left,
@@ -1095,7 +1095,7 @@ void main()
 			//surface.Destroy();
 			//width = Window.Width;
 			//height = Window.Height;
-			//surface = new RenderTarget(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth);
+			//surface = new Framebuffer(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth);
 
 			Camera.AspectRatio = surface.AspectRatio;
 			//Camera.AspectRatio = Window.AspectRatio;

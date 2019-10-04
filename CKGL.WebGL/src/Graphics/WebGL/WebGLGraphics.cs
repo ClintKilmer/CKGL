@@ -157,17 +157,17 @@ namespace CKGL.WebGL
 		#endregion
 
 		#region Viewport
-		internal override void SetViewport() => SetViewport(RenderTarget.Current);
-		internal override void SetViewport(RenderTarget renderTarget)
-			=> SetViewport(0, 0, (renderTarget ?? RenderTarget.Default).Width, (renderTarget ?? RenderTarget.Default).Height);
+		internal override void SetViewport() => SetViewport(Framebuffer.Current);
+		internal override void SetViewport(Framebuffer framebuffer)
+			=> SetViewport(0, 0, (framebuffer ?? Framebuffer.Default).Width, (framebuffer ?? Framebuffer.Default).Height);
 		internal override void SetViewport(int x, int y, int width, int height)
 			=> GL.viewport(x, y, width, height);
 		#endregion
 
 		#region ScissorTest
-		internal override void SetScissorTest() => SetScissorTest(RenderTarget.Current);
-		internal override void SetScissorTest(RenderTarget renderTarget)
-			=> SetScissorTest(0, 0, (renderTarget ?? RenderTarget.Default).Width, (renderTarget ?? RenderTarget.Default).Height);
+		internal override void SetScissorTest() => SetScissorTest(Framebuffer.Current);
+		internal override void SetScissorTest(Framebuffer framebuffer)
+			=> SetScissorTest(0, 0, (framebuffer ?? Framebuffer.Default).Width, (framebuffer ?? Framebuffer.Default).Height);
 		internal override void SetScissorTest(int x, int y, int width, int height)
 		{
 			GL.enable(GL.SCISSOR_TEST);

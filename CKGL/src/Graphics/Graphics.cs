@@ -75,14 +75,14 @@ namespace CKGL
 		// TODO - Move SetViewport() to own state
 		#region Viewport
 		public static void SetViewport() => graphics.SetViewport();
-		public static void SetViewport(RenderTarget renderTarget) => graphics.SetViewport(renderTarget);
+		public static void SetViewport(Framebuffer framebuffer) => graphics.SetViewport(framebuffer);
 		public static void SetViewport(int x, int y, int width, int height) => graphics.SetViewport(x, y, width, height);
 		#endregion
 
 		// TODO - Move SetScissorTest() to own state
 		#region ScissorTest
 		public static void SetScissorTest() => graphics.SetScissorTest();
-		public static void SetScissorTest(RenderTarget renderTarget) => graphics.SetScissorTest(renderTarget);
+		public static void SetScissorTest(Framebuffer framebuffer) => graphics.SetScissorTest(framebuffer);
 		public static void SetScissorTest(int x, int y, int width, int height) => graphics.SetScissorTest(x, y, width, height);
 		public static void SetScissorTest(bool enabled) => graphics.SetScissorTest(enabled);
 		#endregion

@@ -101,7 +101,7 @@ namespace CKGL
 		private void PreDraw()
 		{
 			Graphics.PreDraw();
-			//RenderTarget.PreDraw();
+			//Framebuffer.PreDraw();
 			//Texture.PreDraw();
 			//Shader.PreDraw();
 			Window.Resize(); //  WebGL specific

@@ -222,7 +222,7 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="src\Game.cs" />
-    <Compile Include="src\Graphics\RenderTarget-Dummy.cs" />
+    <Compile Include="src\Graphics\Framebuffer-Dummy.cs" />
     <Compile Include="src\Graphics\Texture-Dummy.cs" />
     <Compile Include="src\Graphics\WebGL2\VertexArray.cs" />
     <Compile Include="src\Graphics\WebGL2\WebGL2CKGLConversions.cs" />
