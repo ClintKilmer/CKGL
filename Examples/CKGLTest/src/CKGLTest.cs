@@ -449,7 +449,7 @@ void main()
 			//SpriteSheets.SpriteSheet.Texture.SavePNG($@"{System.IO.Directory.GetCurrentDirectory()}/SpriteSheet.png");
 			//SpriteSheets.SpriteSheet.Texture.SavePNG("SpriteSheet.png");
 
-			surface = new Framebuffer(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth24);
+			surface = Framebuffer.Create(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth24);
 		}
 
 		public override void Update()
@@ -1027,7 +1027,7 @@ void main()
 				Shaders.LinearizeDepth.MVP = surface.Matrix;
 				Shaders.LinearizeDepth.zNear = Camera.zNear;
 				Shaders.LinearizeDepth.zFar = Camera.zFar;
-				Renderer.Draw.Framebuffer(surface, TextureSlot.Depth, 0, 0, Colour.White);
+				Renderer.Draw.Framebuffer(surface, TextureAttachment.Depth, 0, 0, Colour.White);
 
 				Shaders.Renderer.Bind();
 				Shaders.Renderer.MVP = Framebuffer.Default.Matrix;
@@ -1043,11 +1043,11 @@ void main()
 			// Render Framebuffer
 			Shaders.Renderer.Bind();
 			Shaders.Renderer.MVP = Framebuffer.Default.Matrix;
-			Renderer.Draw.Framebuffer(surface, TextureSlot.Colour0, (Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, scale, Colour.White);
-			//Renderer.Draw.Framebuffer(surface, TextureSlot.Colour0, (Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, scale, Math.Sin(Time.TotalSeconds) * 0.03f, new Vector2(Window.Width / 2f, Window.Height / 2f), Colour.White);
+			Renderer.Draw.Framebuffer(surface, TextureAttachment.Colour0, (Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, scale, Colour.White);
+			//Renderer.Draw.Framebuffer(surface, TextureAttachment.Colour0, (Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, scale, Math.Sin(Time.TotalSeconds) * 0.03f, new Vector2(Window.Width / 2f, Window.Height / 2f), Colour.White);
 
 			// Blit Framebuffer
-			//surface.BlitTextureTo(Framebuffer.Default, TextureSlot.Colour0, BlitFilter.Nearest, new RectangleI((Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, width * scale, height * scale));
+			//surface.BlitTextureTo(Framebuffer.Default, TextureAttachment.Colour0, BlitFilter.Nearest, new RectangleI((Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, width * scale, height * scale));
 
 			Renderer.Draw.Text(SpriteFonts.Font,
 							   debugString,
@@ -1072,7 +1072,7 @@ void main()
 					sequentialNumber++;
 				}
 
-				surface.textures[0].SavePNG($@"{s}{System.DateTime.Now:yyyy-MM-dd HH.mm.ss}-{sequentialNumber} [CKGL].png");
+				surface.Textures[0].SavePNG($@"{s}{System.DateTime.Now:yyyy-MM-dd HH.mm.ss}-{sequentialNumber} [CKGL].png");
 
 				//System.GC.Collect();
 			}
@@ -1095,7 +1095,7 @@ void main()
 			//surface.Destroy();
 			//width = Window.Width;
 			//height = Window.Height;
-			//surface = new Framebuffer(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth);
+			//surface = Framebuffer.Create(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth24);
 
 			Camera.AspectRatio = surface.AspectRatio;
 			//Camera.AspectRatio = Window.AspectRatio;

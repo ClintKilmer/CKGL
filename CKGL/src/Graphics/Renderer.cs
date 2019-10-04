@@ -576,41 +576,41 @@ namespace CKGL
 
 			// TODO - Fix Framebuffer method cascading
 			#region Framebuffer
-			private static void FramebufferBindTexture(Framebuffer framebuffer, TextureSlot textureSlot)
+			private static void FramebufferBindTexture(Framebuffer framebuffer, TextureAttachment textureAttachment)
 			{
 				if (framebuffer == null)
 					throw new CKGLException("Can't bind default framebuffer textures, use a Framebuffer instead.");
 
-				framebuffer.GetTexture(textureSlot).Bind();
+				framebuffer.GetTexture(textureAttachment).Bind();
 			}
-			public static void Framebuffer(Framebuffer framebuffer, TextureSlot textureSlot, float x, float y, Colour colour)
+			public static void Framebuffer(Framebuffer framebuffer, TextureAttachment textureAttachment, float x, float y, Colour colour)
 			{
-				FramebufferBindTexture(framebuffer, textureSlot);
+				FramebufferBindTexture(framebuffer, textureAttachment);
 				Rectangle(x, y, (framebuffer ?? CKGL.Framebuffer.Default).Width, (framebuffer ?? CKGL.Framebuffer.Default).Height, colour, colour, colour, colour, UV.BottomLeft, UV.BottomRight, UV.TopLeft, UV.TopRight);
 			}
-			public static void Framebuffer(Framebuffer framebuffer, TextureSlot textureSlot, float x, float y, float rotation, Vector2 origin, Colour colour)
+			public static void Framebuffer(Framebuffer framebuffer, TextureAttachment textureAttachment, float x, float y, float rotation, Vector2 origin, Colour colour)
 			{
-				FramebufferBindTexture(framebuffer, textureSlot);
+				FramebufferBindTexture(framebuffer, textureAttachment);
 				Rectangle(x, y, (framebuffer ?? CKGL.Framebuffer.Default).Width, (framebuffer ?? CKGL.Framebuffer.Default).Height, colour, colour, colour, colour, UV.BottomLeft, UV.BottomRight, UV.TopLeft, UV.TopRight, rotation, origin);
 			}
-			public static void Framebuffer(Framebuffer framebuffer, TextureSlot textureSlot, float x, float y, float scale, Colour colour)
+			public static void Framebuffer(Framebuffer framebuffer, TextureAttachment textureAttachment, float x, float y, float scale, Colour colour)
 			{
-				FramebufferBindTexture(framebuffer, textureSlot);
+				FramebufferBindTexture(framebuffer, textureAttachment);
 				Rectangle(x, y, (framebuffer ?? CKGL.Framebuffer.Default).Width * scale, (framebuffer ?? CKGL.Framebuffer.Default).Height * scale, colour, colour, colour, colour, UV.BottomLeft, UV.BottomRight, UV.TopLeft, UV.TopRight);
 			}
-			public static void Framebuffer(Framebuffer framebuffer, TextureSlot textureSlot, float x, float y, float scale, float rotation, Vector2 origin, Colour colour)
+			public static void Framebuffer(Framebuffer framebuffer, TextureAttachment textureAttachment, float x, float y, float scale, float rotation, Vector2 origin, Colour colour)
 			{
-				FramebufferBindTexture(framebuffer, textureSlot);
+				FramebufferBindTexture(framebuffer, textureAttachment);
 				Rectangle(x, y, (framebuffer ?? CKGL.Framebuffer.Default).Width * scale, (framebuffer ?? CKGL.Framebuffer.Default).Height * scale, colour, colour, colour, colour, UV.BottomLeft, UV.BottomRight, UV.TopLeft, UV.TopRight, rotation, origin);
 			}
-			public static void Framebuffer(Framebuffer framebuffer, TextureSlot textureSlot, float x, float y, float width, float height, Colour colour)
+			public static void Framebuffer(Framebuffer framebuffer, TextureAttachment textureAttachment, float x, float y, float width, float height, Colour colour)
 			{
-				FramebufferBindTexture(framebuffer, textureSlot);
+				FramebufferBindTexture(framebuffer, textureAttachment);
 				Rectangle(x, y, width, height, colour, colour, colour, colour, UV.BottomLeft, UV.BottomRight, UV.TopLeft, UV.TopRight);
 			}
-			public static void Framebuffer(Framebuffer framebuffer, TextureSlot textureSlot, Vector2 v1, Vector2 v2, Colour colour)
+			public static void Framebuffer(Framebuffer framebuffer, TextureAttachment textureAttachment, Vector2 v1, Vector2 v2, Colour colour)
 			{
-				FramebufferBindTexture(framebuffer, textureSlot);
+				FramebufferBindTexture(framebuffer, textureAttachment);
 				Rectangle(new Vector2(v1.X, v1.Y), new Vector2(v2.X, v2.Y), colour, colour, colour, colour, UV.BottomLeft, UV.BottomRight, UV.TopLeft, UV.TopRight);
 			}
 			#endregion

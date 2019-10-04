@@ -10,6 +10,7 @@ namespace CKGL
 		internal abstract GeometryInput CreateGeometryInput(IndexBuffer indexBuffer, VertexStream[] vertexStreams);
 #if !WEBGL
 		internal abstract Texture CreateTexture2D(byte[] data, int width, int height, TextureFormat textureFormat, TextureFilter minFilter, TextureFilter magFilter, TextureWrap wrapX, TextureWrap wrapY);
+		internal abstract Framebuffer CreateFramebuffer(int width, int height, int colourTextures, TextureFormat textureColourFormat, TextureFormat? textureDepthFormat = null);
 #endif
 		internal abstract Shader CreateShader(string source);
 		internal abstract Shader CreateShaderFromFile(string file);

@@ -88,7 +88,7 @@ namespace NETCoreTest
 			Camera.zNear = 0.1f;
 			Camera.zFar = 150f;
 
-			surface = new Framebuffer(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth24);
+			surface = Framebuffer.Create(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth24);
 		}
 
 		public override void Update()
@@ -221,7 +221,7 @@ namespace NETCoreTest
 			Shaders.Renderer.Bind();
 			Shaders.Renderer.MVP = Framebuffer.Default.Matrix;
 			scale = Math.Max(1, Math.Min(Window.Width / width, Window.Height / height));
-			Renderer.Draw.Framebuffer(surface, TextureSlot.Colour0, (Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, scale, Colour.White);
+			Renderer.Draw.Framebuffer(surface, TextureAttachment.Colour0, (Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, scale, Colour.White);
 
 			//Renderer.Draw.Text(SpriteFonts.Font,
 			//				   debugString,
@@ -246,7 +246,7 @@ namespace NETCoreTest
 					sequentialNumber++;
 				}
 
-				surface.textures[0].SavePNG($@"{s}{System.DateTime.Now:yyyy-MM-dd HH.mm.ss}-{sequentialNumber} [CKGL].png");
+				surface.Textures[0].SavePNG($@"{s}{System.DateTime.Now:yyyy-MM-dd HH.mm.ss}-{sequentialNumber} [CKGL].png");
 
 				//System.GC.Collect();
 			}
@@ -269,7 +269,7 @@ namespace NETCoreTest
 			//surface.Destroy();
 			//width = Window.Width;
 			//height = Window.Height;
-			//surface = new Framebuffer(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth);
+			//surface = Framebuffer.Create(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth24);
 
 			Camera.AspectRatio = surface.AspectRatio;
 			//Camera.AspectRatio = Window.AspectRatio;

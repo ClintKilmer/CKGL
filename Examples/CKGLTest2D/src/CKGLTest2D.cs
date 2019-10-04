@@ -111,7 +111,7 @@ namespace CKGLTest2D
 
 			TransformTest transformTest = new TransformTest();
 
-			surface = new Framebuffer(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth24);
+			surface = Framebuffer.Create(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth24);
 		}
 
 		public override void Update()
@@ -229,11 +229,11 @@ namespace CKGLTest2D
 			// Render Framebuffer
 			Shaders.Renderer.Bind();
 			Shaders.Renderer.MVP = Framebuffer.Default.Matrix;
-			Renderer.Draw.Framebuffer(surface, TextureSlot.Colour0, (Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, scale, Colour.White);
-			//Renderer.Draw.Framebuffer(surface, TextureSlot.Colour0, (Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, scale, Math.Sin(Time.TotalSeconds) * 0.03f, new Vector2(Window.Width / 2f, Window.Height / 2f), Colour.White);
+			Renderer.Draw.Framebuffer(surface, TextureAttachment.Colour0, (Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, scale, Colour.White);
+			//Renderer.Draw.Framebuffer(surface, TextureAttachment.Colour0, (Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, scale, Math.Sin(Time.TotalSeconds) * 0.03f, new Vector2(Window.Width / 2f, Window.Height / 2f), Colour.White);
 
 			// Blit Framebuffer
-			//surface.BlitTextureTo(Framebuffer.Default, TextureSlot.Colour0, BlitFilter.Nearest, new RectangleI((Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, width * scale, height * scale));
+			//surface.BlitTextureTo(Framebuffer.Default, TextureAttachment.Colour0, BlitFilter.Nearest, new RectangleI((Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, width * scale, height * scale));
 
 			Renderer.Draw.Text(SpriteFonts.Font,
 							   debugString,
@@ -258,7 +258,7 @@ namespace CKGLTest2D
 					sequentialNumber++;
 				}
 
-				surface.textures[0].SavePNG($@"{s}{System.DateTime.Now:yyyy-MM-dd HH.mm.ss}-{sequentialNumber} [CKGL].png");
+				surface.Textures[0].SavePNG($@"{s}{System.DateTime.Now:yyyy-MM-dd HH.mm.ss}-{sequentialNumber} [CKGL].png");
 
 				//System.GC.Collect();
 			}
@@ -281,7 +281,7 @@ namespace CKGLTest2D
 			//surface.Destroy();
 			//width = Window.Width;
 			//height = Window.Height;
-			//surface = new Framebuffer(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth);
+			//surface = Framebuffer.Create(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth24);
 		}
 	}
 }

@@ -13,7 +13,7 @@ namespace CKGLTest2D
 			get
 			{
 				if (_surface == null || _surface.Width != CKGLTest2D.Camera.Width || _surface.Height != CKGLTest2D.Camera.Height)
-					_surface = new Framebuffer(CKGLTest2D.Camera.Width, CKGLTest2D.Camera.Height, 1, TextureFormat.RGBA8);
+					_surface = Framebuffer.Create(CKGLTest2D.Camera.Width, CKGLTest2D.Camera.Height, 1, TextureFormat.RGBA8);
 
 				return _surface;
 			}
@@ -64,7 +64,7 @@ namespace CKGLTest2D
 			}
 			originalFramebuffer.Bind();
 			//Graphics.State.SetBlendState(BlendState.Additive);
-			Renderer.Draw.Framebuffer(Surface, TextureSlot.Colour0, CKGLTest2D.Camera.Position.X, CKGLTest2D.Camera.Position.Y, Colour.White);
+			Renderer.Draw.Framebuffer(Surface, TextureAttachment.Colour0, CKGLTest2D.Camera.Position.X, CKGLTest2D.Camera.Position.Y, Colour.White);
 			//Renderer.ResetBlendState();
 		}
 
