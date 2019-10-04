@@ -81,6 +81,11 @@ namespace CKGL.WebGL2
 			return new WebGL2GeometryInput(indexBuffer, vertexStreams);
 		}
 
+		internal override Texture CreateTexture2D(byte[] data, int width, int height, TextureFormat textureFormat, TextureFilter minFilter, TextureFilter magFilter, TextureWrap wrapX, TextureWrap wrapY)
+		{
+			return new WebGL2Texture(data, TextureType.Texture2D, width, height, 1, textureFormat, minFilter, magFilter, wrapX, wrapY);
+		}
+
 		internal override Shader CreateShader(string source)
 		{
 			return new WebGL2Shader(source);

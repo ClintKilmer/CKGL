@@ -55,6 +55,9 @@
     <Compile Include="..\CKGL\src\Exceptions.cs">
       <Link>src\Exceptions.cs</Link>
     </Compile>
+    <Compile Include="..\CKGL\src\Graphics\Bitmap.cs">
+      <Link>src\Graphics\Bitmap.cs</Link>
+    </Compile>
     <Compile Include="..\CKGL\src\Graphics\Camera.cs">
       <Link>src\Graphics\Camera.cs</Link>
     </Compile>
@@ -151,6 +154,9 @@
     <Compile Include="..\CKGL\src\Graphics\State\PolygonModeState.cs">
       <Link>src\Graphics\State\PolygonModeState.cs</Link>
     </Compile>
+    <Compile Include="..\CKGL\src\Graphics\Texture.cs">
+      <Link>src\Graphics\Texture.cs</Link>
+    </Compile>
     <Compile Include="..\CKGL\src\Graphics\VertexBuffer.cs">
       <Link>src\Graphics\VertexBuffer.cs</Link>
     </Compile>
@@ -223,7 +229,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="src\Game.cs" />
     <Compile Include="src\Graphics\Framebuffer-Dummy.cs" />
-    <Compile Include="src\Graphics\Texture-Dummy.cs" />
     <Compile Include="src\Graphics\WebGL2\VertexArray.cs" />
     <Compile Include="src\Graphics\WebGL2\WebGL2CKGLConversions.cs" />
     <Compile Include="src\Graphics\WebGL2\WebGL2GeometryInput.cs" />
@@ -231,6 +236,8 @@
     <Compile Include="src\Graphics\WebGL2\WebGL2IndexBuffer.cs" />
     <Compile Include="src\Graphics\WebGL2\WebGL2Shader.cs" />
     <Compile Include="src\Graphics\WebGL2\WebGL2VertexBuffer.cs" />
+    <Compile Include="src\Graphics\WebGL2\WebGL2Texture.cs" />
+    <Compile Include="src\Graphics\WebGL\WebGLTexture.cs" />
     <Compile Include="src\Graphics\WebGL\VertexArray.cs" />
     <Compile Include="src\Graphics\WebGL\WebGLCKGLConversions.cs" />
     <Compile Include="src\Graphics\WebGL\WebGLGeometryInput.cs" />

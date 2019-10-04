@@ -65,8 +65,8 @@ namespace CKGL
 		internal static VertexBuffer CreateVertexBuffer(BufferUsage bufferUsage) => graphics.CreateVertexBuffer(bufferUsage);
 		internal static IndexBuffer CreateIndexBuffer(BufferUsage bufferUsage) => graphics.CreateIndexBuffer(bufferUsage);
 		internal static GeometryInput CreateGeometryInput(IndexBuffer indexBuffer, VertexStream[] vertexStreams) => graphics.CreateGeometryInput(indexBuffer, vertexStreams);
-#if !WEBGL
 		internal static Texture CreateTexture2D(byte[] data, int width, int height, TextureFormat textureFormat, TextureFilter minFilter, TextureFilter magFilter, TextureWrap wrapX, TextureWrap wrapY) => graphics.CreateTexture2D(data, width, height, textureFormat, minFilter, magFilter, wrapX, wrapY);
+#if !WEBGL
 		internal static Framebuffer CreateFramebuffer(int width, int height, int colourTextures, TextureFormat textureColourFormat, TextureFormat? textureDepthFormat = null) => graphics.CreateFramebuffer(width, height, colourTextures, textureColourFormat, textureDepthFormat);
 #endif
 		internal static Shader CreateShader(string source) => graphics.CreateShader(source);

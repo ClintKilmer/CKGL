@@ -278,67 +278,165 @@ namespace CKGL.WebGL
 		//	}
 		//}
 
-		//internal static WebGLBindings.TextureFilter ToWebGL(this TextureFilter textureFilter)
-		//{
-		//	switch (textureFilter)
-		//	{
-		//		case TextureFilter.Nearest:
-		//			return WebGLBindings.TextureFilter.Nearest;
-		//		case TextureFilter.Linear:
-		//			return WebGLBindings.TextureFilter.Linear;
-		//		case TextureFilter.NearestMipmapNearest:
-		//			return WebGLBindings.TextureFilter.NearestMipmapNearest;
-		//		case TextureFilter.LinearMipmapNearest:
-		//			return WebGLBindings.TextureFilter.LinearMipmapNearest;
-		//		case TextureFilter.NearestMipmapLinear:
-		//			return WebGLBindings.TextureFilter.NearestMipmapLinear;
-		//		case TextureFilter.LinearMipmapLinear:
-		//			return WebGLBindings.TextureFilter.LinearMipmapLinear;
-		//		default:
-		//			throw new IllegalValueException(typeof(TextureFilter), textureFilter);
-		//	}
-		//}
+		internal static uint ToWebGL(this TextureFilter textureFilter)
+		{
+			switch (textureFilter)
+			{
+				case TextureFilter.Nearest:
+					return GL.NEAREST;
+				case TextureFilter.Linear:
+					return GL.LINEAR;
+				case TextureFilter.NearestMipmapNearest:
+					return GL.NEAREST_MIPMAP_NEAREST;
+				case TextureFilter.LinearMipmapNearest:
+					return GL.LINEAR_MIPMAP_NEAREST;
+				case TextureFilter.NearestMipmapLinear:
+					return GL.NEAREST_MIPMAP_LINEAR;
+				case TextureFilter.LinearMipmapLinear:
+					return GL.LINEAR_MIPMAP_LINEAR;
+				default:
+					throw new IllegalValueException(typeof(TextureFilter), textureFilter);
+			}
+		}
 
-		//internal static WebGLBindings.TextureFormat ToWebGL(this TextureFormat textureFormat)
+		internal static uint ToWebGL(this TextureFormat textureFormat)
+		{
+			switch (textureFormat)
+			{
+				//case TextureFormat.R8:
+				//	return GL.R8;
+				//case TextureFormat.RG8:
+				//	return GL.RG8;
+				case TextureFormat.RGB8:
+					return GL.RGB;
+				case TextureFormat.RGBA8:
+					return GL.RGBA;
+				case TextureFormat.Depth16 when Extensions.WEBGL_depth_texture != null:
+					return GL.DEPTH_COMPONENT;
+				case TextureFormat.Depth24 when Extensions.WEBGL_depth_texture != null:
+					return GL.DEPTH_COMPONENT;
+				//case TextureFormat.Depth32F when Extensions.WEBGL_depth_texture != null:
+				//	return GL.DEPTH_COMPONENT;
+				case TextureFormat.Depth24Stencil8 when Extensions.WEBGL_depth_texture != null:
+					return GL.DEPTH_STENCIL;
+				//case TextureFormat.Depth32FStencil8 when Extensions.WEBGL_depth_texture != null:
+				//	return GL.DEPTH_STENCIL;
+				default:
+					throw new IllegalValueException(typeof(TextureFormat), textureFormat);
+			}
+		}
+		#region TextureFormat Extensions
+		internal static uint ToWebGLPixelFormat(this TextureFormat textureFormat)
+		{
+			switch (textureFormat)
+			{
+				//case TextureFormat.R8:
+				//	return GL.R8;
+				//case TextureFormat.RG8:
+				//	return GL.RG8;
+				case TextureFormat.RGB8:
+					return GL.RGB;
+				case TextureFormat.RGBA8:
+					return GL.RGBA;
+				case TextureFormat.Depth16 when Extensions.WEBGL_depth_texture != null:
+					return GL.DEPTH_COMPONENT;
+				case TextureFormat.Depth24 when Extensions.WEBGL_depth_texture != null:
+					return GL.DEPTH_COMPONENT;
+				//case TextureFormat.Depth32F when Extensions.WEBGL_depth_texture != null:
+				//	return GL.DEPTH_COMPONENT;
+				case TextureFormat.Depth24Stencil8 when Extensions.WEBGL_depth_texture != null:
+					return GL.DEPTH_STENCIL;
+				//case TextureFormat.Depth32FStencil8 when Extensions.WEBGL_depth_texture != null:
+				//	return GL.DEPTH_STENCIL;
+				default:
+					throw new IllegalValueException(typeof(TextureFormat), textureFormat);
+			}
+		}
+
+		public static uint ToWebGLPixelType(this TextureFormat textureFormat)
+		{
+			switch (textureFormat)
+			{
+				//case TextureFormat.R8:
+				//	return GL.UNSIGNED_BYTE;
+				//case TextureFormat.RG8:
+				//	return GL.UNSIGNED_BYTE;
+				case TextureFormat.RGB8:
+					return GL.UNSIGNED_BYTE;
+				case TextureFormat.RGBA8:
+					return GL.UNSIGNED_BYTE;
+				case TextureFormat.Depth16 when Extensions.WEBGL_depth_texture != null:
+					return GL.UNSIGNED_SHORT;
+				case TextureFormat.Depth24 when Extensions.WEBGL_depth_texture != null:
+					return GL.UNSIGNED_INT;
+				//case TextureFormat.Depth32F when Extensions.WEBGL_depth_texture != null:
+				//	return GL.Float;
+				case TextureFormat.Depth24Stencil8 when Extensions.WEBGL_depth_texture != null:
+					return (uint)Extensions.WEBGL_depth_texture.UNSIGNED_INT_24_8_WEBGL;
+				//case TextureFormat.Depth32FStencil8 when Extensions.WEBGL_depth_texture != null:
+				//	return GL.Float_32_UnsignedInt_24_8_REV;
+				default:
+					throw new IllegalValueException(typeof(TextureFormat), textureFormat);
+			}
+		}
+
+		//public static TextureAttachment TextureAttachment(this TextureFormat textureFormat)
 		//{
 		//	switch (textureFormat)
 		//	{
-		//		case TextureFormat.R8:
-		//			return WebGLBindings.TextureFormat.R8;
-		//		case TextureFormat.RG8:
-		//			return WebGLBindings.TextureFormat.RG8;
-		//		case TextureFormat.RGB8:
-		//			return WebGLBindings.TextureFormat.RGB8;
-		//		case TextureFormat.RGBA8:
-		//			return WebGLBindings.TextureFormat.RGBA8;
 		//		case TextureFormat.Depth16:
-		//			return WebGLBindings.TextureFormat.Depth16;
 		//		case TextureFormat.Depth24:
-		//			return WebGLBindings.TextureFormat.Depth24;
 		//		case TextureFormat.Depth32F:
-		//			return WebGLBindings.TextureFormat.Depth32F;
+		//			return OpenGLBindings.TextureAttachment.Depth;
 		//		case TextureFormat.Depth24Stencil8:
-		//			return WebGLBindings.TextureFormat.Depth24Stencil8;
 		//		case TextureFormat.Depth32FStencil8:
-		//			return WebGLBindings.TextureFormat.Depth32FStencil8;
+		//			return OpenGLBindings.TextureAttachment.DepthStencil;
 		//		default:
 		//			throw new IllegalValueException(typeof(TextureFormat), textureFormat);
 		//	}
 		//}
 
-		//internal static WebGLBindings.TextureWrap ToWebGL(this TextureWrap textureWrap)
-		//{
-		//	switch (textureWrap)
-		//	{
-		//		case TextureWrap.Clamp:
-		//			return WebGLBindings.TextureWrap.Clamp;
-		//		case TextureWrap.Repeat:
-		//			return WebGLBindings.TextureWrap.Repeat;
-		//		case TextureWrap.MirroredRepeat:
-		//			return WebGLBindings.TextureWrap.MirroredRepeat;
-		//		default:
-		//			throw new IllegalValueException(typeof(TextureWrap), textureWrap);
-		//	}
-		//}
+		public static int Components(this TextureFormat textureFormat)
+		{
+			switch (textureFormat)
+			{
+				//case TextureFormat.R8:
+				//	return 1;
+				//case TextureFormat.RG8:
+				//	return 2;
+				case TextureFormat.RGB8:
+					return 3;
+				case TextureFormat.RGBA8:
+					return 4;
+				case TextureFormat.Depth16 when Extensions.WEBGL_depth_texture != null:
+					return 1;
+				case TextureFormat.Depth24 when Extensions.WEBGL_depth_texture != null:
+					return 1;
+				//case TextureFormat.Depth32F when Extensions.WEBGL_depth_texture != null:
+				//	return 1;
+				case TextureFormat.Depth24Stencil8 when Extensions.WEBGL_depth_texture != null:
+					return 2;
+				//case TextureFormat.Depth32FStencil8 when Extensions.WEBGL_depth_texture != null::
+				//	return 2;
+				default:
+					throw new IllegalValueException(typeof(TextureFormat), textureFormat);
+			}
+		}
+		#endregion
+
+		internal static uint ToWebGL(this TextureWrap textureWrap)
+		{
+			switch (textureWrap)
+			{
+				case TextureWrap.Clamp:
+					return GL.CLAMP_TO_EDGE;
+				case TextureWrap.Repeat:
+					return GL.REPEAT;
+				case TextureWrap.MirroredRepeat:
+					return GL.MIRRORED_REPEAT;
+				default:
+					throw new IllegalValueException(typeof(TextureWrap), textureWrap);
+			}
+		}
 	}
 }

@@ -81,6 +81,24 @@ namespace CKGL.WebGL
 				}
 			}
 
+			private static WEBGL_depth_texture _WEBGL_depth_texture;
+			internal static WEBGL_depth_texture WEBGL_depth_texture
+			{
+				get
+				{
+					if (_WEBGL_depth_texture == null)
+					{
+						_WEBGL_depth_texture = GL.getExtension(WebGL_EXT.WEBGL_depth_texture);
+						Output.WriteLine("WebGL 1.0 Extension \"WEBGL_depth_texture\" acquired.");
+
+						if (_ANGLE_instanced_arrays == null)
+							throw new CKGLException("WebGL 1.0 \"WEBGL_depth_texture\" extension was requested, but is not supported in this browser.");
+					}
+
+					return _WEBGL_depth_texture;
+				}
+			}
+
 			private static OES_element_index_uint _OES_element_index_uint;
 			internal static OES_element_index_uint OES_element_index_uint
 			{
@@ -143,6 +161,11 @@ namespace CKGL.WebGL
 		internal override GeometryInput CreateGeometryInput(IndexBuffer indexBuffer, VertexStream[] vertexStreams)
 		{
 			return new WebGLGeometryInput(indexBuffer, vertexStreams);
+		}
+
+		internal override Texture CreateTexture2D(byte[] data, int width, int height, TextureFormat textureFormat, TextureFilter minFilter, TextureFilter magFilter, TextureWrap wrapX, TextureWrap wrapY)
+		{
+			return new WebGLTexture(data, TextureType.Texture2D, width, height, 1, textureFormat, minFilter, magFilter, wrapX, wrapY);
 		}
 
 		internal override Shader CreateShader(string source)
