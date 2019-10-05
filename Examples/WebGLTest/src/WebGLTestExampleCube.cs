@@ -393,6 +393,8 @@ void main()
 
 		Camera Camera = new Camera();
 
+		Framebuffer surface;
+
 		CullModeState cullModeState = CullModeState.Back;
 		PolygonModeState polygonModeState = PolygonModeState.Fill;
 
@@ -463,6 +465,10 @@ void main()
 			Camera.Position = new Vector3(0f, 2f, -10f);
 			Camera.zNear = 0.1f;
 			Camera.zFar = 150f;
+
+			surface = Framebuffer.Create(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth24);
+			// Temporary
+			Framebuffer.Default.Bind();
 
 			vertexFormat = new VertexFormat(
 				4,                                                    // Pack

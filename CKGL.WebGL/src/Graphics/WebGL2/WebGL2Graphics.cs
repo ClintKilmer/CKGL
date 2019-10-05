@@ -63,6 +63,9 @@ namespace CKGL.WebGL2
 			}
 			catch { }
 			//Output.WriteLine($"WebGL - Extensions: \n{string.Join("\n", gl.GetSupportedExtensions())}");
+
+			// Set up default framebuffer
+			Framebuffer.Current = Framebuffer.Default = new WebGL2Framebuffer();
 		}
 
 		#region Resources
@@ -84,6 +87,11 @@ namespace CKGL.WebGL2
 		internal override Texture CreateTexture2D(byte[] data, int width, int height, TextureFormat textureFormat, TextureFilter minFilter, TextureFilter magFilter, TextureWrap wrapX, TextureWrap wrapY)
 		{
 			return new WebGL2Texture(data, TextureType.Texture2D, width, height, 1, textureFormat, minFilter, magFilter, wrapX, wrapY);
+		}
+
+		internal override Framebuffer CreateFramebuffer(int width, int height, int colourTextures, TextureFormat textureColourFormat, TextureFormat? textureDepthFormat = null)
+		{
+			return new WebGL2Framebuffer(width, height, colourTextures, textureColourFormat, textureDepthFormat);
 		}
 
 		internal override Shader CreateShader(string source)

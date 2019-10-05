@@ -134,18 +134,18 @@ namespace CKGL.WebGL2
 		}
 		#endregion
 
-		//internal static WebGLBindings.BlitFilter ToWebGL2(this BlitFilter blitFilter)
-		//{
-		//	switch (blitFilter)
-		//	{
-		//		case BlitFilter.Nearest:
-		//			return WebGLBindings.BlitFilter.Nearest;
-		//		case BlitFilter.Linear:
-		//			return WebGLBindings.BlitFilter.Linear;
-		//		default:
-		//			throw new IllegalValueException(typeof(BlitFilter), blitFilter);
-		//	}
-		//}
+		internal static double ToWebGL2(this BlitFilter blitFilter)
+		{
+			switch (blitFilter)
+			{
+				case BlitFilter.Nearest:
+					return NEAREST;
+				case BlitFilter.Linear:
+					return LINEAR;
+				default:
+					throw new IllegalValueException(typeof(BlitFilter), blitFilter);
+			}
+		}
 
 		internal static double ToWebGL2(this BufferUsage bufferUsage)
 		{
@@ -233,50 +233,50 @@ namespace CKGL.WebGL2
 			}
 		}
 
-		//internal static WebGLBindings.TextureAttachment ToWebGL2(this TextureAttachment textureAttachment)
-		//{
-		//	switch (textureAttachment)
-		//	{
-		//		case TextureAttachment.Depth:
-		//			return WebGLBindings.TextureAttachment.Depth;
-		//		case TextureAttachment.DepthStencil:
-		//			return WebGLBindings.TextureAttachment.DepthStencil;
-		//		case TextureAttachment.Colour0:
-		//			return WebGLBindings.TextureAttachment.Colour0;
-		//		case TextureAttachment.Colour1:
-		//			return WebGLBindings.TextureAttachment.Colour1;
-		//		case TextureAttachment.Colour2:
-		//			return WebGLBindings.TextureAttachment.Colour2;
-		//		case TextureAttachment.Colour3:
-		//			return WebGLBindings.TextureAttachment.Colour3;
-		//		case TextureAttachment.Colour4:
-		//			return WebGLBindings.TextureAttachment.Colour4;
-		//		case TextureAttachment.Colour5:
-		//			return WebGLBindings.TextureAttachment.Colour5;
-		//		case TextureAttachment.Colour6:
-		//			return WebGLBindings.TextureAttachment.Colour6;
-		//		case TextureAttachment.Colour7:
-		//			return WebGLBindings.TextureAttachment.Colour7;
-		//		case TextureAttachment.Colour8:
-		//			return WebGLBindings.TextureAttachment.Colour8;
-		//		case TextureAttachment.Colour9:
-		//			return WebGLBindings.TextureAttachment.Colour9;
-		//		case TextureAttachment.Colour10:
-		//			return WebGLBindings.TextureAttachment.Colour10;
-		//		case TextureAttachment.Colour11:
-		//			return WebGLBindings.TextureAttachment.Colour11;
-		//		case TextureAttachment.Colour12:
-		//			return WebGLBindings.TextureAttachment.Colour12;
-		//		case TextureAttachment.Colour13:
-		//			return WebGLBindings.TextureAttachment.Colour13;
-		//		case TextureAttachment.Colour14:
-		//			return WebGLBindings.TextureAttachment.Colour14;
-		//		case TextureAttachment.Colour15:
-		//			return WebGLBindings.TextureAttachment.Colour15;
-		//		default:
-		//			throw new IllegalValueException(typeof(TextureAttachment), textureAttachment);
-		//	}
-		//}
+		internal static double ToWebGL2(this TextureAttachment textureAttachment)
+		{
+			switch (textureAttachment)
+			{
+				case TextureAttachment.Depth:
+					return DEPTH_ATTACHMENT;
+				case TextureAttachment.DepthStencil:
+					return DEPTH_STENCIL_ATTACHMENT;
+				case TextureAttachment.Colour0:
+					return COLOR_ATTACHMENT0;
+				case TextureAttachment.Colour1:
+					return COLOR_ATTACHMENT1_Static;
+				case TextureAttachment.Colour2:
+					return COLOR_ATTACHMENT2_Static;
+				case TextureAttachment.Colour3:
+					return COLOR_ATTACHMENT3_Static;
+				case TextureAttachment.Colour4:
+					return COLOR_ATTACHMENT4_Static;
+				case TextureAttachment.Colour5:
+					return COLOR_ATTACHMENT5_Static;
+				case TextureAttachment.Colour6:
+					return COLOR_ATTACHMENT6_Static;
+				case TextureAttachment.Colour7:
+					return COLOR_ATTACHMENT7_Static;
+				case TextureAttachment.Colour8:
+					return COLOR_ATTACHMENT8_Static;
+				case TextureAttachment.Colour9:
+					return COLOR_ATTACHMENT9_Static;
+				case TextureAttachment.Colour10:
+					return COLOR_ATTACHMENT10_Static;
+				case TextureAttachment.Colour11:
+					return COLOR_ATTACHMENT11_Static;
+				case TextureAttachment.Colour12:
+					return COLOR_ATTACHMENT12_Static;
+				case TextureAttachment.Colour13:
+					return COLOR_ATTACHMENT13_Static;
+				case TextureAttachment.Colour14:
+					return COLOR_ATTACHMENT14_Static;
+				case TextureAttachment.Colour15:
+					return COLOR_ATTACHMENT15_Static;
+				default:
+					throw new IllegalValueException(typeof(TextureAttachment), textureAttachment);
+			}
+		}
 
 		internal static double ToWebGL2(this TextureFilter textureFilter)
 		{
@@ -380,30 +380,30 @@ namespace CKGL.WebGL2
 			}
 		}
 
-		//public static TextureAttachment TextureAttachment(this TextureFormat textureFormat)
-		//{
-		//	switch (textureFormat)
-		//	{
-		//		case TextureFormat.Depth16:
-		//		case TextureFormat.Depth24:
-		//		case TextureFormat.Depth32F:
-		//			return OpenGLBindings.TextureAttachment.Depth;
-		//		case TextureFormat.Depth24Stencil8:
-		//		case TextureFormat.Depth32FStencil8:
-		//			return OpenGLBindings.TextureAttachment.DepthStencil;
-		//		default:
-		//			throw new IllegalValueException(typeof(TextureFormat), textureFormat);
-		//	}
-		//}
+		public static double ToWebGL2TextureAttachment(this TextureFormat textureFormat)
+		{
+			switch (textureFormat)
+			{
+				case TextureFormat.Depth16:
+				case TextureFormat.Depth24:
+				case TextureFormat.Depth32F:
+					return DEPTH_ATTACHMENT;
+				case TextureFormat.Depth24Stencil8:
+				case TextureFormat.Depth32FStencil8:
+					return DEPTH_STENCIL_ATTACHMENT;
+				default:
+					throw new IllegalValueException(typeof(TextureFormat), textureFormat);
+			}
+		}
 
 		public static int Components(this TextureFormat textureFormat)
 		{
 			switch (textureFormat)
 			{
-				//case TextureFormat.R8:
-				//	return 1;
-				//case TextureFormat.RG8:
-				//	return 2;
+				case TextureFormat.R8:
+					return 1;
+				case TextureFormat.RG8:
+					return 2;
 				case TextureFormat.RGB8:
 					return 3;
 				case TextureFormat.RGBA8:
@@ -412,12 +412,12 @@ namespace CKGL.WebGL2
 					return 1;
 				case TextureFormat.Depth24:
 					return 1;
-				//case TextureFormat.Depth32F:
-				//	return 1;
+				case TextureFormat.Depth32F:
+					return 1;
 				case TextureFormat.Depth24Stencil8:
 					return 2;
-				//case TextureFormat.Depth32FStencil8::
-				//	return 2;
+				case TextureFormat.Depth32FStencil8:
+					return 2;
 				default:
 					throw new IllegalValueException(typeof(TextureFormat), textureFormat);
 			}

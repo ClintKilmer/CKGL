@@ -115,6 +115,9 @@
     <Compile Include="..\CKGL\src\Graphics\Enums\TextureWrap.cs">
       <Link>src\Graphics\Enums\TextureWrap.cs</Link>
     </Compile>
+    <Compile Include="..\CKGL\src\Graphics\Framebuffer.cs">
+      <Link>src\Graphics\Framebuffer.cs</Link>
+    </Compile>
     <Compile Include="..\CKGL\src\Graphics\GeometryInput.cs">
       <Link>src\Graphics\GeometryInput.cs</Link>
     </Compile>
@@ -228,7 +231,7 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="src\Game.cs" />
-    <Compile Include="src\Graphics\Framebuffer-Dummy.cs" />
+    <Compile Include="src\Graphics\WebGL2\WebGL2Framebuffer.cs" />
     <Compile Include="src\Graphics\WebGL2\VertexArray.cs" />
     <Compile Include="src\Graphics\WebGL2\WebGL2CKGLConversions.cs" />
     <Compile Include="src\Graphics\WebGL2\WebGL2GeometryInput.cs" />
@@ -237,6 +240,7 @@
     <Compile Include="src\Graphics\WebGL2\WebGL2Shader.cs" />
     <Compile Include="src\Graphics\WebGL2\WebGL2VertexBuffer.cs" />
     <Compile Include="src\Graphics\WebGL2\WebGL2Texture.cs" />
+    <Compile Include="src\Graphics\WebGL\WebGLFramebuffer.cs" />
     <Compile Include="src\Graphics\WebGL\WebGLTexture.cs" />
     <Compile Include="src\Graphics\WebGL\VertexArray.cs" />
     <Compile Include="src\Graphics\WebGL\WebGLCKGLConversions.cs" />

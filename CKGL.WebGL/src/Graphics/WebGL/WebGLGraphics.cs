@@ -91,7 +91,7 @@ namespace CKGL.WebGL
 						_WEBGL_depth_texture = GL.getExtension(WebGL_EXT.WEBGL_depth_texture);
 						Output.WriteLine("WebGL 1.0 Extension \"WEBGL_depth_texture\" acquired.");
 
-						if (_ANGLE_instanced_arrays == null)
+						if (_WEBGL_depth_texture == null)
 							throw new CKGLException("WebGL 1.0 \"WEBGL_depth_texture\" extension was requested, but is not supported in this browser.");
 					}
 
@@ -109,13 +109,32 @@ namespace CKGL.WebGL
 						_OES_element_index_uint = GL.getExtension(WebGL_EXT.OES_element_index_uint);
 						Output.WriteLine("WebGL 1.0 Extension \"OES_element_index_uint\" acquired.");
 
-						if (_ANGLE_instanced_arrays == null)
+						if (_OES_element_index_uint == null)
 							throw new CKGLException("WebGL 1.0 \"OES_element_index_uint\" extension was requested, but is not supported in this browser.");
 					}
 
 					return _OES_element_index_uint;
 				}
 			}
+
+			// Currently widely unsupported
+			//private static WEBGL_draw_buffers _WEBGL_draw_buffers;
+			//internal static WEBGL_draw_buffers WEBGL_draw_buffers
+			//{
+			//	get
+			//	{
+			//		if (_WEBGL_draw_buffers == null)
+			//		{
+			//			_WEBGL_draw_buffers = GL.getExtension(WebGL_EXT.WEBGL_draw_buffers);
+			//			Output.WriteLine("WebGL 1.0 Extension \"WEBGL_draw_buffers\" acquired.");
+
+			//			if (_WEBGL_draw_buffers == null)
+			//				throw new CKGLException("WebGL 1.0 \"WEBGL_draw_buffers\" extension was requested, but is not supported in this browser.");
+			//		}
+
+			//		return _WEBGL_draw_buffers;
+			//	}
+			//}
 		}
 		#endregion
 
@@ -145,6 +164,9 @@ namespace CKGL.WebGL
 			}
 			catch { }
 			//Output.WriteLine($"WebGL - Extensions: \n{string.Join("\n", gl.GetSupportedExtensions())}");
+
+			// Set up default framebuffer
+			Framebuffer.Current = Framebuffer.Default = new WebGLFramebuffer();
 		}
 
 		#region Resources
@@ -166,6 +188,11 @@ namespace CKGL.WebGL
 		internal override Texture CreateTexture2D(byte[] data, int width, int height, TextureFormat textureFormat, TextureFilter minFilter, TextureFilter magFilter, TextureWrap wrapX, TextureWrap wrapY)
 		{
 			return new WebGLTexture(data, TextureType.Texture2D, width, height, 1, textureFormat, minFilter, magFilter, wrapX, wrapY);
+		}
+
+		internal override Framebuffer CreateFramebuffer(int width, int height, int colourTextures, TextureFormat textureColourFormat, TextureFormat? textureDepthFormat = null)
+		{
+			return new WebGLFramebuffer(width, height, colourTextures, textureColourFormat, textureDepthFormat);
 		}
 
 		internal override Shader CreateShader(string source)

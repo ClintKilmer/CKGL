@@ -134,20 +134,20 @@ namespace CKGL.WebGL
 		}
 		#endregion
 
-		//internal static WebGLBindings.BlitFilter ToWebGL(this BlitFilter blitFilter)
+		//internal static double ToWebGL(this BlitFilter blitFilter)
 		//{
 		//	switch (blitFilter)
 		//	{
 		//		case BlitFilter.Nearest:
-		//			return WebGLBindings.BlitFilter.Nearest;
+		//			return GL.NEAREST;
 		//		case BlitFilter.Linear:
-		//			return WebGLBindings.BlitFilter.Linear;
+		//			return GL.LINEAR;
 		//		default:
 		//			throw new IllegalValueException(typeof(BlitFilter), blitFilter);
 		//	}
 		//}
 
-		internal static double ToWebGL(this BufferUsage bufferUsage)
+		internal static uint ToWebGL(this BufferUsage bufferUsage)
 		{
 			switch (bufferUsage)
 			{
@@ -164,7 +164,7 @@ namespace CKGL.WebGL
 			}
 		}
 
-		internal static double ToWebGL(this DataType dataType)
+		internal static uint ToWebGL(this DataType dataType)
 		{
 			switch (dataType)
 			{
@@ -195,7 +195,7 @@ namespace CKGL.WebGL
 			}
 		}
 
-		internal static double ToWebGL(this IndexType indexType)
+		internal static uint ToWebGL(this IndexType indexType)
 		{
 			switch (indexType)
 			{
@@ -210,7 +210,7 @@ namespace CKGL.WebGL
 			}
 		}
 
-		internal static double ToWebGL(this PrimitiveTopology primitiveTopology)
+		internal static uint ToWebGL(this PrimitiveTopology primitiveTopology)
 		{
 			switch (primitiveTopology)
 			{
@@ -233,46 +233,46 @@ namespace CKGL.WebGL
 			}
 		}
 
-		//internal static WebGLBindings.TextureAttachment ToWebGL(this TextureAttachment textureAttachment)
+		//internal static double ToWebGL(this TextureAttachment textureAttachment)
 		//{
 		//	switch (textureAttachment)
 		//	{
 		//		case TextureAttachment.Depth:
-		//			return WebGLBindings.TextureAttachment.Depth;
+		//			return GL.DEPTH_ATTACHMENT;
 		//		case TextureAttachment.DepthStencil:
-		//			return WebGLBindings.TextureAttachment.DepthStencil;
+		//			return GL.DEPTH_STENCIL_ATTACHMENT;
 		//		case TextureAttachment.Colour0:
-		//			return WebGLBindings.TextureAttachment.Colour0;
-		//		case TextureAttachment.Colour1:
-		//			return WebGLBindings.TextureAttachment.Colour1;
-		//		case TextureAttachment.Colour2:
-		//			return WebGLBindings.TextureAttachment.Colour2;
-		//		case TextureAttachment.Colour3:
-		//			return WebGLBindings.TextureAttachment.Colour3;
-		//		case TextureAttachment.Colour4:
-		//			return WebGLBindings.TextureAttachment.Colour4;
-		//		case TextureAttachment.Colour5:
-		//			return WebGLBindings.TextureAttachment.Colour5;
-		//		case TextureAttachment.Colour6:
-		//			return WebGLBindings.TextureAttachment.Colour6;
-		//		case TextureAttachment.Colour7:
-		//			return WebGLBindings.TextureAttachment.Colour7;
-		//		case TextureAttachment.Colour8:
-		//			return WebGLBindings.TextureAttachment.Colour8;
-		//		case TextureAttachment.Colour9:
-		//			return WebGLBindings.TextureAttachment.Colour9;
-		//		case TextureAttachment.Colour10:
-		//			return WebGLBindings.TextureAttachment.Colour10;
-		//		case TextureAttachment.Colour11:
-		//			return WebGLBindings.TextureAttachment.Colour11;
-		//		case TextureAttachment.Colour12:
-		//			return WebGLBindings.TextureAttachment.Colour12;
-		//		case TextureAttachment.Colour13:
-		//			return WebGLBindings.TextureAttachment.Colour13;
-		//		case TextureAttachment.Colour14:
-		//			return WebGLBindings.TextureAttachment.Colour14;
-		//		case TextureAttachment.Colour15:
-		//			return WebGLBindings.TextureAttachment.Colour15;
+		//			return GL.COLOR_ATTACHMENT0;
+		//		case TextureAttachment.Colour1 when Extensions.WEBGL_draw_buffers != null:
+		//			return Extensions.WEBGL_draw_buffers.COLOR_ATTACHMENT1_WEBGL;
+		//		case TextureAttachment.Colour2 when Extensions.WEBGL_draw_buffers != null:
+		//			return Extensions.WEBGL_draw_buffers.COLOR_ATTACHMENT2_WEBGL;
+		//		case TextureAttachment.Colour3 when Extensions.WEBGL_draw_buffers != null:
+		//			return Extensions.WEBGL_draw_buffers.COLOR_ATTACHMENT3_WEBGL;
+		//		case TextureAttachment.Colour4 when Extensions.WEBGL_draw_buffers != null:
+		//			return Extensions.WEBGL_draw_buffers.COLOR_ATTACHMENT4_WEBGL;
+		//		case TextureAttachment.Colour5 when Extensions.WEBGL_draw_buffers != null:
+		//			return Extensions.WEBGL_draw_buffers.COLOR_ATTACHMENT5_WEBGL;
+		//		case TextureAttachment.Colour6 when Extensions.WEBGL_draw_buffers != null:
+		//			return Extensions.WEBGL_draw_buffers.COLOR_ATTACHMENT6_WEBGL;
+		//		case TextureAttachment.Colour7 when Extensions.WEBGL_draw_buffers != null:
+		//			return Extensions.WEBGL_draw_buffers.COLOR_ATTACHMENT7_WEBGL;
+		//		case TextureAttachment.Colour8 when Extensions.WEBGL_draw_buffers != null:
+		//			return Extensions.WEBGL_draw_buffers.COLOR_ATTACHMENT8_WEBGL;
+		//		case TextureAttachment.Colour9 when Extensions.WEBGL_draw_buffers != null:
+		//			return Extensions.WEBGL_draw_buffers.COLOR_ATTACHMENT9_WEBGL;
+		//		case TextureAttachment.Colour10 when Extensions.WEBGL_draw_buffers != null:
+		//			return Extensions.WEBGL_draw_buffers.COLOR_ATTACHMENT10_WEBGL;
+		//		case TextureAttachment.Colour11 when Extensions.WEBGL_draw_buffers != null:
+		//			return Extensions.WEBGL_draw_buffers.COLOR_ATTACHMENT11_WEBGL;
+		//		case TextureAttachment.Colour12 when Extensions.WEBGL_draw_buffers != null:
+		//			return Extensions.WEBGL_draw_buffers.COLOR_ATTACHMENT12_WEBGL;
+		//		case TextureAttachment.Colour13 when Extensions.WEBGL_draw_buffers != null:
+		//			return Extensions.WEBGL_draw_buffers.COLOR_ATTACHMENT13_WEBGL;
+		//		case TextureAttachment.Colour14 when Extensions.WEBGL_draw_buffers != null:
+		//			return Extensions.WEBGL_draw_buffers.COLOR_ATTACHMENT14_WEBGL;
+		//		case TextureAttachment.Colour15 when Extensions.WEBGL_draw_buffers != null:
+		//			return Extensions.WEBGL_draw_buffers.COLOR_ATTACHMENT15_WEBGL;
 		//		default:
 		//			throw new IllegalValueException(typeof(TextureAttachment), textureAttachment);
 		//	}
@@ -380,21 +380,21 @@ namespace CKGL.WebGL
 			}
 		}
 
-		//public static TextureAttachment TextureAttachment(this TextureFormat textureFormat)
-		//{
-		//	switch (textureFormat)
-		//	{
-		//		case TextureFormat.Depth16:
-		//		case TextureFormat.Depth24:
-		//		case TextureFormat.Depth32F:
-		//			return OpenGLBindings.TextureAttachment.Depth;
-		//		case TextureFormat.Depth24Stencil8:
-		//		case TextureFormat.Depth32FStencil8:
-		//			return OpenGLBindings.TextureAttachment.DepthStencil;
-		//		default:
-		//			throw new IllegalValueException(typeof(TextureFormat), textureFormat);
-		//	}
-		//}
+		public static double ToWebGLTextureAttachment(this TextureFormat textureFormat)
+		{
+			switch (textureFormat)
+			{
+				case TextureFormat.Depth16:
+				case TextureFormat.Depth24:
+					//case TextureFormat.Depth32F:
+					return GL.DEPTH_ATTACHMENT;
+				case TextureFormat.Depth24Stencil8:
+					//case TextureFormat.Depth32FStencil8:
+					return GL.DEPTH_STENCIL_ATTACHMENT;
+				default:
+					throw new IllegalValueException(typeof(TextureFormat), textureFormat);
+			}
+		}
 
 		public static int Components(this TextureFormat textureFormat)
 		{

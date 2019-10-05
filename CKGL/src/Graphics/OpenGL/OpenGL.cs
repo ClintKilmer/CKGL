@@ -1734,7 +1734,7 @@ namespace CKGL.OpenGLBindings
 
 	public enum ReadBuffer : GLuint
 	{
-		Depth = GL_DEPTH_ATTACHMENT,
+		Depth = GL_DEPTH_ATTACHMENT, // TODO: Not supported?
 		Colour0 = GL_COLOR_ATTACHMENT0,
 		Colour1 = GL_COLOR_ATTACHMENT1,
 		Colour2 = GL_COLOR_ATTACHMENT2,
