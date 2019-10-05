@@ -19,13 +19,13 @@ namespace CKGL.OpenGL
 		public OpenGLFramebuffer(int width, int height, GLint colourTextures, TextureFormat textureColourFormat, TextureFormat? textureDepthFormat = null)
 		{
 			if (colourTextures < 1)
-				throw new Exception("Must have at least 1 colour texture.");
+				throw new CKGLException("Must have at least 1 colour texture.");
 			if (colourTextures > GL.MaxColourAttachments || colourTextures > GL.MaxDrawBuffers)
-				throw new Exception("Too many colour textures.");
+				throw new CKGLException("Too many colour textures.");
 			if (textureColourFormat.ToOpenGL().PixelFormat() == PixelFormat.Depth || textureColourFormat.ToOpenGL().PixelFormat() == PixelFormat.DepthStencil)
-				throw new Exception("textureColourFormat cannot be a depth(stencil) texture.");
+				throw new CKGLException("textureColourFormat cannot be a depth(stencil) texture.");
 			if (textureDepthFormat.HasValue && !(textureDepthFormat.Value.ToOpenGL().PixelFormat() == PixelFormat.Depth || textureDepthFormat.Value.ToOpenGL().PixelFormat() == PixelFormat.DepthStencil))
-				throw new Exception("textureDepthFormat is not a depth(stencil) texture.");
+				throw new CKGLException("textureDepthFormat is not a depth(stencil) texture.");
 
 			Width = width;
 			Height = height;
@@ -142,7 +142,7 @@ namespace CKGL.OpenGL
 		{
 			FramebufferStatus status = GL.CheckFramebufferStatus(FramebufferTarget.Framebuffer);
 			if (status != FramebufferStatus.Complete)
-				throw new Exception("Invalid Framebuffer: " + status);
+				throw new CKGLException("Invalid Framebuffer: " + status);
 		}
 
 		#region Overrides
