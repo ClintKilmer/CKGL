@@ -47,7 +47,6 @@
   <ItemGroup>
     <Compile Include="Entities\Tri.cs" />
     <Compile Include="src\CKGLTest.cs" />
-    <Compile Include="src\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

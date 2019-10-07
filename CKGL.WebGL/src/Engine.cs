@@ -2,21 +2,17 @@ using System;
 
 namespace CKGL
 {
-	public abstract class Game
+	public static class Engine
 	{
-		public static float RAM
-		{
-			get
-			{
-				return 0f;
-			}
-		}
+		public static float RAM => 0f;
 
-		public bool UnfocusedFrameLimiter = false;
-		public uint UnfocusedFrameLimiterSleep = 33;
-		private bool focused = true;
+		public static bool UnfocusedFrameLimiter = false;
+		public static uint UnfocusedFrameLimiterSleep = 33;
+		private static bool focused = true;
 
-		public Game(string windowTitle, int windowWidth, int windowHeight, bool windowVSync, bool windowFullscreen, bool windowResizable, bool windowBorderless, int msaa)
+		private static Game game;
+
+		public static void Init(string windowTitle, int windowWidth, int windowHeight, bool windowVSync, bool windowFullscreen, bool windowResizable, bool windowBorderless, int msaa)
 		{
 			try
 			{
@@ -24,7 +20,6 @@ namespace CKGL
 				Graphics.Init();
 				//Audio.Init();
 				Renderer.Init();
-				Graphics.State.OnStateChanging += () => { }; // Temporary until Renderer inits this
 
 				//Platform.Events.OnWinFocusGained += () => { focused = true; OnFocusGained(); };
 				//Platform.Events.OnWinFocusLost += () => { focused = false; OnFocusLost(); };
@@ -36,8 +31,9 @@ namespace CKGL
 			}
 		}
 
-		public void Run()
+		public static void Run(Game game)
 		{
+			Engine.game = game;
 			try
 			{
 				GameLoop();
@@ -48,18 +44,18 @@ namespace CKGL
 			}
 		}
 
-		public void GameLoop()
+		public static void GameLoop()
 		{
-			Init();
+			game.Init();
 
 			//Window.Visible = true;
 			InnerGameLoop(0);
 
-			//Destroy();
+			//game.Destroy();
 			//PostDestroy();
 		}
 
-		public void InnerGameLoop(double timestamp)
+		public static void InnerGameLoop(double timestamp)
 		{
 			//while (Platform.Running)
 			//{
@@ -68,14 +64,14 @@ namespace CKGL
 			//	while (Time.DoUpdate)
 			//	{
 			PreUpdate();
-			Update();
+			game.Update();
 			//		Time.Update();
 			//	}
 
 			//	if (Window.VSync || Time.DoDraw)
 			//	{
 			PreDraw();
-			Draw();
+			game.Draw();
 			//		Window.SwapBuffers();
 			//		Time.Draw();
 			//		if (UnfocusedFrameLimiter && !focused)
@@ -88,17 +84,13 @@ namespace CKGL
 			//Global.SetTimeout(InnerGameLoop, 1000 / 60);
 		}
 
-		public abstract void Init();
-
-		private void PreUpdate()
+		private static void PreUpdate()
 		{
 			Platform.Update();
 			//Audio.Update();
 		}
 
-		public abstract void Update();
-
-		private void PreDraw()
+		private static void PreDraw()
 		{
 			Graphics.PreDraw();
 			Framebuffer.PreDraw();
@@ -107,15 +99,11 @@ namespace CKGL
 			Window.Resize(); //  WebGL specific
 		}
 
-		public abstract void Draw();
+		public static void OnFocusGained() => game.OnFocusGained();
+		public static void OnFocusLost() => game.OnFocusGained();
+		public static void OnWindowResized() => game.OnFocusGained();
 
-		public abstract void OnFocusGained();
-		public abstract void OnFocusLost();
-		public abstract void OnWindowResized();
-
-		public abstract void Destroy();
-
-		private void PostDestroy()
+		private static void PostDestroy()
 		{
 			//Platform.Events.OnWinFocusGained = null;
 			//Platform.Events.OnWinFocusLost = null;

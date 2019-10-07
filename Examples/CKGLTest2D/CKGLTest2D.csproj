@@ -51,7 +51,6 @@
     <Compile Include="Entities\TransformTest.cs" />
     <Compile Include="Entities\Tri.cs" />
     <Compile Include="src\CKGLTest2D.cs" />
-    <Compile Include="src\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

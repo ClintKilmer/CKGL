@@ -380,20 +380,22 @@ void main()
 		//private static int height = 253;
 		//private static int scale = 1;
 
-		public WebGLTest()
-			: base(windowTitle: "CKGL.WebGL Test",
-				   windowWidth: width * scale,
-				   windowHeight: height * scale,
-				   windowVSync: true,
-				   windowFullscreen: true,
-				   windowResizable: true,
-				   windowBorderless: false,
-				   msaa: 0)
-		{ }
+		static void Main(string[] args)
+		{
+			Engine.Init(windowTitle: "CKGL.WebGL Test",
+						windowWidth: width * scale,
+						windowHeight: height * scale,
+						windowVSync: true,
+						windowFullscreen: true,
+						windowResizable: true,
+						windowBorderless: false,
+						msaa: 0);
+			Engine.Run(new WebGLTest());
+		}
 
 		Camera Camera = new Camera();
 
-		Framebuffer surface;
+		Framebuffer surface = Framebuffer.Create(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth16);
 
 		CullModeState cullModeState = CullModeState.Back;
 		PolygonModeState polygonModeState = PolygonModeState.Fill;
@@ -466,10 +468,6 @@ void main()
 			Camera.zNear = 0.1f;
 			Camera.zFar = 150f;
 
-			surface = Framebuffer.Create(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth24);
-			// Temporary
-			Framebuffer.Default.Bind();
-
 			vertexFormat = new VertexFormat(
 				4,                                                    // Pack
 				new VertexAttribute(DataType.Float, 3, false),        // Position
@@ -541,6 +539,9 @@ void main()
 
 		public override void Draw()
 		{
+			surface.Bind();
+			Framebuffer.Default.Bind();
+
 			Graphics.SetViewport(0, 0, Window.Width, Window.Height);
 			Graphics.SetScissorTest(0, 0, Window.Width, Window.Height);
 			Graphics.Clear(new Colour(0.1f, 0.1f, 0.1f, 1f));

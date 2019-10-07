@@ -118,16 +118,18 @@ void main(void)
 		//private static int height = 253;
 		//private static int scale = 1;
 
-		public WebGLTest()
-			: base(windowTitle: "CKGL.WebGL Test",
-				   windowWidth: width * scale,
-				   windowHeight: height * scale,
-				   windowVSync: true,
-				   windowFullscreen: true,
-				   windowResizable: true,
-				   windowBorderless: false,
-				   msaa: 0)
-		{ }
+		//static void Main(string[] args)
+		//{
+		//	Engine.Init(windowTitle: "CKGL.WebGL Test",
+		//				windowWidth: width * scale,
+		//				windowHeight: height * scale,
+		//				windowVSync: true,
+		//				windowFullscreen: true,
+		//				windowResizable: true,
+		//				windowBorderless: false,
+		//				msaa: 0);
+		//	Engine.Run(new WebGLTest());
+		//}
 
 		Camera Camera = new Camera();
 

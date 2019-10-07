@@ -396,16 +396,18 @@ void main()
 		//private static int height = 9;
 		//private static int scale = 100;
 
-		public CKGLTest()
-			: base(windowTitle: "CKGL Game!",
-				   windowWidth: width * scale,
-				   windowHeight: height * scale,
-				   windowVSync: true,
-				   windowFullscreen: false,
-				   windowResizable: true,
-				   windowBorderless: false,
-				   msaa: 0)
-		{ }
+		static void Main(string[] args)
+		{
+			Engine.Init(windowTitle: "CKGL Game!",
+						windowWidth: width * scale,
+						windowHeight: height * scale,
+						windowVSync: true,
+						windowFullscreen: false,
+						windowResizable: true,
+						windowBorderless: false,
+						msaa: 0);
+			Engine.Run(new CKGLTest());
+		}
 
 		string debugString = "";
 
@@ -419,7 +421,7 @@ void main()
 		Vector3 cameraLookat = Vector3.Forward;
 		Vector3 cameraLookatNoVertical = Vector3.Forward;
 
-		Framebuffer surface;
+		Framebuffer surface = Framebuffer.Create(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth24);
 
 		CullModeState cullModeState = CullModeState.Off;
 		PolygonModeState polygonModeState = PolygonModeState.Fill;
@@ -448,8 +450,6 @@ void main()
 			// Debug, test spritesheet
 			//SpriteSheets.SpriteSheet.Texture.SavePNG($@"{System.IO.Directory.GetCurrentDirectory()}/SpriteSheet.png");
 			//SpriteSheets.SpriteSheet.Texture.SavePNG("SpriteSheet.png");
-
-			surface = Framebuffer.Create(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth24);
 		}
 
 		public override void Update()
@@ -570,7 +570,7 @@ void main()
 			test3 = test2.Clone();
 			test3.Position -= new Vector3(8f, 0f, 0f);
 
-			debugString = $"|:outline=1,0.01,0,0,0,1:|Cam Pos: {Camera.Position.X:n1}, {Camera.Position.Y:n1}, {Camera.Position.Z:n1}\nCam Rot: {Camera.Rotation.Euler.X:n2}, {Camera.Rotation.Euler.Y:n2}, {Camera.Rotation.Euler.Z:n2}\nMem: {RAM:n1}MB\nVSync: {Window.GetVSyncMode()}\n{Time.UPS:n0}ups | {Time.FPSSmoothed:n0}fps\nDraw Calls: {Graphics.DrawCalls}\nState Changes: {Graphics.State.Changes}\nFramebuffer Swaps/Blits: {Framebuffer.Swaps}/{Framebuffer.Blits}\nTexture Swaps: {Texture.Swaps}\nShader/Uniform Swaps: {Shader.Swaps}/{Shader.UniformSwaps}\nWinPos: [{Window.X}, {Window.Y}]\nSize: [{Window.Size}]\nMouse Global: [{Input.Mouse.PositionDisplay}]\nMouse: [{Input.Mouse.Position}]\nMouse Relative: [{Input.Mouse.PositionRelative}]";
+			debugString = $"|:outline=1,0.01,0,0,0,1:|Cam Pos: {Camera.Position.X:n1}, {Camera.Position.Y:n1}, {Camera.Position.Z:n1}\nCam Rot: {Camera.Rotation.Euler.X:n2}, {Camera.Rotation.Euler.Y:n2}, {Camera.Rotation.Euler.Z:n2}\nMem: {Engine.RAM:n1}MB\nVSync: {Window.GetVSyncMode()}\n{Time.UPS:n0}ups | {Time.FPSSmoothed:n0}fps\nDraw Calls: {Graphics.DrawCalls}\nState Changes: {Graphics.State.Changes}\nFramebuffer Swaps/Blits: {Framebuffer.Swaps}/{Framebuffer.Blits}\nTexture Swaps: {Texture.Swaps}\nShader/Uniform Swaps: {Shader.Swaps}/{Shader.UniformSwaps}\nWinPos: [{Window.X}, {Window.Y}]\nSize: [{Window.Size}]\nMouse Global: [{Input.Mouse.PositionDisplay}]\nMouse: [{Input.Mouse.Position}]\nMouse Relative: [{Input.Mouse.PositionRelative}]";
 
 			Scene.Current?.BeforeUpdate();
 			Scene.Current?.Update();
