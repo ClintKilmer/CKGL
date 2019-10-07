@@ -197,7 +197,7 @@ namespace CKGL.WebGL
 			if (id != bindings[textureSlot].ID || TextureTarget != bindings[textureSlot].Target)
 			{
 				Graphics.State.OnStateChanging?.Invoke();
-				GL.activeTexture(textureSlot);
+				GL.activeTexture(GL.TEXTURE0 + textureSlot);
 				GL.bindTexture(TextureTarget, id);
 				Swaps++;
 
