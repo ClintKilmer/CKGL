@@ -52,6 +52,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\CKGL\src\Collision\AABB.cs">
+      <Link>src\Collision\AABB.cs</Link>
+    </Compile>
+    <Compile Include="..\CKGL\src\Collision\AABBi.cs">
+      <Link>src\Collision\AABBi.cs</Link>
+    </Compile>
     <Compile Include="..\CKGL\src\Exceptions.cs">
       <Link>src\Exceptions.cs</Link>
     </Compile>
@@ -130,11 +136,23 @@
     <Compile Include="..\CKGL\src\Graphics\IndexBuffer.cs">
       <Link>src\Graphics\IndexBuffer.cs</Link>
     </Compile>
+    <Compile Include="..\CKGL\src\Graphics\Renderer.cs">
+      <Link>src\Graphics\Renderer.cs</Link>
+    </Compile>
     <Compile Include="..\CKGL\src\Graphics\Shader.cs">
       <Link>src\Graphics\Shader.cs</Link>
     </Compile>
     <Compile Include="..\CKGL\src\Graphics\Shaders.cs">
       <Link>src\Graphics\Shaders.cs</Link>
+    </Compile>
+    <Compile Include="..\CKGL\src\Graphics\Sprite.cs">
+      <Link>src\Graphics\Sprite.cs</Link>
+    </Compile>
+    <Compile Include="..\CKGL\src\Graphics\SpriteFont.cs">
+      <Link>src\Graphics\SpriteFont.cs</Link>
+    </Compile>
+    <Compile Include="..\CKGL\src\Graphics\SpriteSheet.cs">
+      <Link>src\Graphics\SpriteSheet.cs</Link>
     </Compile>
     <Compile Include="..\CKGL\src\Graphics\State\BlendState.cs">
       <Link>src\Graphics\State\BlendState.cs</Link>

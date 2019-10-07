@@ -23,7 +23,7 @@ namespace CKGL
 				Platform.Init(windowTitle, windowWidth, windowHeight, windowVSync, windowFullscreen, windowResizable, windowBorderless, msaa);
 				Graphics.Init();
 				//Audio.Init();
-				//Renderer.Init();
+				Renderer.Init();
 				Graphics.State.OnStateChanging += () => { }; // Temporary until Renderer inits this
 
 				//Platform.Events.OnWinFocusGained += () => { focused = true; OnFocusGained(); };
@@ -101,9 +101,9 @@ namespace CKGL
 		private void PreDraw()
 		{
 			Graphics.PreDraw();
-			//Framebuffer.PreDraw();
-			//Texture.PreDraw();
-			//Shader.PreDraw();
+			Framebuffer.PreDraw();
+			Texture.PreDraw();
+			Shader.PreDraw();
 			Window.Resize(); //  WebGL specific
 		}
 
@@ -121,7 +121,7 @@ namespace CKGL
 			//Platform.Events.OnWinFocusLost = null;
 			//Platform.Events.OnWinResized = null;
 
-			//Renderer.Destroy();
+			Renderer.Destroy();
 			//Audio.Destroy();
 			Platform.Destroy();
 		}
