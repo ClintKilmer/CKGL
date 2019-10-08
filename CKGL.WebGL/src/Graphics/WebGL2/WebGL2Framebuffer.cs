@@ -45,6 +45,7 @@ namespace CKGL.WebGL2
 				Textures[i] = Texture.Create2D(Width, Height, textureColourFormat);
 				drawBuffers[i] = COLOR_ATTACHMENT0 + i;
 				GL.framebufferTexture2D(FRAMEBUFFER, COLOR_ATTACHMENT0 + i, (Textures[i] as WebGL2Texture).TextureTarget, (Textures[i] as WebGL2Texture).ID, 0);
+				Textures[i].Unbind();
 				CheckStatus();
 			}
 			GL.drawBuffers(drawBuffers);
@@ -54,6 +55,7 @@ namespace CKGL.WebGL2
 			{
 				DepthStencilTexture = Texture.Create2D(Width, Height, textureDepthFormat.Value);
 				GL.framebufferTexture2D(FRAMEBUFFER, textureDepthFormat.Value.ToWebGL2TextureAttachment(), (DepthStencilTexture as WebGL2Texture).TextureTarget, (DepthStencilTexture as WebGL2Texture).ID, 0);
+				DepthStencilTexture.Unbind();
 				CheckStatus();
 			}
 		}

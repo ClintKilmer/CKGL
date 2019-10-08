@@ -208,6 +208,24 @@ namespace CKGL.WebGL2
 				Graphics.State.OnStateChanged?.Invoke();
 			}
 		}
+
+		public override void Unbind()
+		{
+			for (int i = 0; i < bindings.Length; i++)
+			{
+				if (id == bindings[i].ID)
+				{
+					Graphics.State.OnStateChanging?.Invoke();
+					GL.activeTexture(TEXTURE0 + i);
+					GL.bindTexture(TextureTarget, null);
+					Swaps++;
+
+					bindings[i].ID = null;
+					bindings[i].Target = TextureTarget;
+					Graphics.State.OnStateChanged?.Invoke();
+				}
+			}
+		}
 		#endregion
 
 		#region Overrides

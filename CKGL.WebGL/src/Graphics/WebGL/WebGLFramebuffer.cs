@@ -39,12 +39,14 @@ namespace CKGL.WebGL
 			Textures = new Texture[1];
 			Textures[0] = Texture.Create2D(Width, Height, textureColourFormat);
 			GL.framebufferTexture2D(GL.FRAMEBUFFER, GL.COLOR_ATTACHMENT0, (Textures[0] as WebGLTexture).TextureTarget, (Textures[0] as WebGLTexture).ID, 0);
+			Textures[0].Unbind();
 			CheckStatus();
 
 			if (textureDepthFormat.HasValue)
 			{
 				DepthStencilTexture = Texture.Create2D(Width, Height, textureDepthFormat.Value);
 				GL.framebufferTexture2D(GL.FRAMEBUFFER, textureDepthFormat.Value.ToWebGLTextureAttachment(), (DepthStencilTexture as WebGLTexture).TextureTarget, (DepthStencilTexture as WebGLTexture).ID, 0);
+				DepthStencilTexture.Unbind();
 				CheckStatus();
 			}
 		}

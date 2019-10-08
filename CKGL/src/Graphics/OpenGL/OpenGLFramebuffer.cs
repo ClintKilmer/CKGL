@@ -44,6 +44,7 @@ namespace CKGL.OpenGL
 				Textures[i] = Texture.Create2D(Width, Height, textureColourFormat);
 				drawBuffers[i] = (DrawBuffer)((GLuint)DrawBuffer.Colour0 + i);
 				GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, ((TextureAttachment)((uint)TextureAttachment.Colour0 + i)).ToOpenGL(), (Textures[i] as OpenGLTexture).TextureTarget, (Textures[i] as OpenGLTexture).ID, 0);
+				Textures[i].Unbind();
 				CheckStatus();
 			}
 			GL.DrawBuffers(colourTextures, drawBuffers);
@@ -53,6 +54,7 @@ namespace CKGL.OpenGL
 			{
 				DepthStencilTexture = Texture.Create2D(Width, Height, textureDepthFormat.Value);
 				GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, textureDepthFormat.Value.ToOpenGL().TextureAttachment(), (DepthStencilTexture as OpenGLTexture).TextureTarget, (DepthStencilTexture as OpenGLTexture).ID, 0);
+				DepthStencilTexture.Unbind();
 				CheckStatus();
 			}
 		}

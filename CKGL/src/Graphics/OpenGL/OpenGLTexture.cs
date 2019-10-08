@@ -234,6 +234,24 @@ namespace CKGL.OpenGL
 				Graphics.State.OnStateChanged?.Invoke();
 			}
 		}
+
+		public override void Unbind()
+		{
+			for (int i = 0; i < bindings.Length; i++)
+			{
+				if (id == bindings[i].ID)
+				{
+					Graphics.State.OnStateChanging?.Invoke();
+					GL.ActiveTexture((GLuint)i);
+					GL.BindTexture(TextureTarget, 0);
+					Swaps++;
+
+					bindings[i].ID = 0;
+					bindings[i].Target = TextureTarget;
+					Graphics.State.OnStateChanged?.Invoke();
+				}
+			}
+		}
 		#endregion
 
 		#region Overrides

@@ -8,7 +8,7 @@ namespace CKGL
 		public static int Swaps { get; protected set; }
 		public static int Blits { get; protected set; }
 
-		public Texture[] Textures;
+		public Texture[] Textures = new Texture[0];
 		public Texture DepthStencilTexture;
 
 		protected bool IsDefault = false;
@@ -112,6 +112,16 @@ namespace CKGL
 		public abstract void Bind();
 
 		public abstract Texture GetTexture(TextureAttachment textureAttachment);
+
+		public void UnbindTextures()
+		{
+			if (!IsDefault)
+			{
+				foreach (Texture texture in Textures ?? null)
+					texture?.Unbind();
+				DepthStencilTexture?.Unbind();
+			}
+		}
 
 		#region Overrides
 		public abstract override string ToString();

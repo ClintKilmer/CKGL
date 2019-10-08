@@ -105,6 +105,7 @@ namespace CKGL
 		#region Bind
 		public abstract void Bind();
 		public abstract void Bind(uint textureSlot);
+		public abstract void Unbind();
 		#endregion
 
 		#region Overrides
