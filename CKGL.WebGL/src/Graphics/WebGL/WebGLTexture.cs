@@ -120,7 +120,7 @@ namespace CKGL.WebGL
 		}
 
 		#region Parameters
-		protected override TextureWrap Wrap
+		public override TextureWrap Wrap
 		{
 			set
 			{
@@ -129,19 +129,19 @@ namespace CKGL.WebGL
 			}
 		}
 
-		protected override TextureWrap WrapX
+		public override TextureWrap WrapX
 		{
 			get { return (TextureWrap)GetParam(GL.TEXTURE_WRAP_S); }
 			set { SetParam(GL.TEXTURE_WRAP_S, value.ToWebGL()); }
 		}
 
-		protected override TextureWrap WrapY
+		public override TextureWrap WrapY
 		{
 			get { return (TextureWrap)GetParam(GL.TEXTURE_WRAP_T); }
 			set { SetParam(GL.TEXTURE_WRAP_T, value.ToWebGL()); }
 		}
 
-		protected override TextureFilter Filter
+		public override TextureFilter Filter
 		{
 			set
 			{
@@ -150,13 +150,13 @@ namespace CKGL.WebGL
 			}
 		}
 
-		protected override TextureFilter MinFilter
+		public override TextureFilter MinFilter
 		{
 			get { return (TextureFilter)GetParam(GL.TEXTURE_MIN_FILTER); }
 			set { SetParam(GL.TEXTURE_MIN_FILTER, value.ToWebGL()); }
 		}
 
-		protected override TextureFilter MagFilter
+		public override TextureFilter MagFilter
 		{
 			get { return (TextureFilter)GetParam(GL.TEXTURE_MIN_FILTER); }
 			set

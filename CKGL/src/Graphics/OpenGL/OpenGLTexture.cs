@@ -147,7 +147,7 @@ namespace CKGL.OpenGL
 		}
 
 		#region Parameters
-		protected override TextureWrap Wrap
+		public override TextureWrap Wrap
 		{
 			set
 			{
@@ -156,19 +156,19 @@ namespace CKGL.OpenGL
 			}
 		}
 
-		protected override TextureWrap WrapX
+		public override TextureWrap WrapX
 		{
 			get { return (TextureWrap)GetParam(TextureParam.WrapS); }
 			set { SetParam(TextureParam.WrapS, (GLint)value.ToOpenGL()); }
 		}
 
-		protected override TextureWrap WrapY
+		public override TextureWrap WrapY
 		{
 			get { return (TextureWrap)GetParam(TextureParam.WrapT); }
 			set { SetParam(TextureParam.WrapT, (GLint)value.ToOpenGL()); }
 		}
 
-		protected override TextureFilter Filter
+		public override TextureFilter Filter
 		{
 			set
 			{
@@ -177,13 +177,13 @@ namespace CKGL.OpenGL
 			}
 		}
 
-		protected override TextureFilter MinFilter
+		public override TextureFilter MinFilter
 		{
 			get { return (TextureFilter)GetParam(TextureParam.MinFilter); }
 			set { SetParam(TextureParam.MinFilter, (GLint)value.ToOpenGL()); }
 		}
 
-		protected override TextureFilter MagFilter
+		public override TextureFilter MagFilter
 		{
 			get { return (TextureFilter)GetParam(TextureParam.MagFilter); }
 			set

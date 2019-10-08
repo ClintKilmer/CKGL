@@ -1,6 +1,5 @@
 using static CKGL.WebGL2.WebGL2Graphics; // WebGL 2.0 Context Methods
 using static Retyped.dom; // DOM / WebGL Types
-using static Retyped.es5; // JS TypedArrays
 using static Retyped.webgl2.WebGL2RenderingContext; // WebGL 2.0 Enums
 
 namespace CKGL.WebGL2
@@ -123,7 +122,7 @@ namespace CKGL.WebGL2
 		}
 
 		#region Parameters
-		protected override TextureWrap Wrap
+		public override TextureWrap Wrap
 		{
 			set
 			{
@@ -132,19 +131,19 @@ namespace CKGL.WebGL2
 			}
 		}
 
-		protected override TextureWrap WrapX
+		public override TextureWrap WrapX
 		{
 			get { return (TextureWrap)GetParam(TEXTURE_WRAP_S); }
 			set { SetParam(TEXTURE_WRAP_S, value.ToWebGL2()); }
 		}
 
-		protected override TextureWrap WrapY
+		public override TextureWrap WrapY
 		{
 			get { return (TextureWrap)GetParam(TEXTURE_WRAP_T); }
 			set { SetParam(TEXTURE_WRAP_T, value.ToWebGL2()); }
 		}
 
-		protected override TextureFilter Filter
+		public override TextureFilter Filter
 		{
 			set
 			{
@@ -153,13 +152,13 @@ namespace CKGL.WebGL2
 			}
 		}
 
-		protected override TextureFilter MinFilter
+		public override TextureFilter MinFilter
 		{
 			get { return (TextureFilter)GetParam(TEXTURE_MIN_FILTER); }
 			set { SetParam(TEXTURE_MIN_FILTER, value.ToWebGL2()); }
 		}
 
-		protected override TextureFilter MagFilter
+		public override TextureFilter MagFilter
 		{
 			get { return (TextureFilter)GetParam(TEXTURE_MIN_FILTER); }
 			set

@@ -94,12 +94,12 @@ namespace CKGL
 		#endregion
 
 		#region Parameters
-		protected abstract TextureWrap Wrap { set; }
-		protected abstract TextureWrap WrapX { get; set; }
-		protected abstract TextureWrap WrapY { get; set; }
-		protected abstract TextureFilter Filter { set; }
-		protected abstract TextureFilter MinFilter { get; set; }
-		protected abstract TextureFilter MagFilter { get; set; }
+		public abstract TextureWrap Wrap { set; }
+		public abstract TextureWrap WrapX { get; set; }
+		public abstract TextureWrap WrapY { get; set; }
+		public abstract TextureFilter Filter { set; }
+		public abstract TextureFilter MinFilter { get; set; }
+		public abstract TextureFilter MagFilter { get; set; }
 		#endregion
 
 		#region Bind
