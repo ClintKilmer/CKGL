@@ -951,6 +951,7 @@ namespace CKGL
 			//	}
 			//}
 		}
+		#endregion
 
 		#region Draw3D
 		public static class Draw3D
@@ -1088,7 +1089,6 @@ namespace CKGL
 			}
 			#endregion
 		}
-		#endregion
 		#endregion
 	}
 }
