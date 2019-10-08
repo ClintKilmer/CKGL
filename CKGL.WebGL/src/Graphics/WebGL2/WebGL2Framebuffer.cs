@@ -86,6 +86,7 @@ namespace CKGL.WebGL2
 			if (id != (Current as WebGL2Framebuffer).id)
 			{
 				Graphics.State.OnStateChanging?.Invoke();
+				UnbindTextures();
 				GL.bindFramebuffer(FRAMEBUFFER, id);
 				Swaps++;
 				Current = this;
