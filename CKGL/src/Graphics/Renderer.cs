@@ -1089,6 +1089,6 @@ namespace CKGL
 			#endregion
 		}
 		#endregion
+		#endregion
 	}
-	#endregion
 }
