@@ -158,7 +158,7 @@ namespace CKGL.WebGL
 
 		public override TextureFilter MagFilter
 		{
-			get { return (TextureFilter)GetParam(GL.TEXTURE_MIN_FILTER); }
+			get { return (TextureFilter)GetParam(GL.TEXTURE_MAG_FILTER); }
 			set
 			{
 				switch (value)
@@ -166,12 +166,12 @@ namespace CKGL.WebGL
 					case TextureFilter.Linear:
 					case TextureFilter.LinearMipmapLinear:
 					case TextureFilter.LinearMipmapNearest:
-						SetParam(GL.TEXTURE_MIN_FILTER, TextureFilter.Linear.ToWebGL());
+						SetParam(GL.TEXTURE_MAG_FILTER, TextureFilter.Linear.ToWebGL());
 						break;
 					case TextureFilter.Nearest:
 					case TextureFilter.NearestMipmapLinear:
 					case TextureFilter.NearestMipmapNearest:
-						SetParam(GL.TEXTURE_MIN_FILTER, TextureFilter.Nearest.ToWebGL());
+						SetParam(GL.TEXTURE_MAG_FILTER, TextureFilter.Nearest.ToWebGL());
 						break;
 				}
 			}
