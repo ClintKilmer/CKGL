@@ -18,8 +18,7 @@ namespace CKGL.WebGL
 		{
 			if (colourTextures < 1)
 				throw new CKGLException("WebGL 1.0 framebuffers must have 1 colour texture.");
-			//if (colourTextures > GL.MaxColourAttachments || colourTextures > GL.MaxDrawBuffers)
-			if (colourTextures > 1)
+			if (colourTextures > 1) // WebGL 1.0 only allows 1 colour attachment
 				throw new CKGLException("WebGL 1.0 framebuffers must have 1 colour texture.");
 			if (textureColourFormat.ToWebGLPixelFormat() == GL.DEPTH_COMPONENT || textureColourFormat.ToWebGLPixelFormat() == GL.DEPTH_STENCIL)
 				throw new CKGLException("textureColourFormat cannot be a depth(stencil) texture.");

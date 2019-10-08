@@ -1,4 +1,3 @@
-using System;
 using static Retyped.dom; // DOM / WebGL Types
 using WebGL_EXT = Retyped.dom.Literals; // WebGL Extensions
 
@@ -163,7 +162,16 @@ namespace CKGL.WebGL
 				Output.WriteLine($"WebGL Context - WEBGL_debug_renderer_info.UNMASKED_RENDERER_WEBGL: {GL.getParameter(Extensions.WEBGL_debug_renderer_info.UNMASKED_RENDERER_WEBGL)}");
 			}
 			catch { }
-			//Output.WriteLine($"WebGL - Extensions: \n{string.Join("\n", gl.GetSupportedExtensions())}");
+			Output.WriteLine($"WebGL Context - MaxColourAttachments: 1 (WebGL 1.0 restriction)");
+			Output.WriteLine($"WebGL Context - MaxCubeMapTextureSize: {GL.getParameter(GL.MAX_CUBE_MAP_TEXTURE_SIZE)}");
+			Output.WriteLine($"WebGL Context - MaxDrawBuffers: 1 (WebGL 1.0 restriction)");
+			Output.WriteLine($"WebGL Context - MaxElementIndices: undefined");
+			Output.WriteLine($"WebGL Context - MaxElementVertices: undefined");
+			Output.WriteLine($"WebGL Context - MaxRenderbufferSize: {GL.getParameter(GL.MAX_RENDERBUFFER_SIZE)}");
+			Output.WriteLine($"WebGL Context - MaxSamples: undefined");
+			Output.WriteLine($"WebGL Context - MaxTextureImageUnits: {GL.getParameter(GL.MAX_TEXTURE_IMAGE_UNITS)}");
+			Output.WriteLine($"WebGL Context - MaxTextureSize: {GL.getParameter(GL.MAX_TEXTURE_SIZE)}");
+			//Output.WriteLine($"WebGL - Extensions: \n{string.Join("\n", GL.GetSupportedExtensions())}");
 
 			// Set up default framebuffer
 			Framebuffer.Current = Framebuffer.Default = new WebGLFramebuffer();

@@ -1,4 +1,3 @@
-using System;
 using static Retyped.dom; // DOM / WebGL Types
 using static Retyped.webgl2; // WebGL 2.0 Types - WebGL2RenderingContext, WebGLVertexArrayObject
 using static Retyped.webgl2.WebGL2RenderingContext; // WebGL 2.0 Enums
@@ -62,7 +61,16 @@ namespace CKGL.WebGL2
 				Output.WriteLine($"WebGL Context - WEBGL_debug_renderer_info.UNMASKED_RENDERER_WEBGL: {GL.getParameter(Extensions.WEBGL_debug_renderer_info.UNMASKED_RENDERER_WEBGL)}");
 			}
 			catch { }
-			//Output.WriteLine($"WebGL - Extensions: \n{string.Join("\n", gl.GetSupportedExtensions())}");
+			Output.WriteLine($"WebGL Context - MaxColourAttachments: {GL.getParameter(MAX_COLOR_ATTACHMENTS_Static)}");
+			Output.WriteLine($"WebGL Context - MaxCubeMapTextureSize: {GL.getParameter(MAX_CUBE_MAP_TEXTURE_SIZE)}");
+			Output.WriteLine($"WebGL Context - MaxDrawBuffers: {GL.getParameter(MAX_DRAW_BUFFERS_Static)}");
+			Output.WriteLine($"WebGL Context - MaxElementIndices: {GL.getParameter(MAX_ELEMENTS_INDICES_Static)}");
+			Output.WriteLine($"WebGL Context - MaxElementVertices: {GL.getParameter(MAX_ELEMENTS_VERTICES_Static)}");
+			Output.WriteLine($"WebGL Context - MaxRenderbufferSize: {GL.getParameter(MAX_RENDERBUFFER_SIZE)}");
+			Output.WriteLine($"WebGL Context - MaxSamples: {GL.getParameter(MAX_SAMPLES_Static)}");
+			Output.WriteLine($"WebGL Context - MaxTextureImageUnits: {GL.getParameter(MAX_TEXTURE_IMAGE_UNITS)}");
+			Output.WriteLine($"WebGL Context - MaxTextureSize: {GL.getParameter(MAX_TEXTURE_SIZE)}");
+			//Output.WriteLine($"WebGL - Extensions: \n{string.Join("\n", GL.GetSupportedExtensions())}");
 
 			// Set up default framebuffer
 			Framebuffer.Current = Framebuffer.Default = new WebGL2Framebuffer();

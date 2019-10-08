@@ -16,8 +16,7 @@ namespace CKGL.WebGL2
 			public WebGLTexture ID;
 			public double Target;
 		}
-		//private static readonly Binding[] bindings = new Binding[GL.MaxTextureImageUnits];
-		private static readonly Binding[] bindings = new Binding[32];
+		private static readonly Binding[] bindings = new Binding[(int)GL.getParameter(MAX_TEXTURE_IMAGE_UNITS)];
 
 		internal WebGL2Texture(byte[] data, TextureType type,
 							   int width, int height, int depth,

@@ -14,8 +14,8 @@ namespace CKGL.WebGL
 			public Retyped.dom.WebGLTexture ID;
 			public uint Target;
 		}
-		//private static readonly Binding[] bindings = new Binding[GL.MaxTextureImageUnits];
-		private static readonly Binding[] bindings = new Binding[32];
+
+		private static readonly Binding[] bindings = new Binding[(int)GL.getParameter(GL.MAX_TEXTURE_IMAGE_UNITS)];
 
 		internal WebGLTexture(byte[] data, TextureType type,
 							   int width, int height, int depth,

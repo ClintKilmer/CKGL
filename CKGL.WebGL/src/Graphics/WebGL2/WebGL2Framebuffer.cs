@@ -20,8 +20,7 @@ namespace CKGL.WebGL2
 		{
 			if (colourTextures < 1)
 				throw new CKGLException("Must have at least 1 colour texture.");
-			//if (colourTextures > GL.MaxColourAttachments || colourTextures > GL.MaxDrawBuffers)
-			if (colourTextures > 32 || colourTextures > 32)
+			if (colourTextures > (int)GL.getParameter(MAX_COLOR_ATTACHMENTS_Static) || colourTextures > (int)GL.getParameter(MAX_DRAW_BUFFERS_Static))
 				throw new CKGLException("Too many colour textures.");
 			if (textureColourFormat.ToWebGL2PixelFormat() == DEPTH_COMPONENT || textureColourFormat.ToWebGL2PixelFormat() == DEPTH_STENCIL)
 				throw new CKGLException("textureColourFormat cannot be a depth(stencil) texture.");
