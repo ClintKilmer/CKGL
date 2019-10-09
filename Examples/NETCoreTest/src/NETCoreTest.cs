@@ -9,22 +9,29 @@ namespace NETCoreTest
 	}
 	#endregion
 
-	//#region Sprites
-	//public static class SpriteSheets
-	//{
-	//	public static SpriteSheet SpriteSheet = new SpriteSheet(128, 1);
-	//}
+	#region Sprites
+	public static class SpriteSheets
+	{
+		public static SpriteSheet SpriteSheet = new SpriteSheet(128, 1);
+	}
 
-	//public static class SpriteFonts
-	//{
-	//	public static SpriteFont Font = new SpriteFont(SpriteSheets.SpriteSheet, "textures/font[5x7].png", 5, 7, '!', '~', 1, 3, 7, true);
-	//}
+	public static class SpriteFonts
+	{
+		public static SpriteFont Font = new SpriteFont(SpriteSheets.SpriteSheet, "textures/font[5x7].png", 5, 7, '!', '~', 1, 3, 7, true);
+	}
 
-	//public static class Textures
-	//{
-	//	public static Texture2D UVTest = Texture2D.CreateFromFile("textures/UVTest.png", TextureFilter.Nearest, TextureWrap.Repeat);
-	//}
-	//#endregion
+	public static class Sprites
+	{
+		public static Sprite Test1 = SpriteSheets.SpriteSheet.AddSprite("textures/Character1.png");
+		public static Sprite Test2 = SpriteSheets.SpriteSheet.AddSprite("textures/Character2.png");
+		public static Sprite Test3 = SpriteSheets.SpriteSheet.AddSprite("textures/Character3.png");
+	}
+
+	public static class Textures
+	{
+		public static Texture Test = Texture.Create2DFromFile("textures/Character1.png");
+	}
+	#endregion
 
 	public class NETCoreTest : Game
 	{
@@ -69,7 +76,7 @@ namespace NETCoreTest
 		Vector3 cameraLookat = Vector3.Forward;
 		Vector3 cameraLookatNoVertical = Vector3.Forward;
 
-		Framebuffer surface;
+		Framebuffer surface = Framebuffer.Create(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth24);
 
 		CullModeState cullModeState = CullModeState.Back;
 		PolygonModeState polygonModeState = PolygonModeState.Fill;
@@ -89,8 +96,6 @@ namespace NETCoreTest
 			//Camera.Height = Window.Height / 10;
 			Camera.zNear = 0.1f;
 			Camera.zFar = 150f;
-
-			surface = Framebuffer.Create(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth24);
 		}
 
 		public override void Update()
@@ -225,13 +230,13 @@ namespace NETCoreTest
 			scale = Math.Max(1, Math.Min(Window.Width / width, Window.Height / height));
 			Renderer.Draw.Framebuffer(surface, TextureAttachment.Colour0, (Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, scale, Colour.White);
 
-			//Renderer.Draw.Text(SpriteFonts.Font,
-			//				   debugString,
-			//				   new Vector2(2, Framebuffer.Current.Height - 1),
-			//				   Vector2.One * 3f,
-			//				   Colour.White,
-			//				   HAlign.Left,
-			//				   VAlign.Top);
+			Renderer.Draw.Text(SpriteFonts.Font,
+							   debugString,
+							   new Vector2(2, Framebuffer.Current.Height - 1),
+							   Vector2.One * 3f,
+							   Colour.White,
+							   HAlign.Left,
+							   VAlign.Top);
 
 			Renderer.Flush();
 

@@ -9,4 +9,19 @@
     <ProjectReference Include="..\..\CKGL\CKGL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="textures\Character1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="textures\Character2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="textures\Character3.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="textures\font[5x7].png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
