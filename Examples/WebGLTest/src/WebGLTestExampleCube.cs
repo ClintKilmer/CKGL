@@ -6,7 +6,7 @@ namespace WebGLTestExampleCube
 	#region Shaders
 	public static class Shaders
 	{
-		//public static InternalShaders.RendererShader Renderer = new InternalShaders.RendererShader();
+		public static InternalShaders.RendererShader Renderer = new InternalShaders.RendererShader();
 		//public static InternalShaders.RendererFogShader RendererFog = new InternalShaders.RendererFogShader();
 		//public static InternalShaders.LinearizeDepthShader LinearizeDepth = new InternalShaders.LinearizeDepthShader();
 		public static BasicShader Basic = new BasicShader();
@@ -395,7 +395,7 @@ void main()
 
 		Camera Camera = new Camera();
 
-		Framebuffer surface = Framebuffer.Create(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth16);
+		Framebuffer surface = Framebuffer.Create(width, height, 1, TextureFormat.RGB8, TextureFormat.Depth24);
 
 		CullModeState cullModeState = CullModeState.Back;
 		PolygonModeState polygonModeState = PolygonModeState.Fill;
@@ -540,39 +540,6 @@ void main()
 		public override void Draw()
 		{
 			surface.Bind();
-			Framebuffer.Default.Bind();
-
-			Graphics.SetViewport(0, 0, Window.Width, Window.Height);
-			Graphics.SetScissorTest(0, 0, Window.Width, Window.Height);
-			Graphics.Clear(new Colour(0.1f, 0.1f, 0.1f, 1f));
-
-			//// Pixel Perfect Scaling
-			//int scale = Math.Max(1, Math.Min(Window.Width / width, Window.Height / height));
-			//Graphics.SetViewport((Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, width * scale, height * scale);
-			//Graphics.SetScissorTest((Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, width * scale, height * scale);
-
-			// Dynamic Viewport - Maintain Aspect Ratio
-			float aspectRatio = 16f / 9f;
-			if (Window.Width <= Window.Height * aspectRatio)
-			{
-				width = Window.Width;
-				height = Math.FloorToInt(Window.Width / aspectRatio);
-			}
-			else
-			{
-				width = Math.FloorToInt(Window.Height * aspectRatio);
-				height = Window.Height;
-			}
-			Graphics.SetViewport((Window.Width - width) / 2, (Window.Height - height) / 2, width, height);
-			Graphics.SetScissorTest((Window.Width - width) / 2, (Window.Height - height) / 2, width, height);
-
-			//// Dynamic Viewport
-			//width = Window.Width;
-			//height = Window.Height;
-			//Camera.AspectRatio = Window.AspectRatio;
-			//int scale = Math.Max(1, Math.Min(Window.Width / width, Window.Height / height));
-			//Graphics.SetViewport((Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, width * scale, height * scale);
-			//Graphics.SetScissorTest((Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, width * scale, height * scale);
 
 			// Clear the screen
 			//if (Input.Keyboard.Down(KeyCode.Space))
@@ -585,20 +552,20 @@ void main()
 			CullModeState.Set(cullModeState);
 			PolygonModeState.Set(polygonModeState);
 
-			//Shaders.Renderer.Bind();
-			//Shaders.Renderer.MVP = Camera.Matrix;
+			Shaders.Renderer.Bind();
+			Shaders.Renderer.MVP = Camera.Matrix;
 
-			//Renderer.Draw.ResetTransform();
-			//Renderer.Draw3D.ResetTransform();
+			Renderer.Draw.ResetTransform();
+			Renderer.Draw3D.ResetTransform();
 
-			//// Start Drawing
-			//Renderer.Draw3D.SetTransform(light1Transform);
-			//Renderer.Draw3D.Cube(light1Colour);
-			//Renderer.Draw3D.SetTransform(light2Transform);
-			//Renderer.Draw3D.Cube(light2Colour);
-			//Renderer.Draw3D.SetTransform(light3Transform);
-			//Renderer.Draw3D.Cube(light3Colour);
-			//Renderer.Draw3D.ResetTransform();
+			// Start Drawing
+			Renderer.Draw3D.SetTransform(light1Transform);
+			Renderer.Draw3D.Cube(light1Colour);
+			Renderer.Draw3D.SetTransform(light2Transform);
+			Renderer.Draw3D.Cube(light2Colour);
+			Renderer.Draw3D.SetTransform(light3Transform);
+			Renderer.Draw3D.Cube(light3Colour);
+			Renderer.Draw3D.ResetTransform();
 
 			Shaders.PointLightShader.Bind();
 
@@ -643,6 +610,31 @@ void main()
 			Shaders.PointLightShader.NormalMatrix = (planeTransform.Matrix * Camera.ViewMatrix).ToMatrix3x3().Inverse().Transpose();
 			planeGeometryInput.Bind();
 			Graphics.DrawIndexedVertexArrays(PrimitiveTopology.TriangleList, 0, planeIndexBuffer.Count, planeIndexBuffer.IndexType);
+
+			Renderer.Draw.SetTransform(new Transform2D()); // Workaround - Bridge fails the null coalescing in Renderer.Draw.AddVertex
+
+			// Draw to Screen
+			Framebuffer.Default.Bind();
+			Graphics.Clear(new Colour(0.1f, 0.1f, 0.1f, 1f));
+			Graphics.State.Reset();
+
+			// Render Framebuffer
+			Shaders.Renderer.Bind();
+			Shaders.Renderer.MVP = Framebuffer.Default.Matrix;
+			scale = Math.Max(1, Math.Min(Window.Width / width, Window.Height / height));
+			Renderer.Draw.Framebuffer(surface, TextureAttachment.Colour0, (Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, scale, Colour.White);
+
+			//Renderer.Draw.Text(SpriteFonts.Font,
+			//				   debugString,
+			//				   new Vector2(2, Framebuffer.Current.Height - 1),
+			//				   Vector2.One * 3f,
+			//				   Colour.White,
+			//				   HAlign.Left,
+			//				   VAlign.Top);
+
+			Renderer.Flush();
+
+			Renderer.Draw.ResetTransform(); // Workaround - See above
 		}
 
 		public override void Destroy()
