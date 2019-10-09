@@ -85,6 +85,7 @@ namespace CKGL.OpenGL
 			if (id != (Current as OpenGLFramebuffer).id)
 			{
 				Graphics.State.OnStateChanging?.Invoke();
+				UnbindTextures();
 				GL.BindFramebuffer(FramebufferTarget.Framebuffer, id);
 				Swaps++;
 				Current = this;
