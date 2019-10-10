@@ -12,7 +12,6 @@ Notes:
 Bugs:
 - WebGL - VertexBuffer.LoadData<T> requires VertexFormat, using #if WEBGL to make this work
 - Property ( get; internal set; ) version of VertexAttribute.Offset breaks Bridge.NET
-- NETCoreTest fails on OpenGL ES / ANGLE
 
 Features:
 - Audio init throws exception if no device available
@@ -36,7 +35,6 @@ Features:
 	- easings
 - Meshes
 - Lighting
-- DrawInstanced
 
 Random:
 - Update Window width/height on resize event, don't poll every time
@@ -48,8 +46,6 @@ Random:
 - Rendertarget blit fails if backbuffer is multisampled
 - Rotation struct everywhere - seems like only needed in renderer - but double-check
 - Quaternion Euler yRot not converting properly
-- Test Quaternion.CreateLookAt
-- RAM function seems to force GC
 - Vector 2/3 rotate around
 - Renderer - add lineloop and any figure out all PrimitiveTopologies
 - Add Texture2dSampler, and CubeMap to Shader Uniform Set - Have generic Set Texture Uniform
