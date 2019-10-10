@@ -2141,7 +2141,7 @@ namespace CKGL.OpenGLBindings
 		private static _glGetString glGetString;
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate IntPtr _glGetString(Strings name);
-		public unsafe static string GetString(Strings name)
+		public static unsafe string GetString(Strings name)
 		{
 			string s = new string((sbyte*)glGetString(name));
 			CheckError();
@@ -2152,7 +2152,7 @@ namespace CKGL.OpenGLBindings
 		private static _glGetIntegerv glGetIntegerv;
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private unsafe delegate void _glGetIntegerv(Integers name, GLint* data);
-		private unsafe static void GetIntegerv(Integers name, out int val)
+		private static unsafe void GetIntegerv(Integers name, out int val)
 		{
 			fixed (int* p = &val)
 			{
@@ -2476,12 +2476,12 @@ namespace CKGL.OpenGLBindings
 		private static _glGenTextures glGenTextures;
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private unsafe delegate void _glGenTextures(GLint n, GLuint* textures);
-		public unsafe static void GenTextures(int n, uint[] textures)
+		public static unsafe void GenTextures(int n, uint[] textures)
 		{
 			fixed (uint* ptr = textures) { glGenTextures(n, ptr); }
 			CheckError();
 		}
-		public unsafe static uint GenTexture()
+		public static unsafe uint GenTexture()
 		{
 			uint texture = 0;
 			glGenTextures(1, &texture);
@@ -2493,12 +2493,12 @@ namespace CKGL.OpenGLBindings
 		private static _glDeleteTextures glDeleteTextures;
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private unsafe delegate void _glDeleteTextures(GLint n, GLuint* textures);
-		public unsafe static void DeleteTextures(int n, uint[] textures)
+		public static unsafe void DeleteTextures(int n, uint[] textures)
 		{
 			fixed (uint* ptr = textures) { glDeleteTextures(n, ptr); }
 			CheckError();
 		}
-		public unsafe static void DeleteTexture(uint texture)
+		public static unsafe void DeleteTexture(uint texture)
 		{
 			glDeleteTextures(1, &texture);
 			CheckError();
@@ -2531,7 +2531,7 @@ namespace CKGL.OpenGLBindings
 		private static _glTexImage2D glTexImage2D;
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private unsafe delegate void _glTexImage2D(TextureTarget target, GLint level, GLint internalFormat, GLint width, GLint height, GLint border, PixelFormat format, PixelType type, void* data);
-		public unsafe static void TexImage2D(TextureTarget target, int level, TextureFormat internalFormat, int width, int height, int border, PixelFormat format, PixelType type, void* data)
+		public static unsafe void TexImage2D(TextureTarget target, int level, TextureFormat internalFormat, int width, int height, int border, PixelFormat format, PixelType type, void* data)
 		{
 			glTexImage2D(target, level, (int)internalFormat, width, height, border, format, type, data);
 			CheckError();
@@ -2562,7 +2562,7 @@ namespace CKGL.OpenGLBindings
 		private static _glGetTexImage glGetTexImage;
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private unsafe delegate void _glGetTexImage(TextureTarget target, GLint level, PixelFormat format, PixelType type, void* data);
-		public unsafe static void GetTexImage(TextureTarget target, int level, PixelFormat format, PixelType type, void* data)
+		public static unsafe void GetTexImage(TextureTarget target, int level, PixelFormat format, PixelType type, void* data)
 		{
 			if (glGetTexImage != null)
 			{
@@ -2582,7 +2582,7 @@ namespace CKGL.OpenGLBindings
 		private static _glGenBuffers glGenBuffers;
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private unsafe delegate void _glGenBuffers(GLint n, GLuint* buffers);
-		public unsafe static void GenBuffers(int n, uint[] buffers)
+		public static unsafe void GenBuffers(int n, uint[] buffers)
 		{
 			fixed (uint* ptr = buffers) { glGenBuffers(n, ptr); }
 			CheckError();
@@ -2591,7 +2591,7 @@ namespace CKGL.OpenGLBindings
 		{
 			GenBuffers(buffers.Length, buffers);
 		}
-		public unsafe static uint GenBuffer()
+		public static unsafe uint GenBuffer()
 		{
 			uint buffer = 0;
 			glGenBuffers(1, &buffer);
@@ -2603,7 +2603,7 @@ namespace CKGL.OpenGLBindings
 		private static _glDeleteBuffers glDeleteBuffers;
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private unsafe delegate void _glDeleteBuffers(GLint n, GLuint* buffers);
-		public unsafe static void DeleteBuffers(int n, uint[] buffers)
+		public static unsafe void DeleteBuffers(int n, uint[] buffers)
 		{
 			fixed (uint* ptr = buffers) { glDeleteBuffers(n, ptr); }
 			CheckError();
@@ -2612,7 +2612,7 @@ namespace CKGL.OpenGLBindings
 		{
 			DeleteBuffers(buffers.Length, buffers);
 		}
-		public unsafe static void DeleteBuffer(uint buffer)
+		public static unsafe void DeleteBuffer(uint buffer)
 		{
 			glDeleteBuffers(1, &buffer);
 			CheckError();
@@ -2678,12 +2678,12 @@ namespace CKGL.OpenGLBindings
 		private static _glGenFramebuffers glGenFramebuffers;
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private unsafe delegate void _glGenFramebuffers(GLint n, GLuint* framebuffers);
-		public unsafe static void GenFramebuffers(int n, uint[] framebuffers)
+		public static unsafe void GenFramebuffers(int n, uint[] framebuffers)
 		{
 			fixed (uint* ptr = framebuffers) { glGenFramebuffers(n, ptr); }
 			CheckError();
 		}
-		public unsafe static uint GenFramebuffer()
+		public static unsafe uint GenFramebuffer()
 		{
 			uint fbo = 0;
 			glGenFramebuffers(1, &fbo);
@@ -2695,12 +2695,12 @@ namespace CKGL.OpenGLBindings
 		private static _glDeleteFramebuffers glDeleteFramebuffers;
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private unsafe delegate void _glDeleteFramebuffers(GLint n, GLuint* framebuffers);
-		public unsafe static void DeleteFramebuffers(int n, uint[] framebuffers)
+		public static unsafe void DeleteFramebuffers(int n, uint[] framebuffers)
 		{
 			fixed (uint* ptr = framebuffers) { glDeleteFramebuffers(n, ptr); }
 			CheckError();
 		}
-		public unsafe static void DeleteFramebuffer(uint framebuffer)
+		public static unsafe void DeleteFramebuffer(uint framebuffer)
 		{
 			glDeleteFramebuffers(1, &framebuffer);
 			CheckError();
@@ -2747,7 +2747,7 @@ namespace CKGL.OpenGLBindings
 		private static _glDrawBuffers glDrawBuffers;
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private unsafe delegate void _glDrawBuffers(GLint n, DrawBuffer* bufs);
-		public unsafe static void DrawBuffers(int n, DrawBuffer[] bufs)
+		public static unsafe void DrawBuffers(int n, DrawBuffer[] bufs)
 		{
 			if (n > bufs.Length)
 				throw new Exception("Not enough buffers in array.");
@@ -2805,12 +2805,12 @@ namespace CKGL.OpenGLBindings
 		private static _glGenRenderbuffers glGenRenderbuffers;
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private unsafe delegate void _glGenRenderbuffers(GLint n, GLuint* renderbuffers);
-		public unsafe static void GenRenderbuffers(int n, uint[] renderbuffers)
+		public static unsafe void GenRenderbuffers(int n, uint[] renderbuffers)
 		{
 			fixed (uint* ptr = renderbuffers) { glGenFramebuffers(n, ptr); }
 			CheckError();
 		}
-		public unsafe static uint GenRenderbuffer()
+		public static unsafe uint GenRenderbuffer()
 		{
 			uint rbo = 0;
 			glGenRenderbuffers(1, &rbo);
@@ -2822,12 +2822,12 @@ namespace CKGL.OpenGLBindings
 		private static _glDeleteRenderbuffers glDeleteRenderbuffers;
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private unsafe delegate void _glDeleteRenderbuffers(GLint n, GLuint* renderbuffers);
-		public unsafe static void DeleteRenderbuffers(int n, uint[] renderbuffers)
+		public static unsafe void DeleteRenderbuffers(int n, uint[] renderbuffers)
 		{
 			fixed (uint* ptr = renderbuffers) { glDeleteRenderbuffers(n, ptr); }
 			CheckError();
 		}
-		public unsafe static void DeleteRenderbuffer(uint renderbuffer)
+		public static unsafe void DeleteRenderbuffer(uint renderbuffer)
 		{
 			glDeleteRenderbuffers(1, &renderbuffer);
 			CheckError();
@@ -2869,12 +2869,12 @@ namespace CKGL.OpenGLBindings
 		private static _glGenVertexArrays glGenVertexArrays;
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private unsafe delegate void _glGenVertexArrays(GLint n, GLuint* arrays);
-		public unsafe static void GenVertexArrays(int n, uint[] arrays)
+		public static unsafe void GenVertexArrays(int n, uint[] arrays)
 		{
 			fixed (uint* ptr = arrays) { glGenVertexArrays(n, ptr); }
 			CheckError();
 		}
-		public unsafe static uint GenVertexArray()
+		public static unsafe uint GenVertexArray()
 		{
 			uint vao = 0;
 			glGenVertexArrays(1, &vao);
@@ -2886,12 +2886,12 @@ namespace CKGL.OpenGLBindings
 		private static _glDeleteVertexArrays glDeleteVertexArrays;
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private unsafe delegate void _glDeleteVertexArrays(GLint n, GLuint* arrays);
-		public unsafe static void DeleteVertexArrays(int n, uint[] arrays)
+		public static unsafe void DeleteVertexArrays(int n, uint[] arrays)
 		{
 			fixed (uint* ptr = arrays) { glDeleteVertexArrays(n, ptr); }
 			CheckError();
 		}
-		public unsafe static void DeleteVertexArray(uint array)
+		public static unsafe void DeleteVertexArray(uint array)
 		{
 			glDeleteVertexArrays(1, &array);
 			CheckError();
@@ -3141,7 +3141,7 @@ namespace CKGL.OpenGLBindings
 		private unsafe delegate void _glGetActiveUniform(GLuint program, GLuint index, GLint bufSize, out GLint length, out GLint size, out UniformType type, byte* name);
 		private static UniformType[] validUniformTypes = (UniformType[])Enum.GetValues(typeof(UniformType));
 		private static byte[] uniformName = new byte[32];
-		public unsafe static void GetActiveUniform(uint program, uint index, out int size, out UniformType type, out string name)
+		public static unsafe void GetActiveUniform(uint program, uint index, out int size, out UniformType type, out string name)
 		{
 			fixed (byte* ptr = uniformName)
 			{
