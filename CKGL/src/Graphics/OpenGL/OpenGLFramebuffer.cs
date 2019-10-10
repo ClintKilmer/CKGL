@@ -111,6 +111,35 @@ namespace CKGL.OpenGL
 			return result;
 		}
 
+		public override Bitmap Bitmap(TextureAttachment textureAttachment, RectangleI rectangle)
+		{
+			if (textureAttachment == TextureAttachment.Depth || textureAttachment == TextureAttachment.DepthStencil)
+				throw new CKGLException("Cannot read pixels of the Depth(Stecil) attachment.");
+			if (rectangle.X < 0 || rectangle.Y < 0 || rectangle.X + rectangle.W > Width || rectangle.Y + rectangle.H > Height)
+				throw new CKGLException("Rectangle outside of Framebuffer bounds.");
+
+			Framebuffer previous = Current;
+
+			Bind();
+
+			if (IsDefault)
+			{
+				if (textureAttachment == TextureAttachment.Depth || textureAttachment == TextureAttachment.DepthStencil)
+					throw new IllegalValueException(typeof(TextureAttachment), textureAttachment);
+				GL.ReadBuffer(ReadBuffer.Back);
+			}
+			else
+			{
+				GL.ReadBuffer((ReadBuffer)textureAttachment.ToOpenGL());
+			}
+
+			Bitmap bitmap = new Bitmap(GL.ReadPixelsAsColourArray(rectangle, PixelFormat.RGBA), rectangle.W, rectangle.H);
+
+			previous.Bind();
+
+			return bitmap;
+		}
+
 		// Blitting is currently OpenGL only - cast to OpenGLFramebuffer to use BlitTextureTo
 		// TODO - Figure out Depth Texture Blitting
 		public void BlitTextureTo(Framebuffer target, TextureAttachment textureAttachment, BlitFilter filter) => BlitTextureTo(target, textureAttachment, filter, new RectangleI(Width, Height));

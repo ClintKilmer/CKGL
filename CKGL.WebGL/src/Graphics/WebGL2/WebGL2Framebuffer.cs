@@ -111,6 +111,8 @@ namespace CKGL.WebGL2
 			return result;
 		}
 
+		public override Bitmap Bitmap(TextureAttachment textureAttachment, RectangleI rectangle) => throw new NotImplementedException();
+
 		// Blitting is currently WebGL2 only - cast to WebGL2Framebuffer to use BlitTextureTo
 		// TODO - Figure out Depth Texture Blitting
 		public void BlitTextureTo(Framebuffer target, TextureAttachment textureAttachment, BlitFilter filter) => BlitTextureTo(target, textureAttachment, filter, new RectangleI(Width, Height));

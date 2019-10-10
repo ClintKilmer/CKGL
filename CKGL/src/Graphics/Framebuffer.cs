@@ -97,6 +97,10 @@ namespace CKGL
 
 		public abstract Texture GetTexture(TextureAttachment textureAttachment);
 
+		public Bitmap Bitmap() => Bitmap(TextureAttachment.Colour0, new RectangleI(0, 0, Width, Height));
+		public Bitmap Bitmap(TextureAttachment textureAttachment) => Bitmap(textureAttachment, new RectangleI(0, 0, Width, Height));
+		public abstract Bitmap Bitmap(TextureAttachment textureAttachment, RectangleI rectangle);
+
 		public void UnbindTextures()
 		{
 			if (!IsDefault)

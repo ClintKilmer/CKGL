@@ -1734,7 +1734,8 @@ namespace CKGL.OpenGLBindings
 
 	public enum ReadBuffer : GLuint
 	{
-		Depth = GL_DEPTH_ATTACHMENT, // TODO: Not supported?
+		None = GL_NONE,
+		Back = GL_BACK,
 		Colour0 = GL_COLOR_ATTACHMENT0,
 		Colour1 = GL_COLOR_ATTACHMENT1,
 		Colour2 = GL_COLOR_ATTACHMENT2,
@@ -1750,7 +1751,9 @@ namespace CKGL.OpenGLBindings
 		Colour12 = GL_COLOR_ATTACHMENT12,
 		Colour13 = GL_COLOR_ATTACHMENT13,
 		Colour14 = GL_COLOR_ATTACHMENT14,
-		Colour15 = GL_COLOR_ATTACHMENT15
+		Colour15 = GL_COLOR_ATTACHMENT15,
+		Depth = GL_DEPTH_ATTACHMENT, // TODO: Not supported?
+		DepthStencil = GL_DEPTH_STENCIL_ATTACHMENT // TODO: Not supported?
 	}
 
 	public enum BlitFilter : GLuint
@@ -2778,13 +2781,22 @@ namespace CKGL.OpenGLBindings
 		[Shared]
 		private static _glReadPixels glReadPixels;
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-		private unsafe delegate void _glReadPixels(GLint x, GLint y, GLint w, GLint h, PixelFormat format, DataType type, byte* data);
-		public unsafe static void ReadPixels(RectangleI rect, PixelFormat format, byte[] data)
+		private unsafe delegate void _glReadPixels(GLint x, GLint y, GLint w, GLint h, PixelFormat format, DataType type, void* data);
+		public static unsafe byte[] ReadPixels(RectangleI rect, PixelFormat format)
 		{
-			if (data.Length < rect.Area * format.Components())
-				throw new Exception("Data array is not large enough.");
-			fixed (byte* ptr = data) { glReadPixels(rect.X, rect.Y, rect.W, rect.H, format, DataType.UnsignedByte, ptr); }
+			byte[] data = new byte[rect.Area * format.Components()];
+			fixed (byte* ptr = data)
+				glReadPixels(rect.X, rect.Y, rect.W, rect.H, format, DataType.UnsignedByte, ptr);
 			CheckError();
+			return data;
+		}
+		public static unsafe Colour[] ReadPixelsAsColourArray(RectangleI rect, PixelFormat format)
+		{
+			Colour[] data = new Colour[rect.Area];
+			fixed (Colour* ptr = data)
+				glReadPixels(rect.X, rect.Y, rect.W, rect.H, format, DataType.UnsignedByte, ptr);
+			CheckError();
+			return data;
 		}
 		#endregion
 

@@ -102,6 +102,8 @@ namespace CKGL.WebGL
 			return result;
 		}
 
+		public override Bitmap Bitmap(TextureAttachment textureAttachment, RectangleI rectangle) => throw new NotImplementedException();
+
 		// WebGL 1.0 does not support blitting framebuffers
 		public void BlitTextureTo(Framebuffer target, TextureAttachment textureAttachment, BlitFilter filter) => BlitTextureTo(target, textureAttachment, filter, new RectangleI(Width, Height));
 		public void BlitTextureTo(Framebuffer target, TextureAttachment textureAttachment, BlitFilter filter, int x, int y) => BlitTextureTo(target, textureAttachment, filter, new RectangleI(x, y, Width, Height));
