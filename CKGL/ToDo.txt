@@ -1,7 +1,5 @@
 CKGL TODO List:
 
-- Restrict framebuffer rezising? Only for default framebuffer?
-
 - Texture Abstraction
 	- Platform image load/save - add Colour[] or Bitmap support
 	- Implement SavePNG/SaveJPG in either Texture or Bitmap
