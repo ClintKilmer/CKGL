@@ -8,8 +8,8 @@ namespace CKGL
 		public static int Swaps { get; protected set; }
 		public static int Blits { get; protected set; }
 
-		public Texture[] Textures = new Texture[0];
-		public Texture DepthStencilTexture;
+		internal Texture[] Textures = new Texture[0];
+		internal Texture DepthStencilTexture;
 
 		protected bool IsDefault = false;
 
@@ -51,7 +51,7 @@ namespace CKGL
 			}
 		}
 
-		private int width = 0;
+		protected int width = 0;
 		public int Width
 		{
 			get
@@ -61,17 +61,9 @@ namespace CKGL
 
 				return width;
 			}
-
-			protected set
-			{
-				if (IsDefault)
-					throw new CKGLException("Modifying the Width of the Default Framebuffer is not allowed.");
-
-				width = value;
-			}
 		}
 
-		private int height = 0;
+		protected int height = 0;
 		public int Height
 		{
 			get
@@ -80,14 +72,6 @@ namespace CKGL
 					return Window.Height;
 
 				return height;
-			}
-
-			protected set
-			{
-				if (IsDefault)
-					throw new CKGLException("Modifying the Height of the Default Framebuffer is not allowed.");
-
-				height = value;
 			}
 		}
 
@@ -117,7 +101,7 @@ namespace CKGL
 		{
 			if (!IsDefault)
 			{
-				foreach (Texture texture in Textures ?? null)
+				foreach (Texture texture in Textures)
 					texture?.Unbind();
 				DepthStencilTexture?.Unbind();
 			}

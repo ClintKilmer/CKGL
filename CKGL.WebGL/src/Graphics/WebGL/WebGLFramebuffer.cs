@@ -27,8 +27,8 @@ namespace CKGL.WebGL
 			if (textureDepthFormat.HasValue && !(textureDepthFormat.Value.ToWebGLPixelFormat() == GL.DEPTH_COMPONENT || textureDepthFormat.Value.ToWebGLPixelFormat() == GL.DEPTH_STENCIL))
 				throw new CKGLException("textureDepthFormat is not a depth(stencil) texture.");
 
-			Width = width;
-			Height = height;
+			this.width = width;
+			this.height = height;
 
 			camera2D.Width = width;
 			camera2D.Height = height;

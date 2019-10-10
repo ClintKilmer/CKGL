@@ -258,7 +258,7 @@ namespace CKGLTest2D
 					sequentialNumber++;
 				}
 
-				surface.Textures[0].SavePNG($@"{s}{System.DateTime.Now:yyyy-MM-dd HH.mm.ss}-{sequentialNumber} [CKGL].png");
+				surface.GetTexture(TextureAttachment.Colour0).SavePNG($@"{s}{System.DateTime.Now:yyyy-MM-dd HH.mm.ss}-{sequentialNumber} [CKGL].png");
 
 				//System.GC.Collect();
 			}
