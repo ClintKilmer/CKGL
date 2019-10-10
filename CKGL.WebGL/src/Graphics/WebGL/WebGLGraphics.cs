@@ -172,9 +172,6 @@ namespace CKGL.WebGL
 			Output.WriteLine($"WebGL Context - MaxTextureImageUnits: {GL.getParameter(GL.MAX_TEXTURE_IMAGE_UNITS)}");
 			Output.WriteLine($"WebGL Context - MaxTextureSize: {GL.getParameter(GL.MAX_TEXTURE_SIZE)}");
 			//Output.WriteLine($"WebGL - Extensions: \n{string.Join("\n", GL.GetSupportedExtensions())}");
-
-			// Set up default framebuffer
-			Framebuffer.Current = Framebuffer.Default = new WebGLFramebuffer();
 		}
 
 		#region Resources
@@ -196,6 +193,11 @@ namespace CKGL.WebGL
 		internal override Texture CreateTexture2D(byte[] data, int width, int height, TextureFormat textureFormat, TextureFilter minFilter, TextureFilter magFilter, TextureWrap wrapX, TextureWrap wrapY)
 		{
 			return new WebGLTexture(data, TextureType.Texture2D, width, height, 1, textureFormat, minFilter, magFilter, wrapX, wrapY);
+		}
+
+		internal override Framebuffer CreateDefaultFramebuffer()
+		{
+			return WebGLFramebuffer.CreateDefault();
 		}
 
 		internal override Framebuffer CreateFramebuffer(int width, int height, int colourTextures, TextureFormat textureColourFormat, TextureFormat? textureDepthFormat = null)

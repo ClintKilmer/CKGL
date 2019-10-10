@@ -7,8 +7,10 @@ namespace CKGL.WebGL
 	{
 		private Retyped.dom.WebGLFramebuffer id;
 
+		internal static Framebuffer CreateDefault() => new WebGLFramebuffer();
+
 		// Default WebGLFramebuffer
-		internal WebGLFramebuffer()
+		private WebGLFramebuffer()
 		{
 			id = null;
 			IsDefault = true;

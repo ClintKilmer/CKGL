@@ -8,9 +8,6 @@ namespace CKGL.OpenGL
 		internal override void Init()
 		{
 			GL.Init();
-
-			// Set up default framebuffer
-			Framebuffer.Current = Framebuffer.Default = new OpenGLFramebuffer();
 		}
 
 		#region Resources
@@ -32,6 +29,11 @@ namespace CKGL.OpenGL
 		internal override Texture CreateTexture2D(byte[] data, int width, int height, TextureFormat textureFormat, TextureFilter minFilter, TextureFilter magFilter, TextureWrap wrapX, TextureWrap wrapY)
 		{
 			return new OpenGLTexture(data, TextureType.Texture2D, width, height, 1, textureFormat, minFilter, magFilter, wrapX, wrapY);
+		}
+
+		internal override Framebuffer CreateDefaultFramebuffer()
+		{
+			return OpenGLFramebuffer.CreateDefault();
 		}
 
 		internal override Framebuffer CreateFramebuffer(int width, int height, int colourTextures, TextureFormat textureColourFormat, TextureFormat? textureDepthFormat = null)

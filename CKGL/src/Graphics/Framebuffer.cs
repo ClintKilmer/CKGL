@@ -2,8 +2,8 @@ namespace CKGL
 {
 	public abstract class Framebuffer
 	{
-		public static Framebuffer Default { get; internal set; } // Set in Graphics.Init()
-		public static Framebuffer Current { get; internal set; } // Set in Graphics.Init()
+		public static Framebuffer Default { get; internal set; } = Graphics.CreateDefaultFramebuffer();
+		public static Framebuffer Current { get; internal set; } = Default;
 
 		public static int Swaps { get; protected set; }
 		public static int Blits { get; protected set; }

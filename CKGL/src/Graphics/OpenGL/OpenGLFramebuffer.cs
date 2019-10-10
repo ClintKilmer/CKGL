@@ -9,8 +9,10 @@ namespace CKGL.OpenGL
 	{
 		private GLuint id;
 
+		internal static Framebuffer CreateDefault() => new OpenGLFramebuffer();
+
 		// Default OpenGLFramebuffer
-		internal OpenGLFramebuffer()
+		private OpenGLFramebuffer()
 		{
 			id = 0;
 			IsDefault = true;

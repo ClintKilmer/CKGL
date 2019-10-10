@@ -9,8 +9,10 @@ namespace CKGL.WebGL2
 	{
 		private WebGLFramebuffer id;
 
+		internal static Framebuffer CreateDefault() => new WebGL2Framebuffer();
+
 		// Default WebGL2Framebuffer
-		internal WebGL2Framebuffer()
+		private WebGL2Framebuffer()
 		{
 			id = null;
 			IsDefault = true;
