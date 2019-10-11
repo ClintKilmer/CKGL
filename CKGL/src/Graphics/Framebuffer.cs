@@ -110,6 +110,18 @@ namespace CKGL
 				DepthStencilTexture?.Unbind();
 			}
 		}
+		#region Save Methods
+		public void SavePNG(string file) => SavePNG(file, Width, Height);
+		public void SavePNG(string file, int width, int height)
+		{
+			Bitmap().SavePNG(file, width, height);
+		}
+
+		public void SaveJPG(string file) => SaveJPG(file, Width, Height);
+		public void SaveJPG(string file, int width, int height)
+		{
+			Bitmap().SaveJPG(file, width, height);
+		}
 
 		#region Overrides
 		public abstract override string ToString();

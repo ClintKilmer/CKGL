@@ -1072,7 +1072,7 @@ void main()
 					sequentialNumber++;
 				}
 
-				surface.GetTexture(TextureAttachment.Colour0).SavePNG($@"{s}{System.DateTime.Now:yyyy-MM-dd HH.mm.ss}-{sequentialNumber} [CKGL].png");
+				surface.SavePNG($@"{s}{System.DateTime.Now:yyyy-MM-dd HH.mm.ss}-{sequentialNumber} [CKGL].png");
 
 				//System.GC.Collect();
 			}

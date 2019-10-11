@@ -96,7 +96,7 @@ namespace CKGL.OpenGL
 			}
 		}
 
-		public override unsafe byte[] GetData()
+		public override unsafe Bitmap Bitmap(RectangleI rectangle)
 		{
 			switch (Type)
 			{
@@ -105,36 +105,31 @@ namespace CKGL.OpenGL
 				//case TextureType.Texture1DArray when Platform.GraphicsBackend == GraphicsBackend.OpenGL: // Not available in OpenGL ES
 				//	break;
 				case TextureType.Texture2D:
-					byte[] data = new byte[Width * Height * Format.ToOpenGL().PixelFormat().Components()];
-					Bind();
-					fixed (byte* ptr = data)
-						GL.GetTexImage(TextureTarget, 0, Format.ToOpenGL().PixelFormat(), Format.ToOpenGL().PixelType(), ptr);
-					return data;
-				//case TextureType.Texture2DArray:
-				//	break;
-				//case TextureType.Texture2DMultisample:
-				//	break;
-				//case TextureType.Texture3D:
-				//	break;
-				default:
-					throw new IllegalValueException(typeof(TextureType), Type);
-			}
-		}
+					#region Old OpenGL-only implementation with glTexImage
+					//Colour[] data = new Colour[Width * Height];
+					//Bind();
+					//fixed (Colour* ptr = data)
+					//	GL.GetTexImage(TextureTarget, 0, Format.ToOpenGL().PixelFormat(), Format.ToOpenGL().PixelType(), ptr);
+					//return new Bitmap(data, Width, Height); 
+					#endregion
 
-		public override unsafe Bitmap GetBitmap()
-		{
-			switch (Type)
-			{
-				//case TextureType.Texture1D when Platform.GraphicsBackend == GraphicsBackend.OpenGL: // Not available in OpenGL ES
-				//	break;
-				//case TextureType.Texture1DArray when Platform.GraphicsBackend == GraphicsBackend.OpenGL: // Not available in OpenGL ES
-				//	break;
-				case TextureType.Texture2D:
-					Colour[] data = new Colour[Width * Height];
-					Bind();
-					fixed (Colour* ptr = data)
-						GL.GetTexImage(TextureTarget, 0, Format.ToOpenGL().PixelFormat(), Format.ToOpenGL().PixelType(), ptr);
-					return new Bitmap(data, Width, Height);
+					// OpenGL ES friendly implementation with crop functionality
+					Framebuffer originalFramebuffer = Framebuffer.Current;
+
+					GLuint id = GL.GenFramebuffer();
+					GL.BindFramebuffer(FramebufferTarget.Framebuffer, id);
+					//Framebuffer.Swaps++; // TODO
+					GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, TextureAttachment.Colour0.ToOpenGL(), TextureTarget, ID, 0);
+					FramebufferStatus status = GL.CheckFramebufferStatus(FramebufferTarget.Framebuffer);
+					if (status != FramebufferStatus.Complete)
+						throw new CKGLException("Invalid Framebuffer: " + status);
+
+					GL.ReadBuffer(ReadBuffer.Colour0);
+					Bitmap bitmap = new Bitmap(GL.ReadPixelsAsColourArray(rectangle, PixelFormat.RGBA), rectangle.W, rectangle.H);
+
+					originalFramebuffer.Bind();
+
+					return bitmap;
 				//case TextureType.Texture2DArray:
 				//	break;
 				//case TextureType.Texture2DMultisample:

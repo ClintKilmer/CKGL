@@ -1,3 +1,4 @@
+using System;
 using static CKGL.WebGL.WebGLGraphics; // WebGL Context Methods
 
 namespace CKGL.WebGL
@@ -81,43 +82,7 @@ namespace CKGL.WebGL
 			}
 		}
 
-		public override byte[] GetData()
-		{
-			switch (Type)
-			{
-				case TextureType.Texture2D:
-					byte[] data = new byte[Width * Height * Format.Components()];
-					Bind();
-					//fixed (byte* ptr = data)
-					//	GL.GetTexImage(TextureTarget, 0, Format.ToWebGLPixelFormat(), Format.ToWebGLPixelType(), ptr);
-					return data;
-				//case TextureType.Texture2DArray: // Not available in WebGL 1.0
-				//	break;
-				//case TextureType.Texture3D: // Not available in WebGL 1.0
-				//	break;
-				default:
-					throw new IllegalValueException(typeof(TextureType), Type);
-			}
-		}
-
-		public override Bitmap GetBitmap()
-		{
-			switch (Type)
-			{
-				case TextureType.Texture2D:
-					Colour[] data = new Colour[Width * Height];
-					Bind();
-					//fixed (Colour* ptr = data)
-					//	GL.GetTexImage(TextureTarget, 0, Format.ToWebGLPixelFormat(), Format.ToWebGLPixelType(), ptr);
-					return new Bitmap(data, Width, Height);
-				//case TextureType.Texture2DArray: // Not available in WebGL 1.0
-				//	break;
-				//case TextureType.Texture3D: // Not available in WebGL 1.0
-				//	break;
-				default:
-					throw new IllegalValueException(typeof(TextureType), Type);
-			}
-		}
+		public override Bitmap Bitmap(RectangleI rectangle) => throw new NotImplementedException();
 
 		#region Parameters
 		public override TextureWrap Wrap

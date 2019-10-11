@@ -76,20 +76,21 @@ namespace CKGL
 
 		public abstract void Destroy();
 
-		public abstract byte[] GetData();
-		public abstract Bitmap GetBitmap();
+		public Bitmap Bitmap() => Bitmap(new RectangleI(0, 0, Width, Height));
+		public abstract Bitmap Bitmap(RectangleI rectangle);
+		public abstract Bitmap GetBitmap(RectangleI rectangle);
 
-		#region Public Texture2D Save Methods
+		#region Save Methods
 		public void SavePNG(string file) => SavePNG(file, Width, Height);
 		public void SavePNG(string file, int width, int height)
 		{
-			GetBitmap().SavePNG(file, width, height);
+			Bitmap().SavePNG(file, width, height);
 		}
 
 		public void SaveJPG(string file) => SaveJPG(file, Width, Height);
 		public void SaveJPG(string file, int width, int height)
 		{
-			GetBitmap().SaveJPG(file, width, height);
+			Bitmap().SaveJPG(file, width, height);
 		}
 		#endregion
 

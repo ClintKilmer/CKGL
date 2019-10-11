@@ -153,21 +153,17 @@ namespace CKGL
 			}
 		}
 
-		#region Public Texture2D Save Methods
+		#region Save Methods
 		public void SavePNG(string file) => SavePNG(file, Width, Height);
 		public void SavePNG(string file, int width, int height)
 		{
-			// Temporary
-			//Platform.SavePNG(file, width, height, Width, Height, GetData(PixelFormat.RGBA));
-			throw new CKGLException("Temporary disable");
+			Platform.SavePNG(file, width, height, Width, Height, Bytes());
 		}
 
 		public void SaveJPG(string file) => SaveJPG(file, Width, Height);
 		public void SaveJPG(string file, int width, int height)
 		{
-			// Temporary
-			//Platform.SaveJPG(file, width, height, Width, Height, GetData(PixelFormat.RGBA));
-			throw new CKGLException("Temporary disable");
+			Platform.SaveJPG(file, width, height, Width, Height, Bytes());
 		}
 		#endregion
 
