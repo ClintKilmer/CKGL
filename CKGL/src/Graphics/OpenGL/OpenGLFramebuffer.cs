@@ -99,6 +99,9 @@ namespace CKGL.OpenGL
 
 		public override Texture GetTexture(TextureAttachment textureAttachment)
 		{
+			if (IsDefault)
+				throw new CKGLException($"Cannot get texture attachments from the Default Framebuffer.");
+
 			Texture result;
 			if (textureAttachment == TextureAttachment.Depth || textureAttachment == TextureAttachment.DepthStencil)
 				result = DepthStencilTexture;
