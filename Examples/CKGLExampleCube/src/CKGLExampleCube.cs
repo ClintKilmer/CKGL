@@ -1,5 +1,5 @@
-using CKGL;
 using System.Runtime.InteropServices;
+using CKGL;
 
 namespace CKGLExampleCube
 {
