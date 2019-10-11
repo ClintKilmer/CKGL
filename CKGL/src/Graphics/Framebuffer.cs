@@ -122,6 +122,7 @@ namespace CKGL
 		{
 			Bitmap().SaveJPG(file, width, height);
 		}
+		#endregion
 
 		#region Overrides
 		public abstract override string ToString();
