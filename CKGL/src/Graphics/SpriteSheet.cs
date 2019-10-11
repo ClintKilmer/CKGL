@@ -4,7 +4,7 @@ namespace CKGL
 {
 	public class SpriteSheet
 	{
-		private Bitmap bitmap;
+		public Bitmap Bitmap;
 		public List<Sprite> Sprites { get; private set; } = new List<Sprite>();
 		private List<AABBi> aabbs = new List<AABBi>();
 
@@ -17,7 +17,10 @@ namespace CKGL
 					if (texture != null)
 						texture.Destroy();
 
-					texture = Texture.Create2D(bitmap);
+					// Debug
+					//Bitmap.SavePNG("SpriteSheet.png");
+
+					texture = Texture.Create2D(Bitmap);
 
 					dirty = false;
 				}
@@ -29,8 +32,8 @@ namespace CKGL
 		private Texture texture;
 		private bool dirty = true;
 
-		public int Width { get { return bitmap.Width; } }
-		public int Height { get { return bitmap.Height; } }
+		public int Width { get { return Bitmap.Width; } }
+		public int Height { get { return Bitmap.Height; } }
 
 		private readonly int padding;
 
@@ -42,7 +45,7 @@ namespace CKGL
 			else if (padding >= Math.Min(width, height))
 				throw new CKGLException("Padding cannot be larger than the width or height of the SpriteSheet.");
 
-			bitmap = new Bitmap(width, height, Colour.Transparent);
+			Bitmap = new Bitmap(width, height, Colour.Transparent);
 
 			this.padding = padding;
 		}
@@ -65,7 +68,7 @@ namespace CKGL
 
 			for (int y = 0; y < source.H; y++)
 				for (int x = 0; x < source.W; x++)
-					bitmap[offset.X + x, offset.Y + y] = spriteData[source.X + x, source.Y + y];
+					Bitmap[offset.X + x, offset.Y + y] = spriteData[source.X + x, source.Y + y];
 
 			dirty = true;
 
@@ -112,7 +115,7 @@ namespace CKGL
 
 			for (int y = 0; y < source.H; y++)
 				for (int x = spriteOffsetX; x < spriteOffsetX + spriteWidth; x++)
-					bitmap[offset.X + x - spriteOffsetX, offset.Y + y] = spriteData[source.X + x, source.Y + y];
+					Bitmap[offset.X + x - spriteOffsetX, offset.Y + y] = spriteData[source.X + x, source.Y + y];
 
 			dirty = true;
 
@@ -129,9 +132,9 @@ namespace CKGL
 			height += padding;
 
 			AABBi aabb = new AABBi(0, 0, width, height);
-			for (int y = padding; y <= bitmap.Height - height; y++)
+			for (int y = padding; y <= Bitmap.Height - height; y++)
 			{
-				for (int x = padding; x <= bitmap.Width - width; x++)
+				for (int x = padding; x <= Bitmap.Width - width; x++)
 				{
 					aabb.X = x;
 					aabb.Y = y;
@@ -167,14 +170,14 @@ namespace CKGL
 			_offsetX = _offsetX.Max(padding);
 			_offsetY = _offsetY.Max(padding);
 
-			if (_offsetX + width > bitmap.Width)
+			if (_offsetX + width > Bitmap.Width)
 			{
 				_offsetY += _offsetYRowMax;
 				_offsetX = padding;
 				_offsetYRowMax = 0;
 			}
 
-			if (_offsetY + height > bitmap.Height)
+			if (_offsetY + height > Bitmap.Height)
 			{
 				throw new CKGLException("SpriteSheet is not large enough for submitted sprites.");
 			}

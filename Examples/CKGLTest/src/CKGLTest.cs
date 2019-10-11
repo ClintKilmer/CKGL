@@ -446,10 +446,6 @@ void main()
 			//{
 			//	new Tri { X = i * 2, Y = i * 2/*, Depth = -i * 20*/ };
 			//}
-
-			// Debug, test spritesheet
-			//SpriteSheets.SpriteSheet.Texture.SavePNG($@"{System.IO.Directory.GetCurrentDirectory()}/SpriteSheet.png");
-			//SpriteSheets.SpriteSheet.Texture.SavePNG("SpriteSheet.png");
 		}
 
 		public override void Update()

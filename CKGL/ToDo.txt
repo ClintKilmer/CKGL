@@ -15,7 +15,6 @@ Features:
 - Audio init throws exception if no device available
 - Colour Lerp
 - .ToString() consistency
-- Texture.SavePNG doesn't work in Init(), only in Update or later...
 - ANGLE can't use adaptive sync - even though it reports that it does
 - Texture.GetParam can't convert from OpenGLBindings to CKGL enums...
 - Move GL-specific debug/Metrics info to GL backend/Metrics - Make Debug/Metrics output GraphicsBackend agnostic
