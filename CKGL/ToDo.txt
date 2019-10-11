@@ -1,9 +1,5 @@
 CKGL TODO List:
 
-- Texture Abstraction
-	- Platform image load/save - add Colour[] or Bitmap support
-	- Implement SavePNG/SaveJPG in either Texture or Bitmap
-
 Notes:
 - WebGL - HighDPI needs mouse scaling to match css pixel size
 
