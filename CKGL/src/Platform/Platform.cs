@@ -768,12 +768,6 @@ namespace CKGL
 		public static void SaveJPG(string file, int destinationWidth, int destinationHeight, int sourceWidth, int sourceHeight, byte[] data)
 		{
 			IntPtr surface = GetScaledSurface(FlipImageData(sourceWidth, sourceHeight, 4, data), sourceWidth, sourceHeight, destinationWidth, destinationHeight);
-
-			//FIXME: Hack for Bugzilla #3972
-			IntPtr temp = SDL_ConvertSurfaceFormat(surface, SDL_PIXELFORMAT_RGB24, 0);
-			SDL_FreeSurface(surface);
-			surface = temp;
-
 			SDL_image.IMG_SaveJPG(surface, file, 100);
 			SDL_FreeSurface(surface);
 		}
