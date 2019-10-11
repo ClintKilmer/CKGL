@@ -118,7 +118,7 @@ namespace CKGL.OpenGL
 			if (rectangle.X < 0 || rectangle.Y < 0 || rectangle.X + rectangle.W > Width || rectangle.Y + rectangle.H > Height)
 				throw new CKGLException("Rectangle outside of Framebuffer bounds.");
 
-			Framebuffer previous = Current;
+			Framebuffer originalFramebuffer = Current;
 
 			Bind();
 
@@ -135,7 +135,7 @@ namespace CKGL.OpenGL
 
 			Bitmap bitmap = new Bitmap(GL.ReadPixelsAsColourArray(rectangle, PixelFormat.RGBA), rectangle.W, rectangle.H);
 
-			previous.Bind();
+			originalFramebuffer.Bind();
 
 			return bitmap;
 		}
