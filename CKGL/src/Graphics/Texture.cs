@@ -78,7 +78,6 @@ namespace CKGL
 
 		public Bitmap Bitmap() => Bitmap(new RectangleI(0, 0, Width, Height));
 		public abstract Bitmap Bitmap(RectangleI rectangle);
-		public abstract Bitmap GetBitmap(RectangleI rectangle);
 
 		#region Save Methods
 		public void SavePNG(string file) => SavePNG(file, Width, Height);
