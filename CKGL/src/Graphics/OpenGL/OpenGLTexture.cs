@@ -116,9 +116,10 @@ namespace CKGL.OpenGL
 					// OpenGL ES friendly implementation with crop functionality
 					Framebuffer originalFramebuffer = Framebuffer.Current;
 
-					GLuint id = GL.GenFramebuffer();
-					GL.BindFramebuffer(FramebufferTarget.Framebuffer, id);
+					GLuint tempFramebuffer = GL.GenFramebuffer();
+					GL.BindFramebuffer(FramebufferTarget.Framebuffer, tempFramebuffer);
 					//Framebuffer.Swaps++; // TODO
+
 					GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, TextureAttachment.Colour0.ToOpenGL(), TextureTarget, ID, 0);
 					FramebufferStatus status = GL.CheckFramebufferStatus(FramebufferTarget.Framebuffer);
 					if (status != FramebufferStatus.Complete)
@@ -126,6 +127,8 @@ namespace CKGL.OpenGL
 
 					GL.ReadBuffer(ReadBuffer.Colour0);
 					Bitmap bitmap = new Bitmap(GL.ReadPixelsAsColourArray(rectangle, PixelFormat.RGBA), rectangle.W, rectangle.H);
+
+					GL.DeleteFramebuffer(tempFramebuffer);
 
 					originalFramebuffer.Bind();
 
