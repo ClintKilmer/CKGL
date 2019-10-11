@@ -780,7 +780,7 @@ namespace CKGL
 
 		private static byte[] FlipImageData(int width, int height, int components, byte[] data)
 		{
-			if (GraphicsBackend == GraphicsBackend.OpenGL || GraphicsBackend == GraphicsBackend.OpenGLES || GraphicsBackend == GraphicsBackend.WebGL || GraphicsBackend == GraphicsBackend.WebGL2)
+			if (GraphicsBackend == GraphicsBackend.OpenGL || GraphicsBackend == GraphicsBackend.OpenGLES)
 			{
 				byte[] result = new byte[data.Length];
 
