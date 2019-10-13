@@ -94,16 +94,44 @@ namespace CKGL.WebGL
 			}
 		}
 
+		private TextureWrap? wrapX;
 		public override TextureWrap WrapX
 		{
-			get { return (TextureWrap)GetParam(GL.TEXTURE_WRAP_S); }
-			set { SetParam(GL.TEXTURE_WRAP_S, value.ToWebGL()); }
+			get { return wrapX.Value; }
+			set
+			{
+				if (wrapX != value)
+				{
+					Bind();
+					Graphics.State.OnStateChanging?.Invoke();
+					GL.texParameteri(TextureTarget, GL.TEXTURE_WRAP_S, value.ToWebGL());
+					Graphics.State.OnStateChanged?.Invoke();
+					wrapX = value;
+				}
+			}
 		}
 
+		private TextureWrap? wrapY;
 		public override TextureWrap WrapY
 		{
-			get { return (TextureWrap)GetParam(GL.TEXTURE_WRAP_T); }
-			set { SetParam(GL.TEXTURE_WRAP_T, value.ToWebGL()); }
+			get { return wrapY.Value; }
+			set
+			{
+				if (wrapY != value)
+				{
+					Bind();
+					Graphics.State.OnStateChanging?.Invoke();
+					GL.texParameteri(TextureTarget, GL.TEXTURE_WRAP_T, value.ToWebGL());
+					Graphics.State.OnStateChanged?.Invoke();
+					wrapY = value;
+				}
+			}
+		}
+
+		public override TextureWrap WrapZ
+		{
+			get => throw new CKGLException("WebGL 1.0 doesn't support 3d textures.");
+			set => throw new CKGLException("WebGL 1.0 doesn't support 3d textures.");
 		}
 
 		public override TextureFilter Filter
@@ -115,43 +143,41 @@ namespace CKGL.WebGL
 			}
 		}
 
+		private TextureFilter? minFilter;
 		public override TextureFilter MinFilter
 		{
-			get { return (TextureFilter)GetParam(GL.TEXTURE_MIN_FILTER); }
-			set { SetParam(GL.TEXTURE_MIN_FILTER, value.ToWebGL()); }
-		}
-
-		public override TextureFilter MagFilter
-		{
-			get { return (TextureFilter)GetParam(GL.TEXTURE_MAG_FILTER); }
+			get { return minFilter.Value; }
 			set
 			{
-				switch (value)
+				if (minFilter != value)
 				{
-					case TextureFilter.Linear:
-					case TextureFilter.LinearMipmapLinear:
-					case TextureFilter.LinearMipmapNearest:
-						SetParam(GL.TEXTURE_MAG_FILTER, TextureFilter.Linear.ToWebGL());
-						break;
-					case TextureFilter.Nearest:
-					case TextureFilter.NearestMipmapLinear:
-					case TextureFilter.NearestMipmapNearest:
-						SetParam(GL.TEXTURE_MAG_FILTER, TextureFilter.Nearest.ToWebGL());
-						break;
+					Bind();
+					Graphics.State.OnStateChanging?.Invoke();
+					GL.texParameteri(TextureTarget, GL.TEXTURE_MIN_FILTER, value.ToWebGL());
+					Graphics.State.OnStateChanged?.Invoke();
+					minFilter = value;
 				}
 			}
 		}
 
-		private uint GetParam(uint param)
+		private TextureFilter? magFilter;
+		public override TextureFilter MagFilter
 		{
-			Bind();
-			return (uint)GL.getTexParameter(TextureTarget, param);
-		}
+			get { return magFilter.Value; }
+			set
+			{
+				if (value != TextureFilter.Linear && value != TextureFilter.Nearest)
+					throw new IllegalValueException(typeof(TextureFilter), value);
 
-		private void SetParam(uint param, uint val)
-		{
-			Bind();
-			GL.texParameteri(TextureTarget, param, val);
+				if (magFilter != value)
+				{
+					Bind();
+					Graphics.State.OnStateChanging?.Invoke();
+					GL.texParameteri(TextureTarget, GL.TEXTURE_MAG_FILTER, value.ToWebGL());
+					Graphics.State.OnStateChanged?.Invoke();
+					magFilter = value;
+				}
+			}
 		}
 		#endregion
 

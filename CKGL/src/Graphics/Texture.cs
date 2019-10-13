@@ -15,6 +15,7 @@ namespace CKGL
 		private const TextureFilter DefaultMagFilter = TextureFilter.Nearest;
 		private const TextureWrap DefaultWrapX = TextureWrap.Clamp;
 		private const TextureWrap DefaultWrapY = TextureWrap.Clamp;
+		private const TextureWrap DefaultWrapZ = TextureWrap.Clamp;
 
 		public static Texture Create2D(int width, int height,
 									   TextureFormat textureFormat,
@@ -97,6 +98,7 @@ namespace CKGL
 		public abstract TextureWrap Wrap { set; }
 		public abstract TextureWrap WrapX { get; set; }
 		public abstract TextureWrap WrapY { get; set; }
+		public abstract TextureWrap WrapZ { get; set; }
 		public abstract TextureFilter Filter { set; }
 		public abstract TextureFilter MinFilter { get; set; }
 		public abstract TextureFilter MagFilter { get; set; }

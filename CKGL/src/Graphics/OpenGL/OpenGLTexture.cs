@@ -22,7 +22,7 @@ namespace CKGL.OpenGL
 							   int width, int height, int depth,
 							   TextureFormat format,
 							   TextureFilter minFilter, TextureFilter magFilter,
-							   TextureWrap wrapX, TextureWrap wrapY)
+							   TextureWrap wrapX, TextureWrap? wrapY, TextureWrap? wrapZ)
 		{
 			Type = type;
 			Width = width;
@@ -40,15 +40,20 @@ namespace CKGL.OpenGL
 					break;
 				case TextureType.Texture2D:
 					TextureTarget = TextureTarget.Texture2D;
+					WrapY = wrapY.Value;
 					break;
 				case TextureType.Texture2DArray:
 					TextureTarget = TextureTarget.Texture2DArray;
+					WrapY = wrapY.Value;
 					break;
 				case TextureType.Texture2DMultisample:
 					TextureTarget = TextureTarget.Texture2DMultisample;
+					WrapY = wrapY.Value;
 					break;
 				case TextureType.Texture3D:
 					TextureTarget = TextureTarget.Texture3D;
+					WrapY = wrapY.Value;
+					WrapZ = wrapZ.Value;
 					break;
 				default:
 					throw new IllegalValueException(typeof(TextureType), Type);
@@ -56,7 +61,6 @@ namespace CKGL.OpenGL
 			MinFilter = minFilter;
 			MagFilter = magFilter;
 			WrapX = wrapX;
-			WrapY = wrapY;
 
 			SetData(data);
 		}
@@ -150,20 +154,68 @@ namespace CKGL.OpenGL
 			set
 			{
 				WrapX = value;
-				WrapY = value;
+				if (Type != TextureType.Texture1D && Type != TextureType.Texture1DArray)
+					WrapY = value;
+				if (Type == TextureType.Texture3D)
+					WrapZ = value;
 			}
 		}
 
+		private TextureWrap? wrapX;
 		public override TextureWrap WrapX
 		{
-			get { return (TextureWrap)GetParam(TextureParam.WrapS); }
-			set { SetParam(TextureParam.WrapS, (GLint)value.ToOpenGL()); }
+			get { return wrapX.Value; }
+			set
+			{
+				if (wrapX != value)
+				{
+					Bind();
+					Graphics.State.OnStateChanging?.Invoke();
+					GL.TexParameterI(TextureTarget, TextureParam.WrapS, (GLint)value.ToOpenGL());
+					Graphics.State.OnStateChanged?.Invoke();
+					wrapX = value;
+				}
+			}
 		}
 
+		private TextureWrap? wrapY;
 		public override TextureWrap WrapY
 		{
-			get { return (TextureWrap)GetParam(TextureParam.WrapT); }
-			set { SetParam(TextureParam.WrapT, (GLint)value.ToOpenGL()); }
+			get { return wrapY.Value; }
+			set
+			{
+				if (Type != TextureType.Texture1D && Type != TextureType.Texture1DArray)
+				{
+					if (wrapY != value)
+					{
+						Bind();
+						Graphics.State.OnStateChanging?.Invoke();
+						GL.TexParameterI(TextureTarget, TextureParam.WrapT, (GLint)value.ToOpenGL());
+						Graphics.State.OnStateChanged?.Invoke();
+						wrapY = value;
+					}
+				}
+			}
+		}
+
+		private TextureWrap? wrapZ;
+		public override TextureWrap WrapZ
+		{
+			get { return wrapZ.Value; }
+			set
+			{
+				if (Type == TextureType.Texture3D)
+				{
+					if (wrapZ != value)
+					{
+						Bind();
+						Graphics.State.OnStateChanging?.Invoke();
+						GL.TexParameterI(TextureTarget, TextureParam.WrapR, (GLint)value.ToOpenGL());
+						Graphics.State.OnStateChanged?.Invoke();
+						wrapZ = value;
+					}
+				}
+			}
 		}
 
 		public override TextureFilter Filter
@@ -175,44 +227,41 @@ namespace CKGL.OpenGL
 			}
 		}
 
+		private TextureFilter? minFilter;
 		public override TextureFilter MinFilter
 		{
-			get { return (TextureFilter)GetParam(TextureParam.MinFilter); }
-			set { SetParam(TextureParam.MinFilter, (GLint)value.ToOpenGL()); }
-		}
-
-		public override TextureFilter MagFilter
-		{
-			get { return (TextureFilter)GetParam(TextureParam.MagFilter); }
+			get { return minFilter.Value; }
 			set
 			{
-				switch (value)
+				if (minFilter != value)
 				{
-					case TextureFilter.Linear:
-					case TextureFilter.LinearMipmapLinear:
-					case TextureFilter.LinearMipmapNearest:
-						SetParam(TextureParam.MagFilter, (GLint)TextureFilter.Linear.ToOpenGL());
-						break;
-					case TextureFilter.Nearest:
-					case TextureFilter.NearestMipmapLinear:
-					case TextureFilter.NearestMipmapNearest:
-						SetParam(TextureParam.MagFilter, (GLint)TextureFilter.Nearest.ToOpenGL());
-						break;
+					Bind();
+					Graphics.State.OnStateChanging?.Invoke();
+					GL.TexParameterI(TextureTarget, TextureParam.MinFilter, (GLint)value.ToOpenGL());
+					Graphics.State.OnStateChanged?.Invoke();
+					minFilter = value;
 				}
 			}
 		}
 
-		private int GetParam(TextureParam param)
+		private TextureFilter? magFilter;
+		public override TextureFilter MagFilter
 		{
-			Bind();
-			GL.GetTexParameterI(TextureTarget, param, out GLint val);
-			return val;
-		}
+			get { return magFilter.Value; }
+			set
+			{
+				if (value != TextureFilter.Linear && value != TextureFilter.Nearest)
+					throw new IllegalValueException(typeof(TextureFilter), value);
 
-		private void SetParam(TextureParam param, GLint val)
-		{
-			Bind();
-			GL.TexParameterI(TextureTarget, param, val);
+				if (magFilter != value)
+				{
+					Bind();
+					Graphics.State.OnStateChanging?.Invoke();
+					GL.TexParameterI(TextureTarget, TextureParam.MagFilter, (GLint)value.ToOpenGL());
+					Graphics.State.OnStateChanged?.Invoke();
+					magFilter = value;
+				}
+			}
 		}
 		#endregion
 

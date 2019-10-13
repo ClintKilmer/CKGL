@@ -23,7 +23,7 @@ namespace CKGL.WebGL2
 							   int width, int height, int depth,
 							   TextureFormat format,
 							   TextureFilter minFilter, TextureFilter magFilter,
-							   TextureWrap wrapX, TextureWrap wrapY)
+							   TextureWrap wrapX, TextureWrap wrapY, TextureWrap? wrapZ)
 		{
 			Type = type;
 			Width = width;
@@ -41,6 +41,7 @@ namespace CKGL.WebGL2
 					break;
 				case TextureType.Texture3D:
 					TextureTarget = TEXTURE_3D_Static;
+					WrapZ = wrapZ.Value;
 					break;
 				default:
 					throw new IllegalValueException(typeof(TextureType), Type);
@@ -92,19 +93,63 @@ namespace CKGL.WebGL2
 			{
 				WrapX = value;
 				WrapY = value;
+				if (Type == TextureType.Texture3D)
+					WrapZ = value;
 			}
 		}
 
+		private TextureWrap? wrapX;
 		public override TextureWrap WrapX
 		{
-			get { return (TextureWrap)GetParam(TEXTURE_WRAP_S); }
-			set { SetParam(TEXTURE_WRAP_S, value.ToWebGL2()); }
+			get { return wrapX.Value; }
+			set
+			{
+				if (wrapX != value)
+				{
+					Bind();
+					Graphics.State.OnStateChanging?.Invoke();
+					GL.texParameteri(TextureTarget, TEXTURE_WRAP_S, value.ToWebGL2());
+					Graphics.State.OnStateChanged?.Invoke();
+					wrapX = value;
+				}
+			}
 		}
 
+		private TextureWrap? wrapY;
 		public override TextureWrap WrapY
 		{
-			get { return (TextureWrap)GetParam(TEXTURE_WRAP_T); }
-			set { SetParam(TEXTURE_WRAP_T, value.ToWebGL2()); }
+			get { return wrapY.Value; }
+			set
+			{
+				if (wrapY != value)
+				{
+					Bind();
+					Graphics.State.OnStateChanging?.Invoke();
+					GL.texParameteri(TextureTarget, TEXTURE_WRAP_T, value.ToWebGL2());
+					Graphics.State.OnStateChanged?.Invoke();
+					wrapY = value;
+				}
+			}
+		}
+
+		private TextureWrap? wrapZ;
+		public override TextureWrap WrapZ
+		{
+			get { return wrapZ.Value; }
+			set
+			{
+				if (Type == TextureType.Texture3D)
+				{
+					if (wrapZ != value)
+					{
+						Bind();
+						Graphics.State.OnStateChanging?.Invoke();
+						GL.texParameteri(TextureTarget, TEXTURE_WRAP_R_Static, value.ToWebGL2());
+						Graphics.State.OnStateChanged?.Invoke();
+						wrapZ = value;
+					}
+				}
+			}
 		}
 
 		public override TextureFilter Filter
@@ -116,43 +161,41 @@ namespace CKGL.WebGL2
 			}
 		}
 
+		private TextureFilter? minFilter;
 		public override TextureFilter MinFilter
 		{
-			get { return (TextureFilter)GetParam(TEXTURE_MIN_FILTER); }
-			set { SetParam(TEXTURE_MIN_FILTER, value.ToWebGL2()); }
-		}
-
-		public override TextureFilter MagFilter
-		{
-			get { return (TextureFilter)GetParam(TEXTURE_MAG_FILTER); }
+			get { return minFilter.Value; }
 			set
 			{
-				switch (value)
+				if (minFilter != value)
 				{
-					case TextureFilter.Linear:
-					case TextureFilter.LinearMipmapLinear:
-					case TextureFilter.LinearMipmapNearest:
-						SetParam(TEXTURE_MAG_FILTER, TextureFilter.Linear.ToWebGL2());
-						break;
-					case TextureFilter.Nearest:
-					case TextureFilter.NearestMipmapLinear:
-					case TextureFilter.NearestMipmapNearest:
-						SetParam(TEXTURE_MAG_FILTER, TextureFilter.Nearest.ToWebGL2());
-						break;
+					Bind();
+					Graphics.State.OnStateChanging?.Invoke();
+					GL.texParameteri(TextureTarget, TEXTURE_MIN_FILTER, value.ToWebGL2());
+					Graphics.State.OnStateChanged?.Invoke();
+					minFilter = value;
 				}
 			}
 		}
 
-		private double GetParam(double param)
+		private TextureFilter? magFilter;
+		public override TextureFilter MagFilter
 		{
-			Bind();
-			return (double)GL.getTexParameter(TextureTarget, param);
-		}
+			get { return magFilter.Value; }
+			set
+			{
+				if (value != TextureFilter.Linear && value != TextureFilter.Nearest)
+					throw new IllegalValueException(typeof(TextureFilter), value);
 
-		private void SetParam(double param, double val)
-		{
-			Bind();
-			GL.texParameteri(TextureTarget, param, val);
+				if (magFilter != value)
+				{
+					Bind();
+					Graphics.State.OnStateChanging?.Invoke();
+					GL.texParameteri(TextureTarget, TEXTURE_MAG_FILTER, value.ToWebGL2());
+					Graphics.State.OnStateChanged?.Invoke();
+					magFilter = value;
+				}
+			}
 		}
 		#endregion
 
