@@ -32,9 +32,9 @@ namespace CKGL
 			return Math.Lerp(min, max, (float)random.NextDouble());
 		}
 
-		public static float Chance(float percentile)
+		public static bool Chance(float percentile)
 		{
-			return (float)random.NextDouble() * percentile;
+			return (float)random.NextDouble() <= percentile;
 		}
 	}
 }
