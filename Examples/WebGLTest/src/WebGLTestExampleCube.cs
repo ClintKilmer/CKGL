@@ -1,5 +1,5 @@
-using CKGL;
 using System.Runtime.InteropServices;
+using CKGL;
 
 namespace WebGLTestExampleCube
 {
@@ -225,11 +225,11 @@ void main()
 		private static string glslWebGL1 = @"
 #vertex
 
-in vec3 position;
-in vec3 normal;
-in vec4 colour;
-in vec2 uv;
-in float textured;
+layout(location = 0) in vec3 position;
+layout(location = 1) in vec3 normal;
+layout(location = 2) in vec4 colour;
+layout(location = 3) in vec2 uv;
+layout(location = 4) in float textured;
 
 uniform mat4 M;
 uniform mat4 V;
@@ -324,17 +324,15 @@ void main()
 	float specularStrength = 0.5;
 	vec3 viewDirection = normalize(-vFragPosition);
 	
-	vec3 result = vec3(0.0, 0.0, 0.0);
+	vec3 result = vec3(0.0);
 	for(int i = 0; i < NR_POINT_LIGHTS; i++)
         result += CalculatePointLight(pointLights[i], normal, vFragPosition, viewDirection, specularStrength);
 	result = max(result, vec3(0.1));
 	
-	//colour = mix(vColour, texture(Texture, vUV) * vColour, vTextured);
-	vec4 color = vColour;
-	//colour = mix(vColour, texture(Texture, vUV * vec2(1.0, 1.0) + vec2(0.0, 0.5)) * vColour, vTextured); // Unity style texture offsets
-	color = vec4(color.rgb * result, 1.0);
-	
-	gl_FragColor = color;
+	vec4 colour = mix(vColour, texture2D(Texture, vUV) * vColour, vTextured);
+	//colour = mix(vColour, texture2D(Texture, vUV * vec2(1.0, 1.0) + vec2(0.0, 0.5)) * vColour, vTextured); // Unity style texture offsets
+	colour = vec4(colour.rgb * result, colour.a);
+	gl_FragColor = colour;
 	
 	// apply gamma correction
 	//float gamma = 2.2;
@@ -621,6 +619,7 @@ void main()
 			// Render Framebuffer
 			Shaders.Renderer.Bind();
 			Shaders.Renderer.MVP = Framebuffer.Default.Matrix;
+			Shaders.Renderer.Texture = 0;
 			scale = Math.Max(1, Math.Min(Window.Width / width, Window.Height / height));
 			Renderer.Draw.Framebuffer(surface, TextureAttachment.Colour0, (Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, scale, Colour.White);
 
