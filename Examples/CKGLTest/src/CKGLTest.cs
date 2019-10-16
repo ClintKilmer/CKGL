@@ -30,6 +30,7 @@ namespace CKGLTest
 		public GeometryTestShader() : base(glsl) { }
 
 		public Matrix MVP { set { SetUniform("MVP", value); } }
+		public int Texture { set { SetUniform("Texture", value); } }
 
 		#region GLSL
 		private static string glsl = @"
@@ -153,6 +154,7 @@ void main()
 		public NoiseShader() : base(true, "shaders/Noise.glsl") { }
 
 		public Matrix MVP { set { SetUniform("MVP", value); } }
+		public int Texture { set { SetUniform("Texture", value); } }
 		public float Time { set { SetUniform("Time", value); } }
 
 		#region GLSL

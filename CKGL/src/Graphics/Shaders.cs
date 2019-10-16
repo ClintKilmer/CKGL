@@ -84,6 +84,7 @@ float LinearizeDepth(const float depth, const float zNear, const float zFar)
 			public RendererShader() : base(glsl) { }
 
 			public Matrix MVP { set { SetUniform("MVP", value); } }
+			public int Texture { set { SetUniform("Texture", value); } }
 
 			#region GLSL
 			private static string glsl = @"
@@ -142,6 +143,7 @@ void main()
 
 			public Matrix MVP { set { SetUniform("MVP", value); } }
 			public Matrix MV { set { SetUniform("MV", value); } }
+			public int Texture { set { SetUniform("Texture", value); } }
 			public FogType FogType { set { SetUniform("FogType", (int)value); } }
 			public Colour FogColour { set { SetUniform("FogColour", value); } }
 			public float FogDensity { set { SetUniform("FogDensity", value); } }
@@ -219,6 +221,7 @@ void main()
 			public LinearizeDepthShader() : base(glsl) { }
 
 			public Matrix MVP { set { SetUniform("MVP", value); } }
+			public int Texture { set { SetUniform("Texture", value); } }
 			public float zNear { set { SetUniform("zNear", value); } }
 			public float zFar { set { SetUniform("zFar", value); } }
 

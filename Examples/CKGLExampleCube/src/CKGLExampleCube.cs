@@ -18,6 +18,7 @@ namespace CKGLExampleCube
 		public Matrix M { set { SetUniform("M", value); } }
 		public Matrix V { set { SetUniform("V", value); } }
 		public Matrix P { set { SetUniform("P", value); } }
+		public int Texture { set { SetUniform("Texture", value); } }
 		public Matrix3x3 NormalMatrix { set { SetUniform("NormalMatrix", value); } }
 		public Vector3 Light1Position { set { SetUniform("pointLights[0].position", value); } }
 		public Vector3 Light2Position { set { SetUniform("pointLights[1].position", value); } }
