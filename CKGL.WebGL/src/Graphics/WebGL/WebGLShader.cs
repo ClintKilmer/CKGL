@@ -126,6 +126,28 @@ namespace CKGL.WebGL
 			if (hasFragmentDefinition)
 				GL.attachShader(shader, fragID);
 
+			// WebGL 1.0 only - Automatically bind attributes based on layout qualifiers
+			try
+			{
+				string[] lines = vertSource.Split('\n');
+
+				for (int i = 0; i < lines.Length; i++)
+				{
+					if (lines[i].Contains("layout(location") && (lines[i].Contains("in ") || lines[i].Contains("attribute ")))
+					{
+						string[] line = lines[i].Replace("layout(location =", "").Replace("layout(location=", "").Replace(";", " ").Trim().Split(' ');
+						int attribID = int.Parse(line[0].Substring(0, line[0].Length - 1).Trim());
+						string name = line[3].Trim();
+						//Output.WriteLine($"Shader - Bind Attribute | id: {attribID}, {name} ({line[2]})"); // Debug
+						GL.bindAttribLocation(shader, attribID, name);
+					}
+				}
+			}
+			catch (Exception e)
+			{
+				Output.WriteLine($"WebGL 1.0 - Automatic Shader Attribute binding failed: {e.Message}");
+			}
+
 			// Link the program and check for errors
 			GL.linkProgram(shader);
 			bool linkStatus = (bool)GL.getProgramParameter(shader, GL.LINK_STATUS);
