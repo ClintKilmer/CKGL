@@ -5,8 +5,8 @@ namespace CKGL
 	[StructLayout(LayoutKind.Sequential, Pack = 4)]
 	public struct UV
 	{
-		private ushort u;
-		private ushort v;
+		public ushort u;
+		public ushort v;
 
 		public float U { get { return u / 65535f; } set { u = (ushort)(value * ushort.MaxValue); } }
 		public float V { get { return v / 65535f; } set { v = (ushort)(value * ushort.MaxValue); } }
