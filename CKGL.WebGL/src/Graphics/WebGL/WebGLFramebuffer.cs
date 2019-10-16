@@ -24,7 +24,10 @@ namespace CKGL.WebGL
 				throw new CKGLException("WebGL 1.0 framebuffers must have 1 colour texture.");
 			if (textureColourFormat.ToWebGLPixelFormat() == GL.DEPTH_COMPONENT || textureColourFormat.ToWebGLPixelFormat() == GL.DEPTH_STENCIL)
 				throw new CKGLException("textureColourFormat cannot be a depth(stencil) texture.");
-			if (textureDepthFormat.HasValue && !(textureDepthFormat.Value.ToWebGLPixelFormat() == GL.DEPTH_COMPONENT || textureDepthFormat.Value.ToWebGLPixelFormat() == GL.DEPTH_STENCIL))
+			// WebGL 1.0 - Use Renderbuffer for depth attachment
+			//if (textureDepthFormat.HasValue && !(textureDepthFormat.Value.ToWebGLPixelFormat() == GL.DEPTH_COMPONENT || textureDepthFormat.Value.ToWebGLPixelFormat() == GL.DEPTH_STENCIL))
+			//	throw new CKGLException("textureDepthFormat is not a depth(stencil) texture.");
+			if (textureDepthFormat.HasValue && !(textureDepthFormat.Value == TextureFormat.Depth16 || textureDepthFormat.Value == TextureFormat.Depth24 || textureDepthFormat.Value == TextureFormat.Depth24Stencil8))
 				throw new CKGLException("textureDepthFormat is not a depth(stencil) texture.");
 
 			this.width = width;
@@ -45,9 +48,25 @@ namespace CKGL.WebGL
 
 			if (textureDepthFormat.HasValue)
 			{
-				DepthStencilTexture = Texture.Create2D(Width, Height, textureDepthFormat.Value);
-				GL.framebufferTexture2D(GL.FRAMEBUFFER, textureDepthFormat.Value.ToWebGLTextureAttachment(), (DepthStencilTexture as WebGLTexture).TextureTarget, (DepthStencilTexture as WebGLTexture).ID, 0);
-				DepthStencilTexture.Unbind();
+				// Depth texture implementation
+				//DepthStencilTexture = Texture.Create2D(Width, Height, textureDepthFormat.Value);
+				//GL.framebufferTexture2D(GL.FRAMEBUFFER, textureDepthFormat.Value.ToWebGLTextureAttachment(), (DepthStencilTexture as WebGLTexture).TextureTarget, (DepthStencilTexture as WebGLTexture).ID, 0);
+				//DepthStencilTexture.Unbind();
+				//CheckStatus();
+
+				// WebGL 1.0 - Use Renderbuffer for depth attachment
+				var depthBuffer = GL.createRenderbuffer();
+				GL.bindRenderbuffer(GL.RENDERBUFFER, depthBuffer);
+				if (textureDepthFormat.Value == TextureFormat.Depth16 || textureDepthFormat.Value == TextureFormat.Depth24)
+				{
+					GL.renderbufferStorage(GL.RENDERBUFFER, GL.DEPTH_STENCIL, Width, Height);
+					GL.framebufferRenderbuffer(GL.FRAMEBUFFER, GL.DEPTH_STENCIL_ATTACHMENT, GL.RENDERBUFFER, depthBuffer);
+				}
+				else if (textureDepthFormat.Value == TextureFormat.Depth24Stencil8)
+				{
+					GL.renderbufferStorage(GL.RENDERBUFFER, GL.DEPTH_COMPONENT16, Width, Height);
+					GL.framebufferRenderbuffer(GL.FRAMEBUFFER, GL.DEPTH_ATTACHMENT, GL.RENDERBUFFER, depthBuffer);
+				}
 				CheckStatus();
 			}
 		}
