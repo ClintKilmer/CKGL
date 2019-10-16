@@ -1,12 +1,12 @@
-using CKGL;
 using System.Runtime.InteropServices;
+using CKGL;
 
 namespace WebGLTest
 {
 	#region Shaders
 	public static class Shaders
 	{
-		//public static InternalShaders.RendererShader Renderer = new InternalShaders.RendererShader();
+		public static InternalShaders.RendererShader Renderer = new InternalShaders.RendererShader();
 		//public static InternalShaders.RendererFogShader RendererFog = new InternalShaders.RendererFogShader();
 		//public static InternalShaders.LinearizeDepthShader LinearizeDepth = new InternalShaders.LinearizeDepthShader();
 		public static BasicShader Basic = new BasicShader();
@@ -55,8 +55,8 @@ void main(void)
 		private static string WebGL_1_0_glsl = @"
 #vertex
 
-attribute vec3 position;
-attribute vec4 colour;
+layout(location = 0) in vec3 position;
+layout(location = 1) in vec4 colour;
 
 uniform mat4 MVP;
 uniform vec2 offset;
@@ -102,9 +102,12 @@ void main(void)
 
 	public class WebGLTest : Game
 	{
-		private static int width = 320;
-		private static int height = 180;
-		private static int scale = 3;
+		private static int width = 160;
+		private static int height = 144;
+		private static int scale = 4;
+		//private static int width = 320;
+		//private static int height = 180;
+		//private static int scale = 3;
 		//private static int width = 2560;
 		//private static int height = 1440;
 		//private static int scale = 1;
@@ -132,6 +135,8 @@ void main(void)
 		//}
 
 		Camera Camera = new Camera();
+
+		Framebuffer surface = Framebuffer.Create(width, height, 1, TextureFormat.RGB8);//, TextureFormat.Depth24);
 
 		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 		public struct Vertex
@@ -204,9 +209,11 @@ void main(void)
 
 		public override void Draw()
 		{
-			Graphics.SetViewport(0, 0, Window.Width, Window.Height);
-			Graphics.SetScissorTest(0, 0, Window.Width, Window.Height);
-			Graphics.Clear(new Colour(0.1f, 0.1f, 0.1f, 1f));
+			surface.Bind();
+
+			//Graphics.SetViewport(0, 0, Window.Width, Window.Height);
+			//Graphics.SetScissorTest(0, 0, Window.Width, Window.Height);
+			//Graphics.Clear(new Colour(0.1f, 0.1f, 0.1f, 1f));
 
 			//// Pixel Perfect Scaling
 			//int scale = Math.Max(1, Math.Min(Window.Width / width, Window.Height / height));
@@ -229,23 +236,47 @@ void main(void)
 			//Graphics.SetScissorTest((Window.Width - width) / 2, (Window.Height - height) / 2, width, height);
 
 			// Dynamic Viewport
-			width = Window.Width;
-			height = Window.Height;
-			Camera.AspectRatio = Window.AspectRatio;
-			int scale = Math.Max(1, Math.Min(Window.Width / width, Window.Height / height));
-			Graphics.SetViewport((Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, width * scale, height * scale);
-			Graphics.SetScissorTest((Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, width * scale, height * scale);
+			//width = Window.Width;
+			//height = Window.Height;
+			//Camera.AspectRatio = Window.AspectRatio;
+			//int scale = Math.Max(1, Math.Min(Window.Width / width, Window.Height / height));
+			//Graphics.SetViewport((Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, width * scale, height * scale);
+			//Graphics.SetScissorTest((Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, width * scale, height * scale);
 
 			// Clear the screen
 			Graphics.Clear(Colour.Black);
-
-			//ColourMaskState._GBA.Set();
 
 			geometryInput.Bind();
 
 			Shaders.Basic.Bind();
 
 			Graphics.DrawIndexedVertexArrays(PrimitiveTopology.TriangleList, 0, vertexData.Length, geometryInput.IndexBuffer.IndexType);
+
+			Renderer.Draw.SetTransform(new Transform2D()); // Workaround - Bridge fails the null coalescing in Renderer.Draw.AddVertex
+
+			//Draw to Screen
+			Framebuffer.Default.Bind();
+			Graphics.Clear(new Colour(0.1f, 0.1f, 0.1f, 1f));
+			Graphics.State.Reset();
+
+			// Render Framebuffer
+			Shaders.Renderer.Bind();
+			Shaders.Renderer.MVP = Framebuffer.Default.Matrix;
+			Shaders.Renderer.Texture = 0;
+			scale = Math.Max(1, Math.Min(Window.Width / width, Window.Height / height));
+			Renderer.Draw.Framebuffer(surface, TextureAttachment.Colour0, (Window.Width - width * scale) / 2, (Window.Height - height * scale) / 2, scale, Colour.White);
+
+			//Renderer.Draw.Text(SpriteFonts.Font,
+			//				   debugString,
+			//				   new Vector2(2, Framebuffer.Current.Height - 1),
+			//				   Vector2.One * 3f,
+			//				   Colour.White,
+			//				   HAlign.Left,
+			//				   VAlign.Top);
+
+			Renderer.Flush();
+
+			Renderer.Draw.ResetTransform(); // Workaround - See above
 		}
 
 		public override void Destroy()
