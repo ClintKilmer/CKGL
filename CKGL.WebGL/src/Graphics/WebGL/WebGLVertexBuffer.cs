@@ -41,6 +41,12 @@ namespace CKGL.WebGL
 			GL.bufferData(GL.ARRAY_BUFFER, new Uint8Array(data), BufferUsage.ToWebGL());
 		}
 
+		public override void LoadData(ArrayBuffer data)
+		{
+			Bind();
+			GL.bufferData(GL.ARRAY_BUFFER, data, BufferUsage.ToWebGL());
+		}
+
 		public override void LoadData<T>(T[] data, VertexFormat vertexFormat)// where T : struct // TODO - add this back in .NET Core 3.0
 		{
 			Bind();

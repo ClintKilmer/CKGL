@@ -139,9 +139,6 @@
     <Compile Include="..\CKGL\src\Graphics\IndexBuffer.cs">
       <Link>src\Graphics\IndexBuffer.cs</Link>
     </Compile>
-    <Compile Include="..\CKGL\src\Graphics\Renderer.cs">
-      <Link>src\Graphics\Renderer.cs</Link>
-    </Compile>
     <Compile Include="..\CKGL\src\Graphics\Shader.cs">
       <Link>src\Graphics\Shader.cs</Link>
     </Compile>
@@ -252,6 +249,7 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="src\Engine.cs" />
+    <Compile Include="src\Graphics\Renderer.cs" />
     <Compile Include="src\Graphics\WebGL2\WebGL2Framebuffer.cs" />
     <Compile Include="src\Graphics\WebGL2\VertexArray.cs" />
     <Compile Include="src\Graphics\WebGL2\WebGL2CKGLConversions.cs" />
