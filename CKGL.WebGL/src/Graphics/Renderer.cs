@@ -158,21 +158,19 @@ namespace CKGL
 				}
 			}
 
-			//vertices[vertexCount] = new Vertex(position, colour, uv);
+			// Fast implementation for known Vertex type
 
 			floatView[(uint)(vertexCount * vertexFormat.Stride / vertexFormat.Attributes[0].Type.Size() + 0)] = position.X;
 			floatView[(uint)(vertexCount * vertexFormat.Stride / vertexFormat.Attributes[0].Type.Size() + 1)] = position.Y;
 			floatView[(uint)(vertexCount * vertexFormat.Stride / vertexFormat.Attributes[0].Type.Size() + 2)] = position.Z;
 
 			Colour c = colour ?? Colour.White;
-			//Colour c = colour.HasValue ? colour.Value : Colour.White;
 			ubyteView[(uint)((vertexCount * vertexFormat.Stride + vertexFormat.Attributes[1].Offset) / vertexFormat.Attributes[1].Type.Size() + 0)] = c.r;
 			ubyteView[(uint)((vertexCount * vertexFormat.Stride + vertexFormat.Attributes[1].Offset) / vertexFormat.Attributes[1].Type.Size() + 1)] = c.g;
 			ubyteView[(uint)((vertexCount * vertexFormat.Stride + vertexFormat.Attributes[1].Offset) / vertexFormat.Attributes[1].Type.Size() + 2)] = c.b;
 			ubyteView[(uint)((vertexCount * vertexFormat.Stride + vertexFormat.Attributes[1].Offset) / vertexFormat.Attributes[1].Type.Size() + 3)] = c.a;
 
 			UV uv2 = uv ?? UV.Zero;
-			//UV uv2 = uv.HasValue ? uv.Value : UV.Zero;
 			ushortView[(uint)((vertexCount * vertexFormat.Stride + vertexFormat.Attributes[2].Offset) / vertexFormat.Attributes[2].Type.Size() + 0)] = uv2.u;
 			ushortView[(uint)((vertexCount * vertexFormat.Stride + vertexFormat.Attributes[2].Offset) / vertexFormat.Attributes[2].Type.Size() + 1)] = uv2.v;
 
