@@ -9,89 +9,18 @@ namespace WebGLTestExampleCube
 		public static InternalShaders.RendererShader Renderer = new InternalShaders.RendererShader();
 		//public static InternalShaders.RendererFogShader RendererFog = new InternalShaders.RendererFogShader();
 		//public static InternalShaders.LinearizeDepthShader LinearizeDepth = new InternalShaders.LinearizeDepthShader();
-		public static BasicShader Basic = new BasicShader();
 		public static PointLightShader PointLightShader = new PointLightShader();
 	}
-
-	#region BasicShader
-	public class BasicShader : ShaderWrapper
-	{
-		public BasicShader() : base(glsl) { }
-
-		public Matrix MVP { set { SetUniform("MVP", value); } }
-		public Vector2 Offset { set { SetUniform("offset", value); } }
-
-		#region GLSL
-		private static string glsl = @"
-#vertex
-
-layout(location = 0) in vec3 position;
-layout(location = 1) in vec4 colour;
-
-uniform mat4 MVP;
-uniform vec2 offset;
-
-out vec4 vColour;
-
-void main(void)
-{
-	gl_Position = vec4(position + vec3(offset, 0.0), 1.0) * MVP;
-	vColour = colour;
-}
-
-
-#fragment
-
-in vec4 vColour;
-
-layout(location = 0) out vec4 colour;
-
-void main(void)
-{
-	colour = vColour;
-}";
-		#endregion
-
-		#region WebGL 1.0 GLSL
-		private static string WebGL_1_0_glsl = @"
-#vertex
-
-attribute vec3 position;
-attribute vec4 colour;
-
-uniform mat4 MVP;
-uniform vec2 offset;
-
-varying vec4 vColour;
-
-void main(void)
-{
-	gl_Position = vec4(position + vec3(offset, 0.0), 1.0) * MVP;
-	vColour = colour;
-}
-
-
-#fragment
-
-varying vec4 vColour;
-
-void main(void)
-{
-	gl_FragColor = vColour;
-}";
-		#endregion
-	}
-	#endregion
 
 	#region PointLightShader
 	public class PointLightShader : ShaderWrapper
 	{
-		//public PointLightShader() : base(glsl) { }
-		public PointLightShader() : base(glslWebGL1) { }
+		public PointLightShader() : base(glsl) { }
 
 		public Matrix M { set { SetUniform("M", value); } }
 		public Matrix V { set { SetUniform("V", value); } }
 		public Matrix P { set { SetUniform("P", value); } }
+		public int Texture { set { SetUniform("Texture", value); } }
 		public Matrix3x3 NormalMatrix { set { SetUniform("NormalMatrix", value); } }
 		public Vector3 Light1Position { set { SetUniform("pointLights[0].position", value); } }
 		public Vector3 Light2Position { set { SetUniform("pointLights[1].position", value); } }
@@ -211,128 +140,9 @@ void main()
         result += CalculatePointLight(pointLights[i], normal, vFragPosition, viewDirection, specularStrength);
 	result = max(result, vec3(0.1));
 	
-	colour = mix(vColour, texture(Texture, vUV) * vColour, vTextured);
+	vec4 baseColour = mix(vColour, texture(Texture, vUV) * vColour, vTextured);
 	//colour = mix(vColour, texture(Texture, vUV * vec2(1.0, 1.0) + vec2(0.0, 0.5)) * vColour, vTextured); // Unity style texture offsets
-	colour = vec4(colour.rgb * result, colour.a);
-	
-	// apply gamma correction
-	//float gamma = 2.2;
-	//colour.rgb = pow(colour.rgb, vec3(1.0 / gamma));
-}";
-		#endregion
-
-		#region WebGL1 GLSL
-		private static string glslWebGL1 = @"
-#vertex
-
-layout(location = 0) in vec3 position;
-layout(location = 1) in vec3 normal;
-layout(location = 2) in vec4 colour;
-layout(location = 3) in vec2 uv;
-layout(location = 4) in float textured;
-
-uniform mat4 M;
-uniform mat4 V;
-uniform mat4 P;
-uniform mat3 NormalMatrix;
-
-out vec3 vFragPosition;
-out vec3 vNormal;
-out vec4 vColour;
-out vec2 vUV;
-out float vTextured;
-
-void main()
-{
-	gl_Position = vec4(position, 1.0) * M * V * P;
-    vFragPosition = vec3(vec4(position, 1.0) * M * V);
-	//vec3 pos = vec3(position.x + sin(float(gl_InstanceID)) * 0.1 * float(gl_InstanceID),
-	//				position.y + float(gl_InstanceID) * 0.1,
-	//				position.z + cos(float(gl_InstanceID)) * 0.1 * float(gl_InstanceID));
-	//gl_Position = vec4(pos, 1.0) * M * V * P;
-    //vFragPosition = vec3(vec4(pos, 1.0) * M * V);
-	//vNormal = normalize(normal * mat3(transpose(inverse(M * V)))); // 3x3 Normal Matrix - moved this to shader uniform for performance
-	vNormal = normalize(normal * NormalMatrix);
-	vColour = colour;
-	vUV = uv;
-	vTextured = textured;
-}
-
-
-#fragment
-
-layout(location = 0) out vec4 colour;
-
-uniform sampler2D Texture;
-
-struct PointLight
-{
-	vec3 position;
-	vec4 colour;
-
-	float radius;
-	
-	vec3 diffuse;
-	vec3 specular;
-};
-#define NR_POINT_LIGHTS 3
-uniform PointLight pointLights[NR_POINT_LIGHTS];
-
-in vec3 vFragPosition;
-in vec3 vNormal;
-in vec4 vColour;
-in vec2 vUV;
-in float vTextured;
-
-vec3 CalculatePointLight(PointLight light, vec3 normal, vec3 fragPosition, vec3 viewDirection, float specularStrength)
-{
-	vec3 lightPosition = light.position - fragPosition;
-	vec3 lightDirection = normalize(lightPosition);
-	
-	// Diffuse Shading
-	float diffuseFactor = max(dot(normal, lightDirection), 0.0);
-	
-	// Specular Shading
-	// Phong
-	//vec3 reflectDirection = reflect(-lightDirection, normal);
-	//float spec = pow(max(dot(viewDirection, reflectDirection), 0.0), 32.0);
-	//vec3 specular = light.colour.rgb * spec * specularStrength;
-	// Blinn-Phong
-	vec3 halfwayDirection = normalize(lightDirection + viewDirection);
-	float IsDiffuseFactorGreaterThanZero = max(sign(diffuseFactor), 0.0);
-	float specularFactor = pow(max(dot(normal, halfwayDirection), 0.0), 32.0) * IsDiffuseFactorGreaterThanZero * specularStrength;
-	
-	// Attenuation
-	float distance = length(lightPosition);
-	//float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
-	//float attenuation = 1.0 / (constant + linear * distance + quadratic * (distance * distance)); // Quadratic
-	float attenuation = 1.0 / (1.0 + (4.5 / light.radius) * distance + (75.0 / (light.radius * light.radius)) * (distance * distance)); // Quadratic
-	//float attenuation = 1.0 / distance; // Linear
-	//float attenuation = clamp(1.0 - distance / (light.radius), 0.0, 1.0); attenuation *= attenuation;
-	//float attenuation = clamp(1.0 - (distance * distance) / (light.radius * light.radius), 0.0, 1.0); attenuation *= attenuation;
-	
-	// Combine
-	//return light.colour.rgb * (diffuseFactor + specularFactor) * attenuation;
-	return light.colour.rgb * diffuseFactor * attenuation + (light.colour.rgb + light.colour.rgb + vec3(1.0)) / 3.0 * specularFactor * attenuation;
-	//return light.colour.rgb * (diffuseFactor + specularFactor * 0.0001) * attenuation; // Diffuse only
-	//return light.colour.rgb * (specularFactor) * attenuation; // Specular only
-}
-
-void main()
-{
-	vec3 normal = normalize(vNormal);
-	float specularStrength = 0.5;
-	vec3 viewDirection = normalize(-vFragPosition);
-	
-	vec3 result = vec3(0.0);
-	for(int i = 0; i < NR_POINT_LIGHTS; i++)
-        result += CalculatePointLight(pointLights[i], normal, vFragPosition, viewDirection, specularStrength);
-	result = max(result, vec3(0.1));
-	
-	vec4 colour = mix(vColour, texture2D(Texture, vUV) * vColour, vTextured);
-	//colour = mix(vColour, texture2D(Texture, vUV * vec2(1.0, 1.0) + vec2(0.0, 0.5)) * vColour, vTextured); // Unity style texture offsets
-	colour = vec4(colour.rgb * result, colour.a);
-	gl_FragColor = colour;
+	colour = vec4(baseColour.rgb * result, baseColour.a);
 	
 	// apply gamma correction
 	//float gamma = 2.2;
