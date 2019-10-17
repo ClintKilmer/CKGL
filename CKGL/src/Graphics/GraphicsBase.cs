@@ -9,6 +9,7 @@ namespace CKGL
 		internal abstract IndexBuffer CreateIndexBuffer(BufferUsage bufferUsage);
 		internal abstract GeometryInput CreateGeometryInput(IndexBuffer indexBuffer, VertexStream[] vertexStreams);
 		internal abstract Texture CreateTexture2D(byte[] data, int width, int height, TextureFormat textureFormat, TextureFilter minFilter, TextureFilter magFilter, TextureWrap wrapX, TextureWrap wrapY);
+		internal abstract Texture CreateTexture2DFromFile(string file, TextureFormat textureFormat, TextureFilter minFilter, TextureFilter magFilter, TextureWrap wrapX, TextureWrap wrapY);
 		internal abstract Framebuffer CreateDefaultFramebuffer();
 		internal abstract Framebuffer CreateFramebuffer(int width, int height, int colourTextures, TextureFormat textureColourFormat, TextureFormat? textureDepthFormat = null);
 		internal abstract Shader CreateShader(string source);

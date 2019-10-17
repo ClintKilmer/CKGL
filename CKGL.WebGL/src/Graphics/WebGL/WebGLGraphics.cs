@@ -195,6 +195,11 @@ namespace CKGL.WebGL
 			return new WebGLTexture(data, TextureType.Texture2D, width, height, 1, textureFormat, minFilter, magFilter, wrapX, wrapY);
 		}
 
+		internal override Texture CreateTexture2DFromFile(string file, TextureFormat textureFormat, TextureFilter minFilter, TextureFilter magFilter, TextureWrap wrapX, TextureWrap wrapY)
+		{
+			return new WebGLTexture(file, TextureType.Texture2D, textureFormat, minFilter, magFilter, wrapX, wrapY);
+		}
+
 		internal override Framebuffer CreateDefaultFramebuffer()
 		{
 			return WebGLFramebuffer.CreateDefault();

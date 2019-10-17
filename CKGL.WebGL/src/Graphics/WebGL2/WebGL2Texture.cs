@@ -1,6 +1,7 @@
 using System;
 using static CKGL.WebGL2.WebGL2Graphics; // WebGL 2.0 Context Methods
 using static Retyped.dom; // DOM / WebGL Types
+using static Retyped.es5; // JS TypedArrays
 using static Retyped.webgl2.WebGL2RenderingContext; // WebGL 2.0 Enums
 
 namespace CKGL.WebGL2
@@ -54,6 +55,51 @@ namespace CKGL.WebGL2
 			SetData(data);
 		}
 
+		internal WebGL2Texture(string file, TextureType type,
+							   TextureFormat format,
+							   TextureFilter minFilter, TextureFilter magFilter,
+							   TextureWrap wrapX, TextureWrap wrapY, TextureWrap? wrapZ)
+		{
+			Type = type;
+			Width = 1;
+			Height = 1;
+			Depth = 1;
+			Format = format;
+			id = GL.createTexture();
+			switch (Type)
+			{
+				case TextureType.Texture2D:
+					TextureTarget = TEXTURE_2D;
+					break;
+				case TextureType.Texture2DArray:
+					TextureTarget = TEXTURE_2D_ARRAY_Static;
+					break;
+				case TextureType.Texture3D:
+					TextureTarget = TEXTURE_3D_Static;
+					WrapZ = wrapZ.Value;
+					break;
+				default:
+					throw new IllegalValueException(typeof(TextureType), Type);
+			}
+			MinFilter = minFilter;
+			MagFilter = magFilter;
+			WrapX = wrapX;
+			WrapY = wrapY;
+
+			//SetData(new byte[] { 255, 20, 147, 255 }); // Debug Pink
+			SetData(new byte[] { 255, 255, 255, 255 });
+
+			// Load image async
+			var textureImageElement = new HTMLImageElement();
+			textureImageElement.onload = (ev) => { HandleLoadedTexture(textureImageElement); };
+			textureImageElement.src = file;
+		}
+		public void HandleLoadedTexture(HTMLImageElement image)
+		{
+			GL.pixelStorei(UNPACK_FLIP_Y_WEBGL, true);
+			SetData(image);
+		}
+
 		private void SetData(byte[] data)
 		{
 			switch (Type)
@@ -62,13 +108,30 @@ namespace CKGL.WebGL2
 					if (data != null && data.Length < Width * Height * Format.Components())
 						throw new CKGLException("Data array is not large enough to fill texture.");
 					Bind();
-					//fixed (byte* ptr = data)
-					//	GL.TexImage2D(TextureTarget, 0, Format.ToWebGL2(), Width, Height, 0, Format.ToWebGL2().PixelFormat(), Format.ToWebGL2().PixelType(), data != null ? ptr : null);
-					GL.texImage2D(TextureTarget, 0, Format.ToWebGL2(), Width, Height, 0, Format.ToWebGL2PixelFormat(), Format.ToWebGL2PixelType(), null as ImageData);
+					GL.texImage2D(TextureTarget, 0, Format.ToWebGL2(), Width, Height, 0, Format.ToWebGL2PixelFormat(), Format.ToWebGL2PixelType(), data != null ? new Uint8Array(data).As<ArrayBufferView>() : null);
 					break;
-				//case TextureType.Texture2DArray: // Not available in WebGL 1.0
+				//case TextureType.Texture2DArray:
 				//	break;
-				//case TextureType.Texture3D: // Not available in WebGL 1.0
+				//case TextureType.Texture3D:
+				//	break;
+				default:
+					throw new IllegalValueException(typeof(TextureType), Type);
+			}
+		}
+
+		private void SetData(HTMLImageElement image)
+		{
+			switch (Type)
+			{
+				case TextureType.Texture2D:
+					Width = (int)image.width;
+					Height = (int)image.height;
+					Bind();
+					GL.texImage2D(TextureTarget, 0, Format.ToWebGL2(), Width, Height, 0, Format.ToWebGL2PixelFormat(), Format.ToWebGL2PixelType(), image);
+					break;
+				//case TextureType.Texture2DArray:
+				//	break;
+				//case TextureType.Texture3D:
 				//	break;
 				default:
 					throw new IllegalValueException(typeof(TextureType), Type);

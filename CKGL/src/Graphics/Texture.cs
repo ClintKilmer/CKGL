@@ -62,12 +62,10 @@ namespace CKGL
 											   TextureFilter minFilter = DefaultMinFilter, TextureFilter magFilter = DefaultMagFilter,
 											   TextureWrap wrapX = DefaultWrapX, TextureWrap wrapY = DefaultWrapY)
 		{
-			Platform.LoadImage(file, out int width, out int height, out byte[] data);
-			return Graphics.CreateTexture2D(data,
-											width, height,
-											format,
-											minFilter, magFilter,
-											wrapX, wrapY);
+			return Graphics.CreateTexture2DFromFile(file,
+													format,
+													minFilter, magFilter,
+													wrapX, wrapY);
 		}
 
 		public static void PreDraw()

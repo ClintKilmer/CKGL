@@ -31,6 +31,14 @@ namespace CKGL.OpenGL
 			return new OpenGLTexture(data, TextureType.Texture2D, width, height, 1, textureFormat, minFilter, magFilter, wrapX, wrapY, null);
 		}
 
+		internal override Texture CreateTexture2DFromFile(string file, TextureFormat textureFormat, TextureFilter minFilter, TextureFilter magFilter, TextureWrap wrapX, TextureWrap wrapY)
+		{
+			if (!File.Exists(file))
+				throw new FileNotFoundException("Texture file not found.", file);
+			Platform.LoadImage(file, out int width, out int height, out byte[] data);
+			return new OpenGLTexture(data, TextureType.Texture2D, width, height, 1, textureFormat, minFilter, magFilter, wrapX, wrapY, null);
+		}
+
 		internal override Framebuffer CreateDefaultFramebuffer()
 		{
 			return OpenGLFramebuffer.CreateDefault();
