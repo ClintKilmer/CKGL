@@ -43,8 +43,38 @@ namespace CKGL.WebGL
 
 			source = source.Replace("in ", "varying ");
 
-			source = source.Replace("layout(location = 0) out vec4 colour;", "");
-			source = source.Replace("colour = vColour;", "gl_FragColor = vColour;");
+			// samplers - texture() -> texture2D()
+			{
+				string[] lines = source.Split('\n');
+				for (int i = 0; i < lines.Length; i++)
+				{
+					if (lines[i].Contains("uniform sampler2D "))
+					{
+						string samplerName = lines[i].Replace(";", "").Trim().Split(' ')[2].Trim();
+						source = source.Replace($"texture({samplerName}", $"texture2D({samplerName}");
+					}
+					else if (lines[i].Contains("uniform samplerCube "))
+					{
+						string samplerName = lines[i].Replace(";", "").Trim().Split(' ')[2].Trim();
+						source = source.Replace($"texture({samplerName}", $"textureCube({samplerName}");
+					}
+				}
+			}
+
+			// out variable to gl_FragColor
+			{
+				string outColourName = "";
+				string[] lines = source.Split('\n');
+				for (int i = 0; i < lines.Length; i++)
+				{
+					if (lines[i].Contains("layout(location") && lines[i].Contains("out "))
+					{
+						outColourName = lines[i].Replace("layout(location =", "").Replace("layout(location=", "").Replace(";", " ").Trim().Split(' ')[3];
+						source = source.Replace(lines[i], "");
+					}
+				}
+				source = source.Replace($"{outColourName} =", "gl_FragColor =").Replace($"{outColourName}=", "gl_FragColor=");
+			}
 
 			return source;
 		}
