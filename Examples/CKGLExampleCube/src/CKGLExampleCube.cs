@@ -138,9 +138,9 @@ void main()
         result += CalculatePointLight(pointLights[i], normal, vFragPosition, viewDirection, specularStrength);
 	result = max(result, vec3(0.1));
 	
-	colour = mix(vColour, texture(Texture, vUV) * vColour, vTextured);
+	vec4 baseColour = mix(vColour, texture(Texture, vUV) * vColour, vTextured);
 	//colour = mix(vColour, texture(Texture, vUV * vec2(1.0, 1.0) + vec2(0.0, 0.5)) * vColour, vTextured); // Unity style texture offsets
-	colour = vec4(colour.rgb * result, colour.a);
+	colour = vec4(baseColour.rgb * result, baseColour.a);
 	
 	// apply gamma correction
 	//float gamma = 2.2;
