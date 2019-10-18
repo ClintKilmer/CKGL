@@ -50,39 +50,33 @@ namespace CKGL
 			this.padding = padding;
 		}
 
-		public Sprite AddSprite(string file)
-		{
-			Platform.LoadImage(file, out int width, out int height, out byte[] imageData);
-			return AddSprite(file, new RectangleI(width, height));
-		}
-		public Sprite AddSprite(string file, RectangleI source)
+		public Sprite AddSprite(string file, RectangleI? source = null)
 		{
 			Platform.LoadImage(file, out int width, out int height, out byte[] imageData);
 			Bitmap spriteData = new Bitmap(imageData, width, height);
 
+			RectangleI s = source ?? new RectangleI(width, height);
+
 #if DEBUG
-			Point2 offset = GetValidPlacementNaive(source.W, source.H);
+			Point2 offset = GetValidPlacementNaive(s.W, s.H);
 #else
 			Point2 offset = GetValidPlacement(source.W, source.H);
 #endif
 
-			for (int y = 0; y < source.H; y++)
-				for (int x = 0; x < source.W; x++)
-					Bitmap[offset.X + x, offset.Y + y] = spriteData[source.X + x, source.Y + y];
+			for (int y = 0; y < s.H; y++)
+				for (int x = 0; x < s.W; x++)
+					Bitmap[offset.X + x, offset.Y + y] = spriteData[s.X + x, s.Y + y];
 
 			dirty = true;
 
-			Sprite sprite = new Sprite(this, offset.X, offset.Y, source.W, source.H);
+			Sprite sprite = new Sprite(this, offset.X, offset.Y, s.W, s.H);
 			Sprites.Add(sprite);
 			aabbs.Add(new AABBi(sprite.SpriteSheetX, sprite.SpriteSheetY, sprite.Width + padding, sprite.Height + padding));
 			return sprite;
 		}
 
-		public Sprite AddSpriteFontGlyph(Bitmap spriteData, bool xtrim = false)
-		{
-			return AddSpriteFontGlyph(spriteData, new RectangleI(0, 0, spriteData.Width, spriteData.Height), xtrim);
-		}
-		public Sprite AddSpriteFontGlyph(Bitmap spriteData, RectangleI source, bool xtrim = false)
+		internal Sprite AddSpriteFontGlyph(Bitmap spriteData, bool xtrim = false) => AddSpriteFontGlyph(spriteData, new RectangleI(0, 0, spriteData.Width, spriteData.Height), xtrim);
+		internal Sprite AddSpriteFontGlyph(Bitmap spriteData, RectangleI source, bool xtrim = false)
 		{
 			int spriteOffsetX = 0;
 			int spriteWidth = source.W;
