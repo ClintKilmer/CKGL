@@ -88,11 +88,11 @@ namespace CKGL.WebGL
 			SetData(new byte[] { 255, 255, 255, 255 });
 
 			// Load image async
-			var textureImageElement = new HTMLImageElement();
+			HTMLImageElement textureImageElement = new HTMLImageElement();
 			textureImageElement.onload = (ev) => { HandleLoadedTexture(textureImageElement); };
 			textureImageElement.src = file;
 		}
-		public void HandleLoadedTexture(HTMLImageElement image)
+		private void HandleLoadedTexture(HTMLImageElement image)
 		{
 			GL.pixelStorei(GL.UNPACK_FLIP_Y_WEBGL, true);
 			SetData(image);
