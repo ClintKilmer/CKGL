@@ -216,7 +216,10 @@ namespace CKGL
 			public static void AddVertex(PrimitiveTopology primitiveTopology, Vector2 position, Colour? colour, UV? uv)
 			{
 				Vector3 positionDepth = new Vector3(position.X, position.Y, depth);
-				Renderer.AddVertex(primitiveTopology, positionDepth * transform?.Matrix ?? positionDepth, colour, uv);
+				if (transform != null)
+					Renderer.AddVertex(primitiveTopology, positionDepth * transform.Matrix, colour, uv);
+				else
+					Renderer.AddVertex(primitiveTopology, positionDepth, colour, uv);
 			}
 			public static void AddVertex(PrimitiveTopology primitiveTopology, Vector2 position, Colour? colour, UV? uv, float rotation, Vector2? origin)
 			{
@@ -1017,7 +1020,10 @@ namespace CKGL
 			public static void AddVertex(PrimitiveTopology primitiveTopology, Vector3 position, Colour? colour) => AddVertex(primitiveTopology, position, colour, null);
 			public static void AddVertex(PrimitiveTopology primitiveTopology, Vector3 position, Colour? colour, UV? uv)
 			{
-				Renderer.AddVertex(primitiveTopology, position * transform?.Matrix ?? position, colour, uv);
+				if (transform != null)
+					Renderer.AddVertex(primitiveTopology, position * transform.Matrix, colour, uv);
+				else
+					Renderer.AddVertex(primitiveTopology, position, colour, uv);
 			}
 			#endregion
 

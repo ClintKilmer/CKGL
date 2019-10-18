@@ -419,7 +419,6 @@ void main()
 			planeGeometryInput.Bind();
 			Graphics.DrawIndexedVertexArrays(PrimitiveTopology.TriangleList, 0, planeIndexBuffer.Count, planeIndexBuffer.IndexType);
 
-			Renderer.Draw.SetTransform(new Transform2D()); // Workaround - Bridge fails the null coalescing in Renderer.Draw.AddVertex
 
 			// Draw to Screen
 			Framebuffer.Default.Bind();
@@ -442,8 +441,6 @@ void main()
 			//				   VAlign.Top);
 
 			Renderer.Flush();
-
-			Renderer.Draw.ResetTransform(); // Workaround - See above
 		}
 
 		public override void Destroy()
