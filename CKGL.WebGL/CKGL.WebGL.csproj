@@ -145,15 +145,6 @@
     <Compile Include="..\CKGL\src\Graphics\Shaders.cs">
       <Link>src\Graphics\Shaders.cs</Link>
     </Compile>
-    <Compile Include="..\CKGL\src\Graphics\Sprite.cs">
-      <Link>src\Graphics\Sprite.cs</Link>
-    </Compile>
-    <Compile Include="..\CKGL\src\Graphics\SpriteFont.cs">
-      <Link>src\Graphics\SpriteFont.cs</Link>
-    </Compile>
-    <Compile Include="..\CKGL\src\Graphics\SpriteSheet.cs">
-      <Link>src\Graphics\SpriteSheet.cs</Link>
-    </Compile>
     <Compile Include="..\CKGL\src\Graphics\State\BlendState.cs">
       <Link>src\Graphics\State\BlendState.cs</Link>
     </Compile>
@@ -250,6 +241,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="src\Engine.cs" />
     <Compile Include="src\Graphics\Renderer.cs" />
+    <Compile Include="src\Graphics\Sprite.cs" />
+    <Compile Include="src\Graphics\SpriteFont.cs" />
+    <Compile Include="src\Graphics\SpriteSheet.cs" />
     <Compile Include="src\Graphics\WebGL2\WebGL2Framebuffer.cs" />
     <Compile Include="src\Graphics\WebGL2\VertexArray.cs" />
     <Compile Include="src\Graphics\WebGL2\WebGL2CKGLConversions.cs" />

@@ -137,6 +137,24 @@ namespace CKGL.WebGL
 			}
 		}
 
+		internal void UpdateData(HTMLImageElement image, int xOffset, int yOffset)
+		{
+			switch (Type)
+			{
+				case TextureType.Texture2D:
+					Bind();
+					GL.pixelStorei(GL.UNPACK_FLIP_Y_WEBGL, true);
+					GL.texSubImage2D(TextureTarget, 0, xOffset, yOffset, Format.ToWebGLPixelFormat(), Format.ToWebGLPixelType(), image);
+					break;
+				//case TextureType.Texture2DArray: // Not available in WebGL 1.0
+				//	break;
+				//case TextureType.Texture3D: // Not available in WebGL 1.0
+				//	break;
+				default:
+					throw new IllegalValueException(typeof(TextureType), Type);
+			}
+		}
+
 		public override void Destroy()
 		{
 			if (id != null)

@@ -153,22 +153,35 @@ void main()
 	#endregion
 	#endregion
 
-	//#region Sprites
-	//public static class SpriteSheets
-	//{
-	//	public static SpriteSheet SpriteSheet = new SpriteSheet(128, 1);
-	//}
+	#region Sprites
+	public static class SpriteSheets
+	{
+		public static SpriteSheet SpriteSheet = new SpriteSheet(1024, 1);
+	}
 
-	//public static class SpriteFonts
-	//{
-	//	public static SpriteFont Font = new SpriteFont(SpriteSheets.SpriteSheet, "textures/font[5x7].png", 5, 7, '!', '~', 1, 3, 7, true);
-	//}
+	public static class SpriteFonts
+	{
+		//public static SpriteFont Font = new SpriteFont(SpriteSheets.SpriteSheet, "textures/font[5x7].png", 5, 7, '!', '~', 1, 3, 7, true);
+		public static SpriteFont Font = new SpriteFont(SpriteSheets.SpriteSheet, "http://clintkilmer.com/games/webgltest/textures/font[5x7].png", 5, 7, '!', '~', 1, 3, 7, true); // Testing only - CORS fix
+	}
 
-	//public static class Textures
-	//{
-	//	public static Texture2D UVTest = Texture2D.CreateFromFile("textures/UVTest.png", TextureFilter.Nearest, TextureWrap.Repeat);
-	//}
-	//#endregion
+	public static class Sprites
+	{
+		//public static Sprite Test1 = SpriteSheets.SpriteSheet.AddSprite("textures/Character1.png");
+		//public static Sprite Test2 = SpriteSheets.SpriteSheet.AddSprite("textures/Character2.png");
+		//public static Sprite Test3 = SpriteSheets.SpriteSheet.AddSprite("textures/Character3.png");
+		public static Sprite Test1 = SpriteSheets.SpriteSheet.AddSprite("http://clintkilmer.com/games/webgltest/textures/Character1.png"); // Testing only - CORS fix
+		public static Sprite Test2 = SpriteSheets.SpriteSheet.AddSprite("http://clintkilmer.com/games/webgltest/textures/Character2.png"); // Testing only - CORS fix
+		public static Sprite Test3 = SpriteSheets.SpriteSheet.AddSprite("http://clintkilmer.com/games/webgltest/textures/Character3.png"); // Testing only - CORS fix
+		public static Sprite Hoopoe = SpriteSheets.SpriteSheet.AddSprite("http://clintkilmer.com/games/webgltest/textures/Hoopoe.png"); // Testing only - CORS fix
+	}
+
+	public static class Textures
+	{
+		//public static Texture Hoopoe = Texture.Create2DFromFile("textures/Hoopoe.png");
+		public static Texture Hoopoe = Texture.Create2DFromFile("http://clintkilmer.com/games/webgltest/textures/Hoopoe.png"); // Testing only - CORS fix
+	}
+	#endregion
 
 	public class WebGLTest : Game
 	{
@@ -288,10 +301,10 @@ void main()
 			Geometry cubeGeometry = Geometry.Cube();
 			cubeVertices = new Vertex[cubeGeometry.Vertices.Length];
 			for (int i = 0; i < cubeGeometry.Vertices.Length; i++)
-				cubeVertices[i] = new Vertex(cubeGeometry.Vertices[i].Position, cubeGeometry.Vertices[i].Normal, cubeGeometry.Vertices[i].Colour, cubeGeometry.Vertices[i].UV, false);
+				cubeVertices[i] = new Vertex(cubeGeometry.Vertices[i].Position, cubeGeometry.Vertices[i].Normal, cubeGeometry.Vertices[i].Colour, cubeGeometry.Vertices[i].UV, true);
 			cubeIndices = cubeGeometry.Indices16;
 
-			Geometry icosphereGeometry = Geometry.Icosphere(0.5f, 4);
+			Geometry icosphereGeometry = Geometry.Icosphere(0.5f, 2, true);
 			icosphereVertices = new Vertex[icosphereGeometry.Vertices.Length];
 			for (int i = 0; i < icosphereGeometry.Vertices.Length; i++)
 				icosphereVertices[i] = new Vertex(icosphereGeometry.Vertices[i].Position, icosphereGeometry.Vertices[i].Normal, icosphereGeometry.Vertices[i].Colour, icosphereGeometry.Vertices[i].UV, false);
@@ -347,6 +360,9 @@ void main()
 
 		public override void Draw()
 		{
+			float totalMilliseconds = (float)(System.DateTime.Now - new System.DateTime(1970, 1, 1)).TotalMilliseconds;
+			float totalSeconds = (float)(System.DateTime.Now - new System.DateTime(1970, 1, 1)).TotalSeconds;
+
 			surface.Bind();
 
 			// Clear the screen
@@ -376,7 +392,7 @@ void main()
 			Renderer.Draw3D.ResetTransform();
 
 			Shaders.PointLightShader.Bind();
-
+			Shaders.PointLightShader.Texture = 0;
 			Shaders.PointLightShader.V = Camera.ViewMatrix;
 			Shaders.PointLightShader.P = Camera.ProjectionMatrix;
 
@@ -393,6 +409,8 @@ void main()
 			Shaders.PointLightShader.Light1Radius = 75f;
 			Shaders.PointLightShader.Light2Radius = 75f;
 			Shaders.PointLightShader.Light3Radius = 75f;
+
+			Textures.Hoopoe.Bind();
 
 			Shaders.PointLightShader.M = cubeTransform.Matrix;
 			Shaders.PointLightShader.NormalMatrix = (cubeTransform.Matrix * Camera.ViewMatrix).ToMatrix3x3().Inverse().Transpose();
@@ -419,6 +437,109 @@ void main()
 			planeGeometryInput.Bind();
 			Graphics.DrawIndexedVertexArrays(PrimitiveTopology.TriangleList, 0, planeIndexBuffer.Count, planeIndexBuffer.IndexType);
 
+			DepthState.Off.Set();
+			Shaders.Renderer.Bind();
+			//Shaders.Renderer.MVP = Camera.Matrix;
+			Shaders.Renderer.MVP = surface.Matrix;
+			Textures.Hoopoe.Bind();
+			Renderer.Draw.Rectangle(40f,
+									40f,
+									50f,
+									50f,
+									Colour.White,
+									Colour.White,
+									Colour.White,
+									Colour.White,
+									UV.BottomLeft,
+									UV.BottomRight,
+									UV.TopLeft,
+									UV.TopRight,
+									-totalSeconds * 0.5f,
+									new Vector2(65f, 65f));
+
+			Renderer.Draw.Sprite(Sprites.Test1,
+								 new Vector2(40f, 20f),
+								 Vector2.One * 2f,
+								 Colour.White);
+
+			Renderer.Draw.Sprite(Sprites.Test2,
+								 new Vector2(60f, 20f),
+								 Vector2.One * 2f,
+								 Colour.White);
+
+			Renderer.Draw.Sprite(Sprites.Test3,
+								 new Vector2(80f, 20f),
+								 Vector2.One * 2f,
+								 Colour.White);
+
+			Renderer.Draw.Sprite(Sprites.Hoopoe,
+								 new Vector2(100f, 20f),
+								 Vector2.One / Sprites.Hoopoe.MaxLength * 8f * 2f,
+								 Colour.White);
+
+			//for (int i = 0; i < 1000; i++)
+			//{
+			//	Renderer.Draw.Sprite(Sprites.Test1,
+			//						 new Vector2(40f + i * 0.5f + 100f * Math.Sin((totalMilliseconds + i * 10f) * 0.01f * 0.5f), 20f + i * 0.5f + 100f * Math.Sin((totalMilliseconds + i * 15f) * 0.01f * 0.5f)),
+			//						 Vector2.One * 2f,
+			//						 Colour.White);
+			//}
+
+			//Renderer.Draw.Text(SpriteFonts.Font,
+			//				   "|:shadow=0,-1,0.01,0,0,0,0.5:|Test Test\nStill testing...\nhhhheeeelllloooo",
+			//				   new Vector2(2, height - 1),
+			//				   Vector2.One * (1f + Math.SinNormalized(totalSeconds * 2f)),
+			//				   Colour.White,
+			//				   HAlign.Left,
+			//				   VAlign.Top);
+
+			Renderer.Draw.Text(SpriteFonts.Font,
+							   $"|:shadow=0,-1,0.01,0,0,0,0.5:|Still testing...",
+							   new Vector2(2, 1),
+							   Vector2.One * (1f + Math.SinNormalized(totalSeconds * 2f)),
+							   Colour.White,
+							   HAlign.Left,
+							   VAlign.Bottom);
+
+			//Renderer.Draw.Text(SpriteFonts.Font,
+			//				   "|:shadow=0,-1,0.01,0,0,0,0.5:|Test Test",
+			//				   new Vector2(width - 1, 1),
+			//				   Vector2.One * (1f + Math.SinNormalized(totalSeconds * 2f)),
+			//				   Colour.White,
+			//				   HAlign.Right,
+			//				   VAlign.Bottom);
+
+			//Renderer.Draw.Text(SpriteFonts.Font,
+			//				   "|:shadow=0,-1,0.01,0,0,0,0.5:|Test Test\nStill testing...\nhhhheeeelllloooo",
+			//				   new Vector2(width - 1, height - 1),
+			//				   Vector2.One * (1f + Math.SinNormalized(totalSeconds * 2f)),
+			//				   Colour.White,
+			//				   HAlign.Right,
+			//				   VAlign.Top);
+
+			//Renderer.Draw.Text(SpriteFonts.Font,
+			//				   "|:outline=1,0.01,0,0,0,1:|Test Test Test Test Test Test Test Test Test\nStill testing... ... ...",
+			//				   new Vector2(width / 2, height / 2),
+			//				   Vector2.One * (1f + Math.SinNormalized(totalSeconds * 2f)),
+			//				   Colour.White,
+			//				   HAlign.Center,
+			//				   VAlign.Middle);
+
+			//Renderer.Draw.Text(SpriteFonts.Font,
+			//				   "|:shadow=0,-1,0.01,0,0,0,0.5:|Test Test\nStill testing...",
+			//				   new Vector2(width / 2, height / 2 + 50),
+			//				   Vector2.One * (1f + Math.SinNormalized(totalSeconds * 2f) * 3f),
+			//				   Colour.White,
+			//				   HAlign.Center,
+			//				   VAlign.Middle);
+
+			//Renderer.Draw.Text(SpriteFonts.Font,
+			//				   "|:shadow=0,-1,0.01,0,0,0,0.5:|Test Test\nStill testing...",
+			//				   new Vector2(width / 2, height / 2 - 50),
+			//				   Vector2.One * (1f + Math.SinNormalized(totalSeconds * 2f) * 2f),
+			//				   Colour.White,
+			//				   HAlign.Center,
+			//				   VAlign.Middle);
 
 			// Draw to Screen
 			Framebuffer.Default.Bind();
