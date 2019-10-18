@@ -90,13 +90,13 @@ namespace CKGL.WebGL2
 			SetData(new byte[] { 255, 255, 255, 255 });
 
 			// Load image async
-			HTMLImageElement textureImageElement = new HTMLImageElement();
-			textureImageElement.onload = (ev) => { HandleLoadedTexture(textureImageElement); };
-			textureImageElement.src = file;
+			HTMLImageElement image = new HTMLImageElement();
+			image.crossOrigin = "";
+			image.onload = (ev) => { HandleLoadedTexture(image); };
+			image.src = file;
 		}
 		private void HandleLoadedTexture(HTMLImageElement image)
 		{
-			GL.pixelStorei(UNPACK_FLIP_Y_WEBGL, true);
 			SetData(image);
 		}
 
@@ -127,6 +127,7 @@ namespace CKGL.WebGL2
 					Width = (int)image.width;
 					Height = (int)image.height;
 					Bind();
+					GL.pixelStorei(UNPACK_FLIP_Y_WEBGL, true);
 					GL.texImage2D(TextureTarget, 0, Format.ToWebGL2(), Width, Height, 0, Format.ToWebGL2PixelFormat(), Format.ToWebGL2PixelType(), image);
 					break;
 				//case TextureType.Texture2DArray:
