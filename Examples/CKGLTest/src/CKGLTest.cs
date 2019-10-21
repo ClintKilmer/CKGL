@@ -931,7 +931,7 @@ void main()
 			//Renderer.Draw.Text(SpriteFonts.Font,
 			//				   "|:shadow=0,-1,0.01,0,0,0,0.5:|Test Test\nStill testing...\nhhhheeeelllloooo",
 			//				   new Vector2(2, height - 1),
-			//				   Vector2.One * (1f + Math.SinNormalized(Time.TotalSeconds * 2f)),
+			//				   Vector2.One * (1f + Math.SinNormalized(Time.TotalSeconds * 2f).Clamp(0.001f, 1f)),
 			//				   Colour.White,
 			//				   HAlign.Left,
 			//				   VAlign.Top);
@@ -939,7 +939,7 @@ void main()
 			//Renderer.Draw.Text(SpriteFonts.Font,
 			//				   $"|:shadow=0,-1,0.01,0,0,0,0.5:|{Camera.Rotation}\nStill testing...",
 			//				   new Vector2(2, 1),
-			//				   Vector2.One * (1f + Math.SinNormalized(Time.TotalSeconds * 2f)),
+			//				   Vector2.One * (1f + Math.SinNormalized(Time.TotalSeconds * 2f).Clamp(0.001f, 1f)),
 			//				   Colour.White,
 			//				   HAlign.Left,
 			//				   VAlign.Bottom);
@@ -947,7 +947,7 @@ void main()
 			//Renderer.Draw.Text(SpriteFonts.Font,
 			//				   "|:shadow=0,-1,0.01,0,0,0,0.5:|Test Test",
 			//				   new Vector2(width - 1, 1),
-			//				   Vector2.One * (1f + Math.SinNormalized(Time.TotalSeconds * 2f)),
+			//				   Vector2.One * (1f + Math.SinNormalized(Time.TotalSeconds * 2f).Clamp(0.001f, 1f)),
 			//				   Colour.White,
 			//				   HAlign.Right,
 			//				   VAlign.Bottom);
@@ -955,7 +955,7 @@ void main()
 			//Renderer.Draw.Text(SpriteFonts.Font,
 			//				   "|:shadow=0,-1,0.01,0,0,0,0.5:|Test Test\nStill testing...\nhhhheeeelllloooo",
 			//				   new Vector2(width - 1, height - 1),
-			//				   Vector2.One * (1f + Math.SinNormalized(Time.TotalSeconds * 2f)),
+			//				   Vector2.One * (1f + Math.SinNormalized(Time.TotalSeconds * 2f).Clamp(0.001f, 1f)),
 			//				   Colour.White,
 			//				   HAlign.Right,
 			//				   VAlign.Top);
@@ -963,7 +963,7 @@ void main()
 			//Renderer.Draw.Text(SpriteFonts.Font,
 			//				   "|:outline=1,0.01,0,0,0,1:|Test Test Test Test Test Test Test Test Test\nStill testing... ... ...",
 			//				   new Vector2(width / 2, height / 2),
-			//				   Vector2.One * (1f + Math.SinNormalized(Time.TotalSeconds * 2f)),
+			//				   Vector2.One * (1f + Math.SinNormalized(Time.TotalSeconds * 2f).Clamp(0.001f, 1f)),
 			//				   Colour.White,
 			//				   HAlign.Center,
 			//				   VAlign.Middle);
@@ -971,7 +971,7 @@ void main()
 			//Renderer.Draw.Text(SpriteFonts.Font,
 			//				   "|:shadow=0,-1,0.01,0,0,0,0.5:|Test Test\nStill testing...",
 			//				   new Vector2(width / 2, height / 2 + 50),
-			//				   Vector2.One * (1f + Math.SinNormalized(Time.TotalSeconds * 2f) * 3f),
+			//				   Vector2.One * (1f + Math.SinNormalized(Time.TotalSeconds * 2f).Clamp(0.001f, 1f) * 3f),
 			//				   Colour.White,
 			//				   HAlign.Center,
 			//				   VAlign.Middle);
@@ -979,7 +979,7 @@ void main()
 			//Renderer.Draw.Text(SpriteFonts.Font,
 			//				   "|:shadow=0,-1,0.01,0,0,0,0.5:|Test Test\nStill testing...",
 			//				   new Vector2(width / 2, height / 2 - 50),
-			//				   Vector2.One * (1f + Math.SinNormalized(Time.TotalSeconds * 2f) * 2f),
+			//				   Vector2.One * (1f + Math.SinNormalized(Time.TotalSeconds * 2f).Clamp(0.001f, 1f) * 2f),
 			//				   Colour.White,
 			//				   HAlign.Center,
 			//				   VAlign.Middle);
