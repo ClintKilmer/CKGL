@@ -156,7 +156,7 @@ void main()
 	#region Sprites
 	public static class SpriteSheets
 	{
-		public static SpriteSheet SpriteSheet = new SpriteSheet(1024, 1);
+		public static SpriteSheet SpriteSheet = new SpriteSheet(128, 1);
 	}
 
 	public static class SpriteFonts
@@ -173,7 +173,7 @@ void main()
 		public static Sprite Test1 = SpriteSheets.SpriteSheet.AddSprite("http://clintkilmer.com/games/webgltest/textures/Character1.png"); // Testing only - CORS fix
 		public static Sprite Test2 = SpriteSheets.SpriteSheet.AddSprite("http://clintkilmer.com/games/webgltest/textures/Character2.png"); // Testing only - CORS fix
 		public static Sprite Test3 = SpriteSheets.SpriteSheet.AddSprite("http://clintkilmer.com/games/webgltest/textures/Character3.png"); // Testing only - CORS fix
-		public static Sprite Hoopoe = SpriteSheets.SpriteSheet.AddSprite("http://clintkilmer.com/games/webgltest/textures/Hoopoe.png"); // Testing only - CORS fix
+																																		   //public static Sprite Hoopoe = SpriteSheets.SpriteSheet.AddSprite("http://clintkilmer.com/games/webgltest/textures/Hoopoe.png"); // Testing only - CORS fix
 	}
 
 	public static class Textures
@@ -410,6 +410,7 @@ void main()
 			Shaders.PointLightShader.Light2Radius = 75f;
 			Shaders.PointLightShader.Light3Radius = 75f;
 
+			//SpriteSheets.SpriteSheet.Texture.Bind();
 			Textures.Hoopoe.Bind();
 
 			Shaders.PointLightShader.M = cubeTransform.Matrix;
@@ -441,41 +442,41 @@ void main()
 			Shaders.Renderer.Bind();
 			//Shaders.Renderer.MVP = Camera.Matrix;
 			Shaders.Renderer.MVP = surface.Matrix;
-			Textures.Hoopoe.Bind();
-			Renderer.Draw.Rectangle(40f,
-									40f,
-									50f,
-									50f,
-									Colour.White,
-									Colour.White,
-									Colour.White,
-									Colour.White,
-									UV.BottomLeft,
-									UV.BottomRight,
-									UV.TopLeft,
-									UV.TopRight,
-									-totalSeconds * 0.5f,
-									new Vector2(65f, 65f));
+			//Textures.Hoopoe.Bind();
+			//Renderer.Draw.Rectangle(40f,
+			//						40f,
+			//						50f,
+			//						50f,
+			//						Colour.White,
+			//						Colour.White,
+			//						Colour.White,
+			//						Colour.White,
+			//						UV.BottomLeft,
+			//						UV.BottomRight,
+			//						UV.TopLeft,
+			//						UV.TopRight,
+			//						-totalSeconds * 0.5f,
+			//						new Vector2(65f, 65f));
 
 			Renderer.Draw.Sprite(Sprites.Test1,
-								 new Vector2(40f, 20f),
+								 new Vector2(1f, 35f),
 								 Vector2.One * 2f,
 								 Colour.White);
 
 			Renderer.Draw.Sprite(Sprites.Test2,
-								 new Vector2(60f, 20f),
+								 new Vector2(18f, 35f),
 								 Vector2.One * 2f,
 								 Colour.White);
 
 			Renderer.Draw.Sprite(Sprites.Test3,
-								 new Vector2(80f, 20f),
+								 new Vector2(35f, 35f),
 								 Vector2.One * 2f,
 								 Colour.White);
 
-			Renderer.Draw.Sprite(Sprites.Hoopoe,
-								 new Vector2(100f, 20f),
-								 Vector2.One / Sprites.Hoopoe.MaxLength * 8f * 2f,
-								 Colour.White);
+			//Renderer.Draw.Sprite(Sprites.Hoopoe,
+			//					 new Vector2(100f, 20f),
+			//					 Vector2.One / Sprites.Hoopoe.MaxLength * 8f * 2f,
+			//					 Colour.White);
 
 			//for (int i = 0; i < 1000; i++)
 			//{
@@ -485,26 +486,26 @@ void main()
 			//						 Colour.White);
 			//}
 
-			//Renderer.Draw.Text(SpriteFonts.Font,
-			//				   "|:shadow=0,-1,0.01,0,0,0,0.5:|Test Test\nStill testing...\nhhhheeeelllloooo",
-			//				   new Vector2(2, height - 1),
-			//				   Vector2.One * (1f + Math.SinNormalized(totalSeconds * 2f)),
-			//				   Colour.White,
-			//				   HAlign.Left,
-			//				   VAlign.Top);
-
 			Renderer.Draw.Text(SpriteFonts.Font,
-							   $"|:shadow=0,-1,0.01,0,0,0,0.5:|Still testing...",
-							   new Vector2(2, 1),
-							   Vector2.One * (1f + Math.SinNormalized(totalSeconds * 2f)),
+							   "|:shadow=0,-1,0.01,0,0,0,0.5:|Test Test\nStill testing...\nhhhheeeelllloooo",
+							   new Vector2(2, height - 1),
+							   Vector2.One * (1f + (Math.SinNormalized(totalSeconds * 2f) * 2f - 0.5f).Clamp(0.001f, 1f)),
 							   Colour.White,
 							   HAlign.Left,
-							   VAlign.Bottom);
+							   VAlign.Top);
+
+			//Renderer.Draw.Text(SpriteFonts.Font,
+			//				   $"|:shadow=0,-1,0.01,0,0,0,0.5:|Still testing...",
+			//				   new Vector2(2, 1),
+			//				   Vector2.One * (1f + (Math.SinNormalized(totalSeconds * 2f) * 2f - 0.5f).Clamp(0.001f, 1f)),
+			//				   Colour.White,
+			//				   HAlign.Left,
+			//				   VAlign.Bottom);
 
 			//Renderer.Draw.Text(SpriteFonts.Font,
 			//				   "|:shadow=0,-1,0.01,0,0,0,0.5:|Test Test",
 			//				   new Vector2(width - 1, 1),
-			//				   Vector2.One * (1f + Math.SinNormalized(totalSeconds * 2f)),
+			//				   Vector2.One * (1f + (Math.SinNormalized(totalSeconds * 2f) * 2f - 0.5f).Clamp(0.001f, 1f)),
 			//				   Colour.White,
 			//				   HAlign.Right,
 			//				   VAlign.Bottom);
@@ -512,7 +513,7 @@ void main()
 			//Renderer.Draw.Text(SpriteFonts.Font,
 			//				   "|:shadow=0,-1,0.01,0,0,0,0.5:|Test Test\nStill testing...\nhhhheeeelllloooo",
 			//				   new Vector2(width - 1, height - 1),
-			//				   Vector2.One * (1f + Math.SinNormalized(totalSeconds * 2f)),
+			//				   Vector2.One * (1f + (Math.SinNormalized(totalSeconds * 2f) * 2f - 0.5f).Clamp(0.001f, 1f)),
 			//				   Colour.White,
 			//				   HAlign.Right,
 			//				   VAlign.Top);
@@ -520,7 +521,7 @@ void main()
 			//Renderer.Draw.Text(SpriteFonts.Font,
 			//				   "|:outline=1,0.01,0,0,0,1:|Test Test Test Test Test Test Test Test Test\nStill testing... ... ...",
 			//				   new Vector2(width / 2, height / 2),
-			//				   Vector2.One * (1f + Math.SinNormalized(totalSeconds * 2f)),
+			//				   Vector2.One * (1f + (Math.SinNormalized(totalSeconds * 2f) * 2f - 0.5f).Clamp(0.001f, 1f)),
 			//				   Colour.White,
 			//				   HAlign.Center,
 			//				   VAlign.Middle);
@@ -528,7 +529,7 @@ void main()
 			//Renderer.Draw.Text(SpriteFonts.Font,
 			//				   "|:shadow=0,-1,0.01,0,0,0,0.5:|Test Test\nStill testing...",
 			//				   new Vector2(width / 2, height / 2 + 50),
-			//				   Vector2.One * (1f + Math.SinNormalized(totalSeconds * 2f) * 3f),
+			//				   Vector2.One * (1f + (Math.SinNormalized(totalSeconds * 2f) * 2f - 0.5f).Clamp(0.001f, 1f) * 3f),
 			//				   Colour.White,
 			//				   HAlign.Center,
 			//				   VAlign.Middle);
@@ -536,10 +537,25 @@ void main()
 			//Renderer.Draw.Text(SpriteFonts.Font,
 			//				   "|:shadow=0,-1,0.01,0,0,0,0.5:|Test Test\nStill testing...",
 			//				   new Vector2(width / 2, height / 2 - 50),
-			//				   Vector2.One * (1f + Math.SinNormalized(totalSeconds * 2f) * 2f),
+			//				   Vector2.One * (1f + (Math.SinNormalized(totalSeconds * 2f) * 2f - 0.5f).Clamp(0.001f, 1f) * 2f),
 			//				   Colour.White,
 			//				   HAlign.Center,
 			//				   VAlign.Middle);
+
+			// Spritesheet test
+			SpriteSheets.SpriteSheet.Texture.Bind();
+			Renderer.Draw.Rectangle(0f,
+									0f,
+									SpriteSheets.SpriteSheet.Texture.Width,
+									SpriteSheets.SpriteSheet.Texture.Height,
+									Colour.White,
+									Colour.White,
+									Colour.White,
+									Colour.White,
+									UV.BottomLeft,
+									UV.BottomRight,
+									UV.TopLeft,
+									UV.TopRight);
 
 			// Draw to Screen
 			Framebuffer.Default.Bind();

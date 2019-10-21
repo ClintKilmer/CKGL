@@ -44,8 +44,7 @@ namespace CKGL
 
 			glyphs = new Sprite[end + 1];
 
-			defaultSprite = SpriteSheet.AddSprite("http://clintkilmer.com/games/webgltest/textures/Character1.png");
-			//defaultSprite = new Sprite(SpriteSheet, 0, 0, 1, 1);
+			defaultSprite = new Sprite(SpriteSheet, 0, 0, 1, 1);
 
 			// Load image async
 			HTMLImageElement image = new HTMLImageElement();
@@ -56,35 +55,24 @@ namespace CKGL
 		private void _SpriteFont(HTMLImageElement image, int glyphWidth, int glyphHeight, bool xtrim)
 		{
 			HTMLCanvasElement canvas = new HTMLCanvasElement();
-			canvas.width = image.width;
-			canvas.height = image.height;
+			canvas.width = (uint)glyphWidth;
+			canvas.height = (uint)glyphHeight;
 			CanvasRenderingContext2D context = canvas.getContext(Literals._2d);
-			context.drawImage(image, 0, 0);
-			ImageData imageData = context.getImageData(0, 0, image.width, image.height);
-			canvas.remove();
-
-			Output.WriteLine($"Before");
-			byte[] bytes = new byte[imageData.data.byteLength];
-			for (uint i = 0; i < bytes.Length; i++)
-				bytes[i] = imageData.data[i];
-			Output.WriteLine($"After");
-
-			Output.WriteLine($"image.width {image.width}");
-			Output.WriteLine($"image.height {image.height}");
-			Output.WriteLine($"imageData.data.byteLength {imageData.data.byteLength}");
-			Output.WriteLine($"imageData.data.BYTES_PER_ELEMENT {imageData.data.BYTES_PER_ELEMENT}");
-
-			Bitmap spriteData = new Bitmap(bytes, (int)image.width, (int)image.height);
 
 			for (int i = start; i <= end; i++)
 			{
+				context.clearRect(0, 0, canvas.width, canvas.height);
+				context.drawImage(image, glyphWidth * (i - start), 0, glyphWidth, glyphHeight, 0, 0, glyphWidth, glyphHeight);
+
 				// Make sure loaded image is large enough
 				// If image is not large enough, generate error glyphs
 				if (image.width >= glyphWidth * (i - start) + glyphWidth)
-					glyphs[i] = SpriteSheet.AddSpriteFontGlyph(spriteData, new RectangleI(glyphWidth * (i - start), 0, glyphWidth, glyphHeight), xtrim);
+					glyphs[i] = SpriteSheet.AddSpriteFontGlyph(canvas, context, xtrim);
 				else
-					glyphs[i] = SpriteSheet.AddSpriteFontGlyph(spriteData, new RectangleI(0, 0, glyphWidth.Min((int)image.width), glyphHeight.Min((int)image.height)), false);
+					glyphs[i] = SpriteSheet.AddSpriteFontGlyph(canvas, context, false);
 			}
+
+			canvas.remove();
 
 			loaded = true;
 		}

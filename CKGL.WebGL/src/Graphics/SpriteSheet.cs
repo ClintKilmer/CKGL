@@ -50,7 +50,7 @@ namespace CKGL
 #if DEBUG
 			Point2 offset = GetValidPlacementNaive(s.W, s.H);
 #else
-			Point2 offset = GetValidPlacement(source.W, source.H);
+			Point2 offset = GetValidPlacement(s.W, s.H);
 #endif
 
 			//for (int y = 0; y < s.H; y++)
@@ -67,43 +67,51 @@ namespace CKGL
 			aabbs.Add(new AABBi(sprite.SpriteSheetX, sprite.SpriteSheetY, sprite.Width + padding, sprite.Height + padding));
 		}
 
-		public Sprite AddSpriteFontGlyph(Bitmap spriteData, bool xtrim = false) => AddSpriteFontGlyph(spriteData, new RectangleI(0, 0, spriteData.Width, spriteData.Height), xtrim);
-		public Sprite AddSpriteFontGlyph(Bitmap spriteData, RectangleI source, bool xtrim = false)
+		internal Sprite AddSpriteFontGlyph(HTMLCanvasElement canvas, CanvasRenderingContext2D context, bool xtrim = false)
 		{
-			int spriteOffsetX = 0;
-			int spriteWidth = source.W;
+			uint spriteOffsetX = 0;
+			uint spriteWidth = canvas.width;
+
+			ImageData image = context.getImageData(0, 0, canvas.width, canvas.height);
 
 			if (xtrim)
 			{
-				spriteOffsetX = source.W;
+				spriteOffsetX = image.width;
 				spriteWidth = 0;
 
-				for (int y = source.Top; y < source.Bottom; y++)
+				for (uint y = 0; y < image.height; y++)
 				{
-					for (int x = source.Left; x < source.Right; x++)
+					for (uint x = 0; x < image.width; x++)
 					{
-						if (spriteData[x, y] != Colour.Transparent)
+						if (image.data[(y * image.width + x) * 4] != 0 || image.data[(y * image.width + x) * 4 + 1] != 0 || image.data[(y * image.width + x) * 4 + 2] != 0 || image.data[(y * image.width + x) * 4 + 3] != 0)
 						{
-							spriteWidth = Math.Max(x - source.Left, spriteWidth);
-							spriteOffsetX = Math.Min(x - source.Left, spriteOffsetX);
+							spriteWidth = spriteWidth > x ? spriteWidth : x;
+							spriteOffsetX = spriteOffsetX < x ? spriteOffsetX : x;
 						}
 					}
 				}
 
 				spriteWidth++;
+
+				image = context.getImageData(spriteOffsetX, 0, spriteWidth, image.height);
 			}
 
 #if DEBUG
-			Point2 offset = GetValidPlacementNaive(spriteWidth, source.H);
+			Point2 offset = GetValidPlacementNaive((int)spriteWidth, (int)image.height);
 #else
-			Point2 offset = GetValidPlacement(spriteWidth, source.H);
+			Point2 offset = GetValidPlacement((int)spriteWidth, (int)image.height);
 #endif
 
 			//for (int y = 0; y < source.H; y++)
 			//	for (int x = spriteOffsetX; x < spriteOffsetX + spriteWidth; x++)
 			//		Bitmap[offset.X + x - spriteOffsetX, offset.Y + y] = spriteData[source.X + x, source.Y + y];
 
-			Sprite sprite = new Sprite(this, offset.X, offset.Y, spriteWidth, source.H);
+			if (Platform.GraphicsBackend == GraphicsBackend.WebGL2)
+				(Texture as WebGL2.WebGL2Texture).UpdateData(image, offset.X, offset.Y);
+			else if (Platform.GraphicsBackend == GraphicsBackend.WebGL)
+				(Texture as WebGL.WebGLTexture).UpdateData(image, offset.X, offset.Y);
+
+			Sprite sprite = new Sprite(this, offset.X, offset.Y, (int)spriteWidth, (int)image.height);
 			Sprites.Add(sprite);
 			aabbs.Add(new AABBi(sprite.SpriteSheetX, sprite.SpriteSheetY, sprite.Width + padding, sprite.Height + padding));
 			return sprite;
