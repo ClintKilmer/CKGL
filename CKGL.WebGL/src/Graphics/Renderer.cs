@@ -1,29 +1,28 @@
-using System.Runtime.InteropServices;
 using static Retyped.es5; // JS TypedArrays
 
 namespace CKGL
 {
 	public static class Renderer
 	{
-		[StructLayout(LayoutKind.Sequential, Pack = 4)]
-		internal struct Vertex
-		{
-			internal Vector3 Position;
-			internal Colour Colour;
-			internal UV UV;
-			internal byte Textured;
+		//[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		//internal struct Vertex
+		//{
+		//	internal Vector3 Position;
+		//	internal Colour Colour;
+		//	internal UV UV;
+		//	internal byte Textured;
 
-			internal Vertex(Vector3 position, Colour colour, UV uv, bool textured)
-			{
-				Position = position;
-				Colour = colour;
-				UV = uv;
-				Textured = (byte)(textured ? 255 : 0);
-			}
+		//	internal Vertex(Vector3 position, Colour colour, UV uv, bool textured)
+		//	{
+		//		Position = position;
+		//		Colour = colour;
+		//		UV = uv;
+		//		Textured = (byte)(textured ? 255 : 0);
+		//	}
 
-			internal Vertex(Vector3 position, Colour? colour, UV? uv)
-				: this(position, colour ?? Colour.White, uv ?? UV.Zero, uv != null) { }
-		}
+		//	internal Vertex(Vector3 position, Colour? colour, UV? uv)
+		//		: this(position, colour ?? Colour.White, uv ?? UV.Zero, uv != null) { }
+		//}
 
 		private static VertexBuffer vertexBuffer;
 		private static VertexFormat vertexFormat;
@@ -159,22 +158,26 @@ namespace CKGL
 			}
 
 			// Fast implementation for known Vertex type
+			uint vertexOffset = (uint)(vertexCount * vertexFormat.Stride);
 
-			floatView[(uint)(vertexCount * vertexFormat.Stride / vertexFormat.Attributes[0].Type.Size() + 0)] = position.X;
-			floatView[(uint)(vertexCount * vertexFormat.Stride / vertexFormat.Attributes[0].Type.Size() + 1)] = position.Y;
-			floatView[(uint)(vertexCount * vertexFormat.Stride / vertexFormat.Attributes[0].Type.Size() + 2)] = position.Z;
+			uint attributeOffset = (vertexOffset + (uint)vertexFormat.Attributes[0].Offset) / (uint)vertexFormat.Attributes[0].Type.Size();
+			floatView[attributeOffset + 0] = position.X;
+			floatView[attributeOffset + 1] = position.Y;
+			floatView[attributeOffset + 2] = position.Z;
 
+			attributeOffset = (vertexOffset + (uint)vertexFormat.Attributes[1].Offset) / (uint)vertexFormat.Attributes[1].Type.Size();
 			Colour c = colour ?? Colour.White;
-			ubyteView[(uint)((vertexCount * vertexFormat.Stride + vertexFormat.Attributes[1].Offset) / vertexFormat.Attributes[1].Type.Size() + 0)] = c.r;
-			ubyteView[(uint)((vertexCount * vertexFormat.Stride + vertexFormat.Attributes[1].Offset) / vertexFormat.Attributes[1].Type.Size() + 1)] = c.g;
-			ubyteView[(uint)((vertexCount * vertexFormat.Stride + vertexFormat.Attributes[1].Offset) / vertexFormat.Attributes[1].Type.Size() + 2)] = c.b;
-			ubyteView[(uint)((vertexCount * vertexFormat.Stride + vertexFormat.Attributes[1].Offset) / vertexFormat.Attributes[1].Type.Size() + 3)] = c.a;
+			ubyteView[attributeOffset + 0] = c.r;
+			ubyteView[attributeOffset + 1] = c.g;
+			ubyteView[attributeOffset + 2] = c.b;
+			ubyteView[attributeOffset + 3] = c.a;
 
+			attributeOffset = (vertexOffset + (uint)vertexFormat.Attributes[2].Offset) / (uint)vertexFormat.Attributes[2].Type.Size();
 			UV uv2 = uv ?? UV.Zero;
-			ushortView[(uint)((vertexCount * vertexFormat.Stride + vertexFormat.Attributes[2].Offset) / vertexFormat.Attributes[2].Type.Size() + 0)] = uv2.u;
-			ushortView[(uint)((vertexCount * vertexFormat.Stride + vertexFormat.Attributes[2].Offset) / vertexFormat.Attributes[2].Type.Size() + 1)] = uv2.v;
+			ushortView[attributeOffset + 0] = uv2.u;
+			ushortView[attributeOffset + 1] = uv2.v;
 
-			ubyteView[(uint)((vertexCount * vertexFormat.Stride + vertexFormat.Attributes[3].Offset) / vertexFormat.Attributes[3].Type.Size())] = (byte)(uv.HasValue ? 255 : 0);
+			ubyteView[(uint)((vertexOffset + (uint)vertexFormat.Attributes[3].Offset) / vertexFormat.Attributes[3].Type.Size())] = (byte)(uv.HasValue ? 255 : 0);
 
 			vertexCount++;
 		}
