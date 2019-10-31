@@ -692,8 +692,8 @@ namespace CKGL
 				Platform.GetMousePosition(out int mouseX, out int mouseY);
 				Position = new Point2(mouseX, mouseY);
 
-				Platform.GetRelativeMousePosition(out int mouseRelativeX, out int mmouseDisplayY);
-				PositionRelative = new Point2(mouseRelativeX, mmouseDisplayY);
+				Platform.GetRelativeMousePosition(out int mouseRelativeX, out int mouseRelativeY);
+				PositionRelative = new Point2(mouseRelativeX, mouseRelativeY);
 			}
 
 			public static bool Down(MouseButton button)
