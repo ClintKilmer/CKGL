@@ -10,6 +10,7 @@ Bugs:
 
 Features:
 - Audio init throws exception if no device available
+- Add game loop Delay(0)/Delay(1) option
 - Colour Lerp
 - .ToString() consistency
 - ANGLE can't use adaptive sync - even though it reports that it does
