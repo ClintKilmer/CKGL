@@ -4,7 +4,7 @@
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<Authors>Clint Kilmer</Authors>
 		<Company>Clint Kilmer</Company>
-		<Copyright>Copyright © 2019</Copyright>
+		<Copyright>Copyright © 2020</Copyright>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
