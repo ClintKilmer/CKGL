@@ -12,17 +12,17 @@ namespace CKGL
 		{
 			get
 			{
-				if (dirty || texture == null)
+				if (texture == null)
+					throw new CKGLException("SpriteSheet.Texture is null.");
+
+				if (dirty)
 				{
-					if (texture != null)
-						texture.Destroy();
+					texture.SetData(Bitmap.Bytes());
+
+					dirty = false;
 
 					// Debug
 					//Bitmap.SavePNG("SpriteSheet.png");
-
-					texture = Texture.Create2D(Bitmap);
-
-					dirty = false;
 				}
 
 				return texture;
@@ -45,9 +45,11 @@ namespace CKGL
 			else if (padding >= Math.Min(width, height))
 				throw new CKGLException("Padding cannot be larger than the width or height of the SpriteSheet.");
 
+			this.padding = padding;
+
 			Bitmap = new Bitmap(width, height, Colour.Transparent);
 
-			this.padding = padding;
+			texture = Texture.Create2D(Bitmap);
 		}
 
 		public void Destroy()
@@ -72,7 +74,9 @@ namespace CKGL
 				for (int x = 0; x < s.W; x++)
 					Bitmap[offset.X + x, offset.Y + y] = spriteData[s.X + x, s.Y + y];
 
-			dirty = true;
+			if (texture == null)
+				throw new CKGLException("SpriteSheet.Texture is null.");
+			texture.UpdateData(spriteData.Bytes(), new RectangleI(offset.X, offset.Y, spriteData.Width, spriteData.Height));
 
 			Sprite sprite = new Sprite(this, offset.X, offset.Y, s.W, s.H);
 			Sprites.Add(sprite);
