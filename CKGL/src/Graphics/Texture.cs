@@ -68,6 +68,12 @@ namespace CKGL
 													wrapX, wrapY);
 		}
 
+		public abstract void SetData(byte[] data);
+
+		public void UpdateData(byte[] data, RectangleI rectangle) => UpdateData(data, rectangle.X, rectangle.Y, 0, rectangle.W, rectangle.H, 0);
+		public void UpdateData(byte[] data, int xOffset, int yOffset, int width, int height) => UpdateData(data, xOffset, yOffset, 0, width, height, 0);
+		public abstract void UpdateData(byte[] data, int xOffset, int yOffset, int zOffset, int width, int height, int depth);
+
 		public static void PreDraw()
 		{
 			Swaps = 0;

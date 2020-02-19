@@ -2538,6 +2538,16 @@ namespace CKGL.OpenGLBindings
 		}
 
 		[Shared]
+		private static _glTexImage2D glTexSubImage2D;
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
+		private unsafe delegate void _glTexSubImage2D(TextureTarget target, GLint level, GLint xOffset, GLint yOffset, GLint width, GLint height, PixelFormat format, PixelType type, void* data);
+		public static unsafe void TexSubImage2D(TextureTarget target, int level, int xOffset, int yOffset, int width, int height, PixelFormat format, PixelType type, void* data)
+		{
+			glTexSubImage2D(target, level, xOffset, yOffset, width, height, format, type, data);
+			CheckError();
+		}
+
+		[Shared]
 		private static _glTexParameteri glTexParameteri;
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate void _glTexParameteri(TextureTarget target, TextureParam pname, GLint param);

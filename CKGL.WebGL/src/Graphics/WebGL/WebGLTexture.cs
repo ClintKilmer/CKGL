@@ -98,7 +98,7 @@ namespace CKGL.WebGL
 			SetData(image);
 		}
 
-		private void SetData(byte[] data)
+		public override void SetData(byte[] data)
 		{
 			switch (Type)
 			{
@@ -135,6 +135,11 @@ namespace CKGL.WebGL
 				default:
 					throw new IllegalValueException(typeof(TextureType), Type);
 			}
+		}
+
+		public override void UpdateData(byte[] data, int xOffset, int yOffset, int zOffset, int width, int height, int depth)
+		{
+			throw new CKGLException("Not supported in WebGL/WebGL2");
 		}
 
 		internal void UpdateData(HTMLImageElement image, int xOffset, int yOffset)

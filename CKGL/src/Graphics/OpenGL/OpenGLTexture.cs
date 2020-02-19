@@ -65,7 +65,7 @@ namespace CKGL.OpenGL
 			SetData(data);
 		}
 
-		private unsafe void SetData(byte[] data)
+		public override unsafe void SetData(byte[] data)
 		{
 			switch (Type)
 			{
@@ -79,6 +79,32 @@ namespace CKGL.OpenGL
 					Bind();
 					fixed (byte* ptr = data)
 						GL.TexImage2D(TextureTarget, 0, Format.ToOpenGL(), Width, Height, 0, Format.ToOpenGL().PixelFormat(), Format.ToOpenGL().PixelType(), data != null ? ptr : null);
+					break;
+				//case TextureType.Texture2DArray:
+				//	break;
+				//case TextureType.Texture2DMultisample:
+				//	break;
+				//case TextureType.Texture3D:
+				//	break;
+				default:
+					throw new IllegalValueException(typeof(TextureType), Type);
+			}
+		}
+
+		public override unsafe void UpdateData(byte[] data, int xOffset, int yOffset, int zOffset, int width, int height, int depth)
+		{
+			switch (Type)
+			{
+				//case TextureType.Texture1D when Platform.GraphicsBackend == GraphicsBackend.OpenGL: // Not available in OpenGL ES
+				//	break;
+				//case TextureType.Texture1DArray when Platform.GraphicsBackend == GraphicsBackend.OpenGL: // Not available in OpenGL ES
+				//	break;
+				case TextureType.Texture2D:
+					if (data != null && data.Length < width * height * Format.ToOpenGL().PixelFormat().Components())
+						throw new CKGLException("Data array is not large enough to fill texture subsection.");
+					Bind();
+					fixed (byte* ptr = data)
+						GL.TexSubImage2D(TextureTarget, 0, xOffset, yOffset, width, height, Format.ToOpenGL().PixelFormat(), Format.ToOpenGL().PixelType(), data != null ? ptr : null);
 					break;
 				//case TextureType.Texture2DArray:
 				//	break;
