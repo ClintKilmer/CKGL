@@ -50,6 +50,11 @@ namespace CKGL
 			this.padding = padding;
 		}
 
+		public void Destroy()
+		{
+			texture?.Destroy();
+		}
+
 		public Sprite AddSprite(string file, RectangleI? source = null)
 		{
 			Platform.LoadImage(file, out int width, out int height, out byte[] imageData);

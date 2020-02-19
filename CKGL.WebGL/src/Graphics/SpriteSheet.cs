@@ -31,6 +31,11 @@ namespace CKGL
 			this.padding = padding;
 		}
 
+		public void Destroy()
+		{
+			Texture?.Destroy();
+		}
+
 		public Sprite AddSprite(string file, RectangleI? source = null)
 		{
 			Sprite sprite = new Sprite(this, 0, 0, 1, 1);
