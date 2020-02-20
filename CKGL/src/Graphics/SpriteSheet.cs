@@ -67,7 +67,7 @@ namespace CKGL
 #if DEBUG
 			Point2 offset = GetValidPlacementNaive(s.W, s.H);
 #else
-			Point2 offset = GetValidPlacement(source.W, source.H);
+			Point2 offset = GetValidPlacement(s.W, s.H);
 #endif
 
 			for (int y = 0; y < s.H; y++)
