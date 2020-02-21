@@ -1,5 +1,10 @@
+/*
+ * Converts the right-handedness of OpenAL Soft to the left-handedness of CKGL.
+ */
+
 using System;
 using System.Collections.Generic;
+using System.IO;
 using OpenAL;
 using static SDL2.SDL;
 
@@ -40,15 +45,7 @@ namespace CKGL
 				throw new InvalidOperationException("Could not make OpenAL context current");
 			}
 
-			AL10.alListenerfv(AL10.AL_ORIENTATION, new float[] { 0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f });
-			AL10.alListener3f(AL10.AL_POSITION, 0.0f, 0.0f, 0.0f);
-			AL10.alListener3f(AL10.AL_VELOCITY, 0.0f, 0.0f, 0.0f);
-			AL10.alListenerf(AL10.AL_GAIN, 1.0f);
-			if (CheckALError())
-			{
-				Destroy();
-				throw new InvalidOperationException("Could not make OpenAL Listener");
-			}
+			Listener.Reset();
 
 			// Debug
 			Output.WriteLine($"OpenAL Initialized");
@@ -150,12 +147,95 @@ namespace CKGL
 			return false;
 		}
 
+		public static class Listener
+		{
+			public static Vector3 Position
+			{
+				get
+				{
+					AL10.alGetListener3f(AL10.AL_POSITION, out float x, out float y, out float z);
+					if (CheckALError())
+						throw new InvalidOperationException("OpenAL Error: Could not read Listener Position");
+					return new Vector3(x, y, -z);
+				}
+				set
+				{
+					AL10.alListener3f(AL10.AL_POSITION, value.X, value.Y, -value.Z);
+					if (CheckALError())
+						throw new InvalidOperationException("OpenAL Error: Could not update Listener Position");
+				}
+			}
+
+			public static Vector3 Velocity
+			{
+				get
+				{
+					AL10.alGetListener3f(AL10.AL_VELOCITY, out float x, out float y, out float z);
+					if (CheckALError())
+						throw new InvalidOperationException("OpenAL Error: Could not read Listener Velocity");
+					return new Vector3(x, y, -z);
+				}
+				set
+				{
+					AL10.alListener3f(AL10.AL_VELOCITY, value.X, value.Y, -value.Z);
+					if (CheckALError())
+						throw new InvalidOperationException("OpenAL Error: Could not update Listener Velocity");
+				}
+			}
+
+			public static (Vector3 Forward, Vector3 Up) Orientation
+			{
+				get
+				{
+					float[] orientation = new float[6];
+					AL10.alGetListenerfv(AL10.AL_ORIENTATION, orientation);
+					if (CheckALError())
+						throw new InvalidOperationException("OpenAL Error: Could not read Listener Velocity");
+					return (new Vector3(orientation[0], orientation[1], -orientation[2]), new Vector3(orientation[3], orientation[4], -orientation[5]));
+				}
+				set
+				{
+					AL10.alListenerfv(AL10.AL_ORIENTATION, new float[] { value.Forward.X, value.Forward.Y, -value.Forward.Z, value.Up.X, value.Up.Y, -value.Up.Z });
+					if (CheckALError())
+						throw new InvalidOperationException("OpenAL Error: Could not update Listener Orientation");
+				}
+			}
+
+			public static float Gain
+			{
+				get
+				{
+					AL10.alGetListenerf(AL10.AL_POSITION, out float gain);
+					if (CheckALError())
+						throw new InvalidOperationException("OpenAL Error: Could not read Listener Position");
+					return gain;
+				}
+				set
+				{
+					AL10.alListenerf(AL10.AL_GAIN, value);
+					if (CheckALError())
+						throw new InvalidOperationException("OpenAL Error: Could not update Listener Gain");
+				}
+			}
+
+			public static void Reset()
+			{
+				Position = Vector3.Zero;
+				Velocity = Vector3.Zero;
+				Orientation = (Vector3.Forward, Vector3.Up);
+				Gain = 1f;
+			}
+		}
+
 		public class Buffer
 		{
 			public uint id;
 
 			public Buffer(string file)
 			{
+				if (!File.Exists(file))
+					throw new FileNotFoundException(file);
+
 				AL10.alGenBuffers(1, out id);
 				if (CheckALError())
 					throw new InvalidOperationException("Could not make OpenAL Buffer");
@@ -180,7 +260,7 @@ namespace CKGL
 						throw new InvalidOperationException($"SDL failed parsing wav: {file}");
 				}
 
-				AL10.alBufferData(id, AL10.AL_FORMAT_STEREO16, audioBuffer, (int)audioLength, wavspec.freq);
+				AL10.alBufferData(id, format, audioBuffer, (int)audioLength, wavspec.freq);
 
 				SDL_FreeWAV(audioBuffer);
 
@@ -217,6 +297,7 @@ namespace CKGL
 				AL10.alSourcef(id, AL10.AL_GAIN, 1f);
 				AL10.alSourcef(id, AL10.AL_PITCH, 1f);
 				AL10.alSourcei(id, AL10.AL_LOOPING, 0);
+				//AL10.alSourcei(id, AL10.AL_SOURCE_RELATIVE, 0);
 				if (CheckALError())
 					throw new InvalidOperationException("Could set OpenAL Source properties");
 
@@ -237,6 +318,9 @@ namespace CKGL
 			public void Play()
 			{
 				AL10.alSourcePlay(id);
+
+				if (CheckALError())
+					throw new InvalidOperationException("OpenAL Error: Source.Play()");
 			}
 
 			public void Pause()
