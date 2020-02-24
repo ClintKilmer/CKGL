@@ -5,15 +5,20 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using OpenAL;
+using static CKGL.OpenAL;
 using static SDL2.SDL;
 
 namespace CKGL
 {
 	public static class Audio
 	{
-		private static IntPtr Device = IntPtr.Zero;
-		private static IntPtr Context = IntPtr.Zero;
+		public static bool Active { get; private set; } = false;
+
+		private static IntPtr device = IntPtr.Zero;
+		private static IntPtr context = IntPtr.Zero;
+
+		private static IntPtr currentDevice { get { return alcGetContextsDevice(currentContext); } }
+		private static IntPtr currentContext { get { return alcGetCurrentContext(); } }
 
 		private static List<Buffer> buffers = new List<Buffer>();
 		private static List<Source> sources = new List<Source>();
@@ -21,58 +26,97 @@ namespace CKGL
 		public static int BufferCount { get { return buffers.Count; } }
 		public static int SourceCount { get { return sources.Count; } }
 
+		public static uint effect;
+		public static uint slot;
+
 		public static void Init()
 		{
-			// Create Device
-			Device = ALC10.alcOpenDevice(string.Empty);
-			if (CheckALCError() || Device == IntPtr.Zero)
+			device = alcOpenDevice(null);
+			if (device != IntPtr.Zero)
 			{
-				throw new InvalidOperationException("Could not open OpenAL audio device");
-			}
+				context = alcCreateContext(device, null);
+				if (context != IntPtr.Zero && alcMakeContextCurrent(context))
+				{
+					Active = true;
 
-			int[] contextAttributes = new int[0];
-			Context = ALC10.alcCreateContext(Device, contextAttributes);
-			if (CheckALCError() || Context == IntPtr.Zero)
+					// Debug
+					Output.WriteLine($"OpenAL Initialized");
+
+					Output.WriteLine($"alIsExtensionPresent(\"ALC_EXT_EFX\") = {alIsExtensionPresent("ALC_EXT_EFX")}");
+
+					if (CheckALCError())
+						Output.WriteLine("AHHH1");
+					if (CheckALError())
+						Output.WriteLine("AHHH2");
+
+					Listener.Reset();
+
+					effect = alGenEffect();
+					if (CheckALError())
+						Output.WriteLine("1");
+
+					alEffecti(effect, EFX.AL_EFFECT_TYPE, EFX.AL_EFFECT_DISTORTION);
+					alEffectf(effect, EFX.AL_DISTORTION_EDGE, 1f);
+					alEffectf(effect, EFX.AL_DISTORTION_GAIN, 2f);
+					if (CheckALError())
+						Output.WriteLine("2");
+
+					slot = alGenAuxiliaryEffectSlot();
+					if (CheckALError())
+						Output.WriteLine("3");
+
+					alAuxiliaryEffectSloti(slot, EFX.AL_EFFECTSLOT_EFFECT, (int)effect);
+					if (CheckALError())
+						Output.WriteLine("4");
+				}
+				else
+				{
+					alcDestroyContext(context);
+					alcCloseDevice(device);
+
+					Output.WriteLine("OpenAL Error: Could not create an audio context");
+					return;
+				}
+			}
+			else
 			{
-				Destroy();
-				throw new InvalidOperationException("Could not create OpenAL context");
+				Output.WriteLine("OpenAL Error: Could not open an audio device");
+				return;
 			}
-
-			ALC10.alcMakeContextCurrent(Context);
-			if (CheckALCError())
-			{
-				Destroy();
-				throw new InvalidOperationException("Could not make OpenAL context current");
-			}
-
-			Listener.Reset();
-
-			// Debug
-			Output.WriteLine($"OpenAL Initialized");
 		}
 
 		public static void Destroy()
 		{
+			Active = false;
+
 			for (int i = 0; i < sources.Count; i++)
 				sources[i].Destroy();
 
 			for (int i = 0; i < buffers.Count; i++)
 				buffers[i].Destroy();
 
-			ALC10.alcMakeContextCurrent(IntPtr.Zero);
+			alcMakeContextCurrent(IntPtr.Zero);
 
-			if (Context != IntPtr.Zero)
-				ALC10.alcDestroyContext(Context);
+			if (context != IntPtr.Zero)
+				alcDestroyContext(context);
 
-			if (Device != IntPtr.Zero)
-				ALC10.alcCloseDevice(Device);
+			if (device != IntPtr.Zero)
+				alcCloseDevice(device);
 
-			Context = IntPtr.Zero;
-			Device = IntPtr.Zero;
+			context = IntPtr.Zero;
+			device = IntPtr.Zero;
 		}
 
 		public static void Update()
 		{
+			// Handle device disconnect with ALC_EXT_disconnect
+			alcGetIntegerv(device, alcInteger.Connected, out int connected);
+			if (Active && connected == 0)
+			{
+				Destroy();
+				Output.WriteLine($"OpenAL audio device has been disconnected. Please restart application to reenable audio.");
+			}
+
 			for (int i = 0; i < sources.Count; i++)
 			{
 				if (sources[i].IsStopped())
@@ -93,56 +137,62 @@ namespace CKGL
 
 		private static bool CheckALCError()
 		{
-			int error = ALC10.alcGetError(Device);
-			if (error != ALC10.ALC_NO_ERROR)
+			if (currentDevice != IntPtr.Zero)
 			{
-				switch (error)
+				alcErrorCode error = alcGetError(device);
+				if (error != alcErrorCode.NoError)
 				{
-					case ALC10.ALC_INVALID_DEVICE:
-						Output.WriteLine("OpenAL ALC error: ALC_INVALID_DEVICE");
-						break;
-					case ALC10.ALC_INVALID_CONTEXT:
-						Output.WriteLine("OpenAL ALC error: ALC_INVALID_CONTEXT");
-						break;
-					case ALC10.ALC_INVALID_ENUM:
-						Output.WriteLine("OpenAL ALC error: ALC_INVALID_ENUM");
-						break;
-					case ALC10.ALC_INVALID_VALUE:
-						Output.WriteLine("OpenAL ALC error: ALC_INVALID_VALUE");
-						break;
-					case ALC10.ALC_OUT_OF_MEMORY:
-						Output.WriteLine("OpenAL ALC error: ALC_OUT_OF_MEMORY");
-						break;
+					switch (error)
+					{
+						case alcErrorCode.InvalidDevice:
+							Output.WriteLine("OpenAL alcError: ALC_INVALID_DEVICE");
+							break;
+						case alcErrorCode.InvalidContext:
+							Output.WriteLine("OpenAL alcError: ALC_INVALID_CONTEXT");
+							break;
+						case alcErrorCode.InvalidEnum:
+							Output.WriteLine("OpenAL alcError: ALC_INVALID_ENUM");
+							break;
+						case alcErrorCode.InvalidValue:
+							Output.WriteLine("OpenAL alcError: ALC_INVALID_VALUE");
+							break;
+						case alcErrorCode.OutOfMemory:
+							Output.WriteLine("OpenAL alcError: ALC_OUT_OF_MEMORY");
+							break;
+					}
+					return true;
 				}
-				return true;
 			}
 			return false;
 		}
 
 		private static bool CheckALError()
 		{
-			int error = AL10.alGetError();
-			if (error != AL10.AL_NO_ERROR)
+			if (currentContext != IntPtr.Zero)
 			{
-				switch (error)
+				alErrorCode error = alGetError();
+				if (error != alErrorCode.NoError)
 				{
-					case AL10.AL_INVALID_NAME:
-						Output.WriteLine("OpenAL AL error: AL_INVALID_NAME");
-						break;
-					case AL10.AL_INVALID_ENUM:
-						Output.WriteLine("OpenAL AL error: AL_INVALID_ENUM");
-						break;
-					case AL10.AL_INVALID_VALUE:
-						Output.WriteLine("OpenAL AL error: AL_INVALID_VALUE");
-						break;
-					case AL10.AL_INVALID_OPERATION:
-						Output.WriteLine("OpenAL AL error: AL_INVALID_OPERATION");
-						break;
-					case AL10.AL_OUT_OF_MEMORY:
-						Output.WriteLine("OpenAL AL error: AL_OUT_OF_MEMORY");
-						break;
+					switch (error)
+					{
+						case alErrorCode.InvalidName:
+							Output.WriteLine("OpenAL alError: AL_INVALID_NAME");
+							break;
+						case alErrorCode.InvalidEnum:
+							Output.WriteLine("OpenAL alError: AL_INVALID_ENUM");
+							break;
+						case alErrorCode.InvalidValue:
+							Output.WriteLine("OpenAL alError: AL_INVALID_VALUE");
+							break;
+						case alErrorCode.InvalidOperation:
+							Output.WriteLine("OpenAL alError: AL_INVALID_OPERATION");
+							break;
+						case alErrorCode.OutOfMemory:
+							Output.WriteLine("OpenAL alError: AL_OUT_OF_MEMORY");
+							break;
+					}
+					return true;
 				}
-				return true;
 			}
 			return false;
 		}
@@ -153,16 +203,16 @@ namespace CKGL
 			{
 				get
 				{
-					AL10.alGetListener3f(AL10.AL_POSITION, out float x, out float y, out float z);
+					alGetListener3f(alListener3fParameter.Position, out float x, out float y, out float z);
 					if (CheckALError())
-						throw new InvalidOperationException("OpenAL Error: Could not read Listener Position");
+						Output.WriteLine("OpenAL Error: Could not read Listener Position");
 					return new Vector3(x, y, -z);
 				}
 				set
 				{
-					AL10.alListener3f(AL10.AL_POSITION, value.X, value.Y, -value.Z);
+					alListener3f(alListener3fParameter.Position, value.X, value.Y, -value.Z);
 					if (CheckALError())
-						throw new InvalidOperationException("OpenAL Error: Could not update Listener Position");
+						Output.WriteLine("OpenAL Error: Could not update Listener Position");
 				}
 			}
 
@@ -170,16 +220,16 @@ namespace CKGL
 			{
 				get
 				{
-					AL10.alGetListener3f(AL10.AL_VELOCITY, out float x, out float y, out float z);
+					alGetListener3f(alListener3fParameter.Velocity, out float x, out float y, out float z);
 					if (CheckALError())
-						throw new InvalidOperationException("OpenAL Error: Could not read Listener Velocity");
+						Output.WriteLine("OpenAL Error: Could not read Listener Velocity");
 					return new Vector3(x, y, -z);
 				}
 				set
 				{
-					AL10.alListener3f(AL10.AL_VELOCITY, value.X, value.Y, -value.Z);
+					alListener3f(alListener3fParameter.Velocity, value.X, value.Y, -value.Z);
 					if (CheckALError())
-						throw new InvalidOperationException("OpenAL Error: Could not update Listener Velocity");
+						Output.WriteLine("OpenAL Error: Could not update Listener Velocity");
 				}
 			}
 
@@ -188,16 +238,16 @@ namespace CKGL
 				get
 				{
 					float[] orientation = new float[6];
-					AL10.alGetListenerfv(AL10.AL_ORIENTATION, orientation);
+					alGetListenerfv(alListenerfvParameter.Orientation, orientation);
 					if (CheckALError())
-						throw new InvalidOperationException("OpenAL Error: Could not read Listener Velocity");
+						Output.WriteLine("OpenAL Error: Could not read Listener Orientation");
 					return (new Vector3(orientation[0], orientation[1], -orientation[2]), new Vector3(orientation[3], orientation[4], -orientation[5]));
 				}
 				set
 				{
-					AL10.alListenerfv(AL10.AL_ORIENTATION, new float[] { value.Forward.X, value.Forward.Y, -value.Forward.Z, value.Up.X, value.Up.Y, -value.Up.Z });
+					alListenerfv(alListenerfvParameter.Orientation, new float[] { value.Forward.X, value.Forward.Y, -value.Forward.Z, value.Up.X, value.Up.Y, -value.Up.Z });
 					if (CheckALError())
-						throw new InvalidOperationException("OpenAL Error: Could not update Listener Orientation");
+						Output.WriteLine("OpenAL Error: Could not update Listener Orientation");
 				}
 			}
 
@@ -205,16 +255,16 @@ namespace CKGL
 			{
 				get
 				{
-					AL10.alGetListenerf(AL10.AL_POSITION, out float gain);
+					alGetListenerf(alListenerfParameter.Gain, out float gain);
 					if (CheckALError())
-						throw new InvalidOperationException("OpenAL Error: Could not read Listener Position");
+						Output.WriteLine("OpenAL Error: Could not read Listener Gain");
 					return gain;
 				}
 				set
 				{
-					AL10.alListenerf(AL10.AL_GAIN, value);
+					alListenerf(alListenerfParameter.Gain, value);
 					if (CheckALError())
-						throw new InvalidOperationException("OpenAL Error: Could not update Listener Gain");
+						Output.WriteLine("OpenAL Error: Could not update Listener Gain");
 				}
 			}
 
@@ -236,43 +286,43 @@ namespace CKGL
 				if (!File.Exists(file))
 					throw new FileNotFoundException(file);
 
-				AL10.alGenBuffers(1, out id);
+				id = alGenBuffer();
 				if (CheckALError())
-					throw new InvalidOperationException("Could not make OpenAL Buffer");
+					throw new CKGLException("OpenAL Error: Could not create Buffer");
 
 				SDL_AudioSpec wavspec = new SDL_AudioSpec();
 				SDL_LoadWAV(file, ref wavspec, out IntPtr audioBuffer, out uint audioLength);
 
 				// map wav header to openal format
-				int format;
+				alBufferFormat format;
 				switch (wavspec.format)
 				{
 					case AUDIO_U8:
 					case AUDIO_S8:
-						format = wavspec.channels == 2 ? AL10.AL_FORMAT_STEREO8 : AL10.AL_FORMAT_MONO8;
+						format = wavspec.channels == 2 ? alBufferFormat.Stereo8 : alBufferFormat.Mono8;
 						break;
 					case AUDIO_U16:
 					case AUDIO_S16:
-						format = wavspec.channels == 2 ? AL10.AL_FORMAT_STEREO16 : AL10.AL_FORMAT_MONO16;
+						format = wavspec.channels == 2 ? alBufferFormat.Stereo16 : alBufferFormat.Mono16;
 						break;
 					default:
 						SDL_FreeWAV(audioBuffer);
-						throw new InvalidOperationException($"SDL failed parsing wav: {file}");
+						throw new CKGLException($"SDL failed parsing wav: {file}");
 				}
 
-				AL10.alBufferData(id, format, audioBuffer, (int)audioLength, wavspec.freq);
+				alBufferData(id, format, audioBuffer, (int)audioLength, wavspec.freq);
 
 				SDL_FreeWAV(audioBuffer);
 
 				if (CheckALError())
-					throw new InvalidOperationException($"OpenAL could not load \"{file}\"");
+					throw new CKGLException($"OpenAL could not load \"{file}\"");
 
 				buffers.Add(this);
 			}
 
 			public void Destroy()
 			{
-				AL10.alDeleteBuffers(1, ref id);
+				alDeleteBuffer(id);
 				buffers.Remove(this);
 			}
 
@@ -288,72 +338,73 @@ namespace CKGL
 
 			public Source()
 			{
-				AL10.alGenSources(1, out id);
+				id = alGenSource();
 				if (CheckALError())
-					throw new InvalidOperationException("Could not make OpenAL Source");
+					throw new CKGLException("Could not make OpenAL Source");
 
-				AL10.alSource3f(id, AL10.AL_POSITION, 0, 0, 0);
-				AL10.alSource3f(id, AL10.AL_VELOCITY, 0, 0, 0);
-				AL10.alSourcef(id, AL10.AL_GAIN, 1f);
-				AL10.alSourcef(id, AL10.AL_PITCH, 1f);
-				AL10.alSourcei(id, AL10.AL_LOOPING, 0);
-				//AL10.alSourcei(id, AL10.AL_SOURCE_RELATIVE, 0);
+				alSource3f(id, alSource3fParameter.Position, 0, 0, 0);
+				alSource3f(id, alSource3fParameter.Velocity, 0, 0, 0);
+				alSourcef(id, alSourcefParameter.Gain, 1f);
+				alSourcef(id, alSourcefParameter.Pitch, 1f);
+				alSourcei(id, alSourceiParameter.Looping, 0);
+				//alSourcei(id, alSourceiParameter.SourceRelative, 0);
+				alSource3i(id, EFX.AL_AUXILIARY_SEND_FILTER, (int)slot, 0, EFX.AL_FILTER_NULL);
 				if (CheckALError())
-					throw new InvalidOperationException("Could set OpenAL Source properties");
+					throw new CKGLException("Could set OpenAL Source properties");
 
 				sources.Add(this);
 			}
 
 			public void Destroy()
 			{
-				AL10.alDeleteSources(1, ref id);
+				alDeleteSource(id);
 				sources.Remove(this);
 			}
 
 			public void BindBuffer(Buffer buffer)
 			{
-				AL10.alSourcei(id, AL10.AL_BUFFER, (int)buffer.id);
+				alSourcei(id, alSourceiParameter.Buffer, (int)buffer.id);
 			}
 
 			public void Play()
 			{
-				AL10.alSourcePlay(id);
+				alSourcePlay(id);
 
 				if (CheckALError())
-					throw new InvalidOperationException("OpenAL Error: Source.Play()");
+					throw new CKGLException("OpenAL Error: Source.Play()");
 			}
 
 			public void Pause()
 			{
-				AL10.alSourcePause(id);
+				alSourcePause(id);
 			}
 
 			public void Stop()
 			{
-				AL10.alSourceStop(id);
+				alSourceStop(id);
 			}
 
-			private int GetState()
+			private alSourceState GetState()
 			{
-				AL10.alGetSourcei(id, AL10.AL_SOURCE_STATE, out int state);
+				alGetSourcei(id, alGetSourceiParameter.SourceState, out int state);
 				if (CheckALError())
-					throw new InvalidOperationException("Could set OpenAL Source properties");
-				return state;
+					throw new CKGLException("Could set OpenAL Source properties");
+				return (alSourceState)state;
 			}
 
 			public bool IsPlaying()
 			{
-				return GetState() == AL10.AL_PLAYING;
+				return GetState() == alSourceState.Playing;
 			}
 
 			public bool IsPaused()
 			{
-				return GetState() == AL10.AL_PAUSED;
+				return GetState() == alSourceState.Paused;
 			}
 
 			public bool IsStopped()
 			{
-				return GetState() == AL10.AL_STOPPED;
+				return GetState() == alSourceState.Stopped;
 			}
 		}
 
