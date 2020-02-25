@@ -25,8 +25,8 @@ namespace CKGLTest2D
 	#region Sounds
 	public static class Sounds
 	{
-		//public static Audio.Buffer sndPop1 = new Audio.Buffer("snd/sndPop1.wav");
-		//public static Audio.Buffer sndPop2 = new Audio.Buffer("snd/sndPop2.wav");
+		//public static AudioBuffer sndPop1 = new AudioBuffer("snd/sndPop1.wav");
+		//public static AudioBuffer sndPop2 = new AudioBuffer("snd/sndPop2.wav");
 	}
 	#endregion
 

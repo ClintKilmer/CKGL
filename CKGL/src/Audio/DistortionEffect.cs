@@ -2,7 +2,7 @@
 
 namespace CKGL
 {
-	public class DistortionEffect : Effect
+	public class DistortionEffect : AudioEffect
 	{
 		public DistortionEffect() : base()
 		{

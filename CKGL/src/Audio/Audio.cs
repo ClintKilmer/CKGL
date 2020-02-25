@@ -4,9 +4,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using static OpenAL.Bindings;
-using static SDL2.SDL;
 
 namespace CKGL
 {
@@ -20,16 +18,16 @@ namespace CKGL
 		private static IntPtr currentDevice { get { return alcGetContextsDevice(currentContext); } }
 		private static IntPtr currentContext { get { return alcGetCurrentContext(); } }
 
-		private static List<Buffer> buffers = new List<Buffer>();
-		private static List<Source> sources = new List<Source>();
+		internal static List<AudioBuffer> Buffers = new List<AudioBuffer>();
+		internal static List<AudioSource> Sources = new List<AudioSource>();
 
-		public static int BufferCount { get { return buffers.Count; } }
-		public static int SourceCount { get { return sources.Count; } }
+		internal static int BufferCount { get { return Buffers.Count; } }
+		internal static int SourceCount { get { return Sources.Count; } }
 
 		public static DistortionEffect distortionEffect;
 		public static uint slot;
 
-		public static void Init()
+		internal static void Init()
 		{
 			device = alcOpenDevice(null);
 			if (device != IntPtr.Zero)
@@ -44,7 +42,7 @@ namespace CKGL
 						// Debug
 						Output.WriteLine($"OpenAL Initialized");
 
-						Listener.Reset();
+						AudioListener.Reset();
 
 						distortionEffect = new DistortionEffect();
 						distortionEffect.Edge = 1f;
@@ -85,15 +83,15 @@ namespace CKGL
 			}
 		}
 
-		public static void Destroy()
+		internal static void Destroy()
 		{
 			Active = false;
 
-			for (int i = 0; i < sources.Count; i++)
-				sources[i].Destroy();
+			for (int i = 0; i < Sources.Count; i++)
+				Sources[i].Destroy();
 
-			for (int i = 0; i < buffers.Count; i++)
-				buffers[i].Destroy();
+			for (int i = 0; i < Buffers.Count; i++)
+				Buffers[i].Destroy();
 
 			alcMakeContextCurrent(IntPtr.Zero);
 
@@ -107,7 +105,7 @@ namespace CKGL
 			device = IntPtr.Zero;
 		}
 
-		public static void Update()
+		internal static void Update()
 		{
 			// Handle device disconnect with ALC_EXT_disconnect
 			alcGetIntegerv(device, ALC_CONNECTED, out int connected);
@@ -117,25 +115,25 @@ namespace CKGL
 				Output.WriteLine($"OpenAL audio device has been disconnected. Please restart application to reenable audio.");
 			}
 
-			for (int i = 0; i < sources.Count; i++)
+			for (int i = 0; i < Sources.Count; i++)
 			{
-				if (sources[i].IsStopped())
-					sources[i].Destroy();
+				if (Sources[i].IsStopped())
+					Sources[i].Destroy();
 			}
 		}
 
-		private static void PlayBuffer(Buffer buffer)
+		internal static void PlayBuffer(AudioBuffer audioBuffer)
 		{
 			try
 			{
-				Source source = new Source();
-				source.BindBuffer(buffer);
-				source.Play();
+				AudioSource audioSource = new AudioSource();
+				audioSource.BindAudioBuffer(audioBuffer);
+				audioSource.Play();
 			}
 			catch { }
 		}
 
-		public static bool CheckALCError()
+		internal static bool CheckALCError()
 		{
 			if (currentDevice != IntPtr.Zero)
 			{
@@ -166,7 +164,7 @@ namespace CKGL
 			return false;
 		}
 
-		public static bool CheckALError()
+		internal static bool CheckALError()
 		{
 			if (currentContext != IntPtr.Zero)
 			{
@@ -195,217 +193,6 @@ namespace CKGL
 				}
 			}
 			return false;
-		}
-
-		public static class Listener
-		{
-			public static Vector3 Position
-			{
-				get
-				{
-					alGetListener3f(alListener3fParameter.Position, out float x, out float y, out float z);
-					if (CheckALError())
-						Output.WriteLine("OpenAL Error: Could not read Listener Position");
-					return new Vector3(x, y, -z);
-				}
-				set
-				{
-					alListener3f(alListener3fParameter.Position, value.X, value.Y, -value.Z);
-					if (CheckALError())
-						Output.WriteLine("OpenAL Error: Could not update Listener Position");
-				}
-			}
-
-			public static Vector3 Velocity
-			{
-				get
-				{
-					alGetListener3f(alListener3fParameter.Velocity, out float x, out float y, out float z);
-					if (CheckALError())
-						Output.WriteLine("OpenAL Error: Could not read Listener Velocity");
-					return new Vector3(x, y, -z);
-				}
-				set
-				{
-					alListener3f(alListener3fParameter.Velocity, value.X, value.Y, -value.Z);
-					if (CheckALError())
-						Output.WriteLine("OpenAL Error: Could not update Listener Velocity");
-				}
-			}
-
-			public static (Vector3 Forward, Vector3 Up) Orientation
-			{
-				get
-				{
-					float[] orientation = new float[6];
-					alGetListenerfv(alListenerfvParameter.Orientation, orientation);
-					if (CheckALError())
-						Output.WriteLine("OpenAL Error: Could not read Listener Orientation");
-					return (new Vector3(orientation[0], orientation[1], -orientation[2]), new Vector3(orientation[3], orientation[4], -orientation[5]));
-				}
-				set
-				{
-					alListenerfv(alListenerfvParameter.Orientation, new float[] { value.Forward.X, value.Forward.Y, -value.Forward.Z, value.Up.X, value.Up.Y, -value.Up.Z });
-					if (CheckALError())
-						Output.WriteLine("OpenAL Error: Could not update Listener Orientation");
-				}
-			}
-
-			public static float Gain
-			{
-				get
-				{
-					alGetListenerf(alListenerfParameter.Gain, out float gain);
-					if (CheckALError())
-						Output.WriteLine("OpenAL Error: Could not read Listener Gain");
-					return gain;
-				}
-				set
-				{
-					alListenerf(alListenerfParameter.Gain, value);
-					if (CheckALError())
-						Output.WriteLine("OpenAL Error: Could not update Listener Gain");
-				}
-			}
-
-			public static void Reset()
-			{
-				Position = Vector3.Zero;
-				Velocity = Vector3.Zero;
-				Orientation = (Vector3.Forward, Vector3.Up);
-				Gain = 1f;
-			}
-		}
-
-		public class Buffer
-		{
-			public uint id;
-
-			public Buffer(string file)
-			{
-				if (!File.Exists(file))
-					throw new FileNotFoundException(file);
-
-				id = alGenBuffer();
-				if (CheckALError())
-					throw new CKGLException("OpenAL Error: Could not create Buffer");
-
-				SDL_AudioSpec wavspec = new SDL_AudioSpec();
-				SDL_LoadWAV(file, ref wavspec, out IntPtr audioBuffer, out uint audioLength);
-
-				// map wav header to openal format
-				alBufferFormat format;
-				switch (wavspec.format)
-				{
-					case AUDIO_U8:
-					case AUDIO_S8:
-						format = wavspec.channels == 2 ? alBufferFormat.Stereo8 : alBufferFormat.Mono8;
-						break;
-					case AUDIO_U16:
-					case AUDIO_S16:
-						format = wavspec.channels == 2 ? alBufferFormat.Stereo16 : alBufferFormat.Mono16;
-						break;
-					default:
-						SDL_FreeWAV(audioBuffer);
-						throw new CKGLException($"SDL failed parsing wav: {file}");
-				}
-
-				alBufferData(id, format, audioBuffer, (int)audioLength, wavspec.freq);
-
-				SDL_FreeWAV(audioBuffer);
-
-				if (CheckALError())
-					throw new CKGLException($"OpenAL could not load \"{file}\"");
-
-				buffers.Add(this);
-			}
-
-			public void Destroy()
-			{
-				alDeleteBuffer(id);
-				buffers.Remove(this);
-			}
-
-			public void Play()
-			{
-				PlayBuffer(this);
-			}
-		}
-
-		private class Source
-		{
-			public uint id;
-
-			public Source()
-			{
-				id = alGenSource();
-				if (CheckALError())
-					throw new CKGLException("Could not make OpenAL Source");
-
-				alSource3f(id, alSource3fParameter.Position, 0, 0, 0);
-				alSource3f(id, alSource3fParameter.Velocity, 0, 0, 0);
-				alSourcef(id, alSourcefParameter.Gain, 1f);
-				alSourcef(id, alSourcefParameter.Pitch, 1f);
-				alSourcei(id, alSourceiParameter.Looping, 0);
-				//alSourcei(id, alSourceiParameter.SourceRelative, 0);
-				alSource3i(id, AL_AUXILIARY_SEND_FILTER, (int)slot, 0, AL_FILTER_NULL);
-				if (CheckALError())
-					throw new CKGLException("Could set OpenAL Source properties");
-
-				sources.Add(this);
-			}
-
-			public void Destroy()
-			{
-				alDeleteSource(id);
-				sources.Remove(this);
-			}
-
-			public void BindBuffer(Buffer buffer)
-			{
-				alSourcei(id, alSourceiParameter.Buffer, (int)buffer.id);
-			}
-
-			public void Play()
-			{
-				alSourcePlay(id);
-
-				if (CheckALError())
-					throw new CKGLException("OpenAL Error: Source.Play()");
-			}
-
-			public void Pause()
-			{
-				alSourcePause(id);
-			}
-
-			public void Stop()
-			{
-				alSourceStop(id);
-			}
-
-			private alSourceState GetState()
-			{
-				alGetSourcei(id, alGetSourceiParameter.SourceState, out int state);
-				if (CheckALError())
-					throw new CKGLException("Could set OpenAL Source properties");
-				return (alSourceState)state;
-			}
-
-			public bool IsPlaying()
-			{
-				return GetState() == alSourceState.Playing;
-			}
-
-			public bool IsPaused()
-			{
-				return GetState() == alSourceState.Paused;
-			}
-
-			public bool IsStopped()
-			{
-				return GetState() == alSourceState.Stopped;
-			}
 		}
 
 		#region Custom WAV parser - not used, SDL provides this functionality

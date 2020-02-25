@@ -2,11 +2,11 @@
 
 namespace CKGL
 {
-	public class Effect
+	public class AudioEffect
 	{
 		public uint ID;
 
-		protected Effect()
+		protected AudioEffect()
 		{
 			ID = alGenEffect();
 			if (Audio.CheckALError())
