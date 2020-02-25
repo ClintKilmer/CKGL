@@ -2,22 +2,45 @@
 
 namespace CKGL
 {
-	public class AudioEffect
+	public abstract class AudioEffect
 	{
 		public uint ID;
+		public uint EffectSlotID;
 
 		protected AudioEffect()
 		{
 			ID = alGenEffect();
-			if (Audio.CheckALError())
-				throw new CKGLException("Could not make OpenAL Effect");
+			Audio.CheckALError("Could not create Effect");
+
+			EffectSlotID = alGenAuxiliaryEffectSlot();
+			Audio.CheckALError("Could not create Effect Slot");
 		}
 
 		public void Destroy()
 		{
 			alDeleteEffect(ID);
-			if (Audio.CheckALError())
-				throw new CKGLException("Could not destroy OpenAL Effect");
+			Audio.CheckALError("Could not destroy Effect");
+
+			alDeleteAuxiliaryEffectSlot(EffectSlotID);
+			Audio.CheckALError("Could not destroy Effect Slot");
+		}
+
+		public void Apply()
+		{
+			alAuxiliaryEffectSloti(EffectSlotID, AL_EFFECTSLOT_EFFECT, (int)ID);
+			Audio.CheckALError("Could not set Effect to Effect Slot");
+		}
+
+		protected void CheckRange(string name, float value, float min, float max)
+		{
+			if (value < min || value > max)
+				throw new CKGLException($"Illegal Value for \"{name}\" = {value} | Range: ({min} - {max})");
+		}
+
+		protected void CheckRange(string name, int value, int min, int max)
+		{
+			if (value < min || value > max)
+				throw new CKGLException($"Illegal Value for \"{name}\" = {value} | Range: ({min} - {max})");
 		}
 	}
 }

@@ -18,7 +18,7 @@ namespace CKGL
 			alSourcef(ID, alSourcefParameter.Pitch, 1f);
 			alSourcei(ID, alSourceiParameter.Looping, 0);
 			//alSourcei(id, alSourceiParameter.SourceRelative, 0);
-			alSource3i(ID, AL_AUXILIARY_SEND_FILTER, (int)Audio.slot, 0, AL_FILTER_NULL);
+			alSource3i(ID, AL_AUXILIARY_SEND_FILTER, (int)Audio.distortionEffect.EffectSlotID, 0, AL_FILTER_NULL);
 			if (Audio.CheckALError())
 				throw new CKGLException("Could set OpenAL Source properties");
 

@@ -24,46 +24,42 @@ namespace CKGL
 		internal static int BufferCount { get { return Buffers.Count; } }
 		internal static int SourceCount { get { return Sources.Count; } }
 
-		public static DistortionEffect distortionEffect;
-		public static uint slot;
+		public static DistortionEffect distortionEffect; // TEMP
 
 		internal static void Init()
 		{
 			device = alcOpenDevice(null);
 			if (device != IntPtr.Zero)
 			{
-				context = alcCreateContext(device, null);
+				context = alcCreateContext(device, new int[] { ALC_MAX_AUXILIARY_SENDS, 4 });
 				if (context != IntPtr.Zero && alcMakeContextCurrent(context))
 				{
-					if (alcIsExtensionPresent(device, "ALC_EXT_EFX")) // TEMP
+					if (alcIsExtensionPresent(device, "ALC_EXT_EFX") && alIsExtensionPresent("AL_SOFTX_effect_chain")) // TEMP
 					{
 						Active = true;
 
 						// Debug
 						Output.WriteLine($"OpenAL Initialized");
 
+						alcGetIntegerv(device, ALC_MAX_AUXILIARY_SENDS, out int sourceMax);
+						Output.WriteLine($"OpenAL ALC_MAX_AUXILIARY_SENDS: {sourceMax}");
+
+						//Output.WriteLine($"OpenAL alcExtensions: {alcGetString(null, alcString.Extensions)}");
+						//Output.WriteLine($"OpenAL alExtensions: {alGetString(alString.Extensions)}");
+
 						AudioListener.Reset();
 
 						distortionEffect = new DistortionEffect();
 						distortionEffect.Edge = 1f;
 						distortionEffect.Gain = 1f;
-
-						slot = alGenAuxiliaryEffectSlot();
-						if (CheckALError())
-							Output.WriteLine("3");
-
-						alAuxiliaryEffectSloti(slot, AL_EFFECTSLOT_EFFECT, (int)distortionEffect.ID);
-						if (CheckALError())
-							Output.WriteLine("4");
-
-						var distEffect = new DistortionEffect();
+						distortionEffect.Apply();
 					}
 					else
 					{
 						alcDestroyContext(context);
 						alcCloseDevice(device);
 
-						Output.WriteLine("OpenAL Error: ALC_EXT_EFX Extension not found");
+						Output.WriteLine("OpenAL Error: ALC_EXT_EFX and AL_SOFTX_effect_chain are required extensions");
 						return;
 					}
 				}
@@ -133,29 +129,30 @@ namespace CKGL
 			catch { }
 		}
 
-		internal static bool CheckALCError()
+		internal static bool CheckALCError(string message = "")
 		{
 			if (currentDevice != IntPtr.Zero)
 			{
 				alcErrorCode error = alcGetError(device);
 				if (error != alcErrorCode.NoError)
 				{
+					message = message != "" ? " - " + message : "";
 					switch (error)
 					{
 						case alcErrorCode.InvalidDevice:
-							Output.WriteLine("OpenAL alcError: ALC_INVALID_DEVICE");
+							Output.WriteLine($"OpenAL ALC Error: ALC_INVALID_DEVICE{message}");
 							break;
 						case alcErrorCode.InvalidContext:
-							Output.WriteLine("OpenAL alcError: ALC_INVALID_CONTEXT");
+							Output.WriteLine($"OpenAL ALC Error: ALC_INVALID_CONTEXT{message}");
 							break;
 						case alcErrorCode.InvalidEnum:
-							Output.WriteLine("OpenAL alcError: ALC_INVALID_ENUM");
+							Output.WriteLine($"OpenAL ALC Error: ALC_INVALID_ENUM{message}");
 							break;
 						case alcErrorCode.InvalidValue:
-							Output.WriteLine("OpenAL alcError: ALC_INVALID_VALUE");
+							Output.WriteLine($"OpenAL ALC Error: ALC_INVALID_VALUE{message}");
 							break;
 						case alcErrorCode.OutOfMemory:
-							Output.WriteLine("OpenAL alcError: ALC_OUT_OF_MEMORY");
+							Output.WriteLine($"OpenAL ALC Error: ALC_OUT_OF_MEMORY{message}");
 							break;
 					}
 					return true;
@@ -164,29 +161,30 @@ namespace CKGL
 			return false;
 		}
 
-		internal static bool CheckALError()
+		internal static bool CheckALError(string message = "")
 		{
 			if (currentContext != IntPtr.Zero)
 			{
 				alErrorCode error = alGetError();
 				if (error != alErrorCode.NoError)
 				{
+					message = message != "" ? " - " + message : "";
 					switch (error)
 					{
 						case alErrorCode.InvalidName:
-							Output.WriteLine("OpenAL alError: AL_INVALID_NAME");
+							Output.WriteLine($"OpenAL AL Error: AL_INVALID_NAME{message}");
 							break;
 						case alErrorCode.InvalidEnum:
-							Output.WriteLine("OpenAL alError: AL_INVALID_ENUM");
+							Output.WriteLine($"OpenAL AL Error: AL_INVALID_ENUM{message}");
 							break;
 						case alErrorCode.InvalidValue:
-							Output.WriteLine("OpenAL alError: AL_INVALID_VALUE");
+							Output.WriteLine($"OpenAL AL Error: AL_INVALID_VALUE{message}");
 							break;
 						case alErrorCode.InvalidOperation:
-							Output.WriteLine("OpenAL alError: AL_INVALID_OPERATION");
+							Output.WriteLine($"OpenAL AL Error: AL_INVALID_OPERATION{message}");
 							break;
 						case alErrorCode.OutOfMemory:
-							Output.WriteLine("OpenAL alError: AL_OUT_OF_MEMORY");
+							Output.WriteLine($"OpenAL AL Error: AL_OUT_OF_MEMORY{message}");
 							break;
 					}
 					return true;

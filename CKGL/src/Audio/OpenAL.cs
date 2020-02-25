@@ -135,6 +135,10 @@ namespace OpenAL
 		}
 
 		[DllImport(DLL, EntryPoint = "alcGetIntegerv", CallingConvention = CallingConvention.Cdecl)]
+		private static extern void INTERNAL_alcGetIntegerv(IntPtr device, int param, int size, int[] values); // TEMP
+		public static void alcGetIntegerv(IntPtr? device, int param, int size, int[] values) => INTERNAL_alcGetIntegerv(device ?? IntPtr.Zero, param, size, values);
+
+		[DllImport(DLL, EntryPoint = "alcGetIntegerv", CallingConvention = CallingConvention.Cdecl)]
 		private static extern void INTERNAL_alcGetIntegerv(IntPtr device, alcInteger param, int size, int[] values);
 		public static void alcGetIntegerv(IntPtr? device, alcInteger param, int size, int[] values) => INTERNAL_alcGetIntegerv(device ?? IntPtr.Zero, param, size, values);
 
@@ -682,7 +686,7 @@ namespace OpenAL
 
 		public const int ALC_EFX_MAJOR_VERSION = 0x20001;
 		public const int ALC_EFX_MINOR_VERSION = 0x20002;
-		public const int ALC_MAX_AUXILIARY_SENDS = 0x20003;
+		public const int ALC_MAX_AUXILIARY_SENDS = 0x20003; // Default 2, Max clamped to 16
 
 
 		// Listener properties
