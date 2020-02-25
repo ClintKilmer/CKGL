@@ -22,7 +22,6 @@ namespace CKGL
 			public delegate void ControllerButtonEvent(int id, Input.ControllerButton button);
 			public delegate void ControllerAxisEvent(int id, Input.ControllerAxis axis, float value);
 			public delegate void OnDisplayOrientationEvent(uint id, int orientation);
-			public delegate void OtherEvent(int eventID);
 
 			public static Action OnQuit;
 			public static KeyEvent OnKeyDown;
@@ -56,8 +55,6 @@ namespace CKGL
 			public static Action OnWinLeave;
 			public static Action OnWinFocusGained;
 			public static Action OnWinFocusLost;
-			public static OtherEvent OnWinOtherEvent;
-			public static OtherEvent OnOtherEvent;
 		}
 		#endregion
 
@@ -504,9 +501,11 @@ namespace CKGL
 		{
 			while (SDL_PollEvent(out Event) != 0)
 			{
-				//Output.WriteLine(Event.type.ToString());
 				switch (Event.type)
 				{
+					default:
+						Output.WriteLine($"SDL Event Unhandled: {Event.type}");
+						break;
 					case SDL_EventType.SDL_QUIT:
 						Events.OnQuit?.Invoke();
 						Quit();
@@ -559,6 +558,27 @@ namespace CKGL
 					case SDL_EventType.SDL_CONTROLLERAXISMOTION:
 						Controller.AxisMotion(Event.caxis.which, Event.caxis.axis, Event.caxis.axisValue);
 						break;
+					case SDL_EventType.SDL_TEXTINPUT:
+						// TODO
+						break;
+					case SDL_EventType.SDL_TEXTEDITING:
+						// TODO
+						break;
+					case SDL_EventType.SDL_CLIPBOARDUPDATE:
+						// Not handled, use Platform.Clipboard property
+						break;
+					case SDL_EventType.SDL_DROPFILE:
+						Output.WriteLine($"File dropped: {Marshal.PtrToStringAnsi(Event.drop.file)}");
+						break;
+					case SDL_EventType.SDL_DROPBEGIN:
+						Output.WriteLine($"Drop event - begin");
+						break;
+					case SDL_EventType.SDL_DROPCOMPLETE:
+						Output.WriteLine($"Drop event - complete");
+						break;
+					case SDL_EventType.SDL_DROPTEXT:
+						Output.WriteLine($"Text dropped: {Marshal.PtrToStringAnsi(Event.drop.file)}");
+						break;
 					case SDL_EventType.SDL_DISPLAYEVENT:
 						if (Event.display.displayEvent == SDL_DisplayEventID.SDL_DISPLAYEVENT_ORIENTATION)
 							Events.OnDisplayOrientationChanged?.Invoke(Event.display.display, Event.display.data1);
@@ -566,9 +586,11 @@ namespace CKGL
 					case SDL_EventType.SDL_WINDOWEVENT:
 						if (Event.window.windowID == Window.ID)
 						{
-							//Output.WriteLine(Event.window.windowEvent.ToString()); // Debug
 							switch (Event.window.windowEvent)
 							{
+								default:
+									Output.WriteLine($"SDL Window Event Unhandled: {Event.window.windowEvent}");
+									break;
 								case SDL_WindowEventID.SDL_WINDOWEVENT_CLOSE:
 									Events.OnWinClose?.Invoke();
 									break;
@@ -618,9 +640,6 @@ namespace CKGL
 									if (OS == OS.Windows || OS == OS.WinRT)
 										Window.FullscreenReset();
 									Events.OnWinFocusLost?.Invoke();
-									break;
-								default:
-									Events.OnWinOtherEvent?.Invoke((int)Event.window.windowEvent);
 									break;
 							}
 						}
