@@ -2,7 +2,11 @@
  * C# bindings of OpenAL Soft: https://github.com/kcat/openal-soft
  * Specifically supplies bindings that will only work with the OpenAL Soft implementation of OpenAL.
  * 
- * Documentation: https://github.com/kcat/openal-soft/wiki/Programmer's-Guide
+ * Headers: https://github.com/kcat/openal-soft/tree/master/include/AL
+ * Documentation:
+ *		https://github.com/kcat/openal-soft/wiki/Programmer's-Guide
+ *		https://kcat.strangesoft.net/misc-downloads/Effects%20Extension%20Guide.pdf
+ *		https://www.openal.org/documentation/
  */
 
 #nullable enable
@@ -665,7 +669,7 @@ namespace OpenAL
 		#region ALEXT
 		#region Tokens
 		// ALC_EXT_disconnect
-		public const int ALC_CONNECTED = 0x313; // TEMP
+		public const int ALC_CONNECTED = 0x313;
 		#endregion
 
 		#region Functions
