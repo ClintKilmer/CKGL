@@ -5,7 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using static CKGL.OpenAL;
+using static OpenAL.Bindings;
 using static SDL2.SDL;
 
 namespace CKGL
@@ -26,7 +26,7 @@ namespace CKGL
 		public static int BufferCount { get { return buffers.Count; } }
 		public static int SourceCount { get { return sources.Count; } }
 
-		public static uint effect;
+		public static DistortionEffect distortionEffect;
 		public static uint slot;
 
 		public static void Init()
@@ -37,37 +37,37 @@ namespace CKGL
 				context = alcCreateContext(device, null);
 				if (context != IntPtr.Zero && alcMakeContextCurrent(context))
 				{
-					Active = true;
+					if (alcIsExtensionPresent(device, "ALC_EXT_EFX")) // TEMP
+					{
+						Active = true;
 
-					// Debug
-					Output.WriteLine($"OpenAL Initialized");
+						// Debug
+						Output.WriteLine($"OpenAL Initialized");
 
-					Output.WriteLine($"alIsExtensionPresent(\"ALC_EXT_EFX\") = {alIsExtensionPresent("ALC_EXT_EFX")}");
+						Listener.Reset();
 
-					if (CheckALCError())
-						Output.WriteLine("AHHH1");
-					if (CheckALError())
-						Output.WriteLine("AHHH2");
+						distortionEffect = new DistortionEffect();
+						distortionEffect.Edge = 1f;
+						distortionEffect.Gain = 1f;
 
-					Listener.Reset();
+						slot = alGenAuxiliaryEffectSlot();
+						if (CheckALError())
+							Output.WriteLine("3");
 
-					effect = alGenEffect();
-					if (CheckALError())
-						Output.WriteLine("1");
+						alAuxiliaryEffectSloti(slot, AL_EFFECTSLOT_EFFECT, (int)distortionEffect.ID);
+						if (CheckALError())
+							Output.WriteLine("4");
 
-					alEffecti(effect, EFX.AL_EFFECT_TYPE, EFX.AL_EFFECT_DISTORTION);
-					alEffectf(effect, EFX.AL_DISTORTION_EDGE, 1f);
-					alEffectf(effect, EFX.AL_DISTORTION_GAIN, 2f);
-					if (CheckALError())
-						Output.WriteLine("2");
+						var distEffect = new DistortionEffect();
+					}
+					else
+					{
+						alcDestroyContext(context);
+						alcCloseDevice(device);
 
-					slot = alGenAuxiliaryEffectSlot();
-					if (CheckALError())
-						Output.WriteLine("3");
-
-					alAuxiliaryEffectSloti(slot, EFX.AL_EFFECTSLOT_EFFECT, (int)effect);
-					if (CheckALError())
-						Output.WriteLine("4");
+						Output.WriteLine("OpenAL Error: ALC_EXT_EFX Extension not found");
+						return;
+					}
 				}
 				else
 				{
@@ -110,7 +110,7 @@ namespace CKGL
 		public static void Update()
 		{
 			// Handle device disconnect with ALC_EXT_disconnect
-			alcGetIntegerv(device, alcInteger.Connected, out int connected);
+			alcGetIntegerv(device, ALC_CONNECTED, out int connected);
 			if (Active && connected == 0)
 			{
 				Destroy();
@@ -135,7 +135,7 @@ namespace CKGL
 			catch { }
 		}
 
-		private static bool CheckALCError()
+		public static bool CheckALCError()
 		{
 			if (currentDevice != IntPtr.Zero)
 			{
@@ -166,7 +166,7 @@ namespace CKGL
 			return false;
 		}
 
-		private static bool CheckALError()
+		public static bool CheckALError()
 		{
 			if (currentContext != IntPtr.Zero)
 			{
@@ -348,7 +348,7 @@ namespace CKGL
 				alSourcef(id, alSourcefParameter.Pitch, 1f);
 				alSourcei(id, alSourceiParameter.Looping, 0);
 				//alSourcei(id, alSourceiParameter.SourceRelative, 0);
-				alSource3i(id, EFX.AL_AUXILIARY_SEND_FILTER, (int)slot, 0, EFX.AL_FILTER_NULL);
+				alSource3i(id, AL_AUXILIARY_SEND_FILTER, (int)slot, 0, AL_FILTER_NULL);
 				if (CheckALError())
 					throw new CKGLException("Could set OpenAL Source properties");
 
