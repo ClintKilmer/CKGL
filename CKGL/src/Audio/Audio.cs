@@ -150,6 +150,12 @@ namespace CKGL
 		{
 			Active = false;
 
+			for (int i = 0; i < Filters.Count; i++)
+				Filters[i].Destroy();
+
+			for (int i = 0; i < Effects.Count; i++)
+				Effects[i].Destroy();
+
 			for (int i = 0; i < Sources.Count; i++)
 				Sources[i].Destroy();
 
