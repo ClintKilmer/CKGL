@@ -26,8 +26,6 @@ namespace CKGL
 		internal static int BufferCount { get { return Buffers.Count; } }
 		internal static int SourceCount { get { return Sources.Count; } }
 
-		public static EchoEffect distortionEffect; // TEMP
-
 		public static AudioDistanceModel DistanceModel
 		{
 			get
@@ -106,11 +104,6 @@ namespace CKGL
 
 						//Output.WriteLine($"OpenAL alcExtensions: {alcGetString(null, alcString.Extensions)}");
 						//Output.WriteLine($"OpenAL alExtensions: {alGetString(alString.Extensions)}");
-
-						distortionEffect = new EchoEffect(); // TEMP
-															 //distortionEffect.Edge = 1f;
-															 //distortionEffect.Gain = 1f;
-															 //distortionEffect.Apply();
 					}
 					else
 					{
@@ -180,14 +173,6 @@ namespace CKGL
 				if (Sources[i].DestroyOnStop && Sources[i].IsStopped)
 					Sources[i].Destroy();
 			}
-		}
-
-		internal static void PlayBuffer(AudioBuffer audioBuffer)
-		{
-			AudioSource audioSource = new AudioSource();
-			audioSource.DestroyOnStop = true;
-			audioSource.AudioBuffer = audioBuffer;
-			audioSource.Play();
 		}
 
 		internal static bool CheckALCError(string message = "")

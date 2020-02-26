@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.IO;
 using static OpenAL.Bindings;
 using static SDL2.SDL;
@@ -53,9 +55,26 @@ namespace CKGL
 			Audio.Buffers.Remove(this);
 		}
 
-		public void Play()
+		public void Play(AudioFilter? directFilter = null,
+			(AudioEffect? effect, AudioFilter? filter)? send1 = null,
+			(AudioEffect? effect, AudioFilter? filter)? send2 = null,
+			(AudioEffect? effect, AudioFilter? filter)? send3 = null,
+			(AudioEffect? effect, AudioFilter? filter)? send4 = null)
 		{
-			Audio.PlayBuffer(this);
+			AudioSource audioSource = new AudioSource();
+			audioSource.DestroyOnStop = true;
+			audioSource.AudioBuffer = this;
+			if (send1 != null)
+				audioSource.Send1 = send1;
+			if (send2 != null)
+				audioSource.Send2 = send2;
+			if (send3 != null)
+				audioSource.Send3 = send3;
+			if (send4 != null)
+				audioSource.Send4 = send4;
+			if (directFilter != null)
+				audioSource.DirectFilter = directFilter;
+			audioSource.Play();
 		}
 	}
 }

@@ -10,8 +10,23 @@ namespace CKGL
 
 		public bool DestroyOnStop = false;
 
-		private (AudioEffect? effect, AudioFilter? filter) send1;
-		public (AudioEffect? Effect, AudioFilter? Filter) Send1
+		private AudioFilter? directFilter;
+		public AudioFilter? DirectFilter
+		{
+			get
+			{
+				return directFilter;
+			}
+			set
+			{
+				alSourcei(ID, AL_DIRECT_FILTER, (int)(directFilter?.ID ?? AL_FILTER_NULL));
+				Audio.CheckALError("Could not set AudioSource.Filter");
+				directFilter = value;
+			}
+		}
+
+		private (AudioEffect? effect, AudioFilter? filter)? send1;
+		public (AudioEffect? Effect, AudioFilter? Filter)? Send1
 		{
 			get
 			{
@@ -19,15 +34,15 @@ namespace CKGL
 			}
 			set
 			{
-				alSource3i(ID, AL_AUXILIARY_SEND_FILTER, (int)(value.Effect?.ID ?? AL_EFFECTSLOT_NULL), 0, (int)(value.Filter?.ID ?? AL_FILTER_NULL));
+				alSource3i(ID, AL_AUXILIARY_SEND_FILTER, (int)(value?.Effect?.ID ?? AL_EFFECTSLOT_NULL), 0, (int)(value?.Filter?.ID ?? AL_FILTER_NULL));
 				Audio.CheckALError("Could not set AudioSource.Send1.Effect/Filter");
 
 				send1 = value;
 			}
 		}
 
-		private (AudioEffect? effect, AudioFilter? filter) send2;
-		public (AudioEffect? Effect, AudioFilter? Filter) Send2
+		private (AudioEffect? effect, AudioFilter? filter)? send2;
+		public (AudioEffect? Effect, AudioFilter? Filter)? Send2
 		{
 			get
 			{
@@ -35,15 +50,15 @@ namespace CKGL
 			}
 			set
 			{
-				alSource3i(ID, AL_AUXILIARY_SEND_FILTER, (int)(value.Effect?.ID ?? AL_EFFECTSLOT_NULL), 1, (int)(value.Filter?.ID ?? AL_FILTER_NULL));
+				alSource3i(ID, AL_AUXILIARY_SEND_FILTER, (int)(value?.Effect?.ID ?? AL_EFFECTSLOT_NULL), 1, (int)(value?.Filter?.ID ?? AL_FILTER_NULL));
 				Audio.CheckALError("Could not set AudioSource.Send1.Effect/Filter");
 
 				send2 = value;
 			}
 		}
 
-		private (AudioEffect? effect, AudioFilter? filter) send3;
-		public (AudioEffect? Effect, AudioFilter? Filter) Send3
+		private (AudioEffect? effect, AudioFilter? filter)? send3;
+		public (AudioEffect? Effect, AudioFilter? Filter)? Send3
 		{
 			get
 			{
@@ -51,15 +66,15 @@ namespace CKGL
 			}
 			set
 			{
-				alSource3i(ID, AL_AUXILIARY_SEND_FILTER, (int)(value.Effect?.ID ?? AL_EFFECTSLOT_NULL), 2, (int)(value.Filter?.ID ?? AL_FILTER_NULL));
+				alSource3i(ID, AL_AUXILIARY_SEND_FILTER, (int)(value?.Effect?.ID ?? AL_EFFECTSLOT_NULL), 2, (int)(value?.Filter?.ID ?? AL_FILTER_NULL));
 				Audio.CheckALError("Could not set AudioSource.Send1.Effect/Filter");
 
 				send3 = value;
 			}
 		}
 
-		private (AudioEffect? effect, AudioFilter? filter) send4;
-		public (AudioEffect? Effect, AudioFilter? Filter) Send4
+		private (AudioEffect? effect, AudioFilter? filter)? send4;
+		public (AudioEffect? Effect, AudioFilter? Filter)? Send4
 		{
 			get
 			{
@@ -67,25 +82,10 @@ namespace CKGL
 			}
 			set
 			{
-				alSource3i(ID, AL_AUXILIARY_SEND_FILTER, (int)(value.Effect?.ID ?? AL_EFFECTSLOT_NULL), 3, (int)(value.Filter?.ID ?? AL_FILTER_NULL));
+				alSource3i(ID, AL_AUXILIARY_SEND_FILTER, (int)(value?.Effect?.ID ?? AL_EFFECTSLOT_NULL), 3, (int)(value?.Filter?.ID ?? AL_FILTER_NULL));
 				Audio.CheckALError("Could not set AudioSource.Send1.Effect/Filter");
 
 				send4 = value;
-			}
-		}
-
-		private AudioFilter? filter;
-		public AudioFilter? Filter
-		{
-			get
-			{
-				return filter;
-			}
-			set
-			{
-				alSourcei(ID, AL_DIRECT_FILTER, (int)(filter?.ID ?? AL_FILTER_NULL));
-				Audio.CheckALError("Could not set AudioSource.Filter");
-				filter = value;
 			}
 		}
 
@@ -253,8 +253,6 @@ namespace CKGL
 		{
 			ID = alGenSource();
 			Audio.CheckALError("Could not create Source");
-
-			Send1 = (Audio.distortionEffect, null); // TEMP
 
 			Audio.Sources.Add(this);
 		}
