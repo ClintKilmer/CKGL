@@ -619,40 +619,52 @@ namespace OpenAL
 		public static extern bool alIsSource(uint source);
 
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void alSourcef(uint source, int param, float value);
+		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
 		public static extern void alSourcef(uint source, alSourcefParameter param, float value);
 
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void alSource3f(uint source, int param, float v1, float v2, float v3);
+		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
 		public static extern void alSource3f(uint source, alSource3fParameter param, float v1, float v2, float v3);
 
-		//[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		//public static extern void alSourcefv(uint source, int param, float[] values);
+		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void alSourcefv(uint source, int param, float[] values);
 
+		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void alSourcei(uint source, int param, int value);
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
 		public static extern void alSourcei(uint source, alSourceiParameter param, int value);
 
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		public static extern void alSource3i(uint source, int param, int v1, int v2, int v3); // TEMP
+		public static extern void alSource3i(uint source, int param, int v1, int v2, int v3);
 
-		//[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		//public static extern void alSourceiv(uint source, int param, int[] values);
+		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void alSourceiv(uint source, int param, int[] values);
 
+		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void alGetSourcef(uint source, int param, out float value);
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
 		public static extern void alGetSourcef(uint source, alSourcefParameter param, out float value);
 
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void alGetSource3f(uint source, int param, out float v1, out float v2, out float v3);
+		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
 		public static extern void alGetSource3f(uint source, alSource3fParameter param, out float v1, out float v2, out float v3);
 
-		//[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		//public static extern void alGetSourcefv(uint source, int param, float[] values);
+		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void alGetSourcefv(uint source, int param, float[] values);
 
+		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void alGetSourcei(uint source, int param, out int value);
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
 		public static extern void alGetSourcei(uint source, alGetSourceiParameter param, out int value);
 
-		//[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		//public static extern void alGetSource3i(uint source, int param, out int v1, out int v2, out int v3);
+		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void alGetSource3i(uint source, int param, out int v1, out int v2, out int v3);
 
-		//[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		//public static extern void alGetSourceiv(uint source, int param, int[] values);
+		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void alGetSourceiv(uint source, int param, int[] values);
 
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
 		public static extern void alSourcePlay(uint source);
