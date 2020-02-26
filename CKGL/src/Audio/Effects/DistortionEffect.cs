@@ -12,6 +12,9 @@ namespace CKGL
 			Apply();
 		}
 
+		/// <summary>
+		/// 0.2f (0f - 1f)
+		/// </summary>
 		public float Edge
 		{
 			get
@@ -22,12 +25,15 @@ namespace CKGL
 			}
 			set
 			{
-				CheckRange("DistortionEffect.Edge", value, AL_DISTORTION_MIN_EDGE, AL_DISTORTION_MAX_EDGE);
+				Audio.CheckRange("DistortionEffect.Edge", value, AL_DISTORTION_MIN_EDGE, AL_DISTORTION_MAX_EDGE);
 				alEffectf(ID, AL_DISTORTION_EDGE, value);
 				Audio.CheckALError("Could not update DistortionEffect.Edge");
 			}
 		}
 
+		/// <summary>
+		/// 0.05f (0.01f - 1f)
+		/// </summary>
 		public float Gain
 		{
 			get
@@ -38,12 +44,15 @@ namespace CKGL
 			}
 			set
 			{
-				CheckRange("DistortionEffect.Gain", value, AL_DISTORTION_MIN_GAIN, AL_DISTORTION_MAX_GAIN);
+				Audio.CheckRange("DistortionEffect.Gain", value, AL_DISTORTION_MIN_GAIN, AL_DISTORTION_MAX_GAIN);
 				alEffectf(ID, AL_DISTORTION_GAIN, value);
 				Audio.CheckALError("Could not update DistortionEffect.Gain");
 			}
 		}
 
+		/// <summary>
+		/// 8000f (80f - 24000f)
+		/// </summary>
 		public float LowpassCutoff
 		{
 			get
@@ -54,12 +63,15 @@ namespace CKGL
 			}
 			set
 			{
-				CheckRange("DistortionEffect.LowpassCutoff", value, AL_DISTORTION_MIN_LOWPASS_CUTOFF, AL_DISTORTION_MAX_LOWPASS_CUTOFF);
+				Audio.CheckRange("DistortionEffect.LowpassCutoff", value, AL_DISTORTION_MIN_LOWPASS_CUTOFF, AL_DISTORTION_MAX_LOWPASS_CUTOFF);
 				alEffectf(ID, AL_DISTORTION_LOWPASS_CUTOFF, value);
 				Audio.CheckALError("Could not update DistortionEffect.LowpassCutoff");
 			}
 		}
 
+		/// <summary>
+		/// 3600f (80f - 24000f)
+		/// </summary>
 		public float EQCenter
 		{
 			get
@@ -70,12 +82,15 @@ namespace CKGL
 			}
 			set
 			{
-				CheckRange("DistortionEffect.EQCenter", value, AL_DISTORTION_MIN_EQCENTER, AL_DISTORTION_MAX_EQCENTER);
+				Audio.CheckRange("DistortionEffect.EQCenter", value, AL_DISTORTION_MIN_EQCENTER, AL_DISTORTION_MAX_EQCENTER);
 				alEffectf(ID, AL_DISTORTION_EQCENTER, value);
 				Audio.CheckALError("Could not update DistortionEffect.EQCenter");
 			}
 		}
 
+		/// <summary>
+		/// 3600f (80f - 24000f)
+		/// </summary>
 		public float EQBandwidth
 		{
 			get
@@ -86,7 +101,7 @@ namespace CKGL
 			}
 			set
 			{
-				CheckRange("DistortionEffect.EQBandwidth", value, AL_DISTORTION_MIN_EQBANDWIDTH, AL_DISTORTION_MAX_EQBANDWIDTH);
+				Audio.CheckRange("DistortionEffect.EQBandwidth", value, AL_DISTORTION_MIN_EQBANDWIDTH, AL_DISTORTION_MAX_EQBANDWIDTH);
 				alEffectf(ID, AL_DISTORTION_EQBANDWIDTH, value);
 				Audio.CheckALError("Could not update DistortionEffect.EQBandwidth");
 			}

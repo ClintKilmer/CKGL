@@ -7,16 +7,15 @@ namespace CKGL
 {
 	public class AudioBuffer
 	{
-		public uint id;
+		public uint ID;
 
 		public AudioBuffer(string file)
 		{
 			if (!File.Exists(file))
 				throw new FileNotFoundException(file);
 
-			id = alGenBuffer();
-			if (Audio.CheckALError())
-				throw new CKGLException("OpenAL Error: Could not create Buffer");
+			ID = alGenBuffer();
+			Audio.CheckALError("Could not create Buffer");
 
 			SDL_AudioSpec wavspec = new SDL_AudioSpec();
 			SDL_LoadWAV(file, ref wavspec, out IntPtr audioBuffer, out uint audioLength);
@@ -38,19 +37,19 @@ namespace CKGL
 					throw new CKGLException($"SDL failed parsing wav: {file}");
 			}
 
-			alBufferData(id, format, audioBuffer, (int)audioLength, wavspec.freq);
+			alBufferData(ID, format, audioBuffer, (int)audioLength, wavspec.freq);
+			Audio.CheckALError("Could not set Buffer Data");
 
 			SDL_FreeWAV(audioBuffer);
-
-			if (Audio.CheckALError())
-				throw new CKGLException($"OpenAL could not load \"{file}\"");
 
 			Audio.Buffers.Add(this);
 		}
 
 		public void Destroy()
 		{
-			alDeleteBuffer(id);
+			alDeleteBuffer(ID);
+			Audio.CheckALError("Could not destroy Effect");
+
 			Audio.Buffers.Remove(this);
 		}
 

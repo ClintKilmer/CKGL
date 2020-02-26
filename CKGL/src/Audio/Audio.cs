@@ -8,6 +8,17 @@ using static OpenAL.Bindings;
 
 namespace CKGL
 {
+	public enum AudioDistanceModel : int
+	{
+		InverseDistance = alDistanceModelType.InverseDistance,
+		InverseDistanceClamped = alDistanceModelType.InverseDistanceClamped,
+		LinearDistance = alDistanceModelType.LinearDistance,
+		LinearDistanceClamped = alDistanceModelType.LinearDistanceClamped,
+		ExponentDistance = alDistanceModelType.ExponentDistance,
+		ExponentDistanceClamped = alDistanceModelType.ExponentDistanceClamped,
+		None = alDistanceModelType.None
+	}
+
 	public static class Audio
 	{
 		public static bool Active { get; private set; } = false;
@@ -20,11 +31,68 @@ namespace CKGL
 
 		internal static List<AudioBuffer> Buffers = new List<AudioBuffer>();
 		internal static List<AudioSource> Sources = new List<AudioSource>();
+		internal static List<AudioEffect> Effects = new List<AudioEffect>();
 
 		internal static int BufferCount { get { return Buffers.Count; } }
 		internal static int SourceCount { get { return Sources.Count; } }
 
-		public static DistortionEffect distortionEffect; // TEMP
+		public static EchoEffect distortionEffect; // TEMP
+
+		public static AudioDistanceModel DistanceModel
+		{
+			get
+			{
+				float distanceModel = alGetInteger(AL_DISTANCE_MODEL);
+				CheckALError("Could not read Audio.DistanceModel");
+				return (AudioDistanceModel)distanceModel;
+			}
+			set
+			{
+				alDistanceModel((int)value);
+				CheckALError("Could not update Audio.DistanceModel");
+			}
+		}
+		public static readonly AudioDistanceModel DistanceModelDefault = AudioDistanceModel.InverseDistanceClamped;
+
+		/// <summary>
+		/// 1f (0f - )
+		/// </summary>
+		public static float DopplerFactor
+		{
+			get
+			{
+				float dopplerFactor = alGetFloat(alStatefParameter.DopplerFactor);
+				CheckALError("Could not read Audio.DopplerFactor");
+				return dopplerFactor;
+			}
+			set
+			{
+				CheckRange("Audio.DopplerFactor", value, 0f, float.MaxValue);
+				alDopplerFactor(value);
+				CheckALError("Could not update Audio.DopplerFactor");
+			}
+		}
+		public static readonly float DopplerFactorDefault = 1f;
+
+		/// <summary>
+		/// 343.3f (0.0001f - )
+		/// </summary>
+		public static float SpeedOfSound
+		{
+			get
+			{
+				float speedOfSound = alGetFloat(alStatefParameter.SpeedOfSound);
+				CheckALError("Could not read Audio.SpeedOfSound");
+				return speedOfSound;
+			}
+			set
+			{
+				CheckRange("Audio.SpeedOfSound", value, 0.0001f, float.MaxValue);
+				alSpeedOfSound(value);
+				CheckALError("Could not update Audio.SpeedOfSound");
+			}
+		}
+		public static readonly float SpeedOfSoundDefault = 343.3f;
 
 		internal static void Init()
 		{
@@ -47,12 +115,10 @@ namespace CKGL
 						//Output.WriteLine($"OpenAL alcExtensions: {alcGetString(null, alcString.Extensions)}");
 						//Output.WriteLine($"OpenAL alExtensions: {alGetString(alString.Extensions)}");
 
-						AudioListener.Reset();
-
-						distortionEffect = new DistortionEffect();
-						distortionEffect.Edge = 1f;
-						distortionEffect.Gain = 1f;
-						distortionEffect.Apply();
+						distortionEffect = new EchoEffect(); // TEMP
+															 //distortionEffect.Edge = 1f;
+															 //distortionEffect.Gain = 1f;
+															 //distortionEffect.Apply();
 					}
 					else
 					{
@@ -108,32 +174,29 @@ namespace CKGL
 			if (Active && connected == 0)
 			{
 				Destroy();
-				Output.WriteLine($"OpenAL audio device has been disconnected. Please restart application to reenable audio.");
+				Output.WriteLine($"OpenAL audio device has been disconnected. Please restart the application to enable audio.");
 			}
 
 			for (int i = 0; i < Sources.Count; i++)
 			{
-				if (Sources[i].IsStopped())
+				if (Sources[i].DestroyOnStop && Sources[i].IsStopped)
 					Sources[i].Destroy();
 			}
 		}
 
 		internal static void PlayBuffer(AudioBuffer audioBuffer)
 		{
-			try
-			{
-				AudioSource audioSource = new AudioSource();
-				audioSource.BindAudioBuffer(audioBuffer);
-				audioSource.Play();
-			}
-			catch { }
+			AudioSource audioSource = new AudioSource();
+			audioSource.DestroyOnStop = true;
+			audioSource.AudioBuffer = audioBuffer;
+			audioSource.Play();
 		}
 
 		internal static bool CheckALCError(string message = "")
 		{
 			if (currentDevice != IntPtr.Zero)
 			{
-				alcErrorCode error = alcGetError(device);
+				alcErrorCode error = (alcErrorCode)alcGetError(device);
 				if (error != alcErrorCode.NoError)
 				{
 					message = message != "" ? " - " + message : "";
@@ -165,7 +228,7 @@ namespace CKGL
 		{
 			if (currentContext != IntPtr.Zero)
 			{
-				alErrorCode error = alGetError();
+				alErrorCode error = (alErrorCode)alGetError();
 				if (error != alErrorCode.NoError)
 				{
 					message = message != "" ? " - " + message : "";
@@ -191,6 +254,18 @@ namespace CKGL
 				}
 			}
 			return false;
+		}
+
+		internal static void CheckRange(string name, float value, float min, float max)
+		{
+			if (value < min || value > max)
+				throw new CKGLException($"Illegal Value for \"{name}\" = {value} | Range: ({min} - {max})");
+		}
+
+		internal static void CheckRange(string name, int value, int min, int max)
+		{
+			if (value < min || value > max)
+				throw new CKGLException($"Illegal Value for \"{name}\" = {value} | Range: ({min} - {max})");
 		}
 
 		#region Custom WAV parser - not used, SDL provides this functionality

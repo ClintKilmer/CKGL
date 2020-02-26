@@ -22,37 +22,37 @@ namespace OpenAL
 
 		#region ALC
 		#region Tokens
-		//private const int ALC_FALSE = 0x0000; // Equivalent to bool false
-		//private const int ALC_TRUE = 0x0001; // Equivalent to bool true
+		//public const int ALC_FALSE = 0x0000; // Equivalent to bool false
+		//public const int ALC_TRUE = 0x0001; // Equivalent to bool true
 
-		private const int ALC_FREQUENCY = 0x1007;
-		private const int ALC_REFRESH = 0x1008;
-		private const int ALC_SYNC = 0x1009;
-		private const int ALC_MONO_SOURCES = 0x1010;
-		private const int ALC_STEREO_SOURCES = 0x1011;
+		public const int ALC_FREQUENCY = 0x1007;
+		public const int ALC_REFRESH = 0x1008;
+		public const int ALC_SYNC = 0x1009;
+		public const int ALC_MONO_SOURCES = 0x1010;
+		public const int ALC_STEREO_SOURCES = 0x1011;
 
-		private const int ALC_NO_ERROR = 0x0000;
-		private const int ALC_INVALID_DEVICE = 0xA001;
-		private const int ALC_INVALID_CONTEXT = 0xA002;
-		private const int ALC_INVALID_ENUM = 0xA003;
-		private const int ALC_INVALID_VALUE = 0xA004;
-		private const int ALC_OUT_OF_MEMORY = 0xA005;
+		public const int ALC_NO_ERROR = 0x0000;
+		public const int ALC_INVALID_DEVICE = 0xA001;
+		public const int ALC_INVALID_CONTEXT = 0xA002;
+		public const int ALC_INVALID_ENUM = 0xA003;
+		public const int ALC_INVALID_VALUE = 0xA004;
+		public const int ALC_OUT_OF_MEMORY = 0xA005;
 
-		private const int ALC_MAJOR_VERSION = 0x1000;
-		private const int ALC_MINOR_VERSION = 0x1001;
-		private const int ALC_ATTRIBUTES_SIZE = 0x1002;
-		private const int ALC_ALL_ATTRIBUTES = 0x1003;
+		public const int ALC_MAJOR_VERSION = 0x1000;
+		public const int ALC_MINOR_VERSION = 0x1001;
+		public const int ALC_ATTRIBUTES_SIZE = 0x1002;
+		public const int ALC_ALL_ATTRIBUTES = 0x1003;
 
-		private const int ALC_DEFAULT_DEVICE_SPECIFIER = 0x1004;
-		private const int ALC_DEVICE_SPECIFIER = 0x1005;
-		private const int ALC_EXTENSIONS = 0x1006;
+		public const int ALC_DEFAULT_DEVICE_SPECIFIER = 0x1004;
+		public const int ALC_DEVICE_SPECIFIER = 0x1005;
+		public const int ALC_EXTENSIONS = 0x1006;
 
-		private const int ALC_CAPTURE_DEVICE_SPECIFIER = 0x0310;
-		private const int ALC_CAPTURE_DEFAULT_DEVICE_SPECIFIER = 0x0311;
-		private const int ALC_CAPTURE_SAMPLES = 0x0312;
+		public const int ALC_CAPTURE_DEVICE_SPECIFIER = 0x0310;
+		public const int ALC_CAPTURE_DEFAULT_DEVICE_SPECIFIER = 0x0311;
+		public const int ALC_CAPTURE_SAMPLES = 0x0312;
 
-		private const int ALC_DEFAULT_ALL_DEVICES_SPECIFIER = 0x1012;
-		private const int ALC_ALL_DEVICES_SPECIFIER = 0x1013;
+		public const int ALC_DEFAULT_ALL_DEVICES_SPECIFIER = 0x1012;
+		public const int ALC_ALL_DEVICES_SPECIFIER = 0x1013;
 		#endregion
 
 		#region Enums
@@ -100,31 +100,32 @@ namespace OpenAL
 		#region Functions
 		// Context Error Functions
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		public static extern alcErrorCode alcGetError(IntPtr device);
+		public static extern int alcGetError(IntPtr device);
 
 		// Context State Functions
-		[DllImport(DLL, EntryPoint = "alGetString", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport(DLL, EntryPoint = "alcGetString", CallingConvention = CallingConvention.Cdecl)]
+		private static extern IntPtr INTERNAL_alcGetString(IntPtr device, int param);
+		public static string alcGetString(IntPtr? device, int param) => Marshal.PtrToStringAnsi(INTERNAL_alcGetString(device ?? IntPtr.Zero, param));
+		public static string[] alcGetStringArray(IntPtr? device, int param) => PtrToStringArray(INTERNAL_alcGetString(device ?? IntPtr.Zero, param));
+		[DllImport(DLL, EntryPoint = "alcGetString", CallingConvention = CallingConvention.Cdecl)]
 		private static extern IntPtr INTERNAL_alcGetString(IntPtr device, alcString param);
-		public static string alcGetString(IntPtr? device, alcString param)
+		public static string alcGetString(IntPtr? device, alcString param) => Marshal.PtrToStringAnsi(INTERNAL_alcGetString(device ?? IntPtr.Zero, param));
+		public static string[] alcGetStringArray(IntPtr? device, alcString param) => PtrToStringArray(INTERNAL_alcGetString(device ?? IntPtr.Zero, param));
+		private static string[] PtrToStringArray(IntPtr stringPtr)
 		{
-			return Marshal.PtrToStringAnsi(INTERNAL_alcGetString(device ?? IntPtr.Zero, param));
-		}
-		public static string[] alcGetStringArray(IntPtr? device, alcString param)
-		{
-			IntPtr location = INTERNAL_alcGetString(device ?? IntPtr.Zero, param);
 			System.Collections.Generic.List<string> strings = new System.Collections.Generic.List<string>();
 
 			bool lastNull = false;
 			int i = -1;
 			byte c;
-			while (!((c = Marshal.ReadByte(location, ++i)) == '\0' && lastNull))
+			while (!((c = Marshal.ReadByte(stringPtr, ++i)) == '\0' && lastNull))
 			{
 				if (c == '\0')
 				{
 					lastNull = true;
 
-					strings.Add(Marshal.PtrToStringAnsi(location, i));
-					location = new IntPtr((long)location + i + 1);
+					strings.Add(Marshal.PtrToStringAnsi(stringPtr, i));
+					stringPtr = new IntPtr((long)stringPtr + i + 1);
 					i = -1;
 				}
 				else
@@ -135,17 +136,15 @@ namespace OpenAL
 		}
 
 		[DllImport(DLL, EntryPoint = "alcGetIntegerv", CallingConvention = CallingConvention.Cdecl)]
-		private static extern void INTERNAL_alcGetIntegerv(IntPtr device, int param, int size, int[] values); // TEMP
+		private static extern void INTERNAL_alcGetIntegerv(IntPtr device, int param, int size, int[] values);
 		public static void alcGetIntegerv(IntPtr? device, int param, int size, int[] values) => INTERNAL_alcGetIntegerv(device ?? IntPtr.Zero, param, size, values);
-
 		[DllImport(DLL, EntryPoint = "alcGetIntegerv", CallingConvention = CallingConvention.Cdecl)]
 		private static extern void INTERNAL_alcGetIntegerv(IntPtr device, alcInteger param, int size, int[] values);
 		public static void alcGetIntegerv(IntPtr? device, alcInteger param, int size, int[] values) => INTERNAL_alcGetIntegerv(device ?? IntPtr.Zero, param, size, values);
 
 		[DllImport(DLL, EntryPoint = "alcGetIntegerv", CallingConvention = CallingConvention.Cdecl)]
-		private static extern void INTERNAL_alcGetIntegerv(IntPtr device, int param, int size, out int values); // TEMP
+		private static extern void INTERNAL_alcGetIntegerv(IntPtr device, int param, int size, out int values);
 		public static void alcGetIntegerv(IntPtr? device, int param, out int value) => INTERNAL_alcGetIntegerv(device ?? IntPtr.Zero, param, 1, out value);
-
 		[DllImport(DLL, EntryPoint = "alcGetIntegerv", CallingConvention = CallingConvention.Cdecl)]
 		private static extern void INTERNAL_alcGetIntegerv(IntPtr device, alcInteger param, int size, out int values);
 		public static void alcGetIntegerv(IntPtr? device, alcInteger param, out int value) => INTERNAL_alcGetIntegerv(device ?? IntPtr.Zero, param, 1, out value);
@@ -209,77 +208,77 @@ namespace OpenAL
 
 		#region AL
 		#region Tokens
-		private const int AL_NONE = 0x0000;
-		//private const int AL_FALSE = 0x0000; // Equivalent to bool false
-		//private const int AL_TRUE = 0x0001; // Equivalent to bool true
+		public const int AL_NONE = 0x0000;
+		//public const int AL_FALSE = 0x0000; // Equivalent to bool false
+		//public const int AL_TRUE = 0x0001; // Equivalent to bool true
 
-		private const int AL_SOURCE_RELATIVE = 0x0202;
-		private const int AL_CONE_INNER_ANGLE = 0x1001;
-		private const int AL_CONE_OUTER_ANGLE = 0x1002;
-		private const int AL_PITCH = 0x1003;
-		private const int AL_POSITION = 0x1004;
-		private const int AL_DIRECTION = 0x1005;
-		private const int AL_VELOCITY = 0x1006;
-		private const int AL_LOOPING = 0x1007;
-		private const int AL_BUFFER = 0x1009;
-		private const int AL_GAIN = 0x100A;
-		private const int AL_MIN_GAIN = 0x100D;
-		private const int AL_MAX_GAIN = 0x100E;
-		private const int AL_ORIENTATION = 0x100F;
+		public const int AL_SOURCE_RELATIVE = 0x0202;
+		public const int AL_CONE_INNER_ANGLE = 0x1001;
+		public const int AL_CONE_OUTER_ANGLE = 0x1002;
+		public const int AL_PITCH = 0x1003;
+		public const int AL_POSITION = 0x1004;
+		public const int AL_DIRECTION = 0x1005;
+		public const int AL_VELOCITY = 0x1006;
+		public const int AL_LOOPING = 0x1007;
+		public const int AL_BUFFER = 0x1009;
+		public const int AL_GAIN = 0x100A;
+		public const int AL_MIN_GAIN = 0x100D;
+		public const int AL_MAX_GAIN = 0x100E;
+		public const int AL_ORIENTATION = 0x100F;
 
-		private const int AL_SOURCE_STATE = 0x1010;
-		private const int AL_INITIAL = 0x1011;
-		private const int AL_PLAYING = 0x1012;
-		private const int AL_PAUSED = 0x1013;
-		private const int AL_STOPPED = 0x1014;
+		public const int AL_SOURCE_STATE = 0x1010;
+		public const int AL_INITIAL = 0x1011;
+		public const int AL_PLAYING = 0x1012;
+		public const int AL_PAUSED = 0x1013;
+		public const int AL_STOPPED = 0x1014;
 
-		private const int AL_BUFFERS_QUEUED = 0x1015;
-		private const int AL_BUFFERS_PROCESSED = 0x1016;
-		private const int AL_REFERENCE_DISTANCE = 0x1020;
-		private const int AL_ROLLOFF_FACTOR = 0x1021;
-		private const int AL_CONE_OUTER_GAIN = 0x1022;
-		private const int AL_MAX_DISTANCE = 0x1023;
-		private const int AL_SEC_OFFSET = 0x1024;
-		private const int AL_SAMPLE_OFFSET = 0x1025;
-		private const int AL_BYTE_OFFSET = 0x1026;
-		private const int AL_SOURCE_TYPE = 0x1027;
-		private const int AL_STATIC = 0x1028;
-		private const int AL_STREAMING = 0x1029;
-		private const int AL_UNDETERMINED = 0x1030;
+		public const int AL_BUFFERS_QUEUED = 0x1015;
+		public const int AL_BUFFERS_PROCESSED = 0x1016;
+		public const int AL_REFERENCE_DISTANCE = 0x1020;
+		public const int AL_ROLLOFF_FACTOR = 0x1021;
+		public const int AL_CONE_OUTER_GAIN = 0x1022;
+		public const int AL_MAX_DISTANCE = 0x1023;
+		public const int AL_SEC_OFFSET = 0x1024;
+		public const int AL_SAMPLE_OFFSET = 0x1025;
+		public const int AL_BYTE_OFFSET = 0x1026;
+		public const int AL_SOURCE_TYPE = 0x1027;
+		public const int AL_STATIC = 0x1028;
+		public const int AL_STREAMING = 0x1029;
+		public const int AL_UNDETERMINED = 0x1030;
 
-		private const int AL_FORMAT_MONO8 = 0x1100;
-		private const int AL_FORMAT_MONO16 = 0x1101;
-		private const int AL_FORMAT_STEREO8 = 0x1102;
-		private const int AL_FORMAT_STEREO16 = 0x1103;
+		public const int AL_FORMAT_MONO8 = 0x1100;
+		public const int AL_FORMAT_MONO16 = 0x1101;
+		public const int AL_FORMAT_STEREO8 = 0x1102;
+		public const int AL_FORMAT_STEREO16 = 0x1103;
 
-		private const int AL_FREQUENCY = 0x2001;
-		private const int AL_BITS = 0x2002;
-		private const int AL_CHANNELS = 0x2003;
-		private const int AL_SIZE = 0x2004;
+		public const int AL_FREQUENCY = 0x2001;
+		public const int AL_BITS = 0x2002;
+		public const int AL_CHANNELS = 0x2003;
+		public const int AL_SIZE = 0x2004;
 
-		private const int AL_NO_ERROR = 0x0000;
-		private const int AL_INVALID_NAME = 0xA001;
-		private const int AL_INVALID_ENUM = 0xA002;
-		private const int AL_INVALID_VALUE = 0xA003;
-		private const int AL_INVALID_OPERATION = 0xA004;
-		private const int AL_OUT_OF_MEMORY = 0xA005;
+		public const int AL_NO_ERROR = 0x0000;
+		public const int AL_INVALID_NAME = 0xA001;
+		public const int AL_INVALID_ENUM = 0xA002;
+		public const int AL_INVALID_VALUE = 0xA003;
+		public const int AL_INVALID_OPERATION = 0xA004;
+		public const int AL_OUT_OF_MEMORY = 0xA005;
 
-		private const int AL_VENDOR = 0xB001;
-		private const int AL_VERSION = 0xB002;
-		private const int AL_RENDERER = 0xB003;
-		private const int AL_EXTENSIONS = 0xB004;
+		public const int AL_VENDOR = 0xB001;
+		public const int AL_VERSION = 0xB002;
+		public const int AL_RENDERER = 0xB003;
+		public const int AL_EXTENSIONS = 0xB004;
 
-		private const int AL_DOPPLER_FACTOR = 0xC000;
-		//private const int AL_DOPPLER_VELOCITY = 0xC001; // Deprecated
-		private const int AL_SPEED_OF_SOUND = 0xC003;
+		public const int AL_DOPPLER_FACTOR = 0xC000;
+		//public const int AL_DOPPLER_VELOCITY = 0xC001; // Deprecated
+		public const int AL_SPEED_OF_SOUND = 0xC003;
 
-		private const int AL_DISTANCE_MODEL = 0xD000;
-		private const int AL_INVERSE_DISTANCE = 0xD001;
-		private const int AL_INVERSE_DISTANCE_CLAMPED = 0xD002;
-		private const int AL_LINEAR_DISTANCE = 0xD003;
-		private const int AL_LINEAR_DISTANCE_CLAMPED = 0xD004;
-		private const int AL_EXPONENT_DISTANCE = 0xD005;
-		private const int AL_EXPONENT_DISTANCE_CLAMPED = 0xD006;
+		public const int AL_DISTANCE_MODEL = 0xD000;
+		public const int AL_INVERSE_DISTANCE = 0xD001;
+		public const int AL_INVERSE_DISTANCE_CLAMPED = 0xD002;
+		public const int AL_LINEAR_DISTANCE = 0xD003;
+		public const int AL_LINEAR_DISTANCE_CLAMPED = 0xD004;
+		public const int AL_EXPONENT_DISTANCE = 0xD005;
+		public const int AL_EXPONENT_DISTANCE_CLAMPED = 0xD006;
 		#endregion
 
 		#region Enums
@@ -301,7 +300,7 @@ namespace OpenAL
 		{
 			DopplerFactor = AL_DOPPLER_FACTOR,
 			SpeedOfSound = AL_SPEED_OF_SOUND, // Default 343.3f
-			DistanceModel = AL_DISTANCE_MODEL
+			DistanceModel = AL_DISTANCE_MODEL // Default AL_INVERSE_DISTANCE_CLAMPED
 		}
 
 		public enum alString : int
@@ -406,46 +405,59 @@ namespace OpenAL
 		#region Functions
 		// Error Functions
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		public static extern alErrorCode alGetError();
+		public static extern int alGetError();
 
 		// State Functions
+		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void alEnable(int capability);
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
 		public static extern void alEnable(alCapability capability);
 
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void alDisable(int capability);
+		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
 		public static extern void alDisable(alCapability capability);
 
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+		public static extern bool alIsEnabled(int capability);
+		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
 		public static extern bool alIsEnabled(alCapability capability);
 
-		//[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		//public static extern bool alGetBoolean(int param);
+		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+		public static extern bool alGetBoolean(int param);
 
-		//[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		//public static extern void alGetBooleanv(int param, bool[] values);
+		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void alGetBooleanv(int param, bool[] values);
 
-		//[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		//public static extern double alGetDouble(int param);
+		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+		public static extern double alGetDouble(int param);
 
-		//[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		//public static extern void alGetDoublev(int param, double[] values);
+		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void alGetDoublev(int param, double[] values);
 
+		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+		public static extern float alGetFloat(int param);
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
 		public static extern float alGetFloat(alStatefParameter param);
 
-		//[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		//public static extern void alGetFloatv(int param, float[] values);
+		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void alGetFloatv(int param, float[] values);
 
-		//[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		//public static extern int alGetInteger(int param);
+		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+		public static extern int alGetInteger(int param);
 
-		//[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		//public static extern void alGetIntegerv(int param, int[] values);
+		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void alGetIntegerv(int param, int[] values);
 
+		[DllImport(DLL, EntryPoint = "alGetString", CallingConvention = CallingConvention.Cdecl)]
+		private static extern IntPtr INTERNAL_alGetString(int param);
+		public static string alGetString(int param) => Marshal.PtrToStringAnsi(INTERNAL_alGetString(param));
 		[DllImport(DLL, EntryPoint = "alGetString", CallingConvention = CallingConvention.Cdecl)]
 		private static extern IntPtr INTERNAL_alGetString(alString param);
 		public static string alGetString(alString param) => Marshal.PtrToStringAnsi(INTERNAL_alGetString(param));
 
+		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void alDistanceModel(int value);
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
 		public static extern void alDistanceModel(alDistanceModelType value);
 
@@ -453,7 +465,7 @@ namespace OpenAL
 		public static extern void alDopplerFactor(float value);
 
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		public static extern void alSpeedOfSound(float value); // Default 343.3
+		public static extern void alSpeedOfSound(float value);
 
 		// Extension Functions
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
@@ -467,46 +479,52 @@ namespace OpenAL
 
 		// Listener Functions
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		public static extern void alListenerf(int param, float value); // TEMP
-
+		public static extern void alListenerf(int param, float value);
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
 		public static extern void alListenerf(alListenerfParameter param, float value);
 
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void alListener3f(int param, float v1, float v2, float v3);
+		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
 		public static extern void alListener3f(alListener3fParameter param, float v1, float v2, float v3);
 
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void alListenerfv(int param, float[] values);
+		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
 		public static extern void alListenerfv(alListenerfvParameter param, float[] values);
 
-		//[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		//public static extern void alListeneri(int param, int value);
-
-		//[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		//public static extern void alListener3i(int param, int v1, int v2, int v3);
-
-		//[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		//public static extern void alListeneriv(int param, int[] values);
+		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void alListeneri(int param, int value);
 
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		public static extern void alGetListenerf(int param, out float value); // TEMP
+		public static extern void alListener3i(int param, int v1, int v2, int v3);
 
+		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void alListeneriv(int param, int[] values);
+
+		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void alGetListenerf(int param, out float value);
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
 		public static extern void alGetListenerf(alListenerfParameter param, out float value);
 
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void alGetListener3f(int param, out float v1, out float v2, out float v3);
+		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
 		public static extern void alGetListener3f(alListener3fParameter param, out float v1, out float v2, out float v3);
 
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void alGetListenerfv(int param, float[] values);
+		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
 		public static extern void alGetListenerfv(alListenerfvParameter param, float[] values);
 
-		//[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		//public static extern void alGetListeneri(int param, out int value);
+		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void alGetListeneri(int param, out int value);
 
-		//[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		//public static extern void alGetListener3i(int param, out int v1, out int v2, out int v3);
+		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void alGetListener3i(int param, out int v1, out int v2, out int v3);
 
-		//[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		//public static extern void alGetListeneriv(int param, int[] values);
+		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void alGetListeneriv(int param, int[] values);
 
 		// Buffer Functions
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
@@ -531,46 +549,52 @@ namespace OpenAL
 		public static extern bool alIsBuffer(uint buffer);
 
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void alBufferData(uint buffer, int format, IntPtr data, int size, int freq);
+		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
 		public static extern void alBufferData(uint buffer, alBufferFormat format, IntPtr data, int size, int freq);
 
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void alBufferData(uint buffer, int format, byte[] data, int size, int freq);
+		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
 		public static extern void alBufferData(uint buffer, alBufferFormat format, byte[] data, int size, int freq);
 
-		//[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		//public static extern void alBufferf(uint buffer, int param, float value);
+		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void alBufferf(uint buffer, int param, float value);
 
-		//[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		//public static extern void alBuffer3f(uint buffer, int param, float v1, float v2, float v3);
+		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void alBuffer3f(uint buffer, int param, float v1, float v2, float v3);
 
-		//[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		//public static extern void alBufferfv(uint buffer, int param, float[] values);
+		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void alBufferfv(uint buffer, int param, float[] values);
 
-		//[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		//public static extern void alBufferi(uint buffer, int param, int value);
+		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void alBufferi(uint buffer, int param, int value);
 
-		//[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		//public static extern void alBuffer3i(uint buffer, int param, int v1, int v2, int v3);
+		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void alBuffer3i(uint buffer, int param, int v1, int v2, int v3);
 
-		//[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		//public static extern void alBufferiv(uint buffer, int param, int[] values);
+		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void alBufferiv(uint buffer, int param, int[] values);
 
-		//[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		//public static extern void alGetBufferf(uint buffer, int param, out float value);
+		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void alGetBufferf(uint buffer, int param, out float value);
 
-		//[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		//public static extern void alGetBuffer3f(uint buffer, int param, out float v1, out float v2, out float v3);
+		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void alGetBuffer3f(uint buffer, int param, out float v1, out float v2, out float v3);
 
-		//[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		//public static extern void alGetBufferfv(uint buffer, int param, float[] values);
+		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void alGetBufferfv(uint buffer, int param, float[] values);
 
+		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void alGetBufferi(uint buffer, int param, out int value);
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
 		public static extern void alGetBufferi(uint buffer, alGetBufferiParameter param, out int value);
 
-		//[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		//public static extern void alGetBuffer3i(uint buffer, int param, out int v1, out int v2, out int v3);
+		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void alGetBuffer3i(uint buffer, int param, out int v1, out int v2, out int v3);
 
-		//[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		//public static extern void alGetBufferiv(uint buffer, int param, int[] values);
+		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void alGetBufferiv(uint buffer, int param, int[] values);
 
 		// Source Functions
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
