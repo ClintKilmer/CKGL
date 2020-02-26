@@ -6,7 +6,8 @@ namespace CKGL
 {
 	public class AudioSource
 	{
-		public uint ID;
+		internal uint ID;
+
 		public bool DestroyOnStop = false;
 
 		private (AudioEffect? effect, AudioFilter? filter) send1;

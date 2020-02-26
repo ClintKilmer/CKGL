@@ -7,7 +7,7 @@ namespace CKGL
 {
 	public class AudioBuffer
 	{
-		public uint ID;
+		internal uint ID;
 
 		public AudioBuffer(string file)
 		{

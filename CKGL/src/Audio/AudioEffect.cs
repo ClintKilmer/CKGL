@@ -4,8 +4,8 @@ namespace CKGL
 {
 	public abstract class AudioEffect
 	{
-		public uint ID;
-		public uint EffectSlotID;
+		internal uint ID;
+		internal uint EffectSlotID;
 
 		protected AudioEffect()
 		{

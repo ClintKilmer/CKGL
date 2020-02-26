@@ -4,7 +4,7 @@ namespace CKGL
 {
 	public abstract class AudioFilter
 	{
-		public uint ID;
+		internal uint ID;
 
 		protected AudioFilter()
 		{

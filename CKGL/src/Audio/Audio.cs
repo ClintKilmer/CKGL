@@ -8,17 +8,6 @@ using static OpenAL.Bindings;
 
 namespace CKGL
 {
-	public enum AudioDistanceModel : int
-	{
-		InverseDistance = alDistanceModelType.InverseDistance,
-		InverseDistanceClamped = alDistanceModelType.InverseDistanceClamped,
-		LinearDistance = alDistanceModelType.LinearDistance,
-		LinearDistanceClamped = alDistanceModelType.LinearDistanceClamped,
-		ExponentDistance = alDistanceModelType.ExponentDistance,
-		ExponentDistanceClamped = alDistanceModelType.ExponentDistanceClamped,
-		None = alDistanceModelType.None
-	}
-
 	public static class Audio
 	{
 		public static bool Active { get; private set; } = false;
@@ -103,7 +92,9 @@ namespace CKGL
 				context = alcCreateContext(device, new int[] { ALC_MAX_AUXILIARY_SENDS, 4 });
 				if (context != IntPtr.Zero && alcMakeContextCurrent(context))
 				{
-					if (alcIsExtensionPresent(device, "ALC_EXT_EFX") && alIsExtensionPresent("AL_SOFTX_effect_chain")) // TEMP
+					if (alcIsExtensionPresent(device, "ALC_EXT_EFX") &&
+						alcIsExtensionPresent(device, "ALC_EXT_disconnect") &&
+						alIsExtensionPresent("AL_SOFTX_effect_chain"))
 					{
 						Active = true;
 
@@ -126,7 +117,7 @@ namespace CKGL
 						alcDestroyContext(context);
 						alcCloseDevice(device);
 
-						Output.WriteLine("OpenAL Error: ALC_EXT_EFX and AL_SOFTX_effect_chain are required extensions");
+						Output.WriteLine("OpenAL Error: ALC_EXT_EFX, ALC_EXT_disconnect, and AL_SOFTX_effect_chain are required extensions");
 						return;
 					}
 				}
@@ -177,7 +168,7 @@ namespace CKGL
 		internal static void Update()
 		{
 			// Handle device disconnect with ALC_EXT_disconnect
-			alcGetIntegerv(device, ALC_CONNECTED, out int connected);
+			alcGetIntegerv(device, alcInteger.Connected, out int connected);
 			if (Active && connected == 0)
 			{
 				Destroy();

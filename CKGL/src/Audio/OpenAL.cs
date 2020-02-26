@@ -84,7 +84,7 @@ namespace OpenAL
 			AttributesSize = ALC_ATTRIBUTES_SIZE,
 			AllAttributes = ALC_ALL_ATTRIBUTES,
 			CaptureSamples = ALC_CAPTURE_SAMPLES,
-			//Connected = ALC_CONNECTED // ALC_EXT_disconnect // TEMP
+			Connected = ALC_CONNECTED // ALC_EXT_disconnect
 		}
 
 		public enum alcAttribute : int
