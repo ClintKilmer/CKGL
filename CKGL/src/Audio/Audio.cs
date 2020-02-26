@@ -32,6 +32,7 @@ namespace CKGL
 		internal static List<AudioBuffer> Buffers = new List<AudioBuffer>();
 		internal static List<AudioSource> Sources = new List<AudioSource>();
 		internal static List<AudioEffect> Effects = new List<AudioEffect>();
+		internal static List<AudioFilter> Filters = new List<AudioFilter>();
 
 		internal static int BufferCount { get { return Buffers.Count; } }
 		internal static int SourceCount { get { return Sources.Count; } }
