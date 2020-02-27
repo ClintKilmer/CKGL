@@ -710,9 +710,15 @@ namespace OpenAL
 		#region Tokens
 		// ALC_EXT_disconnect
 		public const int ALC_CONNECTED = 0x313;
+
+		// AL_SOFTX_effect_chain
+		public const int AL_EFFECTSLOT_TARGET_SOFT = 0xf000;
 		#endregion
 
 		#region Functions
+		// AL_SOFTX_effect_chain
+		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void alAuxiliaryEffectSloti(uint effectslot0, int param, uint effectslot1);
 		#endregion
 		#endregion
 
