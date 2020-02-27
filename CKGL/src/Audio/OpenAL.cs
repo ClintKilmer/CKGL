@@ -716,9 +716,6 @@ namespace OpenAL
 		#endregion
 
 		#region Functions
-		// AL_SOFTX_effect_chain
-		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		public static extern void alAuxiliaryEffectSloti(uint effectslot0, int param, uint effectslot1);
 		#endregion
 		#endregion
 
