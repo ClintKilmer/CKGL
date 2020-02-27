@@ -169,8 +169,8 @@ namespace CKGL
 				Output.WriteLine($"OpenAL audio device has been disconnected. Please restart the application to enable audio.");
 			}
 
-			foreach (AudioSource source in Sources)
-				source.Update();
+			for (int i = Sources.Count - 1; i >= 0; i--)
+				Sources[i].Update();
 		}
 
 		internal static bool CheckALCError(string message = "")
