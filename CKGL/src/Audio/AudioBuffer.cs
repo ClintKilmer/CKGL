@@ -55,8 +55,7 @@ namespace CKGL
 			Audio.Buffers.Remove(this);
 		}
 
-		public void Play(AudioFilter? directFilter = null) => Play(directFilter, new (AudioFilter? filter, AudioEffect? effect)?[] { });
-		public void Play(AudioFilter? directFilter = null, params (AudioFilter? filter, AudioEffect? effect)?[]? channels)
+		public void Play(AudioFilter? directFilter = null, params (AudioFilter? filter, AudioEffect? effect)?[] channels)
 		{
 			AudioSource audioSource = new AudioSource();
 			audioSource.DestroyOnStop = true;
