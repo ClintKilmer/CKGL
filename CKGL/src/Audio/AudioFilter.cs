@@ -30,14 +30,12 @@ namespace CKGL
 			{
 				if (source.DirectFilter == this)
 					source.DirectFilter = this;
-				if (source.Send1?.Filter == this)
-					source.Send1 = (source.Send1?.Effect, this);
-				if (source.Send2?.Filter == this)
-					source.Send2 = (source.Send2?.Effect, this);
-				if (source.Send3?.Filter == this)
-					source.Send3 = (source.Send3?.Effect, this);
-				if (source.Send4?.Filter == this)
-					source.Send4 = (source.Send4?.Effect, this);
+
+				for (int i = 0; i < Audio.ChannelCount; i++)
+				{
+					if (source.Channels[i].Filter == this)
+						source.Channels[i].Filter = this;
+				}
 			}
 		}
 	}

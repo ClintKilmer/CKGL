@@ -11,6 +11,7 @@ namespace CKGL
 	public static class Audio
 	{
 		public static bool Active { get; private set; } = false;
+		public static int ChannelCount { get; private set; } = 4;
 
 		private static IntPtr device = IntPtr.Zero;
 		private static IntPtr context = IntPtr.Zero;
@@ -87,7 +88,7 @@ namespace CKGL
 			device = alcOpenDevice(null);
 			if (device != IntPtr.Zero)
 			{
-				context = alcCreateContext(device, new int[] { ALC_MAX_AUXILIARY_SENDS, 4 });
+				context = alcCreateContext(device, new int[] { ALC_MAX_AUXILIARY_SENDS, ChannelCount });
 				if (context != IntPtr.Zero && alcMakeContextCurrent(context))
 				{
 					if (alcIsExtensionPresent(device, "ALC_EXT_EFX") &&
@@ -96,11 +97,11 @@ namespace CKGL
 					{
 						Active = true;
 
-						// Debug
-						Output.WriteLine($"OpenAL Initialized");
+						alcGetIntegerv(device, ALC_MAX_AUXILIARY_SENDS, out int channelCount);
+						ChannelCount = channelCount;
 
-						alcGetIntegerv(device, ALC_MAX_AUXILIARY_SENDS, out int sourceMax);
-						Output.WriteLine($"OpenAL ALC_MAX_AUXILIARY_SENDS: {sourceMax}");
+						// Debug
+						Output.WriteLine($"OpenAL Initialized - Channel Count: {ChannelCount}");
 
 						//Output.WriteLine($"OpenAL alcExtensions: {alcGetString(null, alcString.Extensions)}");
 						//Output.WriteLine($"OpenAL alExtensions: {alGetString(alString.Extensions)}");

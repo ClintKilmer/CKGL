@@ -55,25 +55,24 @@ namespace CKGL
 			Audio.Buffers.Remove(this);
 		}
 
-		public void Play(AudioFilter? directFilter = null,
-			(AudioEffect? effect, AudioFilter? filter)? send1 = null,
-			(AudioEffect? effect, AudioFilter? filter)? send2 = null,
-			(AudioEffect? effect, AudioFilter? filter)? send3 = null,
-			(AudioEffect? effect, AudioFilter? filter)? send4 = null)
+		public void Play(AudioFilter? directFilter = null) => Play(directFilter, new (AudioFilter? filter, AudioEffect? effect)?[] { });
+		public void Play(AudioFilter? directFilter = null, params (AudioFilter? filter, AudioEffect? effect)?[]? channels)
 		{
 			AudioSource audioSource = new AudioSource();
 			audioSource.DestroyOnStop = true;
 			audioSource.AudioBuffer = this;
-			if (send1 != null)
-				audioSource.Send1 = send1;
-			if (send2 != null)
-				audioSource.Send2 = send2;
-			if (send3 != null)
-				audioSource.Send3 = send3;
-			if (send4 != null)
-				audioSource.Send4 = send4;
+
 			if (directFilter != null)
 				audioSource.DirectFilter = directFilter;
+
+			if (channels != null)
+			{
+				if (channels.Length > Audio.ChannelCount)
+					Output.WriteLine($"OpenAL Error: Tried to set {channels.Length} channels which exceeds the maximum number of {Audio.ChannelCount} (ignoring excess channels)");
+
+				for (int i = 0; i < channels.Length && i < Audio.ChannelCount; i++)
+					audioSource.Channels[i].FilterEffect = (channels[i]?.filter, channels[i]?.effect);
+			}
 			audioSource.Play();
 		}
 	}
