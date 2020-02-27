@@ -19,7 +19,7 @@ namespace CKGL
 			}
 			set
 			{
-				alSourcei(ID, AL_DIRECT_FILTER, (int)(directFilter?.ID ?? AL_FILTER_NULL));
+				alSourcei(ID, AL_DIRECT_FILTER, (int)(value?.ID ?? AL_FILTER_NULL));
 				Audio.CheckALError("Could not set AudioSource.Filter");
 				directFilter = value;
 			}
