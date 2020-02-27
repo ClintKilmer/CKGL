@@ -192,10 +192,16 @@ namespace CKGL
 			ID = alGenSource();
 			Audio.CheckALError("Could not create Source");
 
-			Audio.Sources.Add(this);
-
 			for (int i = 0; i < Audio.ChannelCount; i++)
 				Channels[i] = new AudioChannel(this, i);
+
+			Audio.Sources.Add(this);
+		}
+
+		public void Update()
+		{
+			if (DestroyOnStop && IsStopped)
+				Destroy();
 		}
 
 		public void Destroy()

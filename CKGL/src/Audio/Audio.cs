@@ -95,10 +95,10 @@ namespace CKGL
 						alcIsExtensionPresent(device, "ALC_EXT_disconnect") &&
 						alIsExtensionPresent("AL_SOFTX_effect_chain"))
 					{
-						Active = true;
-
 						alcGetIntegerv(device, ALC_MAX_AUXILIARY_SENDS, out int channelCount);
 						ChannelCount = channelCount;
+
+						Active = true;
 
 						// Debug
 						Output.WriteLine($"OpenAL Initialized - Channel Count: {ChannelCount}");
@@ -135,11 +135,11 @@ namespace CKGL
 		{
 			Active = false;
 
-			for (int i = 0; i < Filters.Count; i++)
-				Filters[i].Destroy();
-
 			for (int i = 0; i < Effects.Count; i++)
 				Effects[i].Destroy();
+
+			for (int i = 0; i < Filters.Count; i++)
+				Filters[i].Destroy();
 
 			for (int i = 0; i < Sources.Count; i++)
 				Sources[i].Destroy();
@@ -169,11 +169,8 @@ namespace CKGL
 				Output.WriteLine($"OpenAL audio device has been disconnected. Please restart the application to enable audio.");
 			}
 
-			for (int i = 0; i < Sources.Count; i++)
-			{
-				if (Sources[i].DestroyOnStop && Sources[i].IsStopped)
-					Sources[i].Destroy();
-			}
+			foreach (AudioSource source in Sources)
+				source.Update();
 		}
 
 		internal static bool CheckALCError(string message = "")
