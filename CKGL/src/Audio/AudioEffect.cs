@@ -29,7 +29,7 @@ namespace CKGL
 			Audio.Effects.Remove(this);
 		}
 
-		public void Apply()
+		protected void Apply()
 		{
 			alAuxiliaryEffectSloti(EffectSlotID, AL_EFFECTSLOT_EFFECT, (int)ID);
 			Audio.CheckALError("Could not set Effect to Effect Slot");

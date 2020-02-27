@@ -28,6 +28,7 @@ namespace CKGL
 				Audio.CheckRange("EchoEffect.Delay", value, AL_ECHO_MIN_DELAY, AL_ECHO_MAX_DELAY);
 				alEffectf(ID, AL_ECHO_DELAY, value);
 				Audio.CheckALError("Could not update EchoEffect.Delay");
+				Apply();
 			}
 		}
 
@@ -47,6 +48,7 @@ namespace CKGL
 				Audio.CheckRange("EchoEffect.LRDelay", value, AL_ECHO_MIN_LRDELAY, AL_ECHO_MAX_LRDELAY);
 				alEffectf(ID, AL_ECHO_LRDELAY, value);
 				Audio.CheckALError("Could not update EchoEffect.LRDelay");
+				Apply();
 			}
 		}
 
@@ -66,6 +68,7 @@ namespace CKGL
 				Audio.CheckRange("EchoEffect.Damping", value, AL_ECHO_MIN_DAMPING, AL_ECHO_MAX_DAMPING);
 				alEffectf(ID, AL_ECHO_DAMPING, value);
 				Audio.CheckALError("Could not update EchoEffect.Damping");
+				Apply();
 			}
 		}
 
@@ -85,6 +88,7 @@ namespace CKGL
 				Audio.CheckRange("EchoEffect.Feedback", value, AL_ECHO_MIN_FEEDBACK, AL_ECHO_MAX_FEEDBACK);
 				alEffectf(ID, AL_ECHO_FEEDBACK, value);
 				Audio.CheckALError("Could not update EchoEffect.Feedback");
+				Apply();
 			}
 		}
 
@@ -104,6 +108,7 @@ namespace CKGL
 				Audio.CheckRange("EchoEffect.Spread", value, AL_ECHO_MIN_SPREAD, AL_ECHO_MAX_SPREAD);
 				alEffectf(ID, AL_ECHO_SPREAD, value);
 				Audio.CheckALError("Could not update EchoEffect.Spread");
+				Apply();
 			}
 		}
 	}
