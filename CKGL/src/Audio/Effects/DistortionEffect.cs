@@ -8,7 +8,6 @@ namespace CKGL
 		{
 			alEffecti(ID, AL_EFFECT_TYPE, AL_EFFECT_DISTORTION);
 			Audio.CheckALError("Could not set Effect Type");
-
 			Apply();
 		}
 

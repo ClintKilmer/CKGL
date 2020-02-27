@@ -8,6 +8,7 @@ namespace CKGL
 		{
 			alFilteri(ID, AL_FILTER_TYPE, AL_FILTER_BANDPASS);
 			Audio.CheckALError("Could not set Filter Type");
+			Apply();
 		}
 
 		/// <summary>
@@ -26,6 +27,7 @@ namespace CKGL
 				Audio.CheckRange("BandpassFilter.Gain", value, AL_BANDPASS_MIN_GAIN, AL_BANDPASS_MAX_GAIN);
 				alFilterf(ID, AL_BANDPASS_GAIN, value);
 				Audio.CheckALError("Could not update BandpassFilter.Gain");
+				Apply();
 			}
 		}
 
@@ -45,6 +47,7 @@ namespace CKGL
 				Audio.CheckRange("BandpassFilter.GainLF", value, AL_BANDPASS_MIN_GAINLF, AL_BANDPASS_MAX_GAINLF);
 				alFilterf(ID, AL_BANDPASS_GAINLF, value);
 				Audio.CheckALError("Could not update BandpassFilter.GainLF");
+				Apply();
 			}
 		}
 
@@ -64,6 +67,7 @@ namespace CKGL
 				Audio.CheckRange("BandpassFilter.GainHF", value, AL_BANDPASS_MIN_GAINHF, AL_BANDPASS_MAX_GAINHF);
 				alFilterf(ID, AL_BANDPASS_GAINHF, value);
 				Audio.CheckALError("Could not update BandpassFilter.GainHF");
+				Apply();
 			}
 		}
 	}
