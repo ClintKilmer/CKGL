@@ -197,13 +197,13 @@ namespace OpenAL
 
 		// Context Extension Functions
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		public static extern bool alcIsExtensionPresent(IntPtr device, [In()][MarshalAs(UnmanagedType.LPStr)]string extName);
+		public static extern bool alcIsExtensionPresent(IntPtr device, [In()][MarshalAs(UnmanagedType.LPStr)]string extname);
 
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		public static extern IntPtr alcGetProcAddress(IntPtr device, [In()][MarshalAs(UnmanagedType.LPStr)]string funcName);
+		public static extern IntPtr alcGetProcAddress(IntPtr device, [In()][MarshalAs(UnmanagedType.LPStr)]string funcname);
 
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		public static extern int alcGetEnumValue(IntPtr device, [In()][MarshalAs(UnmanagedType.LPStr)]string enumName);
+		public static extern int alcGetEnumValue(IntPtr device, [In()][MarshalAs(UnmanagedType.LPStr)]string enumname);
 		#endregion
 		#endregion
 
@@ -458,12 +458,15 @@ namespace OpenAL
 		public static string alGetString(alString param) => Marshal.PtrToStringAnsi(INTERNAL_alGetString(param));
 
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		public static extern void alDistanceModel(int value);
+		public static extern void alDistanceModel(int distanceModel);
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		public static extern void alDistanceModel(alDistanceModelType value);
+		public static extern void alDistanceModel(alDistanceModelType distanceModel);
 
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
 		public static extern void alDopplerFactor(float value);
+
+		//[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+		//public static extern void alDopplerVelocity(float value);  // Deprecated
 
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
 		public static extern void alSpeedOfSound(float value);
@@ -485,9 +488,9 @@ namespace OpenAL
 		public static extern void alListenerf(alListenerfParameter param, float value);
 
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		public static extern void alListener3f(int param, float v1, float v2, float v3);
+		public static extern void alListener3f(int param, float value1, float value2, float value3);
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		public static extern void alListener3f(alListener3fParameter param, float v1, float v2, float v3);
+		public static extern void alListener3f(alListener3fParameter param, float value1, float value2, float value3);
 
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
 		public static extern void alListenerfv(int param, float[] values);
@@ -498,7 +501,7 @@ namespace OpenAL
 		public static extern void alListeneri(int param, int value);
 
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		public static extern void alListener3i(int param, int v1, int v2, int v3);
+		public static extern void alListener3i(int param, int value1, int value2, int value3);
 
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
 		public static extern void alListeneriv(int param, int[] values);
@@ -509,9 +512,9 @@ namespace OpenAL
 		public static extern void alGetListenerf(alListenerfParameter param, out float value);
 
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		public static extern void alGetListener3f(int param, out float v1, out float v2, out float v3);
+		public static extern void alGetListener3f(int param, out float value1, out float value2, out float value3);
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		public static extern void alGetListener3f(alListener3fParameter param, out float v1, out float v2, out float v3);
+		public static extern void alGetListener3f(alListener3fParameter param, out float value1, out float value2, out float value3);
 
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
 		public static extern void alGetListenerfv(int param, float[] values);
@@ -522,7 +525,7 @@ namespace OpenAL
 		public static extern void alGetListeneri(int param, out int value);
 
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		public static extern void alGetListener3i(int param, out int v1, out int v2, out int v3);
+		public static extern void alGetListener3i(int param, out int value1, out int value2, out int value3);
 
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
 		public static extern void alGetListeneriv(int param, int[] values);
@@ -563,7 +566,7 @@ namespace OpenAL
 		public static extern void alBufferf(uint buffer, int param, float value);
 
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		public static extern void alBuffer3f(uint buffer, int param, float v1, float v2, float v3);
+		public static extern void alBuffer3f(uint buffer, int param, float value1, float value2, float value3);
 
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
 		public static extern void alBufferfv(uint buffer, int param, float[] values);
@@ -572,7 +575,7 @@ namespace OpenAL
 		public static extern void alBufferi(uint buffer, int param, int value);
 
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		public static extern void alBuffer3i(uint buffer, int param, int v1, int v2, int v3);
+		public static extern void alBuffer3i(uint buffer, int param, int value1, int value2, int value3);
 
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
 		public static extern void alBufferiv(uint buffer, int param, int[] values);
@@ -581,7 +584,7 @@ namespace OpenAL
 		public static extern void alGetBufferf(uint buffer, int param, out float value);
 
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		public static extern void alGetBuffer3f(uint buffer, int param, out float v1, out float v2, out float v3);
+		public static extern void alGetBuffer3f(uint buffer, int param, out float value1, out float value2, out float value3);
 
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
 		public static extern void alGetBufferfv(uint buffer, int param, float[] values);
@@ -592,7 +595,7 @@ namespace OpenAL
 		public static extern void alGetBufferi(uint buffer, alGetBufferiParameter param, out int value);
 
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		public static extern void alGetBuffer3i(uint buffer, int param, out int v1, out int v2, out int v3);
+		public static extern void alGetBuffer3i(uint buffer, int param, out int value1, out int value2, out int value3);
 
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
 		public static extern void alGetBufferiv(uint buffer, int param, int[] values);
@@ -625,9 +628,9 @@ namespace OpenAL
 		public static extern void alSourcef(uint source, alSourcefParameter param, float value);
 
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		public static extern void alSource3f(uint source, int param, float v1, float v2, float v3);
+		public static extern void alSource3f(uint source, int param, float value1, float value2, float value3);
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		public static extern void alSource3f(uint source, alSource3fParameter param, float v1, float v2, float v3);
+		public static extern void alSource3f(uint source, alSource3fParameter param, float value1, float value2, float value3);
 
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
 		public static extern void alSourcefv(uint source, int param, float[] values);
@@ -638,7 +641,7 @@ namespace OpenAL
 		public static extern void alSourcei(uint source, alSourceiParameter param, int value);
 
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		public static extern void alSource3i(uint source, int param, int v1, int v2, int v3);
+		public static extern void alSource3i(uint source, int param, int value1, int value2, int value3);
 
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
 		public static extern void alSourceiv(uint source, int param, int[] values);
@@ -649,9 +652,9 @@ namespace OpenAL
 		public static extern void alGetSourcef(uint source, alSourcefParameter param, out float value);
 
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		public static extern void alGetSource3f(uint source, int param, out float v1, out float v2, out float v3);
+		public static extern void alGetSource3f(uint source, int param, out float value1, out float value2, out float value3);
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		public static extern void alGetSource3f(uint source, alSource3fParameter param, out float v1, out float v2, out float v3);
+		public static extern void alGetSource3f(uint source, alSource3fParameter param, out float value1, out float value2, out float value3);
 
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
 		public static extern void alGetSourcefv(uint source, int param, float[] values);
@@ -662,7 +665,7 @@ namespace OpenAL
 		public static extern void alGetSourcei(uint source, alGetSourceiParameter param, out int value);
 
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		public static extern void alGetSource3i(uint source, int param, out int v1, out int v2, out int v3);
+		public static extern void alGetSource3i(uint source, int param, out int value1, out int value2, out int value3);
 
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
 		public static extern void alGetSourceiv(uint source, int param, int[] values);
@@ -692,17 +695,17 @@ namespace OpenAL
 		public static extern void alSourceRewindv(int n, uint[] sources);
 
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		public static extern void alSourceQueueBuffers(uint source, int n, uint[] buffers);
+		public static extern void alSourceQueueBuffers(uint source, int nb, uint[] buffers);
 
 		[DllImport(DLL, EntryPoint = "alSourceQueueBuffers", CallingConvention = CallingConvention.Cdecl)]
-		private static extern void INTERNAL_alSourceQueueBuffers(uint source, int n, ref uint buffers);
+		private static extern void INTERNAL_alSourceQueueBuffers(uint source, int nb, ref uint buffers);
 		public static void alSourceQueueBuffers(uint source, uint buffer) => INTERNAL_alSourceQueueBuffers(source, 1, ref buffer);
 
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		public static extern void alSourceUnqueueBuffers(uint source, int n, uint[] buffers);
+		public static extern void alSourceUnqueueBuffers(uint source, int nb, uint[] buffers);
 
 		[DllImport(DLL, EntryPoint = "alSourceUnqueueBuffers", CallingConvention = CallingConvention.Cdecl)]
-		private static extern void INTERNAL_alSourceUnqueueBuffers(uint source, int n, ref uint buffers);
+		private static extern void INTERNAL_alSourceUnqueueBuffers(uint source, int nb, ref uint buffers);
 		public static void alSourceUnqueueBuffers(uint source, uint buffer) => INTERNAL_alSourceUnqueueBuffers(source, 1, ref buffer);
 		#endregion
 		#endregion
