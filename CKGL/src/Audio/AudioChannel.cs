@@ -15,12 +15,11 @@ namespace CKGL
 
 		public AudioFilter? Filter
 		{
-			get
-			{
-				return filter;
-			}
+			get => filter;
 			set
 			{
+				filter?.Channels.Remove(this);
+				value?.Channels.Add(this);
 				filter = value;
 				Apply();
 			}
@@ -28,23 +27,28 @@ namespace CKGL
 
 		public AudioEffect? Effect
 		{
-			get
-			{
-				return effect;
-			}
+			get => effect;
 			set
 			{
+				effect?.Channels.Remove(this);
+				value?.Channels.Add(this);
 				effect = value;
 				Apply();
 			}
 		}
 
-		public (AudioFilter? Filter, AudioEffect? Effect) FilterEffect
+		public (AudioFilter? Filter, AudioEffect? Effect)? FilterEffect
 		{
 			set
 			{
-				filter = value.Filter;
-				effect = value.Effect;
+				filter?.Channels.Remove(this);
+				value?.Filter?.Channels.Add(this);
+				filter = value?.Filter;
+
+				effect?.Channels.Remove(this);
+				value?.Effect?.Channels.Add(this);
+				effect = value?.Effect;
+
 				Apply();
 			}
 		}

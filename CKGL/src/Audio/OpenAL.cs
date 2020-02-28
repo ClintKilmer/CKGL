@@ -163,8 +163,9 @@ namespace OpenAL
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
 		public static extern void alcDestroyContext(IntPtr context);
 
-		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		public static extern bool alcMakeContextCurrent(IntPtr context);
+		[DllImport(DLL, EntryPoint = "alcMakeContextCurrent", CallingConvention = CallingConvention.Cdecl)]
+		private static extern bool INTERNAL_alcMakeContextCurrent(IntPtr context);
+		public static bool alcMakeContextCurrent(IntPtr? context) => INTERNAL_alcMakeContextCurrent(context ?? IntPtr.Zero);
 
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
 		public static extern void alcProcessContext(IntPtr context); // Possible NOP

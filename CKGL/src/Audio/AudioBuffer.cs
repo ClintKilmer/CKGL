@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using static OpenAL.Bindings;
 using static SDL2.SDL;
@@ -10,6 +11,8 @@ namespace CKGL
 	public class AudioBuffer
 	{
 		internal uint ID;
+
+		internal readonly List<AudioSource> Sources = new List<AudioSource>();
 
 		public AudioBuffer(string file)
 		{
@@ -49,30 +52,34 @@ namespace CKGL
 
 		public void Destroy()
 		{
+			for (int i = Sources.Count - 1; i >= 0; i--)
+				Sources[i].Buffer = null;
+
 			alDeleteBuffer(ID);
-			Audio.CheckALError("Could not destroy Effect");
+			Audio.CheckALError("Could not destroy Buffer");
+			ID = default;
 
 			Audio.Buffers.Remove(this);
 		}
 
-		public void Play(AudioFilter? directFilter = null, params (AudioFilter? filter, AudioEffect? effect)?[] channels)
+		public void Play(AudioFilter? directFilter = null, params (AudioFilter? filter, AudioEffect? effect)?[]? channels)
 		{
-			AudioSource audioSource = new AudioSource();
-			audioSource.DestroyOnStop = true;
-			audioSource.AudioBuffer = this;
+			AudioSource source = new AudioSource();
+			source.DestroyOnStop = true;
+			source.Buffer = this;
 
 			if (directFilter != null)
-				audioSource.DirectFilter = directFilter;
+				source.Filter = directFilter;
 
 			if (channels != null)
 			{
-				if (channels.Length > Audio.ChannelCount)
-					Output.WriteLine($"OpenAL Error: Tried to set {channels.Length} channels which exceeds the maximum number of {Audio.ChannelCount} (ignoring excess channels)");
+				if (channels.Length > source.Channels.Length)
+					Output.WriteLine($"OpenAL Error: Tried to set {channels.Length} channels which exceeds the maximum number of {source.Channels.Length} (ignoring excess channels)");
 
-				for (int i = 0; i < channels.Length && i < Audio.ChannelCount; i++)
-					audioSource.Channels[i].FilterEffect = (channels[i]?.filter, channels[i]?.effect);
+				for (int i = 0; i < channels.Length && i < source.Channels.Length; i++)
+					source.Channels[i].FilterEffect = (channels[i]?.filter, channels[i]?.effect);
 			}
-			audioSource.Play();
+			source.Play();
 		}
 	}
 }

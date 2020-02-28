@@ -8,24 +8,36 @@ namespace CKGL
 	{
 		internal uint ID;
 
+		public readonly AudioChannel[] Channels = new AudioChannel[Audio.ChannelCount];
 		public bool DestroyOnStop = false;
 
-		private AudioFilter? directFilter;
-		public AudioFilter? DirectFilter
+		private AudioBuffer? buffer;
+		public AudioBuffer? Buffer
 		{
-			get
+			get => buffer;
+			set
 			{
-				return directFilter;
+				alSourcei(ID, alSourceiParameter.Buffer, (int)(value?.ID ?? AL_NONE));
+				Audio.CheckALError("Could not set AudioSource.Buffer");
+				buffer?.Sources.Remove(this);
+				value?.Sources.Add(this);
+				buffer = value;
 			}
+		}
+
+		private AudioFilter? filter;
+		public AudioFilter? Filter
+		{
+			get => filter;
 			set
 			{
 				alSourcei(ID, AL_DIRECT_FILTER, (int)(value?.ID ?? AL_FILTER_NULL));
 				Audio.CheckALError("Could not set AudioSource.Filter");
-				directFilter = value;
+				filter?.Sources.Remove(this);
+				value?.Sources.Add(this);
+				filter = value;
 			}
 		}
-
-		public readonly AudioChannel[] Channels = new AudioChannel[Audio.ChannelCount];
 
 		public Vector3 Position
 		{
@@ -142,15 +154,6 @@ namespace CKGL
 			}
 		}
 
-		public AudioBuffer AudioBuffer
-		{
-			set
-			{
-				alSourcei(ID, alSourceiParameter.Buffer, (int)value.ID);
-				Audio.CheckALError("Could not set AudioSource.AudioBuffer");
-			}
-		}
-
 		public int BuffersQueued
 		{
 			get
@@ -192,7 +195,7 @@ namespace CKGL
 			ID = alGenSource();
 			Audio.CheckALError("Could not create Source");
 
-			for (int i = 0; i < Audio.ChannelCount; i++)
+			for (int i = 0; i < Channels.Length; i++)
 				Channels[i] = new AudioChannel(this, i);
 
 			Audio.Sources.Add(this);
@@ -206,8 +209,16 @@ namespace CKGL
 
 		public void Destroy()
 		{
+			Filter = null;
+
+			for (int i = 0; i < Channels.Length; i++)
+				Channels[i].FilterEffect = (null, null);
+
+			Buffer = null;
+
 			alDeleteSource(ID);
 			Audio.CheckALError("Could not destroy Source");
+			ID = default;
 
 			Audio.Sources.Remove(this);
 		}

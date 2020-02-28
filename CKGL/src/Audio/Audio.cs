@@ -16,9 +16,6 @@ namespace CKGL
 		private static IntPtr device = IntPtr.Zero;
 		private static IntPtr context = IntPtr.Zero;
 
-		private static IntPtr currentDevice { get { return alcGetContextsDevice(currentContext); } }
-		private static IntPtr currentContext { get { return alcGetCurrentContext(); } }
-
 		internal static List<AudioBuffer> Buffers = new List<AudioBuffer>();
 		internal static List<AudioSource> Sources = new List<AudioSource>();
 		internal static List<AudioEffect> Effects = new List<AudioEffect>();
@@ -108,26 +105,40 @@ namespace CKGL
 					}
 					else
 					{
-						alcDestroyContext(context);
-						alcCloseDevice(device);
-
+						Destroy();
 						Output.WriteLine("OpenAL Error: ALC_EXT_EFX, ALC_EXT_disconnect, and AL_SOFTX_effect_chain are required extensions");
 						return;
 					}
 				}
 				else
 				{
-					alcDestroyContext(context);
-					alcCloseDevice(device);
-
+					Destroy();
 					Output.WriteLine("OpenAL Error: Could not create an audio context");
 					return;
 				}
 			}
 			else
 			{
+				Destroy();
 				Output.WriteLine("OpenAL Error: Could not open an audio device");
 				return;
+			}
+		}
+
+		internal static void Update()
+		{
+			if (Active)
+			{
+				// Handle device disconnect with ALC_EXT_disconnect
+				alcGetIntegerv(device, alcInteger.Connected, out int connected);
+				if (connected == 0)
+				{
+					Destroy();
+					Output.WriteLine($"OpenAL Error: Audio device has been disconnected, restart the application to enable audio");
+				}
+
+				for (int i = Sources.Count - 1; i >= 0; i--)
+					Sources[i].Update();
 			}
 		}
 
@@ -135,19 +146,19 @@ namespace CKGL
 		{
 			Active = false;
 
-			for (int i = 0; i < Effects.Count; i++)
+			for (int i = Effects.Count - 1; i >= 0; i--)
 				Effects[i].Destroy();
 
-			for (int i = 0; i < Filters.Count; i++)
+			for (int i = Filters.Count - 1; i >= 0; i--)
 				Filters[i].Destroy();
 
-			for (int i = 0; i < Sources.Count; i++)
+			for (int i = Sources.Count - 1; i >= 0; i--)
 				Sources[i].Destroy();
 
-			for (int i = 0; i < Buffers.Count; i++)
+			for (int i = Buffers.Count - 1; i >= 0; i--)
 				Buffers[i].Destroy();
 
-			alcMakeContextCurrent(IntPtr.Zero);
+			alcMakeContextCurrent(null);
 
 			if (context != IntPtr.Zero)
 				alcDestroyContext(context);
@@ -159,23 +170,9 @@ namespace CKGL
 			device = IntPtr.Zero;
 		}
 
-		internal static void Update()
-		{
-			// Handle device disconnect with ALC_EXT_disconnect
-			alcGetIntegerv(device, alcInteger.Connected, out int connected);
-			if (Active && connected == 0)
-			{
-				Destroy();
-				Output.WriteLine($"OpenAL audio device has been disconnected. Please restart the application to enable audio.");
-			}
-
-			for (int i = Sources.Count - 1; i >= 0; i--)
-				Sources[i].Update();
-		}
-
 		internal static bool CheckALCError(string message = "")
 		{
-			if (currentDevice != IntPtr.Zero)
+			if (device != IntPtr.Zero)
 			{
 				alcErrorCode error = (alcErrorCode)alcGetError(device);
 				if (error != alcErrorCode.NoError)
@@ -184,20 +181,15 @@ namespace CKGL
 					switch (error)
 					{
 						case alcErrorCode.InvalidDevice:
-							Output.WriteLine($"OpenAL ALC Error: ALC_INVALID_DEVICE{message}");
-							break;
+							throw new CKGLException($"OpenAL ALC Error: ALC_INVALID_DEVICE{message}");
 						case alcErrorCode.InvalidContext:
-							Output.WriteLine($"OpenAL ALC Error: ALC_INVALID_CONTEXT{message}");
-							break;
+							throw new CKGLException($"OpenAL ALC Error: ALC_INVALID_CONTEXT{message}");
 						case alcErrorCode.InvalidEnum:
-							Output.WriteLine($"OpenAL ALC Error: ALC_INVALID_ENUM{message}");
-							break;
+							throw new CKGLException($"OpenAL ALC Error: ALC_INVALID_ENUM{message}");
 						case alcErrorCode.InvalidValue:
-							Output.WriteLine($"OpenAL ALC Error: ALC_INVALID_VALUE{message}");
-							break;
+							throw new CKGLException($"OpenAL ALC Error: ALC_INVALID_VALUE{message}");
 						case alcErrorCode.OutOfMemory:
-							Output.WriteLine($"OpenAL ALC Error: ALC_OUT_OF_MEMORY{message}");
-							break;
+							throw new CKGLException($"OpenAL ALC Error: ALC_OUT_OF_MEMORY{message}");
 					}
 					return true;
 				}
@@ -207,7 +199,7 @@ namespace CKGL
 
 		internal static bool CheckALError(string message = "")
 		{
-			if (currentContext != IntPtr.Zero)
+			if (context != IntPtr.Zero)
 			{
 				alErrorCode error = (alErrorCode)alGetError();
 				if (error != alErrorCode.NoError)
@@ -216,20 +208,15 @@ namespace CKGL
 					switch (error)
 					{
 						case alErrorCode.InvalidName:
-							Output.WriteLine($"OpenAL AL Error: AL_INVALID_NAME{message}");
-							break;
+							throw new CKGLException($"OpenAL AL Error: AL_INVALID_NAME{message}");
 						case alErrorCode.InvalidEnum:
-							Output.WriteLine($"OpenAL AL Error: AL_INVALID_ENUM{message}");
-							break;
+							throw new CKGLException($"OpenAL AL Error: AL_INVALID_ENUM{message}");
 						case alErrorCode.InvalidValue:
-							Output.WriteLine($"OpenAL AL Error: AL_INVALID_VALUE{message}");
-							break;
+							throw new CKGLException($"OpenAL AL Error: AL_INVALID_VALUE{message}");
 						case alErrorCode.InvalidOperation:
-							Output.WriteLine($"OpenAL AL Error: AL_INVALID_OPERATION{message}");
-							break;
+							throw new CKGLException($"OpenAL AL Error: AL_INVALID_OPERATION{message}");
 						case alErrorCode.OutOfMemory:
-							Output.WriteLine($"OpenAL AL Error: AL_OUT_OF_MEMORY{message}");
-							break;
+							throw new CKGLException($"OpenAL AL Error: AL_OUT_OF_MEMORY{message}");
 					}
 					return true;
 				}
@@ -240,13 +227,13 @@ namespace CKGL
 		internal static void CheckRange(string name, float value, float min, float max)
 		{
 			if (value < min || value > max)
-				throw new CKGLException($"Illegal Value for \"{name}\" = {value} | Range: ({min} - {max})");
+				throw new CKGLException($"OpenAL Error: Illegal Value for \"{name}\" = {value} | Range: ({min} - {max})");
 		}
 
 		internal static void CheckRange(string name, int value, int min, int max)
 		{
 			if (value < min || value > max)
-				throw new CKGLException($"Illegal Value for \"{name}\" = {value} | Range: ({min} - {max})");
+				throw new CKGLException($"OpenAL Error: Illegal Value for \"{name}\" = {value} | Range: ({min} - {max})");
 		}
 
 		#region Custom WAV parser - not used, SDL provides this functionality

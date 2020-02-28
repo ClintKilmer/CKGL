@@ -1,5 +1,6 @@
 ﻿#nullable enable
 
+using System.Collections.Generic;
 using static OpenAL.Bindings;
 
 namespace CKGL
@@ -7,6 +8,9 @@ namespace CKGL
 	public abstract class AudioFilter
 	{
 		internal uint ID;
+
+		internal readonly List<AudioSource> Sources = new List<AudioSource>();
+		internal readonly List<AudioChannel> Channels = new List<AudioChannel>();
 
 		protected AudioFilter()
 		{
@@ -18,25 +22,26 @@ namespace CKGL
 
 		public void Destroy()
 		{
+			for (int i = Sources.Count - 1; i >= 0; i--)
+				Sources[i].Filter = null;
+
+			for (int i = Channels.Count - 1; i >= 0; i--)
+				Channels[i].Filter = null;
+
 			alDeleteFilter(ID);
 			Audio.CheckALError("Could not destroy Filter");
+			ID = default;
 
 			Audio.Filters.Remove(this);
 		}
 
 		protected void Apply()
 		{
-			foreach (AudioSource source in Audio.Sources)
-			{
-				if (source.DirectFilter == this)
-					source.DirectFilter = this;
+			foreach (AudioSource source in Sources)
+				source.Filter = this;
 
-				for (int i = 0; i < Audio.ChannelCount; i++)
-				{
-					if (source.Channels[i].Filter == this)
-						source.Channels[i].Filter = this;
-				}
-			}
+			foreach (AudioChannel channel in Channels)
+				channel.Filter = this;
 		}
 	}
 }

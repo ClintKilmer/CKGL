@@ -1,4 +1,7 @@
-﻿using static OpenAL.Bindings;
+﻿#nullable enable
+
+using System.Collections.Generic;
+using static OpenAL.Bindings;
 
 namespace CKGL
 {
@@ -6,6 +9,41 @@ namespace CKGL
 	{
 		internal uint ID;
 		internal uint EffectSlotID;
+
+		internal readonly List<AudioChannel> Channels = new List<AudioChannel>();
+
+		private readonly List<AudioEffect> targetOf = new List<AudioEffect>();
+
+		private AudioEffect? target;
+		public AudioEffect? Target
+		{
+			get => target;
+			set
+			{
+				if (value == this)
+					throw new CKGLException("OpenAL Error: Setting AudioEffect.Target as itself is not allowed");
+
+				if (value != null)
+				{
+					AudioEffect? targetIterator = value;
+					while (targetIterator?.target != null)
+					{
+						if (targetIterator.target == this)
+							throw new CKGLException("OpenAL Error: Could not set AudioEffect.Target as this would create a circular chain");
+
+						targetIterator = targetIterator.target;
+					}
+				}
+
+				alAuxiliaryEffectSloti(EffectSlotID, AL_EFFECTSLOT_TARGET_SOFT, (int)(value?.EffectSlotID ?? AL_EFFECTSLOT_NULL));
+				Audio.CheckALError("Could not set AudioEffect.Target");
+
+				target?.targetOf.Remove(this); // Remove this from old target.targetOf
+				value?.targetOf.Add(this); // Add this to new target.targetOf
+
+				target = value;
+			}
+		}
 
 		/// <summary>
 		/// 1f (0f - 1f)
@@ -39,11 +77,20 @@ namespace CKGL
 
 		public void Destroy()
 		{
-			alDeleteEffect(ID);
-			Audio.CheckALError("Could not destroy Effect");
+			Target = null;
+			for (int i = targetOf.Count - 1; i >= 0; i--)
+				targetOf[i].Target = null;
+
+			for (int i = Channels.Count - 1; i >= 0; i--)
+				Channels[i].Effect = null;
 
 			alDeleteAuxiliaryEffectSlot(EffectSlotID);
 			Audio.CheckALError("Could not destroy Effect Slot");
+			EffectSlotID = default;
+
+			alDeleteEffect(ID);
+			Audio.CheckALError("Could not destroy Effect");
+			ID = default;
 
 			Audio.Effects.Remove(this);
 		}
