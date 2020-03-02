@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using CKGL.OpenGLBindings;
 
@@ -33,8 +34,6 @@ namespace CKGL.OpenGL
 
 		internal override Texture CreateTexture2DFromFile(string file, TextureFormat textureFormat, TextureFilter minFilter, TextureFilter magFilter, TextureWrap wrapX, TextureWrap wrapY)
 		{
-			if (!File.Exists(file))
-				throw new FileNotFoundException("Texture file not found.", file);
 			Platform.LoadImage(file, out int width, out int height, out byte[] data);
 			return new OpenGLTexture(data, TextureType.Texture2D, width, height, 1, textureFormat, minFilter, magFilter, wrapX, wrapY, null);
 		}
@@ -56,9 +55,10 @@ namespace CKGL.OpenGL
 
 		internal override Shader CreateShaderFromFile(string file)
 		{
-			if (!File.Exists(file))
+			string filePath = Path.Combine(AppContext.BaseDirectory, file);
+			if (!File.Exists(filePath))
 				throw new FileNotFoundException("Shader file not found.", file);
-			return new OpenGLShader(File.ReadAllText(file));
+			return new OpenGLShader(File.ReadAllText(filePath));
 		}
 		#endregion
 

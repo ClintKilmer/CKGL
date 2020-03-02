@@ -354,9 +354,10 @@ namespace CKGL
 
 			// If available, load the SDL_GameControllerDB/gamecontrollerdb.txt
 			string gamecontrollerdb = "sdl/gamecontrollerdb.txt";
-			if (File.Exists(gamecontrollerdb))
+			string gamecontrollerdbPath = Path.Combine(AppContext.BaseDirectory, gamecontrollerdb);
+			if (File.Exists(gamecontrollerdbPath))
 			{
-				if (SDL_GameControllerAddMappingsFromFile(gamecontrollerdb) > -1)
+				if (SDL_GameControllerAddMappingsFromFile(gamecontrollerdbPath) > -1)
 					Output.WriteLine($"SDL - {gamecontrollerdb} loaded successfully.");
 				else
 					Output.WriteLine($"SDL - {gamecontrollerdb} was unsuccessful.");
@@ -714,7 +715,11 @@ namespace CKGL
 		#region Texture<->Image Load/Save Methods | Derived From FNA - SDL2_FNAPlatform.cs - https://github.com/FNA-XNA/FNA
 		public static void LoadImage(string file, out int width, out int height, out byte[] data)
 		{
-			IntPtr surfaceID = SDL_image.IMG_Load(file);
+			string filePath = Path.Combine(AppContext.BaseDirectory, file);
+			if (!File.Exists(filePath))
+				throw new FileNotFoundException("Texture file not found.", file);
+
+			IntPtr surfaceID = SDL_image.IMG_Load(filePath);
 
 			// If image load fails, generate a default pink error texture
 			if (surfaceID == IntPtr.Zero)
