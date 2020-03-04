@@ -355,6 +355,7 @@ namespace CKGL
 			}
 			#endregion
 
+			#region Load SDL_GameControllerDB
 			// If available, load the SDL_GameControllerDB/gamecontrollerdb.txt
 			string gamecontrollerdb = "sdl/gamecontrollerdb.txt";
 			if (File.Exists(gamecontrollerdb))
@@ -362,31 +363,13 @@ namespace CKGL
 				if (SDL_GameControllerAddMappingsFromFile(gamecontrollerdb) > -1)
 					Output.WriteLine($"SDL - {gamecontrollerdb} loaded successfully.");
 				else
-					Output.WriteLine($"SDL - {gamecontrollerdb} was unsuccessful.");
+					Output.WriteLine($"SDL - {gamecontrollerdb} was not loaded successfully.");
 			}
 			else
 			{
 				Output.WriteLine($"SDL - {gamecontrollerdb} not found.");
 			}
-			// todo - Monogame gamecontrollerdb implementation - may be cleaner
-			//using (var stream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("gamecontrollerdb.txt"))
-			//{
-			//	if (stream != null)
-			//	{
-			//		using (var reader = new BinaryReader(stream))
-			//		{
-			//			try
-			//			{
-			//				//var src = Sdl.RwFromMem(reader.ReadBytes((int)stream.Length), (int)stream.Length);
-			//				//Sdl.GameController.AddMappingFromRw(src, 1);
-			//
-			//				var src = SDL.SDL_RWFromMem(reader.ReadBytes((int)stream.Length), (int)stream.Length);
-			//				SDL.SDL_GameControllerAddMappingsFromFile
-			//			}
-			//			catch { }
-			//		}
-			//	}
-			//}
+			#endregion
 
 			// SDL Init
 			if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER | SDL_INIT_HAPTIC) < 0)
