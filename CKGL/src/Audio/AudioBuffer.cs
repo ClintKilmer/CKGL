@@ -20,11 +20,11 @@ namespace CKGL
 			ID = alGenBuffer();
 			Audio.CheckALError("Could not create Buffer");
 
-			byte[] bytes = AudioDecoder.Load(file, out int channels, out int sampleRate, out int bitdepth);
+			byte[] bytes = AudioDecoder.Load(file, out int channels, out int sampleRate, out int bitDepth);
 
 			alBufferFormat format = channels switch
 			{
-				1 => bitdepth switch
+				1 => bitDepth switch
 				{
 					8 => alBufferFormat.Mono8,
 					16 => alBufferFormat.Mono16,
@@ -32,7 +32,7 @@ namespace CKGL
 					64 => alBufferFormat.Mono64,
 					_ => throw new CKGLException("OpenAL Error: Invalid bit depth")
 				},
-				2 => bitdepth switch
+				2 => bitDepth switch
 				{
 					8 => alBufferFormat.Stereo8,
 					16 => alBufferFormat.Stereo16,
