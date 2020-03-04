@@ -320,6 +320,9 @@ namespace CKGL
 		#region Init/Exit Methods
 		public static void Init(string windowTitle, int windowWidth, int windowHeight, bool windowVSync, bool windowFullscreen, bool windowResizable, bool windowBorderless, int msaa)
 		{
+			// This is a workaround for Linux - Relative paths (sdl/gamecontrollerdb.txt) were not relative to the assembly directory
+			Directory.SetCurrentDirectory(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location));
+
 			SetDllDirectory();
 
 			#region Check for SDL2 libs
@@ -354,10 +357,9 @@ namespace CKGL
 
 			// If available, load the SDL_GameControllerDB/gamecontrollerdb.txt
 			string gamecontrollerdb = "sdl/gamecontrollerdb.txt";
-			string gamecontrollerdbPath = Path.Combine(AppContext.BaseDirectory, gamecontrollerdb);
-			if (File.Exists(gamecontrollerdbPath))
+			if (File.Exists(gamecontrollerdb))
 			{
-				if (SDL_GameControllerAddMappingsFromFile(gamecontrollerdbPath) > -1)
+				if (SDL_GameControllerAddMappingsFromFile(gamecontrollerdb) > -1)
 					Output.WriteLine($"SDL - {gamecontrollerdb} loaded successfully.");
 				else
 					Output.WriteLine($"SDL - {gamecontrollerdb} was unsuccessful.");
@@ -715,11 +717,10 @@ namespace CKGL
 		#region Texture<->Image Load/Save Methods | Derived From FNA - SDL2_FNAPlatform.cs - https://github.com/FNA-XNA/FNA
 		public static void LoadImage(string file, out int width, out int height, out byte[] data)
 		{
-			string filePath = Path.Combine(AppContext.BaseDirectory, file);
-			if (!File.Exists(filePath))
+			if (!File.Exists(file))
 				throw new FileNotFoundException("Texture file not found.", file);
 
-			IntPtr surfaceID = SDL_image.IMG_Load(filePath);
+			IntPtr surfaceID = SDL_image.IMG_Load(file);
 
 			// If image load fails, generate a default pink error texture
 			if (surfaceID == IntPtr.Zero)

@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using CKGL.OpenGLBindings;
 
@@ -55,10 +54,9 @@ namespace CKGL.OpenGL
 
 		internal override Shader CreateShaderFromFile(string file)
 		{
-			string filePath = Path.Combine(AppContext.BaseDirectory, file);
-			if (!File.Exists(filePath))
+			if (!File.Exists(file))
 				throw new FileNotFoundException("Shader file not found.", file);
-			return new OpenGLShader(File.ReadAllText(filePath));
+			return new OpenGLShader(File.ReadAllText(file));
 		}
 		#endregion
 

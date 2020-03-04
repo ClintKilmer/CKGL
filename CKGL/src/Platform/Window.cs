@@ -15,8 +15,7 @@ namespace CKGL
 
 		public static void SetIcon(string file)
 		{
-			string filePath = Path.Combine(AppContext.BaseDirectory, file);
-			if (!File.Exists(filePath))
+			if (!File.Exists(file))
 			{
 				Output.WriteLine($"Window.SetIcon() Error - The file \"{file}\" does not exist.");
 				return;
@@ -26,7 +25,7 @@ namespace CKGL
 			{
 				try
 				{
-					IntPtr iconIntPtr = SDL2.SDL_image.IMG_Load(filePath);
+					IntPtr iconIntPtr = SDL2.SDL_image.IMG_Load(file);
 					SDL_SetWindowIcon(IntPtr, iconIntPtr);
 					SDL_FreeSurface(iconIntPtr);
 				}
@@ -37,7 +36,7 @@ namespace CKGL
 			}
 			else if (file.EndsWith(".bmp", StringComparison.OrdinalIgnoreCase))
 			{
-				IntPtr iconIntPtr = SDL_LoadBMP(filePath);
+				IntPtr iconIntPtr = SDL_LoadBMP(file);
 				SDL_SetWindowIcon(IntPtr, iconIntPtr);
 				SDL_FreeSurface(iconIntPtr);
 			}

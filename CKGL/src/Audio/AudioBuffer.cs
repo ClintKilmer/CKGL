@@ -16,8 +16,7 @@ namespace CKGL
 
 		public AudioBuffer(string file)
 		{
-			string filePath = Path.Combine(AppContext.BaseDirectory, file);
-			if (!File.Exists(filePath))
+			if (!File.Exists(file))
 				throw new FileNotFoundException("Audio file not found.", file);
 
 			ID = alGenBuffer();
