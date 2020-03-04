@@ -28,12 +28,16 @@ namespace CKGL
 				{
 					8 => alBufferFormat.Mono8,
 					16 => alBufferFormat.Mono16,
+					32 => alBufferFormat.Mono32,
+					64 => alBufferFormat.Mono64,
 					_ => throw new CKGLException("OpenAL Error: Invalid bit depth")
 				},
 				2 => bitdepth switch
 				{
 					8 => alBufferFormat.Stereo8,
 					16 => alBufferFormat.Stereo16,
+					32 => alBufferFormat.Stereo32,
+					64 => alBufferFormat.Stereo64,
 					_ => throw new CKGLException("OpenAL Error: Invalid bit depth")
 				},
 				_ => throw new CKGLException("OpenAL Error: Invalid channel count")
