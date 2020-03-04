@@ -750,6 +750,12 @@ namespace OpenAL
 		#endregion
 
 		#region Functions
+		// ALC_SOFT_pause_device
+		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+		public static extern bool alcDevicePauseSOFT(IntPtr device);
+
+		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+		public static extern bool alcDeviceResumeSOFT(IntPtr device);
 		#endregion
 		#endregion
 

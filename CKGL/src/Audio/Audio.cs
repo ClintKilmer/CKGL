@@ -90,6 +90,10 @@ namespace CKGL
 				{
 					if (alcIsExtensionPresent(device, "ALC_EXT_EFX") &&
 						alcIsExtensionPresent(device, "ALC_EXT_disconnect") &&
+						alcIsExtensionPresent(device, "ALC_SOFT_pause_device") &&
+						alIsExtensionPresent("AL_EXT_float32") &&
+						alIsExtensionPresent("AL_EXT_double") &&
+						alIsExtensionPresent("AL_EXT_MCFORMATS") &&
 						alIsExtensionPresent("AL_SOFTX_effect_chain"))
 					{
 						alcGetIntegerv(device, ALC_MAX_AUXILIARY_SENDS, out int channelCount);
@@ -114,7 +118,7 @@ namespace CKGL
 					else
 					{
 						Destroy();
-						Output.WriteLine("OpenAL Error: ALC_EXT_EFX, ALC_EXT_disconnect, and AL_SOFTX_effect_chain are required extensions");
+						Output.WriteLine("OpenAL Error: ALC_EXT_EFX, ALC_EXT_disconnect, ALC_SOFT_pause_device, AL_EXT_float32, AL_EXT_double, AL_EXT_MCFORMATS, and AL_SOFTX_effect_chain are required extensions");
 						return;
 					}
 				}
@@ -176,6 +180,18 @@ namespace CKGL
 
 			context = IntPtr.Zero;
 			device = IntPtr.Zero;
+		}
+
+		public static void Play()
+		{
+			alcDeviceResumeSOFT(device);
+			CheckALCError("Could not play Device");
+		}
+
+		public static void Pause()
+		{
+			alcDevicePauseSOFT(device);
+			CheckALCError("Could not pause Device");
 		}
 
 		internal static bool CheckALCError(string message = "")

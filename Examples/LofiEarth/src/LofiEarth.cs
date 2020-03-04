@@ -581,10 +581,12 @@ void main()
 
 		public override void OnFocusGained()
 		{
+			Audio.Play();
 		}
 
 		public override void OnFocusLost()
 		{
+			Audio.Pause();
 		}
 
 		public override void OnWindowResized()
