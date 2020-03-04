@@ -1,10 +1,8 @@
 ﻿#nullable enable
 
-using System;
 using System.Collections.Generic;
 using System.IO;
 using static OpenAL.Bindings;
-using static SDL2.SDL;
 
 namespace CKGL
 {
@@ -22,30 +20,27 @@ namespace CKGL
 			ID = alGenBuffer();
 			Audio.CheckALError("Could not create Buffer");
 
-			SDL_AudioSpec wavspec = new SDL_AudioSpec();
-			SDL_LoadWAV(file, ref wavspec, out IntPtr audioBuffer, out uint audioLength);
+			byte[] bytes = AudioDecoder.Load(file, out int channels, out int sampleRate, out int bitdepth);
 
-			// map wav header to openal format
-			alBufferFormat format;
-			switch (wavspec.format)
+			alBufferFormat format = channels switch
 			{
-				case AUDIO_U8:
-				case AUDIO_S8:
-					format = wavspec.channels == 2 ? alBufferFormat.Stereo8 : alBufferFormat.Mono8;
-					break;
-				case AUDIO_U16:
-				case AUDIO_S16:
-					format = wavspec.channels == 2 ? alBufferFormat.Stereo16 : alBufferFormat.Mono16;
-					break;
-				default:
-					SDL_FreeWAV(audioBuffer);
-					throw new CKGLException($"SDL failed parsing wav: {file}");
-			}
+				1 => bitdepth switch
+				{
+					8 => alBufferFormat.Mono8,
+					16 => alBufferFormat.Mono16,
+					_ => throw new CKGLException("OpenAL Error: Invalid bit depth")
+				},
+				2 => bitdepth switch
+				{
+					8 => alBufferFormat.Stereo8,
+					16 => alBufferFormat.Stereo16,
+					_ => throw new CKGLException("OpenAL Error: Invalid bit depth")
+				},
+				_ => throw new CKGLException("OpenAL Error: Invalid channel count")
+			};
 
-			alBufferData(ID, format, audioBuffer, (int)audioLength, wavspec.freq);
+			alBufferData(ID, format, bytes, bytes.Length, sampleRate);
 			Audio.CheckALError("Could not set Buffer Data");
-
-			SDL_FreeWAV(audioBuffer);
 
 			Audio.Buffers.Add(this);
 		}
