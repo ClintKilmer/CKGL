@@ -209,6 +209,8 @@ namespace CKGL
 
 		public void Destroy()
 		{
+			Stop();
+
 			Filter = null;
 
 			for (int i = 0; i < Channels.Length; i++)
