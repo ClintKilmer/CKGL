@@ -84,8 +84,8 @@ namespace CKGL
 		}
 
 		public static void OnFocusGained() => game.OnFocusGained();
-		public static void OnFocusLost() => game.OnFocusGained();
-		public static void OnWindowResized() => game.OnFocusGained();
+		public static void OnFocusLost() => game.OnFocusLost();
+		public static void OnWindowResized() => game.OnWindowResized();
 
 		private static void PostDestroy()
 		{
