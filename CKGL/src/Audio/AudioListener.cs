@@ -69,9 +69,9 @@ namespace CKGL
 		{
 			get
 			{
-				alGetListenerf(AL_METERS_PER_UNIT, out float value);
+				alGetListenerf(AL_METERS_PER_UNIT, out float metersPerUnit);
 				Audio.CheckALError("Could not read AudioListener.MetersPerUnit");
-				return value;
+				return metersPerUnit;
 			}
 			set
 			{

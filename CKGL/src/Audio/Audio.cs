@@ -254,6 +254,16 @@ namespace CKGL
 				throw new CKGLException($"OpenAL Error: Illegal Value for \"{name}\" = {value} | Range: ({min} - {max})");
 		}
 
+		internal static void CheckRange(string name, Vector3 value, float min, float max)
+		{
+			if (value.X < min || value.X > max)
+				throw new CKGLException($"OpenAL Error: Illegal Value for \"{name}.X\" = {value} | Range: ({min} - {max})");
+			if (value.Y < min || value.Y > max)
+				throw new CKGLException($"OpenAL Error: Illegal Value for \"{name}.Y\" = {value} | Range: ({min} - {max})");
+			if (value.Z < min || value.Z > max)
+				throw new CKGLException($"OpenAL Error: Illegal Value for \"{name}.Z\" = {value} | Range: ({min} - {max})");
+		}
+
 		internal static void CheckRange(string name, int value, int min, int max)
 		{
 			if (value < min || value > max)

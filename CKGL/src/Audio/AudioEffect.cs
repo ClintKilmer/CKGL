@@ -52,9 +52,9 @@ namespace CKGL
 		{
 			get
 			{
-				alGetAuxiliaryEffectSlotf(ID, AL_EFFECTSLOT_GAIN, out float value);
+				alGetAuxiliaryEffectSlotf(ID, AL_EFFECTSLOT_GAIN, out float masterGain);
 				Audio.CheckALError("Could not read AudioEffect.MasterGain");
-				return value;
+				return masterGain;
 			}
 			set
 			{

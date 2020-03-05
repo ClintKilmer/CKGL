@@ -12,7 +12,7 @@ namespace CKGL
 		}
 
 		/// <summary>
-		/// 0.1f (0f - 0.207f)
+		/// 0.1f (0f - 0.207f) Seconds
 		/// </summary>
 		public float Delay
 		{
@@ -32,7 +32,7 @@ namespace CKGL
 		}
 
 		/// <summary>
-		/// 0.1f (0f - 0.404f)
+		/// 0.1f (0f - 0.404f) Seconds
 		/// </summary>
 		public float LRDelay
 		{

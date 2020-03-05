@@ -52,7 +52,7 @@ namespace CKGL
 		}
 
 		/// <summary>
-		/// 8000f (80f - 24000f)
+		/// 8000f (80f - 24000f) Hz
 		/// </summary>
 		public float LowpassCutoff
 		{
@@ -72,7 +72,7 @@ namespace CKGL
 		}
 
 		/// <summary>
-		/// 3600f (80f - 24000f)
+		/// 3600f (80f - 24000f) Hz
 		/// </summary>
 		public float EQCenter
 		{
@@ -92,7 +92,7 @@ namespace CKGL
 		}
 
 		/// <summary>
-		/// 3600f (80f - 24000f)
+		/// 3600f (80f - 24000f) Hz
 		/// </summary>
 		public float EQBandwidth
 		{

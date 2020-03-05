@@ -104,9 +104,9 @@ namespace CKGL
 		{
 			get
 			{
-				alGetSourcef(ID, alSourcefParameter.Pitch, out float gain);
+				alGetSourcef(ID, alSourcefParameter.Pitch, out float pitch);
 				Audio.CheckALError("Could not read AudioSource.Pitch");
-				return gain;
+				return pitch;
 			}
 			set
 			{
@@ -120,13 +120,9 @@ namespace CKGL
 		{
 			get
 			{
-				alGetSourcei(ID, alGetSourceiParameter.Looping, out int gain);
+				alGetSourcei(ID, alGetSourceiParameter.Looping, out int looping);
 				Audio.CheckALError("Could not read AudioSource.Looping");
-				if (gain == 0)
-					return false;
-				else if (gain == 1)
-					return true;
-				throw new CKGLException($"OpenAL Error: AudioSource.Looping returned an invalid value ({gain}) | Range (0 - 1)");
+				return looping == 1;
 			}
 			set
 			{
@@ -141,11 +137,7 @@ namespace CKGL
 			{
 				alGetSourcei(ID, alGetSourceiParameter.SourceRelative, out int relative);
 				Audio.CheckALError("Could not read AudioSource.SourceRelative");
-				if (relative == 0)
-					return false;
-				else if (relative == 1)
-					return true;
-				throw new CKGLException($"OpenAL Error: AudioSource.SourceRelative returned an invalid value ({relative}) | Range (0 - 1)");
+				return relative == 1;
 			}
 			set
 			{
