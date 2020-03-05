@@ -710,8 +710,8 @@ namespace OpenAL
 		public static extern void alSourceUnqueueBuffers(uint source, int nb, uint[] buffers);
 
 		[DllImport(DLL, EntryPoint = "alSourceUnqueueBuffers", CallingConvention = CallingConvention.Cdecl)]
-		private static extern void INTERNAL_alSourceUnqueueBuffers(uint source, int nb, ref uint buffers);
-		public static void alSourceUnqueueBuffers(uint source, uint buffer) => INTERNAL_alSourceUnqueueBuffers(source, 1, ref buffer);
+		private static extern void INTERNAL_alSourceUnqueueBuffers(uint source, int nb, out uint buffers);
+		public static void alSourceUnqueueBuffers(uint source, out uint buffer) => INTERNAL_alSourceUnqueueBuffers(source, 1, out buffer);
 		#endregion
 		#endregion
 
