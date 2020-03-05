@@ -1,4 +1,8 @@
-﻿using System;
+﻿/*
+ * WAVE PCM Reference: http://soundfile.sapp.org/doc/WaveFormat/
+ */
+
+using System;
 using System.IO;
 
 namespace CKGL
