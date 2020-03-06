@@ -4,6 +4,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using static OpenAL.Bindings;
 
 namespace CKGL
@@ -13,16 +15,17 @@ namespace CKGL
 		public static bool Active { get; private set; } = false;
 		public static int ChannelCount { get; private set; } = 4;
 
-		private static IntPtr device = IntPtr.Zero;
-		private static IntPtr context = IntPtr.Zero;
-
-		internal static List<AudioBuffer> Buffers = new List<AudioBuffer>();
-		internal static List<AudioSource> Sources = new List<AudioSource>();
-		internal static List<AudioEffect> Effects = new List<AudioEffect>();
-		internal static List<AudioFilter> Filters = new List<AudioFilter>();
+		public static List<AudioBuffer> Buffers = new List<AudioBuffer>();
+		public static List<AudioSource> Sources = new List<AudioSource>();
+		public static List<AudioEffect> Effects = new List<AudioEffect>();
+		public static List<AudioFilter> Filters = new List<AudioFilter>();
 
 		internal static int BufferCount { get { return Buffers.Count; } }
 		internal static int SourceCount { get { return Sources.Count; } }
+
+		private static IntPtr device = IntPtr.Zero;
+		private static IntPtr context = IntPtr.Zero;
+		private static bool streamingThreadRunning = false;
 
 		public static AudioDistanceModel DistanceModel
 		{
@@ -149,6 +152,39 @@ namespace CKGL
 					Output.WriteLine($"OpenAL Error: Audio device has been disconnected, restart the application to enable audio");
 				}
 
+				// Keep streaming thread alive while audio is active
+				if (!streamingThreadRunning)
+				{
+					Task task = Task.Run(() =>
+					{
+						try
+						{
+							streamingThreadRunning = true;
+
+							// Debug
+							Output.WriteLine("OpenAL Streaming Thread - Started");
+
+							while (Active)
+							{
+								for (int i = Sources.Count - 1; i >= 0; i--)
+									Sources[i].Stream?.Update();
+
+								Thread.Sleep(100);
+							}
+
+							streamingThreadRunning = false;
+
+							// Debug
+							Output.WriteLine("OpenAL Streaming Thread - Ended");
+						}
+						catch (Exception e)
+						{
+							streamingThreadRunning = false;
+							Output.WriteLine($"OpenAL Streaming Thread Error - {e.Message}");
+						}
+					});
+				}
+
 				for (int i = Sources.Count - 1; i >= 0; i--)
 					Sources[i].Update();
 			}
@@ -184,14 +220,28 @@ namespace CKGL
 
 		public static void Play()
 		{
-			alcDeviceResumeSOFT(device);
-			CheckALCError("Could not play Device");
+			try
+			{
+				alcDeviceResumeSOFT(device);
+				CheckALCError("Could not play Device");
+			}
+			catch (Exception e)
+			{
+				Output.WriteLine($"OpenAL Error - Audio.Play() - {e.Message}");
+			}
 		}
 
 		public static void Pause()
 		{
-			alcDevicePauseSOFT(device);
-			CheckALCError("Could not pause Device");
+			try
+			{
+				alcDevicePauseSOFT(device);
+				CheckALCError("Could not pause Device");
+			}
+			catch (Exception e)
+			{
+				Output.WriteLine($"OpenAL Error - Audio.Pause() - {e.Message}");
+			}
 		}
 
 		internal static bool CheckALCError(string message = "")
@@ -268,6 +318,30 @@ namespace CKGL
 		{
 			if (value < min || value > max)
 				throw new CKGLException($"OpenAL Error: Illegal Value for \"{name}\" = {value} | Range: ({min} - {max})");
+		}
+
+		internal static alBufferFormat GetalBufferFormat(int channels, int bitDepth)
+		{
+			return channels switch
+			{
+				1 => bitDepth switch
+				{
+					8 => alBufferFormat.Mono8,
+					16 => alBufferFormat.Mono16,
+					32 => alBufferFormat.Mono32,
+					64 => alBufferFormat.Mono64,
+					_ => throw new CKGLException("OpenAL Error: Invalid bit depth")
+				},
+				2 => bitDepth switch
+				{
+					8 => alBufferFormat.Stereo8,
+					16 => alBufferFormat.Stereo16,
+					32 => alBufferFormat.Stereo32,
+					64 => alBufferFormat.Stereo64,
+					_ => throw new CKGLException("OpenAL Error: Invalid bit depth")
+				},
+				_ => throw new CKGLException("OpenAL Error: Invalid channel count")
+			};
 		}
 	}
 }

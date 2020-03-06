@@ -7,8 +7,7 @@ namespace CKGL
 	public class AudioChannel
 	{
 		private readonly AudioSource source;
-
-		public readonly int Number;
+		private readonly int number;
 
 		private AudioFilter? filter;
 		private AudioEffect? effect;
@@ -56,12 +55,12 @@ namespace CKGL
 		internal AudioChannel(AudioSource source, int number)
 		{
 			this.source = source;
-			Number = number;
+			this.number = number;
 		}
 
 		private void Apply()
 		{
-			alSource3i(source.ID, AL_AUXILIARY_SEND_FILTER, (int)(effect?.ID ?? AL_EFFECTSLOT_NULL), 0, (int)(filter?.ID ?? AL_FILTER_NULL));
+			alSource3i(source.ID, AL_AUXILIARY_SEND_FILTER, (int)(effect?.ID ?? AL_EFFECTSLOT_NULL), number, (int)(filter?.ID ?? AL_FILTER_NULL));
 			Audio.CheckALError("Could not set AudioChannel.Effect/Filter");
 		}
 	}

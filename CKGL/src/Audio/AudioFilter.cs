@@ -7,7 +7,7 @@ namespace CKGL
 {
 	public abstract class AudioFilter
 	{
-		internal uint ID;
+		internal uint ID { get; private set; }
 
 		internal readonly List<AudioSource> Sources = new List<AudioSource>();
 		internal readonly List<AudioChannel> Channels = new List<AudioChannel>();

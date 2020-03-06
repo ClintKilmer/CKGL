@@ -7,8 +7,8 @@ namespace CKGL
 {
 	public abstract class AudioEffect
 	{
-		internal uint ID;
-		internal uint EffectSlotID;
+		internal uint ID { get; private set; }
+		internal uint EffectSlotID { get; private set; }
 
 		internal readonly List<AudioChannel> Channels = new List<AudioChannel>();
 

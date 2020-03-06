@@ -8,43 +8,33 @@ namespace CKGL
 {
 	public class AudioBuffer
 	{
-		internal uint ID;
+		public readonly string File;
+		public readonly bool Streamed;
+
+		internal uint ID { get; private set; }
 
 		internal readonly List<AudioSource> Sources = new List<AudioSource>();
 
-		public AudioBuffer(string file)
+		private bool destroyed = false;
+
+		public AudioBuffer(string file, bool streamed = false)
 		{
-			if (!File.Exists(file))
+			if (!System.IO.File.Exists(file))
 				throw new FileNotFoundException("Audio file not found.", file);
 
-			ID = alGenBuffer();
-			Audio.CheckALError("Could not create Buffer");
+			File = file;
+			Streamed = streamed;
 
-			byte[] bytes = AudioDecoder.Load(file, out int channels, out int sampleRate, out int bitDepth);
-
-			alBufferFormat format = channels switch
+			if (!Streamed)
 			{
-				1 => bitDepth switch
-				{
-					8 => alBufferFormat.Mono8,
-					16 => alBufferFormat.Mono16,
-					32 => alBufferFormat.Mono32,
-					64 => alBufferFormat.Mono64,
-					_ => throw new CKGLException("OpenAL Error: Invalid bit depth")
-				},
-				2 => bitDepth switch
-				{
-					8 => alBufferFormat.Stereo8,
-					16 => alBufferFormat.Stereo16,
-					32 => alBufferFormat.Stereo32,
-					64 => alBufferFormat.Stereo64,
-					_ => throw new CKGLException("OpenAL Error: Invalid bit depth")
-				},
-				_ => throw new CKGLException("OpenAL Error: Invalid channel count")
-			};
+				ID = alGenBuffer();
+				Audio.CheckALError("Could not create Buffer");
 
-			alBufferData(ID, format, bytes, bytes.Length, sampleRate);
-			Audio.CheckALError("Could not set Buffer Data");
+				byte[] bytes = AudioCodec.Decode(file, out int channels, out int sampleRate, out int bitDepth);
+
+				alBufferData(ID, Audio.GetalBufferFormat(channels, bitDepth), bytes, bytes.Length, sampleRate);
+				Audio.CheckALError("Could not set Buffer Data");
+			}
 
 			Audio.Buffers.Add(this);
 		}
@@ -54,15 +44,26 @@ namespace CKGL
 			for (int i = Sources.Count - 1; i >= 0; i--)
 				Sources[i].Buffer = null;
 
-			alDeleteBuffer(ID);
-			Audio.CheckALError("Could not destroy Buffer");
-			ID = default;
+			if (!Streamed)
+			{
+				alDeleteBuffer(ID);
+				Audio.CheckALError("Could not destroy Buffer");
+				ID = default;
+			}
 
 			Audio.Buffers.Remove(this);
+
+			destroyed = true;
 		}
 
-		public void Play(AudioFilter? directFilter = null, params (AudioFilter? filter, AudioEffect? effect)?[]? channels)
+		/// <summary>
+		/// Only use the returned AudioSource immediately after instantiation. Do not store a reference for later use, as it will be automatically destroyed upon audio completion.
+		/// </summary>
+		public AudioSource Play(AudioFilter? directFilter = null, params (AudioFilter? filter, AudioEffect? effect)?[]? channels)
 		{
+			if (Audio.Active && destroyed)
+				throw new CKGLException("OpenAL Error: AudioBuffer has been destroyed");
+
 			AudioSource source = new AudioSource();
 			source.DestroyOnStop = true;
 			source.Buffer = this;
@@ -78,7 +79,10 @@ namespace CKGL
 				for (int i = 0; i < channels.Length && i < source.Channels.Length; i++)
 					source.Channels[i].FilterEffect = (channels[i]?.filter, channels[i]?.effect);
 			}
+
 			source.Play();
+
+			return source;
 		}
 	}
 }

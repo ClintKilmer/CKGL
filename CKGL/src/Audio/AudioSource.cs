@@ -6,10 +6,12 @@ namespace CKGL
 {
 	public class AudioSource
 	{
-		internal uint ID;
+		internal uint ID { get; private set; }
+		internal bool DestroyOnStop = false;
 
 		public readonly AudioChannel[] Channels = new AudioChannel[Audio.ChannelCount];
-		public bool DestroyOnStop = false;
+
+		internal AudioStream? Stream;
 
 		private AudioBuffer? buffer;
 		public AudioBuffer? Buffer
@@ -17,8 +19,31 @@ namespace CKGL
 			get => buffer;
 			set
 			{
-				alSourcei(ID, alSourceiParameter.Buffer, (int)(value?.ID ?? AL_NONE));
-				Audio.CheckALError("Could not set AudioSource.Buffer");
+				if (value == null)
+				{
+					Stop();
+
+					alSourcei(ID, alSourceiParameter.Buffer, (int)AL_NONE);
+					Audio.CheckALError("Could not set AudioSource.Buffer");
+
+					if (buffer?.Streamed ?? false)
+					{
+						Stream?.Destroy();
+						Stream = null;
+					}
+				}
+				else
+				{
+					if (value.Streamed)
+					{
+						Stream = new AudioStream(value, this);
+					}
+					else
+					{
+						alSourcei(ID, alSourceiParameter.Buffer, (int)value.ID);
+						Audio.CheckALError("Could not set AudioSource.Buffer");
+					}
+				}
 				buffer?.Sources.Remove(this);
 				value?.Sources.Add(this);
 				buffer = value;
@@ -116,18 +141,33 @@ namespace CKGL
 			}
 		}
 
+		private bool streamedLooping = false;
 		public bool Looping
 		{
 			get
 			{
-				alGetSourcei(ID, alGetSourceiParameter.Looping, out int looping);
-				Audio.CheckALError("Could not read AudioSource.Looping");
-				return looping == 1;
+				if (buffer?.Streamed ?? false)
+				{
+					return streamedLooping;
+				}
+				else
+				{
+					alGetSourcei(ID, alGetSourceiParameter.Looping, out int looping);
+					Audio.CheckALError("Could not read AudioSource.Looping");
+					return looping == 1;
+				}
 			}
 			set
 			{
-				alSourcei(ID, alSourceiParameter.Looping, value ? 1 : 0);
-				Audio.CheckALError("Could not update AudioSource.Looping");
+				if (buffer?.Streamed ?? false)
+				{
+					streamedLooping = value;
+				}
+				else
+				{
+					alSourcei(ID, alSourceiParameter.Looping, value ? 1 : 0);
+					Audio.CheckALError("Could not update AudioSource.Looping");
+				}
 			}
 		}
 
@@ -180,7 +220,7 @@ namespace CKGL
 
 		public bool IsPaused => State == alSourceState.Paused;
 
-		public bool IsStopped => State == alSourceState.Stopped;
+		public bool IsStopped => State == alSourceState.Stopped || !Audio.Active;
 
 		public AudioSource()
 		{
@@ -190,7 +230,8 @@ namespace CKGL
 			for (int i = 0; i < Channels.Length; i++)
 				Channels[i] = new AudioChannel(this, i);
 
-			Audio.Sources.Add(this);
+			if (Audio.Active)
+				Audio.Sources.Add(this);
 		}
 
 		public void Update()
