@@ -66,6 +66,9 @@ namespace CKGL
 			}
 		}
 
+		/// <summary>
+		/// (0f, 0f, 0f) ( - )
+		/// </summary>
 		public Vector3 Position
 		{
 			get
@@ -81,6 +84,9 @@ namespace CKGL
 			}
 		}
 
+		/// <summary>
+		/// (0f, 0f, 0f) ( - )
+		/// </summary>
 		public Vector3 Velocity
 		{
 			get
@@ -96,6 +102,9 @@ namespace CKGL
 			}
 		}
 
+		/// <summary>
+		/// (0f, 0f, 0f) ( - )
+		/// </summary>
 		public Vector3 Direction
 		{
 			get
@@ -111,6 +120,9 @@ namespace CKGL
 			}
 		}
 
+		/// <summary>
+		/// 1f (0f - )
+		/// </summary>
 		public float Gain
 		{
 			get
@@ -127,6 +139,9 @@ namespace CKGL
 			}
 		}
 
+		/// <summary>
+		/// 1f (float.Epsilon - )
+		/// </summary>
 		public float Pitch
 		{
 			get
@@ -137,7 +152,7 @@ namespace CKGL
 			}
 			set
 			{
-				Audio.CheckRange("AudioSource.Pitch", value, 0.5f, 2f);
+				Audio.CheckRange("AudioSource.Pitch", value, float.Epsilon, float.MaxValue);
 				alSourcef(ID, alSourcefParameter.Pitch, value);
 				Audio.CheckALError("Could not update AudioSource.Pitch");
 			}
@@ -145,6 +160,9 @@ namespace CKGL
 
 		// Looping a streamed Buffer requires the Source.Looping state to be false, yet still return true for the Codec
 		private bool looping = false;
+		/// <summary>
+		/// false (false/true)
+		/// </summary>
 		public bool Looping
 		{
 			get
@@ -180,6 +198,9 @@ namespace CKGL
 			}
 		}
 
+		/// <summary>
+		/// false (false/true)
+		/// </summary>
 		public bool Relative
 		{
 			get
