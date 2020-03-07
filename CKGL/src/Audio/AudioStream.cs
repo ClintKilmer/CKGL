@@ -35,6 +35,8 @@ namespace CKGL
 					Audio.CheckALError("Could not queue Buffer");
 				}
 			}
+
+			Audio.Streams.Add(this);
 		}
 
 		internal void Update()
@@ -68,6 +70,8 @@ namespace CKGL
 
 			for (int i = 0; i < bufferIDs.Length; i++)
 				bufferIDs[i] = default;
+
+			Audio.Streams.Remove(this);
 		}
 	}
 }
