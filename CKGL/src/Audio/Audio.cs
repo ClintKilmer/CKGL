@@ -31,6 +31,9 @@ namespace CKGL
 		private static IntPtr context = IntPtr.Zero;
 		private static bool streamingThreadRunning = false;
 
+		/// <summary>
+		/// InverseDistanceClamped (AudioDistanceModel)
+		/// </summary>
 		public static AudioDistanceModel DistanceModel
 		{
 			get
@@ -45,7 +48,6 @@ namespace CKGL
 				CheckALError("Could not update Audio.DistanceModel");
 			}
 		}
-		public static readonly AudioDistanceModel DistanceModelDefault = AudioDistanceModel.InverseDistanceClamped;
 
 		/// <summary>
 		/// 1f (0f - )
@@ -65,7 +67,6 @@ namespace CKGL
 				CheckALError("Could not update Audio.DopplerFactor");
 			}
 		}
-		public static readonly float DopplerFactorDefault = 1f;
 
 		/// <summary>
 		/// 343.3f (0.0001f - )
@@ -85,7 +86,6 @@ namespace CKGL
 				CheckALError("Could not update Audio.SpeedOfSound");
 			}
 		}
-		public static readonly float SpeedOfSoundDefault = 343.3f;
 
 		internal static void Init()
 		{
