@@ -94,9 +94,6 @@ namespace CKGL
 					if (alcIsExtensionPresent(device, "ALC_EXT_EFX") &&
 						alcIsExtensionPresent(device, "ALC_EXT_disconnect") &&
 						alcIsExtensionPresent(device, "ALC_SOFT_pause_device") &&
-						alIsExtensionPresent("AL_EXT_float32") &&
-						alIsExtensionPresent("AL_EXT_double") &&
-						alIsExtensionPresent("AL_EXT_MCFORMATS") &&
 						alIsExtensionPresent("AL_SOFTX_effect_chain"))
 					{
 						alcGetIntegerv(device, ALC_MAX_AUXILIARY_SENDS, out int channelCount);
@@ -121,7 +118,7 @@ namespace CKGL
 					else
 					{
 						Destroy();
-						Output.WriteLine("OpenAL Error: ALC_EXT_EFX, ALC_EXT_disconnect, ALC_SOFT_pause_device, AL_EXT_float32, AL_EXT_double, AL_EXT_MCFORMATS, and AL_SOFTX_effect_chain are required extensions");
+						Output.WriteLine("OpenAL Error: ALC_EXT_EFX, ALC_EXT_disconnect, ALC_SOFT_pause_device, and AL_SOFTX_effect_chain are required extensions");
 						return;
 					}
 				}
@@ -328,16 +325,12 @@ namespace CKGL
 				{
 					8 => alBufferFormat.Mono8,
 					16 => alBufferFormat.Mono16,
-					32 => alBufferFormat.Mono32,
-					64 => alBufferFormat.Mono64,
 					_ => throw new CKGLException("OpenAL Error: Invalid bit depth")
 				},
 				2 => bitDepth switch
 				{
 					8 => alBufferFormat.Stereo8,
 					16 => alBufferFormat.Stereo16,
-					32 => alBufferFormat.Stereo32,
-					64 => alBufferFormat.Stereo64,
 					_ => throw new CKGLException("OpenAL Error: Invalid bit depth")
 				},
 				_ => throw new CKGLException("OpenAL Error: Invalid channel count")

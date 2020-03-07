@@ -58,9 +58,9 @@ namespace CKGL
 					throw new CKGLException($"Invalid sampleRate: {SampleRate} - Only 44100 or 48000 accepted");
 				int byteRate = reader.ReadInt32();
 				int fmtBlockAlign = reader.ReadInt16();
-				BitDepth = reader.ReadInt16(); // 8, 16, 24, 32, or 64 bits
-				if (BitDepth != 8 && BitDepth != 16 && BitDepth != 24 && BitDepth != 32 && BitDepth != 64)
-					throw new CKGLException($"Invalid bitDepth: {BitDepth} - Only 8, 16, 24, 32, or 64 accepted");
+				BitDepth = reader.ReadInt16(); // 8-bit or 16-bit
+				if (BitDepth != 8 && BitDepth != 16)
+					throw new CKGLException($"Invalid bitDepth: {BitDepth} - Only 8 or 16 accepted");
 
 				if (fmtSize == 18)
 				{

@@ -344,12 +344,8 @@ namespace OpenAL
 		{
 			Mono8 = AL_FORMAT_MONO8,
 			Mono16 = AL_FORMAT_MONO16,
-			Mono32 = AL_FORMAT_MONO_FLOAT32,
-			Mono64 = AL_FORMAT_MONO_DOUBLE_EXT,
 			Stereo8 = AL_FORMAT_STEREO8,
-			Stereo16 = AL_FORMAT_STEREO16,
-			Stereo32 = AL_FORMAT_STEREO_FLOAT32,
-			Stereo64 = AL_FORMAT_STEREO_DOUBLE_EXT
+			Stereo16 = AL_FORMAT_STEREO16
 		}
 
 		public enum alGetBufferiParameter : int
@@ -719,31 +715,6 @@ namespace OpenAL
 		#region Tokens
 		// ALC_EXT_disconnect
 		public const int ALC_CONNECTED = 0x313;
-
-		// AL_EXT_float32
-		public const int AL_FORMAT_MONO_FLOAT32 = 0x10010;
-		public const int AL_FORMAT_STEREO_FLOAT32 = 0x10011;
-
-		// AL_EXT_double
-		public const int AL_FORMAT_MONO_DOUBLE_EXT = 0x10012;
-		public const int AL_FORMAT_STEREO_DOUBLE_EXT = 0x10013;
-
-		// AL_EXT_MCFORMATS
-		public const int AL_FORMAT_QUAD8 = 0x1204;
-		public const int AL_FORMAT_QUAD16 = 0x1205;
-		public const int AL_FORMAT_QUAD32 = 0x1206;
-		public const int AL_FORMAT_REAR8 = 0x1207;
-		public const int AL_FORMAT_REAR16 = 0x1208;
-		public const int AL_FORMAT_REAR32 = 0x1209;
-		public const int AL_FORMAT_51CHN8 = 0x120A;
-		public const int AL_FORMAT_51CHN16 = 0x120B;
-		public const int AL_FORMAT_51CHN32 = 0x120C;
-		public const int AL_FORMAT_61CHN8 = 0x120D;
-		public const int AL_FORMAT_61CHN16 = 0x120E;
-		public const int AL_FORMAT_61CHN32 = 0x120F;
-		public const int AL_FORMAT_71CHN8 = 0x1210;
-		public const int AL_FORMAT_71CHN16 = 0x1211;
-		public const int AL_FORMAT_71CHN32 = 0x1212;
 
 		// AL_SOFTX_effect_chain
 		public const int AL_EFFECTSLOT_TARGET_SOFT = 0xf000;
