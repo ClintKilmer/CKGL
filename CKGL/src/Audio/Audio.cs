@@ -101,6 +101,8 @@ namespace CKGL
 
 						Active = true;
 
+						AudioListener.Init();
+
 						// Debug
 						Output.WriteLine("OpenAL Initialized");
 						Output.WriteLine($"OpenAL Source Channel Count: {ChannelCount}");

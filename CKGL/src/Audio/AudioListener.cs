@@ -4,6 +4,9 @@ namespace CKGL
 {
 	public static class AudioListener
 	{
+		/// <summary>
+		/// (0f, 0f, 0f) ( - )
+		/// </summary>
 		public static Vector3 Position
 		{
 			get
@@ -19,6 +22,9 @@ namespace CKGL
 			}
 		}
 
+		/// <summary>
+		/// (0f, 0f, 0f) ( - )
+		/// </summary>
 		public static Vector3 Velocity
 		{
 			get
@@ -34,6 +40,9 @@ namespace CKGL
 			}
 		}
 
+		/// <summary>
+		/// {(0f, 0f, 1f), (0f, 1f, 0f)} ( - )
+		/// </summary>
 		public static (Vector3 Forward, Vector3 Up) Orientation
 		{
 			get
@@ -50,6 +59,9 @@ namespace CKGL
 			}
 		}
 
+		/// <summary>
+		/// 1f (0f - )
+		/// </summary>
 		public static float Gain
 		{
 			get
@@ -60,11 +72,15 @@ namespace CKGL
 			}
 			set
 			{
+				Audio.CheckRange("AudioListener.Gain", value, 0f, float.MaxValue);
 				alListenerf(alListenerfParameter.Gain, value);
 				Audio.CheckALError("Could not update AudioListener.Gain");
 			}
 		}
 
+		/// <summary>
+		/// 1f (float.Epsilon - )
+		/// </summary>
 		public static float MetersPerUnit
 		{
 			get
@@ -80,6 +96,12 @@ namespace CKGL
 				Audio.CheckALError("Could not update AudioListener.MetersPerUnit");
 			}
 		}
-		public static readonly float MetersPerUnitDefault = AL_DEFAULT_METERS_PER_UNIT;
+
+		public static void Init()
+		{
+			// Set default as we are converting the right-handedness
+			// of OpenAL Soft to the left-handedness of CKGL
+			AudioListener.Orientation = (Vector3.Forward, Vector3.Up);
+		}
 	}
 }

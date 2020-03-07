@@ -1396,7 +1396,7 @@ namespace OpenAL
 
 
 		// Listener parameter value ranges and defaults
-		public const float AL_MIN_METERS_PER_UNIT = float.MinValue;
+		public const float AL_MIN_METERS_PER_UNIT = float.Epsilon;
 		public const float AL_MAX_METERS_PER_UNIT = float.MaxValue;
 		public const float AL_DEFAULT_METERS_PER_UNIT = 1.0f;
 		#endregion
