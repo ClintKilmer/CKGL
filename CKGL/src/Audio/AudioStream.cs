@@ -25,6 +25,9 @@ namespace CKGL
 
 			for (int i = 0; i < bufferIDs.Length; i++)
 			{
+				if (codec.IsFinished && source.Looping)
+					codec.Seek(0);
+
 				if (!codec.IsFinished)
 				{
 					byte[] bytes = codec.GetData(bufferSize);

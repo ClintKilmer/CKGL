@@ -47,6 +47,8 @@ namespace CKGL
 				buffer?.Sources.Remove(this);
 				value?.Sources.Add(this);
 				buffer = value;
+
+				updateLooping(); // Looping depends on if the Buffer is streamed - see below
 			}
 		}
 
@@ -141,14 +143,15 @@ namespace CKGL
 			}
 		}
 
-		private bool streamedLooping = false;
+		// Looping a streamed Buffer requires the Source.Looping state to be false, yet still return true for the Codec
+		private bool looping = false;
 		public bool Looping
 		{
 			get
 			{
 				if (buffer?.Streamed ?? false)
 				{
-					return streamedLooping;
+					return looping;
 				}
 				else
 				{
@@ -159,15 +162,21 @@ namespace CKGL
 			}
 			set
 			{
-				if (buffer?.Streamed ?? false)
-				{
-					streamedLooping = value;
-				}
-				else
-				{
-					alSourcei(ID, alSourceiParameter.Looping, value ? 1 : 0);
-					Audio.CheckALError("Could not update AudioSource.Looping");
-				}
+				looping = value;
+				updateLooping();
+			}
+		}
+		private void updateLooping()
+		{
+			if (buffer?.Streamed ?? false)
+			{
+				alSourcei(ID, alSourceiParameter.Looping, 0);
+				Audio.CheckALError("Could not update AudioSource.Looping");
+			}
+			else
+			{
+				alSourcei(ID, alSourceiParameter.Looping, looping ? 1 : 0);
+				Audio.CheckALError("Could not update AudioSource.Looping");
 			}
 		}
 
