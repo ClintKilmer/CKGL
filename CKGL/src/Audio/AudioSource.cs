@@ -19,20 +19,19 @@ namespace CKGL
 			get => buffer;
 			set
 			{
-				if (value == null)
+				// This property handles resetting AL_SOURCE_TYPE to AL_UNDETERMINED, so we can swap between AL_STATIC and AL_STREAMING by simply setting the Buffer
+				Stop();
+
+				alSourcei(ID, alSourceiParameter.Buffer, (int)AL_NONE);
+				Audio.CheckALError("Could not set AudioSource.Buffer");
+
+				if (buffer?.Streamed ?? false)
 				{
-					Stop();
-
-					alSourcei(ID, alSourceiParameter.Buffer, (int)AL_NONE);
-					Audio.CheckALError("Could not set AudioSource.Buffer");
-
-					if (buffer?.Streamed ?? false)
-					{
-						Stream?.Destroy();
-						Stream = null;
-					}
+					Stream?.Destroy();
+					Stream = null;
 				}
-				else
+
+				if (value != null)
 				{
 					if (value.Streamed)
 					{
@@ -44,6 +43,7 @@ namespace CKGL
 						Audio.CheckALError("Could not set AudioSource.Buffer");
 					}
 				}
+
 				buffer?.Sources.Remove(this);
 				value?.Sources.Add(this);
 				buffer = value;
