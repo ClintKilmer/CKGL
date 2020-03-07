@@ -323,24 +323,21 @@ namespace CKGL
 				throw new CKGLException($"OpenAL Error: Illegal Value for \"{name}\" = {value} | Range: ({min} - {max})");
 		}
 
-		internal static alBufferFormat GetalBufferFormat(int channels, int bitDepth)
+		internal static alBufferFormat GetalBufferFormat(int channels, int bitDepth) => channels switch
 		{
-			return channels switch
+			1 => bitDepth switch
 			{
-				1 => bitDepth switch
-				{
-					8 => alBufferFormat.Mono8,
-					16 => alBufferFormat.Mono16,
-					_ => throw new CKGLException("OpenAL Error: Invalid bit depth")
-				},
-				2 => bitDepth switch
-				{
-					8 => alBufferFormat.Stereo8,
-					16 => alBufferFormat.Stereo16,
-					_ => throw new CKGLException("OpenAL Error: Invalid bit depth")
-				},
-				_ => throw new CKGLException("OpenAL Error: Invalid channel count")
-			};
-		}
+				8 => alBufferFormat.Mono8,
+				16 => alBufferFormat.Mono16,
+				_ => throw new CKGLException("OpenAL Error: Invalid bit depth")
+			},
+			2 => bitDepth switch
+			{
+				8 => alBufferFormat.Stereo8,
+				16 => alBufferFormat.Stereo16,
+				_ => throw new CKGLException("OpenAL Error: Invalid bit depth")
+			},
+			_ => throw new CKGLException("OpenAL Error: Invalid channel count")
+		};
 	}
 }
