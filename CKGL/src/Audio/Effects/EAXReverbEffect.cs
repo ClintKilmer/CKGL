@@ -214,7 +214,7 @@ namespace CKGL
 		}
 
 		/// <summary>
-		/// 0f (0f - 1f)
+		/// (0f, 0f, 0f) ( - ) (Magnitude 0f - 1f)
 		/// </summary>
 		public Vector3 ReflectionsPan
 		{
@@ -275,7 +275,7 @@ namespace CKGL
 		}
 
 		/// <summary>
-		/// 0f (0f - 1f)
+		/// (0f, 0f, 0f) ( - ) (Magnitude 0f - 1f)
 		/// </summary>
 		public Vector3 LateReverbPan
 		{
