@@ -158,6 +158,23 @@ namespace CKGL
 			}
 		}
 
+		public void Rewind()
+		{
+			if (buffer?.Streamed ?? false)
+			{
+				bool wasPlaying = IsPlaying;
+				Stop();
+				Stream?.Rewind();
+				if (wasPlaying)
+					Play();
+			}
+			else
+			{
+				alSourcef(ID, alSourcefParameter.ByteOffset, 0);
+				Audio.CheckALError("Could not update AudioSource.ByteOffset");
+			}
+		}
+
 		/// <summary>
 		/// n/a (0f - )
 		/// </summary>
