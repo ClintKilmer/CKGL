@@ -22,7 +22,7 @@ namespace CKGL
 				// This property handles resetting AL_SOURCE_TYPE to AL_UNDETERMINED, so we can swap between AL_STATIC and AL_STREAMING by simply setting the Buffer
 				Stop();
 
-				alSourcei(ID, alSourceiParameter.Buffer, (int)AL_NONE);
+				alSourcei(ID, alSourceiParameter.Buffer, AL_NONE);
 				Audio.CheckALError("Could not set AudioSource.Buffer");
 
 				if (buffer?.Streamed ?? false)
@@ -158,6 +158,56 @@ namespace CKGL
 			}
 		}
 
+		/// <summary>
+		/// n/a (0f - )
+		/// </summary>
+		public float SecondOffset
+		{
+			get
+			{
+				// TODO - Streamed Offset Gets
+				if (buffer?.Streamed ?? false)
+					return 0f;
+
+				alGetSourcef(ID, alSourcefParameter.SecondOffset, out float secondOffset);
+				Audio.CheckALError("Could not read AudioSource.SecondOffset");
+				return secondOffset;
+			}
+			set
+			{
+				Audio.CheckRange("AudioSource.SecondOffset", value, 0f, buffer?.Length ?? float.MaxValue);
+
+				Output.WriteLine($"AudioSource.SecondOffset: {value}");
+
+				if (buffer?.Streamed ?? false)
+				{
+					bool wasPlaying = IsPlaying;
+					Stop();
+					Stream?.SeekSeconds(value);
+					if (wasPlaying)
+						Play();
+				}
+				else
+				{
+					alSourcef(ID, alSourcefParameter.SecondOffset, value);
+					Audio.CheckALError("Could not update AudioSource.SecondOffset");
+				}
+			}
+		}
+
+		/// <summary>
+		/// n/a (0f - 1f)
+		/// </summary>
+		public float PercentOffset
+		{
+			get => SecondOffset / (buffer?.Length ?? 1f);
+			set
+			{
+				Audio.CheckRange("AudioSource.PercentOffset", value, 0f, 1f);
+				SecondOffset = (buffer?.Length ?? 1f) * value;
+			}
+		}
+
 		// Looping a streamed Buffer requires the Source.Looping state to be false, yet still return true for the Codec
 		private bool looping = false;
 		/// <summary>
@@ -216,7 +266,7 @@ namespace CKGL
 			}
 		}
 
-		public int BuffersQueued
+		internal int BuffersQueued
 		{
 			get
 			{
@@ -226,7 +276,7 @@ namespace CKGL
 			}
 		}
 
-		public int BuffersProcessed
+		internal int BuffersProcessed
 		{
 			get
 			{

@@ -367,7 +367,10 @@ namespace OpenAL
 			ConeOuterGain = AL_CONE_OUTER_GAIN,
 			ConeInnerAngle = AL_CONE_INNER_ANGLE,
 			ConeOuterAngle = AL_CONE_OUTER_ANGLE,
-			ReferenceDistance = AL_REFERENCE_DISTANCE
+			ReferenceDistance = AL_REFERENCE_DISTANCE,
+			ByteOffset = AL_BYTE_OFFSET,
+			SampleOffset = AL_SAMPLE_OFFSET,
+			SecondOffset = AL_SEC_OFFSET
 		}
 
 		public enum alSource3fParameter : int

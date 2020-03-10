@@ -11,7 +11,7 @@ namespace CKGL
 		private readonly AudioSource source;
 		private readonly AudioCodec codec;
 		private readonly alBufferFormat format;
-		private uint[] bufferIDs = new uint[3];
+		private readonly uint[] bufferIDs = new uint[3];
 
 		internal AudioStream(AudioBuffer buffer, AudioSource source)
 		{
@@ -23,23 +23,26 @@ namespace CKGL
 			alGenBuffers(bufferIDs.Length, bufferIDs);
 			Audio.CheckALError("Could not create Buffers");
 
-			for (int i = 0; i < bufferIDs.Length; i++)
-			{
-				if (codec.IsFinished && source.Looping)
-					codec.Seek(0);
-
-				if (!codec.IsFinished)
-				{
-					byte[] bytes = codec.GetData(bufferSize);
-					alBufferData(bufferIDs[i], format, bytes, bytes.Length, codec.SampleRate);
-					Audio.CheckALError("Could not set Buffer Data");
-
-					alSourceQueueBuffers(source.ID, bufferIDs[i]);
-					Audio.CheckALError("Could not queue Buffer");
-				}
-			}
+			fillInitialBuffers();
 
 			Audio.Streams.Add(this);
+		}
+
+		private void fillInitialBuffers()
+		{
+			for (int i = 0; i < bufferIDs.Length; i++)
+			{
+				byte[] bytes = codec.GetData(bufferSize, source.Looping);
+
+				if (bytes.Length == 0)
+					return;
+
+				alBufferData(bufferIDs[i], format, bytes, bytes.Length, codec.SampleRate);
+				Audio.CheckALError("Could not set Buffer Data");
+
+				alSourceQueueBuffers(source.ID, bufferIDs[i]);
+				Audio.CheckALError("Could not queue Buffer");
+			}
 		}
 
 		internal void Update()
@@ -49,18 +52,16 @@ namespace CKGL
 				alSourceUnqueueBuffers(source.ID, out uint bufferID);
 				Audio.CheckALError("Could not unqueue Buffer");
 
-				if (codec.IsFinished && source.Looping)
-					codec.Seek(0);
+				byte[] bytes = codec.GetData(bufferSize, source.Looping);
 
-				if (!codec.IsFinished)
-				{
-					byte[] bytes = codec.GetData(bufferSize);
-					alBufferData(bufferID, format, bytes, bytes.Length, codec.SampleRate);
-					Audio.CheckALError("Could not set Buffer Data");
+				if (bytes.Length == 0)
+					continue;
 
-					alSourceQueueBuffers(source.ID, bufferID);
-					Audio.CheckALError("Could not queue Buffer");
-				}
+				alBufferData(bufferID, format, bytes, bytes.Length, codec.SampleRate);
+				Audio.CheckALError("Could not set Buffer Data");
+
+				alSourceQueueBuffers(source.ID, bufferID);
+				Audio.CheckALError("Could not queue Buffer");
 			}
 		}
 
@@ -75,6 +76,48 @@ namespace CKGL
 				bufferIDs[i] = default;
 
 			Audio.Streams.Remove(this);
+		}
+
+		internal void Rewind()
+		{
+			UnqueueBuffers();
+			codec.Rewind();
+			fillInitialBuffers();
+		}
+
+		internal void SeekBytes(int offsetBytes)
+		{
+			UnqueueBuffers();
+			codec.SeekBytes(offsetBytes);
+			fillInitialBuffers();
+		}
+
+		internal void SeekSamples(int offsetSamples)
+		{
+			UnqueueBuffers();
+			codec.SeekSamples(offsetSamples);
+			fillInitialBuffers();
+		}
+
+		internal void SeekSeconds(float offsetSeconds)
+		{
+			UnqueueBuffers();
+			codec.SeekSeconds(offsetSeconds);
+			fillInitialBuffers();
+		}
+
+		internal void SeekPercent(float offsetPercent)
+		{
+			UnqueueBuffers();
+			codec.SeekPercent(offsetPercent);
+			fillInitialBuffers();
+		}
+
+		private void UnqueueBuffers()
+		{
+			// This is more robust than alSourceUnqueueBuffers
+			alSourcei(source.ID, alSourceiParameter.Buffer, AL_NONE);
+			Audio.CheckALError("Could not set AudioSource.Buffer in AudioStream.UnqueueBuffers()");
 		}
 	}
 }

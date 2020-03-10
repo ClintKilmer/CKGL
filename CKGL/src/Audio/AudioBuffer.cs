@@ -11,6 +11,12 @@ namespace CKGL
 		public readonly string File;
 		public readonly bool Streamed;
 
+		/// <summary>Size in bytes</summary>
+		public readonly int Size;
+		public readonly int Samples;
+		/// <summary>Length in seconds</summary>
+		public readonly float Length;
+
 		internal uint ID { get; private set; }
 
 		internal readonly List<AudioSource> Sources = new List<AudioSource>();
@@ -25,12 +31,23 @@ namespace CKGL
 			File = file;
 			Streamed = streamed;
 
-			if (!Streamed)
+			if (Streamed)
+			{
+				AudioCodec codec = new AudioCodec(file);
+				Size = codec.Size;
+				Samples = codec.Samples;
+				Length = codec.Length;
+				codec.Destroy();
+			}
+			else
 			{
 				ID = alGenBuffer();
 				Audio.CheckALError("Could not create Buffer");
 
-				byte[] bytes = AudioCodec.Decode(file, out int channels, out int sampleRate, out int bitDepth);
+				byte[] bytes = AudioCodec.Decode(file, out float length, out int channels, out int samples, out int sampleRate, out int bitDepth);
+				Size = bytes.Length;
+				Samples = samples;
+				Length = length;
 
 				alBufferData(ID, Audio.GetalBufferFormat(channels, bitDepth), bytes, bytes.Length, sampleRate);
 				Audio.CheckALError("Could not set Buffer Data");
@@ -56,16 +73,14 @@ namespace CKGL
 			destroyed = true;
 		}
 
-		/// <summary>
-		/// Only use the returned AudioSource immediately after instantiation. Do not store a reference for later use, as it will be automatically destroyed upon audio completion.
-		/// </summary>
-		public AudioSource Play(AudioFilter? directFilter = null, params (AudioFilter? filter, AudioEffect? effect)?[]? channels)
+		private AudioSource play(bool looping, AudioFilter? directFilter = null, params (AudioFilter? filter, AudioEffect? effect)?[]? channels)
 		{
 			if (Audio.Active && destroyed)
 				throw new CKGLException("OpenAL Error: AudioBuffer has been destroyed");
 
 			AudioSource source = new AudioSource();
 			source.DestroyOnStop = true;
+			source.Looping = looping;
 			source.Buffer = this;
 
 			if (directFilter != null)
@@ -84,5 +99,11 @@ namespace CKGL
 
 			return source;
 		}
+
+		/// <summary>Only use the returned AudioSource immediately after instantiation. Do not store a reference for later use, as it will be automatically destroyed upon audio completion.</summary>
+		public AudioSource Play(AudioFilter? directFilter = null, params (AudioFilter? filter, AudioEffect? effect)?[]? channels) => play(false, directFilter, channels);
+
+		/// <summary>Only use the returned AudioSource immediately after instantiation. Do not store a reference for later use, as it will be automatically destroyed upon audio completion.</summary>
+		public AudioSource PlayLooped(AudioFilter? directFilter = null, params (AudioFilter? filter, AudioEffect? effect)?[]? channels) => play(true, directFilter, channels);
 	}
 }

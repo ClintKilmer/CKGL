@@ -190,6 +190,10 @@ namespace CKGL
 
 				for (int i = Sources.Count - 1; i >= 0; i--)
 					Sources[i].Update();
+
+				// Debug - If we want to run the task on the main thread instead
+				//for (int i = Sources.Count - 1; i >= 0; i--)
+				//	Sources[i].Stream?.Update();
 			}
 		}
 
