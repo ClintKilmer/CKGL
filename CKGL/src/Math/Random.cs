@@ -36,5 +36,10 @@ namespace CKGL
 		{
 			return (float)random.NextDouble() <= percentile;
 		}
+
+		public static T Choose<T>(params T[] options)
+		{
+			return options[random.Next(options.Length)];
+		}
 	}
 }
