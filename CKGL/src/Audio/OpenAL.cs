@@ -159,10 +159,10 @@ namespace OpenAL
 		public static bool alcMakeContextCurrent(IntPtr? context) => INTERNAL_alcMakeContextCurrent(context ?? IntPtr.Zero);
 
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		public static extern void alcProcessContext(IntPtr context); // Possible NOP
+		public static extern void alcProcessContext(IntPtr context); // Possible no-op
 
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		public static extern void alcSuspendContext(IntPtr context); // Possible NOP
+		public static extern void alcSuspendContext(IntPtr context); // Possible no-op
 
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
 		public static extern IntPtr alcGetCurrentContext();
@@ -172,7 +172,7 @@ namespace OpenAL
 
 		// Context Capture Functions
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
-		public static extern IntPtr alcCaptureOpenDevice([In()][MarshalAs(UnmanagedType.LPStr)]string devicename, uint frequency, int format, int buffersize);
+		public static extern IntPtr alcCaptureOpenDevice([In()][MarshalAs(UnmanagedType.LPStr)]string? devicename, uint frequency, int format, int buffersize);
 
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
 		public static extern bool alcCaptureCloseDevice(IntPtr device);
@@ -185,6 +185,8 @@ namespace OpenAL
 
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
 		public static extern void alcCaptureSamples(IntPtr device, IntPtr buffer, int samples);
+		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void alcCaptureSamples(IntPtr device, byte[] buffer, int samples);
 
 		// Context Extension Functions
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
@@ -690,14 +692,12 @@ namespace OpenAL
 
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
 		public static extern void alSourceQueueBuffers(uint source, int nb, uint[] buffers);
-
 		[DllImport(DLL, EntryPoint = "alSourceQueueBuffers", CallingConvention = CallingConvention.Cdecl)]
 		private static extern void INTERNAL_alSourceQueueBuffers(uint source, int nb, ref uint buffers);
 		public static void alSourceQueueBuffers(uint source, uint buffer) => INTERNAL_alSourceQueueBuffers(source, 1, ref buffer);
 
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
 		public static extern void alSourceUnqueueBuffers(uint source, int nb, uint[] buffers);
-
 		[DllImport(DLL, EntryPoint = "alSourceUnqueueBuffers", CallingConvention = CallingConvention.Cdecl)]
 		private static extern void INTERNAL_alSourceUnqueueBuffers(uint source, int nb, out uint buffers);
 		public static void alSourceUnqueueBuffers(uint source, out uint buffer) => INTERNAL_alSourceUnqueueBuffers(source, 1, out buffer);
