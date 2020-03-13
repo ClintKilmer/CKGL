@@ -13,6 +13,7 @@
 #nullable enable
 
 using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace OpenAL
@@ -106,33 +107,22 @@ namespace OpenAL
 		// Context State Functions
 		[DllImport(DLL, EntryPoint = "alcGetString", CallingConvention = CallingConvention.Cdecl)]
 		private static extern IntPtr INTERNAL_alcGetString(IntPtr device, int param);
-		public static string alcGetString(IntPtr? device, int param) => Marshal.PtrToStringAnsi(INTERNAL_alcGetString(device ?? IntPtr.Zero, param));
+		public static string alcGetString(IntPtr? device, int param) => string.Join(", ", PtrToStringArray(INTERNAL_alcGetString(device ?? IntPtr.Zero, param)));
 		public static string[] alcGetStringArray(IntPtr? device, int param) => PtrToStringArray(INTERNAL_alcGetString(device ?? IntPtr.Zero, param));
 		[DllImport(DLL, EntryPoint = "alcGetString", CallingConvention = CallingConvention.Cdecl)]
 		private static extern IntPtr INTERNAL_alcGetString(IntPtr device, alcString param);
-		public static string alcGetString(IntPtr? device, alcString param) => Marshal.PtrToStringAnsi(INTERNAL_alcGetString(device ?? IntPtr.Zero, param));
+		public static string alcGetString(IntPtr? device, alcString param) => string.Join(", ", PtrToStringArray(INTERNAL_alcGetString(device ?? IntPtr.Zero, param)));
 		public static string[] alcGetStringArray(IntPtr? device, alcString param) => PtrToStringArray(INTERNAL_alcGetString(device ?? IntPtr.Zero, param));
 		private static string[] PtrToStringArray(IntPtr stringPtr)
 		{
-			System.Collections.Generic.List<string> strings = new System.Collections.Generic.List<string>();
-
-			bool lastNull = false;
-			int i = -1;
-			byte c;
-			while (!((c = Marshal.ReadByte(stringPtr, ++i)) == '\0' && lastNull))
+			List<string> strings = new List<string>();
+			string buffer = Marshal.PtrToStringAnsi(stringPtr);
+			while (buffer.Length > 0)
 			{
-				if (c == '\0')
-				{
-					lastNull = true;
-
-					strings.Add(Marshal.PtrToStringAnsi(stringPtr, i));
-					stringPtr = new IntPtr((long)stringPtr + i + 1);
-					i = -1;
-				}
-				else
-					lastNull = false;
+				strings.Add(buffer);
+				stringPtr += buffer.Length + 1;
+				buffer = Marshal.PtrToStringAnsi(stringPtr);
 			}
-
 			return strings.ToArray();
 		}
 
