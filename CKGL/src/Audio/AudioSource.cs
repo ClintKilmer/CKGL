@@ -11,6 +11,8 @@ namespace CKGL
 
 		public readonly AudioChannel[] Channels = new AudioChannel[Audio.ChannelCount];
 
+		public bool Active => ID != default;
+
 		internal AudioStream? Stream;
 
 		private AudioBuffer? buffer;

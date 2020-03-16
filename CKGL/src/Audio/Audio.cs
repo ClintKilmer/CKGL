@@ -112,10 +112,12 @@ namespace CKGL
 						// Debug
 						Output.WriteLine("OpenAL Initialized");
 						Output.WriteLine($"OpenAL Source Channel Count: {ChannelCount}");
+						//Output.WriteLine($"OpenAL Devices: {alcGetString(null, alcString.AllDevicesSpecifier)}");
 						Output.WriteLine("OpenAL Devices:");
 						string[] audioDevices = alcGetStringArray(null, alcString.AllDevicesSpecifier);
 						foreach (string audioDevice in audioDevices)
 							Output.WriteLine($"    - {audioDevice}");
+						//Output.WriteLine($"OpenAL Capture Devices: {alcGetString(null, alcString.CaptureDeviceSpecifier)}");
 						Output.WriteLine("OpenAL Capture Devices:");
 						string[] audioCaptureDevices = alcGetStringArray(null, alcString.CaptureDeviceSpecifier);
 						foreach (string audioCaptureDevice in audioCaptureDevices)
