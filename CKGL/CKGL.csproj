@@ -1,8 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>netstandard2.0</TargetFramework>
-		<LangVersion>8</LangVersion>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<!--<Nullable>enable</Nullable>-->
+		<RuntimeIdentifiers>win-x64;win-x86;linux-x64;osx-x64</RuntimeIdentifiers>
+		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
 		<Authors>Clint Kilmer</Authors>
 		<Company>Clint Kilmer</Company>
 		<Copyright>Copyright © 2020</Copyright>
@@ -40,52 +42,52 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Update="libs\lib64\libopenal.so.1">
+		<None Update="libs\win-x64\libEGL.dll" Condition="'$(RuntimeIdentifier)'=='win-x64'">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
-		<None Update="libs\lib64\libSDL2-2.0.so.0">
+		<None Update="libs\win-x64\libGLESv2.dll" Condition="'$(RuntimeIdentifier)'=='win-x64'">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
-		<None Update="libs\lib64\libSDL2_image-2.0.so.0">
+		<None Update="libs\win-x64\SDL2.dll" Condition="'$(RuntimeIdentifier)'=='win-x64'">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
-		<None Update="libs\osx\libopenal.1.dylib">
+		<None Update="libs\win-x64\SDL2_image.dll" Condition="'$(RuntimeIdentifier)'=='win-x64'">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
-		<None Update="libs\osx\libSDL2-2.0.0.dylib">
+		<None Update="libs\win-x64\soft_oal.dll" Condition="'$(RuntimeIdentifier)'=='win-x64'">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
-		<None Update="libs\osx\libSDL2_image-2.0.0.dylib">
+		<None Update="libs\win-x86\libEGL.dll" Condition="'$(RuntimeIdentifier)'=='win-x86'">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
-		<None Update="libs\x64\libEGL.dll">
+		<None Update="libs\win-x86\libGLESv2.dll" Condition="'$(RuntimeIdentifier)'=='win-x86'">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
-		<None Update="libs\x64\libGLESv2.dll">
+		<None Update="libs\win-x86\SDL2.dll" Condition="'$(RuntimeIdentifier)'=='win-x86'">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
-		<None Update="libs\x64\SDL2.dll">
+		<None Update="libs\win-x86\SDL2_image.dll" Condition="'$(RuntimeIdentifier)'=='win-x86'">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
-		<None Update="libs\x64\SDL2_image.dll">
+		<None Update="libs\win-x86\soft_oal.dll" Condition="'$(RuntimeIdentifier)'=='win-x86'">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
-		<None Update="libs\x64\soft_oal.dll">
+		<None Update="libs\linux-x64\libopenal.so.1" Condition="'$(RuntimeIdentifier)'=='linux-x64'">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
-		<None Update="libs\x86\libEGL.dll">
+		<None Update="libs\linux-x64\libSDL2-2.0.so.0" Condition="'$(RuntimeIdentifier)'=='linux-x64'">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
-		<None Update="libs\x86\libGLESv2.dll">
+		<None Update="libs\linux-x64\libSDL2_image-2.0.so.0" Condition="'$(RuntimeIdentifier)'=='linux-x64'">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
-		<None Update="libs\x86\SDL2.dll">
+		<None Update="libs\osx-x64\libopenal.1.dylib" Condition="'$(RuntimeIdentifier)'=='osx-x64'">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
-		<None Update="libs\x86\SDL2_image.dll">
+		<None Update="libs\osx-x64\libSDL2-2.0.0.dylib" Condition="'$(RuntimeIdentifier)'=='osx-x64'">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
-		<None Update="libs\x86\soft_oal.dll">
+		<None Update="libs\osx-x64\libSDL2_image-2.0.0.dylib" Condition="'$(RuntimeIdentifier)'=='osx-x64'">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
 	</ItemGroup>

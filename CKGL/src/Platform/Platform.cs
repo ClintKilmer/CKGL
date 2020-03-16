@@ -287,44 +287,9 @@ namespace CKGL
 			set { if (value) SDL_EnableScreenSaver(); else SDL_DisableScreenSaver(); }
 		}
 
-		#region Windows - Set Dll Directory - x64 | x86 - https://github.com/FNA-XNA/FNA/wiki/4:-FNA-and-Windows-API#64-bit-support
-		[DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-		[return: MarshalAs(UnmanagedType.Bool)]
-		static extern bool SetDefaultDllDirectories(int directoryFlags);
-		[DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-		static extern void AddDllDirectory(string lpPathName);
-		[DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-		[return: MarshalAs(UnmanagedType.Bool)]
-		static extern bool SetDllDirectory(string lpPathName);
-		const int LOAD_LIBRARY_SEARCH_DEFAULT_DIRS = 0x00001000;
-		private static void SetDllDirectory()
-		{
-			if (Environment.OSVersion.Platform == PlatformID.Win32NT)
-			{
-				try
-				{
-					SetDefaultDllDirectories(LOAD_LIBRARY_SEARCH_DEFAULT_DIRS);
-					AddDllDirectory(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Environment.Is64BitProcess ? "libs/x64" : "libs/x86"));
-					Output.WriteLine($"{(Environment.Is64BitProcess ? "x64" : "x86")} executable detected, selecting proper DLLs.");
-				}
-				catch
-				{
-					// Pre-Windows 7, KB2533623 
-					SetDllDirectory(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Environment.Is64BitProcess ? "libs/x64" : "libs/x86"));
-					Output.WriteLine($"{(Environment.Is64BitProcess ? "x64" : "x86")} executable detected, selecting proper DLLs. (Pre-Windows 7, KB2533623)");
-				}
-			}
-		}
-		#endregion
-
 		#region Init/Exit Methods
 		public static void Init(string windowTitle, int windowWidth, int windowHeight, bool windowVSync, bool windowFullscreen, bool windowResizable, bool windowBorderless, int msaa)
 		{
-			// This is a workaround for Linux - Relative paths (sdl/gamecontrollerdb.txt) were not relative to the assembly directory
-			Directory.SetCurrentDirectory(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location));
-
-			SetDllDirectory();
-
 			#region Check for SDL2 libs
 			try
 			{
