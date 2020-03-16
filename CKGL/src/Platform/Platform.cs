@@ -230,8 +230,8 @@ namespace CKGL
 					case "OpenBSD":
 					case "NetBSD":
 						return OS.Linux;
-					case "Mac OS X":
-						return OS.Mac;
+					case "macOS":
+						return OS.macOS;
 					case "iOS":
 						return OS.iOS;
 					case "tvOS":
@@ -253,7 +253,7 @@ namespace CKGL
 				case OS.Windows:
 				case OS.WinRT:
 				case OS.Linux:
-				case OS.Mac:
+				case OS.macOS:
 					return GraphicsBackend.OpenGL;
 				case OS.Android:
 				case OS.iOS:

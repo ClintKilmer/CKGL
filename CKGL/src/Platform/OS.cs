@@ -5,7 +5,7 @@ namespace CKGL
 		Windows,
 		WinRT,
 		Linux,
-		Mac,
+		macOS,
 		iOS,
 		tvOS,
 		Android,
