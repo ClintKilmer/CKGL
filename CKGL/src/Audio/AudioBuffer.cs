@@ -23,6 +23,28 @@ namespace CKGL
 
 		private bool destroyed = false;
 
+		/// <param name="data">PCM data</param>
+		public AudioBuffer(byte[] data, int channels, int bitDepth, int sampleRate)
+		{
+			File = "";
+			Streamed = false;
+
+			ID = alGenBuffer();
+			Audio.CheckALError("Could not create Buffer");
+
+			Size = data.Length;
+			Samples = Size / channels / (bitDepth / 8);
+			Length = (float)Samples / sampleRate;
+
+			// Debug
+			//Output.WriteLine($"Buffer: Size: {Size} Samples: {Samples} sampleRate: {sampleRate} Length: {Length}s channels: {channels} bitDepth: {bitDepth}");
+
+			alBufferData(ID, Audio.GetalBufferFormat(channels, bitDepth), data, data.Length, sampleRate);
+			Audio.CheckALError("Could not set Buffer Data");
+
+			Audio.Buffers.Add(this);
+		}
+
 		public AudioBuffer(string file, bool streamed = false)
 		{
 			if (!System.IO.File.Exists(file))
@@ -52,6 +74,9 @@ namespace CKGL
 				alBufferData(ID, Audio.GetalBufferFormat(channels, bitDepth), bytes, bytes.Length, sampleRate);
 				Audio.CheckALError("Could not set Buffer Data");
 			}
+
+			// Debug
+			//Output.WriteLine($"Buffer: Size: {Size} Samples: {Samples} Length: {Length}s");
 
 			Audio.Buffers.Add(this);
 		}

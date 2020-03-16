@@ -173,6 +173,8 @@ namespace OpenAL
 		// Context Capture Functions
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
 		public static extern IntPtr alcCaptureOpenDevice([In()][MarshalAs(UnmanagedType.LPStr)]string? devicename, uint frequency, int format, int buffersize);
+		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
+		public static extern IntPtr alcCaptureOpenDevice([In()][MarshalAs(UnmanagedType.LPStr)]string? devicename, uint frequency, alBufferFormat format, int buffersize);
 
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
 		public static extern bool alcCaptureCloseDevice(IntPtr device);

@@ -15,12 +15,14 @@ namespace CKGL
 		public static bool Active { get; private set; } = false;
 		public static int ChannelCount { get; private set; } = 4;
 
+		internal static List<AudioCaptureDevice> CaptureDevices = new List<AudioCaptureDevice>();
 		internal static List<AudioBuffer> Buffers = new List<AudioBuffer>();
 		internal static List<AudioStream> Streams = new List<AudioStream>();
 		internal static List<AudioSource> Sources = new List<AudioSource>();
 		internal static List<AudioFilter> Filters = new List<AudioFilter>();
 		internal static List<AudioEffect> Effects = new List<AudioEffect>();
 
+		public static int CaptureDeviceCount { get { return CaptureDevices.Count; } }
 		public static int BufferCount { get { return Buffers.Count; } }
 		public static int StreamCount { get { return Streams.Count; } }
 		public static int SourceCount { get { return Sources.Count; } }
@@ -213,6 +215,9 @@ namespace CKGL
 			for (int i = Buffers.Count - 1; i >= 0; i--)
 				Buffers[i].Destroy();
 
+			for (int i = CaptureDevices.Count - 1; i >= 0; i--)
+				CaptureDevices[i].Destroy();
+
 			alcMakeContextCurrent(null);
 
 			if (context != IntPtr.Zero)
@@ -252,6 +257,33 @@ namespace CKGL
 		}
 
 		internal static bool CheckALCError(string message = "")
+		{
+			if (device != IntPtr.Zero)
+			{
+				alcErrorCode error = (alcErrorCode)alcGetError(device);
+				if (error != alcErrorCode.NoError)
+				{
+					message = message != "" ? " - " + message : "";
+					switch (error)
+					{
+						case alcErrorCode.InvalidDevice:
+							throw new CKGLException($"OpenAL ALC Error: ALC_INVALID_DEVICE{message}");
+						case alcErrorCode.InvalidContext:
+							throw new CKGLException($"OpenAL ALC Error: ALC_INVALID_CONTEXT{message}");
+						case alcErrorCode.InvalidEnum:
+							throw new CKGLException($"OpenAL ALC Error: ALC_INVALID_ENUM{message}");
+						case alcErrorCode.InvalidValue:
+							throw new CKGLException($"OpenAL ALC Error: ALC_INVALID_VALUE{message}");
+						case alcErrorCode.OutOfMemory:
+							throw new CKGLException($"OpenAL ALC Error: ALC_OUT_OF_MEMORY{message}");
+					}
+					return true;
+				}
+			}
+			return false;
+		}
+
+		internal static bool CheckALCError(IntPtr device, string message = "")
 		{
 			if (device != IntPtr.Zero)
 			{
