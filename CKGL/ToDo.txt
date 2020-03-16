@@ -1,5 +1,14 @@
 CKGL TODO List:
 
+- Input.Mouse - m4, m5 + buttons
+
+Audio:
+- Source.Seek -> move logic into stream
+- Finish effects
+- Check for buffer underruns
+- Listener (all) defaults
+- all new EFX related properties
+
 Notes:
 - WebGL - HighDPI needs mouse scaling to match css pixel size
 
