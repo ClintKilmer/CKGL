@@ -10,7 +10,7 @@
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<DefineConstants>TRACE;OPENGL;OPENGLES;VULKAN</DefineConstants>
+		<DefineConstants>TRACE;OPENGL;OPENGLES</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -25,16 +25,6 @@
 		<EmbeddedResource Remove="lib\SDL_GameControllerDB\**" />
 		<None Remove="lib\SDL2-CS\**" />
 		<None Remove="lib\SDL_GameControllerDB\**" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Compile Remove="src\Graphics\MeshBase.cs" />
-		<Compile Remove="src\Graphics\OpenGL\OpenGL_New.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<None Remove="libs\README new.txt" />
-		<None Remove="libs\README.txt" />
 	</ItemGroup>
 
 	<ItemGroup>
