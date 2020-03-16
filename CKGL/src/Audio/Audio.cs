@@ -15,12 +15,12 @@ namespace CKGL
 		public static bool Active { get; private set; } = false;
 		public static int ChannelCount { get; private set; } = 4;
 
-		internal static List<AudioCaptureDevice> CaptureDevices = new List<AudioCaptureDevice>();
-		internal static List<AudioBuffer> Buffers = new List<AudioBuffer>();
+		public static List<AudioCaptureDevice> CaptureDevices = new List<AudioCaptureDevice>();
+		public static List<AudioBuffer> Buffers = new List<AudioBuffer>();
 		internal static List<AudioStream> Streams = new List<AudioStream>();
-		internal static List<AudioSource> Sources = new List<AudioSource>();
-		internal static List<AudioFilter> Filters = new List<AudioFilter>();
-		internal static List<AudioEffect> Effects = new List<AudioEffect>();
+		public static List<AudioSource> Sources = new List<AudioSource>();
+		public static List<AudioFilter> Filters = new List<AudioFilter>();
+		public static List<AudioEffect> Effects = new List<AudioEffect>();
 
 		public static int CaptureDeviceCount { get { return CaptureDevices.Count; } }
 		public static int BufferCount { get { return Buffers.Count; } }
