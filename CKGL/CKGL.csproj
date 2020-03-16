@@ -59,15 +59,6 @@
 		<None Update="libs\lib64\libSDL2_image-2.0.so.0">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
-		<None Update="libs\lib\libopenal.so.1">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="libs\lib\libSDL2-2.0.so.0">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="libs\lib\libSDL2_image-2.0.so.0">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
 		<None Update="libs\osx\libopenal.1.dylib">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
