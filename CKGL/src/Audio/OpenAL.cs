@@ -116,12 +116,12 @@ namespace OpenAL
 		private static string[] PtrToStringArray(IntPtr stringPtr)
 		{
 			List<string> strings = new List<string>();
-			string buffer = Marshal.PtrToStringAnsi(stringPtr);
+			string buffer = Marshal.PtrToStringAnsi(stringPtr) ?? "";
 			while (buffer.Length > 0)
 			{
 				strings.Add(buffer);
 				stringPtr += buffer.Length + 1;
-				buffer = Marshal.PtrToStringAnsi(stringPtr);
+				buffer = Marshal.PtrToStringAnsi(stringPtr) ?? "";
 			}
 			return strings.ToArray();
 		}
@@ -450,10 +450,10 @@ namespace OpenAL
 
 		[DllImport(DLL, EntryPoint = "alGetString", CallingConvention = CallingConvention.Cdecl)]
 		private static extern IntPtr INTERNAL_alGetString(int param);
-		public static string alGetString(int param) => Marshal.PtrToStringAnsi(INTERNAL_alGetString(param));
+		public static string alGetString(int param) => Marshal.PtrToStringAnsi(INTERNAL_alGetString(param)) ?? "";
 		[DllImport(DLL, EntryPoint = "alGetString", CallingConvention = CallingConvention.Cdecl)]
 		private static extern IntPtr INTERNAL_alGetString(alString param);
-		public static string alGetString(alString param) => Marshal.PtrToStringAnsi(INTERNAL_alGetString(param));
+		public static string alGetString(alString param) => Marshal.PtrToStringAnsi(INTERNAL_alGetString(param)) ?? "";
 
 		[DllImport(DLL, CallingConvention = CallingConvention.Cdecl)]
 		public static extern void alDistanceModel(int distanceModel);
