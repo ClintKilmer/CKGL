@@ -26,64 +26,60 @@ namespace CKGL
 
 		private static Game game;
 
-		#region NativeLibrary
 		static Engine()
 		{
 			// This is a workaround for Linux - Relative paths (sdl/gamecontrollerdb.txt) were not relative to the assembly directory
 			Directory.SetCurrentDirectory(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location));
 
+			#region NativeLibrary DLL Import Resolver
 #if NETCOREAPP
-			NativeLibrary.SetDllImportResolver(typeof(Engine).Assembly, ImportResolver);
+			NativeLibrary.SetDllImportResolver(typeof(Engine).Assembly, (string libraryName, Assembly assembly, DllImportSearchPath? searchPath) =>
+			{
+				IntPtr libHandle;
+				if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) && Environment.Is64BitOperatingSystem)
+					_ = libraryName switch
+					{
+						"SDL2" => NativeLibrary.TryLoad("libs/win-x64/SDL2.dll", out libHandle),
+						"SDL2_image" => NativeLibrary.TryLoad("libs/win-x64/SDL2_image.dll", out libHandle),
+						"soft_oal" => NativeLibrary.TryLoad("libs/win-x64/soft_oal.dll", out libHandle),
+						"libEGL" => NativeLibrary.TryLoad("libs/win-x64/libEGL.dll", out libHandle),
+						"libGLESv2" => NativeLibrary.TryLoad("libs/win-x64/libGLESv2.dll", out libHandle),
+						_ => throw new CKGLException($"Invalid native library name: {libraryName}")
+					};
+				else
+				if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) && !Environment.Is64BitOperatingSystem)
+					_ = libraryName switch
+					{
+						"SDL2" => NativeLibrary.TryLoad("libs/win-x86/SDL2.dll", out libHandle),
+						"SDL2_image" => NativeLibrary.TryLoad("libs/win-x86/SDL2_image.dll", out libHandle),
+						"soft_oal" => NativeLibrary.TryLoad("libs/win-x86/soft_oal.dll", out libHandle),
+						"libEGL" => NativeLibrary.TryLoad("libs/win-x86/libEGL.dll", out libHandle),
+						"libGLESv2" => NativeLibrary.TryLoad("libs/win-x86/libGLESv2.dll", out libHandle),
+						_ => throw new CKGLException($"Invalid native library name: {libraryName}")
+					};
+				else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) && Environment.Is64BitOperatingSystem)
+					_ = libraryName switch
+					{
+						"SDL2" => NativeLibrary.TryLoad("libs/linux-x64/libSDL2-2.0.so.0", out libHandle),
+						"SDL2_image" => NativeLibrary.TryLoad("libs/linux-x64/libSDL2_image-2.0.so.0", out libHandle),
+						"soft_oal" => NativeLibrary.TryLoad("libs/linux-x64/libopenal.so.1", out libHandle),
+						_ => throw new CKGLException($"Invalid native library name: {libraryName}")
+					};
+				else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) && Environment.Is64BitOperatingSystem)
+					_ = libraryName switch
+					{
+						"SDL2" => NativeLibrary.TryLoad("libs/osx-x64/libSDL2-2.0.0.dylib", out libHandle),
+						"SDL2_image" => NativeLibrary.TryLoad("libs/osx-x64/libSDL2_image-2.0.0.dylib", out libHandle),
+						"soft_oal" => NativeLibrary.TryLoad("libs/osx-x64/libopenal.1.dylib", out libHandle),
+						_ => throw new CKGLException($"Invalid native library name: {libraryName}")
+					};
+				else
+					throw new CKGLException("Unsupported Operating System");
+				return libHandle;
+			});
 #endif
+			#endregion
 		}
-
-#if NETCOREAPP
-		private static IntPtr ImportResolver(string libraryName, Assembly assembly, DllImportSearchPath? searchPath)
-		{
-			IntPtr libHandle;
-			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) && Environment.Is64BitOperatingSystem)
-				_ = libraryName switch
-				{
-					"SDL2" => NativeLibrary.TryLoad("libs/win-x64/SDL2.dll", out libHandle),
-					"SDL2_image" => NativeLibrary.TryLoad("libs/win-x64/SDL2_image.dll", out libHandle),
-					"soft_oal" => NativeLibrary.TryLoad("libs/win-x64/soft_oal.dll", out libHandle),
-					"libEGL" => NativeLibrary.TryLoad("libs/win-x64/libEGL.dll", out libHandle),
-					"libGLESv2" => NativeLibrary.TryLoad("libs/win-x64/libGLESv2.dll", out libHandle),
-					_ => throw new CKGLException($"Invalid native library name: {libraryName}")
-				};
-			else
-			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) && !Environment.Is64BitOperatingSystem)
-				_ = libraryName switch
-				{
-					"SDL2" => NativeLibrary.TryLoad("libs/win-x86/SDL2.dll", out libHandle),
-					"SDL2_image" => NativeLibrary.TryLoad("libs/win-x86/SDL2_image.dll", out libHandle),
-					"soft_oal" => NativeLibrary.TryLoad("libs/win-x86/soft_oal.dll", out libHandle),
-					"libEGL" => NativeLibrary.TryLoad("libs/win-x86/libEGL.dll", out libHandle),
-					"libGLESv2" => NativeLibrary.TryLoad("libs/win-x86/libGLESv2.dll", out libHandle),
-					_ => throw new CKGLException($"Invalid native library name: {libraryName}")
-				};
-			else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) && Environment.Is64BitOperatingSystem)
-				_ = libraryName switch
-				{
-					"SDL2" => NativeLibrary.TryLoad("libs/linux-x64/libSDL2-2.0.so.0", out libHandle),
-					"SDL2_image" => NativeLibrary.TryLoad("libs/linux-x64/libSDL2_image-2.0.so.0", out libHandle),
-					"soft_oal" => NativeLibrary.TryLoad("libs/linux-x64/libopenal.so.1", out libHandle),
-					_ => throw new CKGLException($"Invalid native library name: {libraryName}")
-				};
-			else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) && Environment.Is64BitOperatingSystem)
-				_ = libraryName switch
-				{
-					"SDL2" => NativeLibrary.TryLoad("libs/osx-x64/libSDL2-2.0.0.dylib", out libHandle),
-					"SDL2_image" => NativeLibrary.TryLoad("libs/osx-x64/libSDL2_image-2.0.0.dylib", out libHandle),
-					"soft_oal" => NativeLibrary.TryLoad("libs/osx-x64/libopenal.1.dylib", out libHandle),
-					_ => throw new CKGLException($"Invalid native library name: {libraryName}")
-				};
-			else
-				throw new CKGLException("Unsupported Operating System");
-			return libHandle;
-		}
-#endif
-		#endregion
 
 		public static void Init(string windowTitle, int windowWidth, int windowHeight, bool windowVSync, bool windowFullscreen, bool windowResizable, bool windowBorderless, int msaa)
 		{
