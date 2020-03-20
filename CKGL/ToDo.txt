@@ -1,7 +1,5 @@
 CKGL TODO List:
 
-- Input.Mouse - m4, m5 + buttons
-
 Audio:
 - Source.Seek -> move logic into stream
 - Finish effects

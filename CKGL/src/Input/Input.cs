@@ -634,8 +634,17 @@ namespace CKGL
 			Left = 1,
 			Middle = 2,
 			Right = 3,
-			X1 = 4,
-			X2 = 5
+			M4 = 4,
+			M5 = 5,
+			M6 = 6,
+			M7 = 7,
+			M8 = 8,
+			M9 = 9,
+			M10 = 10,
+			M11 = 11,
+			M12 = 12,
+			M13 = 13,
+			M14 = 14
 		}
 
 		public static class Mouse
