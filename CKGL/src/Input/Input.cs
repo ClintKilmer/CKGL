@@ -629,6 +629,7 @@ namespace CKGL
 		#endregion
 
 		#region Mouse
+		// According to the USB HID spec, B.2 Protocol 2 (Mouse), you can have up to 15 additional buttons
 		public enum MouseButton
 		{
 			Left = 1,
@@ -644,7 +645,11 @@ namespace CKGL
 			M11 = 11,
 			M12 = 12,
 			M13 = 13,
-			M14 = 14
+			M14 = 14,
+			M15 = 15,
+			M16 = 16,
+			M17 = 17,
+			M18 = 18
 		}
 
 		public static class Mouse
