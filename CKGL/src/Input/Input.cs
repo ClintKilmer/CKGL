@@ -558,11 +558,9 @@ namespace CKGL
 				{
 					downKeyCode.Remove(keycode);
 					releasedKeyCode.Add(keycode);
-					repeatedKeyCode.Add(keycode);
 
 					downScanCode.Remove(scancode);
 					releasedScanCode.Add(scancode);
-					repeatedScanCode.Add(scancode);
 
 					//Output.WriteLine("released: " + keycode); // Debug
 				};
