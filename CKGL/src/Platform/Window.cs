@@ -99,7 +99,7 @@ namespace CKGL
 			{
 				if (value)
 				{
-					if (Platform.OS == OS.WinRT || Platform.OS == OS.Mac) // TODO - Check for Google ANGLE here, as it reports success, even though it doesn't seem to work
+					if (Platform.OS == OS.WinRT || Platform.OS == OS.macOS) // TODO - Check for Google ANGLE here, as it reports success, even though it doesn't seem to work
 					{
 						SDL_GL_SetSwapInterval(VSyncMode.On);
 					}
